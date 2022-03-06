@@ -14,349 +14,337 @@ span.line_no::before {
     font-family: monospace;
     font-weight: normal;
 }
-
+h1 { margin: 0; }
 .fixed { font-family: monospace }
 .em { font-style: italic; }
 .center { text-align: center; }
-    body { font-family: sans-serif; margin: 3rem; background-color: #fafaf0; width: 80rem; }
+    body { font-family: sans-serif; margin: 1.5rem 0 0 3rem; background-color: #fafaf0; width: 80rem; }
     .pre { font-family: monospace; margin: auto; width: 80rem; }
 #front_matter,.text { width: 50rem; }
 .text { border-bottom: .5px solid black; border-top: .5px solid black; margin-top: 1rem;
 padding-bottom: 1rem; margin-bottom: 2rem; }
+/*.subtitle { font-weight: bold; font-size: 1.2rem; }*/
     </style>
 </head>
 <body>
+<header>
+<h1>I6 Template Layer</h1>
+<div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Index</a> &bull; <a href="./Introduction.html">Introduction</a></div><hr></header>
 <div id="front_matter">
-<h1><a href="./FileIO.i6t">FileIO</a></h1><h2>Language.</h2><p><p> This whole template contains material used only if the &quot;Glulx external files&quot; element is part of Inform&#39;s current definition, so:<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line11">11</span><span class="td">#IFDEF&nbsp;PLUGIN_FILES;</span></span>
-<span class="tr"><span class="th" id="line12">12</span><span class="td"></span></span>
+<h2><a href="./FileIO.i6t">FileIO.i6t</a></h2><h3>Language.</h3><p><p> This whole template contains material used only if the &quot;Glulx external files&quot; element is part of Inform&#39;s current definition, so:<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line12">12</span><span class="td">#IFDEF&nbsp;PLUGIN_FILES;</span></span>
 </div><div class='text'>
-<h2>Structure.</h2><p><p> The I7 kind of value &quot;auxiliary-file&quot; is an <span class="fixed">--&gt;</span> array, holding a memory structure containing information about external files. The following constants specify memory offsets and values. Note the safety value stored as the first word of the structure: this helps protect the routines below from accidents. (16339, besides being prime, is a number interesting to the author of Inform since it was the examination board identifying number of his school, and so had to be filled in on all of the many papers he sat during his formative years.)<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line24">24</span><span class="td">Constant&nbsp;AUXF_MAGIC&nbsp;=&nbsp;0;&nbsp;!&nbsp;First&nbsp;word&nbsp;holds&nbsp;a&nbsp;safety&nbsp;constant</span></span>
-<span class="tr"><span class="th" id="line25">25</span><span class="td">Constant&nbsp;AUXF_MAGIC_VALUE&nbsp;=&nbsp;16339;&nbsp;!&nbsp;Should&nbsp;be&nbsp;first&nbsp;word&nbsp;of&nbsp;any&nbsp;valid&nbsp;file&nbsp;structure</span></span>
-<span class="tr"><span class="th" id="line26">26</span><span class="td">Constant&nbsp;AUXF_STATUS&nbsp;=&nbsp;1;&nbsp;!&nbsp;One&nbsp;of&nbsp;the&nbsp;following:</span></span>
-<span class="tr"><span class="th" id="line27">27</span><span class="td">&nbsp;Constant&nbsp;AUXF_STATUS_IS_CLOSED&nbsp;=&nbsp;1;&nbsp;!&nbsp;Currently&nbsp;closed,&nbsp;or&nbsp;perhaps&nbsp;doesn&#39;t&nbsp;exist</span></span>
-<span class="tr"><span class="th" id="line28">28</span><span class="td">&nbsp;Constant&nbsp;AUXF_STATUS_IS_OPEN_FOR_READ&nbsp;=&nbsp;2;</span></span>
-<span class="tr"><span class="th" id="line29">29</span><span class="td">&nbsp;Constant&nbsp;AUXF_STATUS_IS_OPEN_FOR_WRITE&nbsp;=&nbsp;3;</span></span>
-<span class="tr"><span class="th" id="line30">30</span><span class="td">&nbsp;Constant&nbsp;AUXF_STATUS_IS_OPEN_FOR_APPEND&nbsp;=&nbsp;4;</span></span>
-<span class="tr"><span class="th" id="line31">31</span><span class="td">Constant&nbsp;AUXF_BINARY&nbsp;=&nbsp;2;&nbsp;!&nbsp;False&nbsp;for&nbsp;text&nbsp;files&nbsp;(I7&nbsp;default),&nbsp;true&nbsp;for&nbsp;binary</span></span>
-<span class="tr"><span class="th" id="line32">32</span><span class="td">Constant&nbsp;AUXF_STREAM&nbsp;=&nbsp;3;&nbsp;!&nbsp;Stream&nbsp;for&nbsp;an&nbsp;open&nbsp;file&nbsp;(meaningless&nbsp;otherwise)</span></span>
-<span class="tr"><span class="th" id="line33">33</span><span class="td">Constant&nbsp;AUXF_FILENAME&nbsp;=&nbsp;4;&nbsp;!&nbsp;Packed&nbsp;address&nbsp;of&nbsp;constant&nbsp;string</span></span>
-<span class="tr"><span class="th" id="line34">34</span><span class="td">Constant&nbsp;AUXF_IFID_OF_OWNER&nbsp;=&nbsp;5;&nbsp;!&nbsp;UUID_ARRAY&nbsp;if&nbsp;owned&nbsp;by&nbsp;this&nbsp;project,&nbsp;or</span></span>
-<span class="tr"><span class="th" id="line35">35</span><span class="td">&nbsp;!&nbsp;string&nbsp;array&nbsp;of&nbsp;IFID&nbsp;of&nbsp;owner&nbsp;wrapped&nbsp;in&nbsp;//...//,&nbsp;or&nbsp;NULL&nbsp;to&nbsp;leave&nbsp;open</span></span>
-<span class="tr"><span class="th" id="line36">36</span><span class="td"></span></span>
+<h3>Structure.</h3><p><p> The I7 kind of value &quot;auxiliary-file&quot; is an <span class="fixed">--&gt;</span> array, holding a memory structure containing information about external files. The following constants specify memory offsets and values. Note the safety value stored as the first word of the structure: this helps protect the routines below from accidents. (16339, besides being prime, is a number interesting to the author of Inform since it was the examination board identifying number of his school, and so had to be filled in on all of the many papers he sat during his formative years.)<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line25">25</span><span class="td">Constant&nbsp;AUXF_MAGIC&nbsp;=&nbsp;0;&nbsp;!&nbsp;First&nbsp;word&nbsp;holds&nbsp;a&nbsp;safety&nbsp;constant</span></span>
+<span class="tr"><span class="th" id="line26">26</span><span class="td">Constant&nbsp;AUXF_MAGIC_VALUE&nbsp;=&nbsp;16339;&nbsp;!&nbsp;Should&nbsp;be&nbsp;first&nbsp;word&nbsp;of&nbsp;any&nbsp;valid&nbsp;file&nbsp;structure</span></span>
+<span class="tr"><span class="th" id="line27">27</span><span class="td">Constant&nbsp;AUXF_STATUS&nbsp;=&nbsp;1;&nbsp;!&nbsp;One&nbsp;of&nbsp;the&nbsp;following:</span></span>
+<span class="tr"><span class="th" id="line28">28</span><span class="td">&nbsp;Constant&nbsp;AUXF_STATUS_IS_CLOSED&nbsp;=&nbsp;1;&nbsp;!&nbsp;Currently&nbsp;closed,&nbsp;or&nbsp;perhaps&nbsp;doesn&#39;t&nbsp;exist</span></span>
+<span class="tr"><span class="th" id="line29">29</span><span class="td">&nbsp;Constant&nbsp;AUXF_STATUS_IS_OPEN_FOR_READ&nbsp;=&nbsp;2;</span></span>
+<span class="tr"><span class="th" id="line30">30</span><span class="td">&nbsp;Constant&nbsp;AUXF_STATUS_IS_OPEN_FOR_WRITE&nbsp;=&nbsp;3;</span></span>
+<span class="tr"><span class="th" id="line31">31</span><span class="td">&nbsp;Constant&nbsp;AUXF_STATUS_IS_OPEN_FOR_APPEND&nbsp;=&nbsp;4;</span></span>
+<span class="tr"><span class="th" id="line32">32</span><span class="td">Constant&nbsp;AUXF_BINARY&nbsp;=&nbsp;2;&nbsp;!&nbsp;False&nbsp;for&nbsp;text&nbsp;files&nbsp;(I7&nbsp;default),&nbsp;true&nbsp;for&nbsp;binary</span></span>
+<span class="tr"><span class="th" id="line33">33</span><span class="td">Constant&nbsp;AUXF_STREAM&nbsp;=&nbsp;3;&nbsp;!&nbsp;Stream&nbsp;for&nbsp;an&nbsp;open&nbsp;file&nbsp;(meaningless&nbsp;otherwise)</span></span>
+<span class="tr"><span class="th" id="line34">34</span><span class="td">Constant&nbsp;AUXF_FILENAME&nbsp;=&nbsp;4;&nbsp;!&nbsp;Packed&nbsp;address&nbsp;of&nbsp;constant&nbsp;string</span></span>
+<span class="tr"><span class="th" id="line35">35</span><span class="td">Constant&nbsp;AUXF_IFID_OF_OWNER&nbsp;=&nbsp;5;&nbsp;!&nbsp;UUID_ARRAY&nbsp;if&nbsp;owned&nbsp;by&nbsp;this&nbsp;project,&nbsp;or</span></span>
+<span class="tr"><span class="th" id="line36">36</span><span class="td">&nbsp;!&nbsp;string&nbsp;array&nbsp;of&nbsp;IFID&nbsp;of&nbsp;owner&nbsp;wrapped&nbsp;in&nbsp;//...//,&nbsp;or&nbsp;NULL&nbsp;to&nbsp;leave&nbsp;open</span></span>
 </div><div class='text'>
-<h2>Instances.</h2><p><p> These structures are not dynamically created: they are precompiled by the NI compiler, already filled in with the necessary values. The following command generates them.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line43">43</span><span class="td">{-call:PL::Files::arrays}</span></span>
-<span class="tr"><span class="th" id="line44">44</span><span class="td"></span></span>
+<h3>Instances.</h3><p><p> These structures are not dynamically created: they are precompiled by the NI compiler, already filled in with the necessary values. The following command generates them.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line44">44</span><span class="td">{-call:PL::Files::arrays}</span></span>
 </div><div class='text'>
-<h2>Errors.</h2><p><p> This is used for I/O errors of all kinds: it isn&#39;t within the Glulx-only code because one of the errors is to try to use these routines on the Z-machine.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line51">51</span><span class="td">[&nbsp;FileIO_Error&nbsp;extf&nbsp;err_text&nbsp;&nbsp;struc;</span></span>
-<span class="tr"><span class="th" id="line52">52</span><span class="td">&nbsp;if&nbsp;((extf&nbsp;&lt;&nbsp;1)&nbsp;||&nbsp;(extf&nbsp;&gt;&nbsp;NO_EXTERNAL_FILES))&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line53">53</span><span class="td">&nbsp;&nbsp;print&nbsp;&quot;^***&nbsp;Error&nbsp;on&nbsp;unknown&nbsp;file:&nbsp;&quot;,&nbsp;(string)&nbsp;err_text,&nbsp;&quot;&nbsp;***^&quot;;</span></span>
-<span class="tr"><span class="th" id="line54">54</span><span class="td">&nbsp;}&nbsp;else&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line55">55</span><span class="td">&nbsp;&nbsp;struc&nbsp;=&nbsp;TableOfExternalFiles--&gt;extf;</span></span>
-<span class="tr"><span class="th" id="line56">56</span><span class="td">&nbsp;&nbsp;print&nbsp;&quot;^***&nbsp;Error&nbsp;on&nbsp;file&nbsp;&#39;&quot;,</span></span>
-<span class="tr"><span class="th" id="line57">57</span><span class="td">&nbsp;&nbsp;&nbsp;(string)&nbsp;struc--&gt;AUXF_FILENAME,&nbsp;&quot;&#39;:&nbsp;&quot;,</span></span>
-<span class="tr"><span class="th" id="line58">58</span><span class="td">&nbsp;&nbsp;&nbsp;(string)&nbsp;err_text,&nbsp;&quot;&nbsp;***^&quot;;</span></span>
-<span class="tr"><span class="th" id="line59">59</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line60">60</span><span class="td">&nbsp;RunTimeProblem(RTP_FILEIOERROR);</span></span>
-<span class="tr"><span class="th" id="line61">61</span><span class="td">&nbsp;return&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line62">62</span><span class="td">];</span></span>
-<span class="tr"><span class="th" id="line63">63</span><span class="td"></span></span>
+<h3>Errors.</h3><p><p> This is used for I/O errors of all kinds: it isn&#39;t within the Glulx-only code because one of the errors is to try to use these routines on the Z-machine.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line52">52</span><span class="td">[&nbsp;FileIO_Error&nbsp;extf&nbsp;err_text&nbsp;&nbsp;struc;</span></span>
+<span class="tr"><span class="th" id="line53">53</span><span class="td">&nbsp;if&nbsp;((extf&nbsp;&lt;&nbsp;1)&nbsp;||&nbsp;(extf&nbsp;&gt;&nbsp;NO_EXTERNAL_FILES))&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line54">54</span><span class="td">&nbsp;&nbsp;print&nbsp;&quot;^***&nbsp;Error&nbsp;on&nbsp;unknown&nbsp;file:&nbsp;&quot;,&nbsp;(string)&nbsp;err_text,&nbsp;&quot;&nbsp;***^&quot;;</span></span>
+<span class="tr"><span class="th" id="line55">55</span><span class="td">&nbsp;}&nbsp;else&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line56">56</span><span class="td">&nbsp;&nbsp;struc&nbsp;=&nbsp;TableOfExternalFiles--&gt;extf;</span></span>
+<span class="tr"><span class="th" id="line57">57</span><span class="td">&nbsp;&nbsp;print&nbsp;&quot;^***&nbsp;Error&nbsp;on&nbsp;file&nbsp;&#39;&quot;,</span></span>
+<span class="tr"><span class="th" id="line58">58</span><span class="td">&nbsp;&nbsp;&nbsp;(string)&nbsp;struc--&gt;AUXF_FILENAME,&nbsp;&quot;&#39;:&nbsp;&quot;,</span></span>
+<span class="tr"><span class="th" id="line59">59</span><span class="td">&nbsp;&nbsp;&nbsp;(string)&nbsp;err_text,&nbsp;&quot;&nbsp;***^&quot;;</span></span>
+<span class="tr"><span class="th" id="line60">60</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line61">61</span><span class="td">&nbsp;RunTimeProblem(RTP_FILEIOERROR);</span></span>
+<span class="tr"><span class="th" id="line62">62</span><span class="td">&nbsp;return&nbsp;0;</span></span>
+<span class="tr"><span class="th" id="line63">63</span><span class="td">];</span></span>
 </div><div class='text'>
-<h2>Glulx Material.</h2><p><p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line67">67</span><span class="td">#IFDEF&nbsp;TARGET_GLULX;</span></span>
-<span class="tr"><span class="th" id="line68">68</span><span class="td"></span></span>
+<h3>Glulx Material.</h3><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line68">68</span><span class="td">#IFDEF&nbsp;TARGET_GLULX;</span></span>
 </div><div class='text'>
-<h2>Existence.</h2><p><p> Determine whether a file exists on disc. Note that we have no concept of directories, or the file system structure on the host machine: indeed, it is entirely up to the Glulx VM what it does when asked to look for a file. By convention, though, files for a project are stored in the same folder as the story file when out in the wild; when a project is developed within the Inform user interface, they are either (for preference) stored in a <span class="fixed">Files</span> subfolder of the <span class="fixed">Materials</span> folder for a project, or else stored alongside the Inform project file.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line80">80</span><span class="td">[&nbsp;FileIO_Exists&nbsp;extf&nbsp;&nbsp;fref&nbsp;struc&nbsp;rv&nbsp;usage;</span></span>
-<span class="tr"><span class="th" id="line81">81</span><span class="td">&nbsp;if&nbsp;((extf&nbsp;&lt;&nbsp;1)&nbsp;||&nbsp;(extf&nbsp;&gt;&nbsp;NO_EXTERNAL_FILES))&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line82">82</span><span class="td">&nbsp;struc&nbsp;=&nbsp;TableOfExternalFiles--&gt;extf;</span></span>
-<span class="tr"><span class="th" id="line83">83</span><span class="td">&nbsp;if&nbsp;((struc&nbsp;==&nbsp;0)&nbsp;||&nbsp;(struc--&gt;AUXF_MAGIC&nbsp;~=&nbsp;AUXF_MAGIC_VALUE))&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line84">84</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_BINARY)&nbsp;usage&nbsp;=&nbsp;fileusage_BinaryMode;</span></span>
-<span class="tr"><span class="th" id="line85">85</span><span class="td">&nbsp;else&nbsp;usage&nbsp;=&nbsp;fileusage_TextMode;</span></span>
-<span class="tr"><span class="th" id="line86">86</span><span class="td">&nbsp;fref&nbsp;=&nbsp;glk_fileref_create_by_name(fileusage_Data&nbsp;+&nbsp;usage,</span></span>
-<span class="tr"><span class="th" id="line87">87</span><span class="td">&nbsp;&nbsp;Glulx_ChangeAnyToCString(struc--&gt;AUXF_FILENAME),&nbsp;0);</span></span>
-<span class="tr"><span class="th" id="line88">88</span><span class="td">&nbsp;rv&nbsp;=&nbsp;glk_fileref_does_file_exist(fref);</span></span>
-<span class="tr"><span class="th" id="line89">89</span><span class="td">&nbsp;glk_fileref_destroy(fref);</span></span>
-<span class="tr"><span class="th" id="line90">90</span><span class="td">&nbsp;return&nbsp;rv;</span></span>
-<span class="tr"><span class="th" id="line91">91</span><span class="td">];</span></span>
-<span class="tr"><span class="th" id="line92">92</span><span class="td"></span></span>
+<h3>Existence.</h3><p><p> Determine whether a file exists on disc. Note that we have no concept of directories, or the file system structure on the host machine: indeed, it is entirely up to the Glulx VM what it does when asked to look for a file. By convention, though, files for a project are stored in the same folder as the story file when out in the wild; when a project is developed within the Inform user interface, they are either (for preference) stored in a <span class="fixed">Files</span> subfolder of the <span class="fixed">Materials</span> folder for a project, or else stored alongside the Inform project file.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line81">81</span><span class="td">[&nbsp;FileIO_Exists&nbsp;extf&nbsp;&nbsp;fref&nbsp;struc&nbsp;rv&nbsp;usage;</span></span>
+<span class="tr"><span class="th" id="line82">82</span><span class="td">&nbsp;if&nbsp;((extf&nbsp;&lt;&nbsp;1)&nbsp;||&nbsp;(extf&nbsp;&gt;&nbsp;NO_EXTERNAL_FILES))&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line83">83</span><span class="td">&nbsp;struc&nbsp;=&nbsp;TableOfExternalFiles--&gt;extf;</span></span>
+<span class="tr"><span class="th" id="line84">84</span><span class="td">&nbsp;if&nbsp;((struc&nbsp;==&nbsp;0)&nbsp;||&nbsp;(struc--&gt;AUXF_MAGIC&nbsp;~=&nbsp;AUXF_MAGIC_VALUE))&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line85">85</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_BINARY)&nbsp;usage&nbsp;=&nbsp;fileusage_BinaryMode;</span></span>
+<span class="tr"><span class="th" id="line86">86</span><span class="td">&nbsp;else&nbsp;usage&nbsp;=&nbsp;fileusage_TextMode;</span></span>
+<span class="tr"><span class="th" id="line87">87</span><span class="td">&nbsp;fref&nbsp;=&nbsp;glk_fileref_create_by_name(fileusage_Data&nbsp;+&nbsp;usage,</span></span>
+<span class="tr"><span class="th" id="line88">88</span><span class="td">&nbsp;&nbsp;Glulx_ChangeAnyToCString(struc--&gt;AUXF_FILENAME),&nbsp;0);</span></span>
+<span class="tr"><span class="th" id="line89">89</span><span class="td">&nbsp;rv&nbsp;=&nbsp;glk_fileref_does_file_exist(fref);</span></span>
+<span class="tr"><span class="th" id="line90">90</span><span class="td">&nbsp;glk_fileref_destroy(fref);</span></span>
+<span class="tr"><span class="th" id="line91">91</span><span class="td">&nbsp;return&nbsp;rv;</span></span>
+<span class="tr"><span class="th" id="line92">92</span><span class="td">];</span></span>
 </div><div class='text'>
-<h2>Readiness.</h2><p><p> One of our problems is that a file might be being used by another application: perhaps even by another story file running in a second incarnation of Glulx, like a parallel world of which we can know nothing. We actually want to allow for this sort of thing, because one use for external files in I7 is as a sort of communications conduit for assisting applications.<p></p><p> Most operating systems solve this problem by means of locking a file, or by creating a second lock-file, the existence of which indicates ownership of the original. We haven&#39;t got much access to the file-system, though: what we do is to set the first character of the file to an asterisk to mark it as complete and ready for reading, or to a hyphen to mark it as a work in progress.<p></p><p> <a href="./FileIO.i6t.html#line401">FileIO_Ready</a> determines whether or not a file is ready to be read from: it has to exist on disc, and to be openable, and also to be ready in having this marker asterisk.<p></p><p> <a href="./FileIO.i6t.html#line406">FileIO_MarkReady</a> changes the readiness state of a file, writing the asterisk or hyphen into the initial character as needed.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line115">115</span><span class="td">[&nbsp;FileIO_Ready&nbsp;extf&nbsp;&nbsp;struc&nbsp;fref&nbsp;usage&nbsp;str&nbsp;ch;</span></span>
-<span class="tr"><span class="th" id="line116">116</span><span class="td">&nbsp;if&nbsp;((extf&nbsp;&lt;&nbsp;1)&nbsp;||&nbsp;(extf&nbsp;&gt;&nbsp;NO_EXTERNAL_FILES))&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line117">117</span><span class="td">&nbsp;struc&nbsp;=&nbsp;TableOfExternalFiles--&gt;extf;</span></span>
-<span class="tr"><span class="th" id="line118">118</span><span class="td">&nbsp;if&nbsp;((struc&nbsp;==&nbsp;0)&nbsp;||&nbsp;(struc--&gt;AUXF_MAGIC&nbsp;~=&nbsp;AUXF_MAGIC_VALUE))&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line119">119</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_BINARY)&nbsp;usage&nbsp;=&nbsp;fileusage_BinaryMode;</span></span>
-<span class="tr"><span class="th" id="line120">120</span><span class="td">&nbsp;else&nbsp;usage&nbsp;=&nbsp;fileusage_TextMode;</span></span>
-<span class="tr"><span class="th" id="line121">121</span><span class="td">&nbsp;fref&nbsp;=&nbsp;glk_fileref_create_by_name(fileusage_Data&nbsp;+&nbsp;usage,</span></span>
-<span class="tr"><span class="th" id="line122">122</span><span class="td">&nbsp;&nbsp;Glulx_ChangeAnyToCString(struc--&gt;AUXF_FILENAME),&nbsp;0);</span></span>
-<span class="tr"><span class="th" id="line123">123</span><span class="td">&nbsp;if&nbsp;(glk_fileref_does_file_exist(fref)&nbsp;==&nbsp;false)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line124">124</span><span class="td">&nbsp;&nbsp;glk_fileref_destroy(fref);</span></span>
-<span class="tr"><span class="th" id="line125">125</span><span class="td">&nbsp;&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line126">126</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line127">127</span><span class="td">&nbsp;str&nbsp;=&nbsp;glk_stream_open_file(fref,&nbsp;filemode_Read,&nbsp;0);</span></span>
-<span class="tr"><span class="th" id="line128">128</span><span class="td">&nbsp;ch&nbsp;=&nbsp;glk_get_char_stream(str);</span></span>
-<span class="tr"><span class="th" id="line129">129</span><span class="td">&nbsp;glk_stream_close(str,&nbsp;0);</span></span>
-<span class="tr"><span class="th" id="line130">130</span><span class="td">&nbsp;glk_fileref_destroy(fref);</span></span>
-<span class="tr"><span class="th" id="line131">131</span><span class="td">&nbsp;if&nbsp;(ch&nbsp;~=&nbsp;&#39;*&#39;)&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line132">132</span><span class="td">&nbsp;rtrue;</span></span>
-<span class="tr"><span class="th" id="line133">133</span><span class="td">];</span></span>
-<span class="tr"><span class="th" id="line134">134</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line135">135</span><span class="td">[&nbsp;FileIO_MarkReady&nbsp;extf&nbsp;readiness&nbsp;&nbsp;struc&nbsp;fref&nbsp;str&nbsp;ch&nbsp;usage;</span></span>
-<span class="tr"><span class="th" id="line136">136</span><span class="td">&nbsp;if&nbsp;((extf&nbsp;&lt;&nbsp;1)&nbsp;||&nbsp;(extf&nbsp;&gt;&nbsp;NO_EXTERNAL_FILES))</span></span>
-<span class="tr"><span class="th" id="line137">137</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;open&nbsp;a&nbsp;non-file&quot;);</span></span>
-<span class="tr"><span class="th" id="line138">138</span><span class="td">&nbsp;struc&nbsp;=&nbsp;TableOfExternalFiles--&gt;extf;</span></span>
-<span class="tr"><span class="th" id="line139">139</span><span class="td">&nbsp;if&nbsp;((struc&nbsp;==&nbsp;0)&nbsp;||&nbsp;(struc--&gt;AUXF_MAGIC&nbsp;~=&nbsp;AUXF_MAGIC_VALUE))&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line140">140</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_BINARY)&nbsp;usage&nbsp;=&nbsp;fileusage_BinaryMode;</span></span>
-<span class="tr"><span class="th" id="line141">141</span><span class="td">&nbsp;else&nbsp;usage&nbsp;=&nbsp;fileusage_TextMode;</span></span>
-<span class="tr"><span class="th" id="line142">142</span><span class="td">&nbsp;fref&nbsp;=&nbsp;glk_fileref_create_by_name(fileusage_Data&nbsp;+&nbsp;usage,</span></span>
-<span class="tr"><span class="th" id="line143">143</span><span class="td">&nbsp;&nbsp;Glulx_ChangeAnyToCString(struc--&gt;AUXF_FILENAME),&nbsp;0);</span></span>
-<span class="tr"><span class="th" id="line144">144</span><span class="td">&nbsp;if&nbsp;(glk_fileref_does_file_exist(fref)&nbsp;==&nbsp;false)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line145">145</span><span class="td">&nbsp;&nbsp;glk_fileref_destroy(fref);</span></span>
-<span class="tr"><span class="th" id="line146">146</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;only&nbsp;existing&nbsp;files&nbsp;can&nbsp;be&nbsp;marked&quot;);</span></span>
-<span class="tr"><span class="th" id="line147">147</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line148">148</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_STATUS&nbsp;~=&nbsp;AUXF_STATUS_IS_CLOSED)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line149">149</span><span class="td">&nbsp;&nbsp;glk_fileref_destroy(fref);</span></span>
-<span class="tr"><span class="th" id="line150">150</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;only&nbsp;closed&nbsp;files&nbsp;can&nbsp;be&nbsp;marked&quot;);</span></span>
-<span class="tr"><span class="th" id="line151">151</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line152">152</span><span class="td">&nbsp;str&nbsp;=&nbsp;glk_stream_open_file(fref,&nbsp;filemode_ReadWrite,&nbsp;0);</span></span>
-<span class="tr"><span class="th" id="line153">153</span><span class="td">&nbsp;glk_stream_set_position(str,&nbsp;0,&nbsp;0);&nbsp;!&nbsp;seek&nbsp;start</span></span>
-<span class="tr"><span class="th" id="line154">154</span><span class="td">&nbsp;if&nbsp;(readiness)&nbsp;ch&nbsp;=&nbsp;&#39;*&#39;;&nbsp;else&nbsp;ch&nbsp;=&nbsp;&#39;-&#39;;</span></span>
-<span class="tr"><span class="th" id="line155">155</span><span class="td">&nbsp;glk_put_char_stream(str,&nbsp;ch);&nbsp;!&nbsp;mark&nbsp;as&nbsp;complete</span></span>
-<span class="tr"><span class="th" id="line156">156</span><span class="td">&nbsp;glk_stream_close(str,&nbsp;0);</span></span>
-<span class="tr"><span class="th" id="line157">157</span><span class="td">&nbsp;glk_fileref_destroy(fref);</span></span>
-<span class="tr"><span class="th" id="line158">158</span><span class="td">];</span></span>
-<span class="tr"><span class="th" id="line159">159</span><span class="td"></span></span>
+<h3>Readiness.</h3><p><p> One of our problems is that a file might be being used by another application: perhaps even by another story file running in a second incarnation of Glulx, like a parallel world of which we can know nothing. We actually want to allow for this sort of thing, because one use for external files in I7 is as a sort of communications conduit for assisting applications.<p></p><p> Most operating systems solve this problem by means of locking a file, or by creating a second lock-file, the existence of which indicates ownership of the original. We haven&#39;t got much access to the file-system, though: what we do is to set the first character of the file to an asterisk to mark it as complete and ready for reading, or to a hyphen to mark it as a work in progress.<p></p><p> <span class="fixed"><a href="./FileIO.i6t.html#line402">FileIO_Ready</a></span> determines whether or not a file is ready to be read from: it has to exist on disc, and to be openable, and also to be ready in having this marker asterisk.<p></p><p> <span class="fixed"><a href="./FileIO.i6t.html#line407">FileIO_MarkReady</a></span> changes the readiness state of a file, writing the asterisk or hyphen into the initial character as needed.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line116">116</span><span class="td">[&nbsp;FileIO_Ready&nbsp;extf&nbsp;&nbsp;struc&nbsp;fref&nbsp;usage&nbsp;str&nbsp;ch;</span></span>
+<span class="tr"><span class="th" id="line117">117</span><span class="td">&nbsp;if&nbsp;((extf&nbsp;&lt;&nbsp;1)&nbsp;||&nbsp;(extf&nbsp;&gt;&nbsp;NO_EXTERNAL_FILES))&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line118">118</span><span class="td">&nbsp;struc&nbsp;=&nbsp;TableOfExternalFiles--&gt;extf;</span></span>
+<span class="tr"><span class="th" id="line119">119</span><span class="td">&nbsp;if&nbsp;((struc&nbsp;==&nbsp;0)&nbsp;||&nbsp;(struc--&gt;AUXF_MAGIC&nbsp;~=&nbsp;AUXF_MAGIC_VALUE))&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line120">120</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_BINARY)&nbsp;usage&nbsp;=&nbsp;fileusage_BinaryMode;</span></span>
+<span class="tr"><span class="th" id="line121">121</span><span class="td">&nbsp;else&nbsp;usage&nbsp;=&nbsp;fileusage_TextMode;</span></span>
+<span class="tr"><span class="th" id="line122">122</span><span class="td">&nbsp;fref&nbsp;=&nbsp;glk_fileref_create_by_name(fileusage_Data&nbsp;+&nbsp;usage,</span></span>
+<span class="tr"><span class="th" id="line123">123</span><span class="td">&nbsp;&nbsp;Glulx_ChangeAnyToCString(struc--&gt;AUXF_FILENAME),&nbsp;0);</span></span>
+<span class="tr"><span class="th" id="line124">124</span><span class="td">&nbsp;if&nbsp;(glk_fileref_does_file_exist(fref)&nbsp;==&nbsp;false)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line125">125</span><span class="td">&nbsp;&nbsp;glk_fileref_destroy(fref);</span></span>
+<span class="tr"><span class="th" id="line126">126</span><span class="td">&nbsp;&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line127">127</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line128">128</span><span class="td">&nbsp;str&nbsp;=&nbsp;glk_stream_open_file(fref,&nbsp;filemode_Read,&nbsp;0);</span></span>
+<span class="tr"><span class="th" id="line129">129</span><span class="td">&nbsp;ch&nbsp;=&nbsp;glk_get_char_stream(str);</span></span>
+<span class="tr"><span class="th" id="line130">130</span><span class="td">&nbsp;glk_stream_close(str,&nbsp;0);</span></span>
+<span class="tr"><span class="th" id="line131">131</span><span class="td">&nbsp;glk_fileref_destroy(fref);</span></span>
+<span class="tr"><span class="th" id="line132">132</span><span class="td">&nbsp;if&nbsp;(ch&nbsp;~=&nbsp;&#39;*&#39;)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line133">133</span><span class="td">&nbsp;rtrue;</span></span>
+<span class="tr"><span class="th" id="line134">134</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line135">135</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line136">136</span><span class="td">[&nbsp;FileIO_MarkReady&nbsp;extf&nbsp;readiness&nbsp;&nbsp;struc&nbsp;fref&nbsp;str&nbsp;ch&nbsp;usage;</span></span>
+<span class="tr"><span class="th" id="line137">137</span><span class="td">&nbsp;if&nbsp;((extf&nbsp;&lt;&nbsp;1)&nbsp;||&nbsp;(extf&nbsp;&gt;&nbsp;NO_EXTERNAL_FILES))</span></span>
+<span class="tr"><span class="th" id="line138">138</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;open&nbsp;a&nbsp;non-file&quot;);</span></span>
+<span class="tr"><span class="th" id="line139">139</span><span class="td">&nbsp;struc&nbsp;=&nbsp;TableOfExternalFiles--&gt;extf;</span></span>
+<span class="tr"><span class="th" id="line140">140</span><span class="td">&nbsp;if&nbsp;((struc&nbsp;==&nbsp;0)&nbsp;||&nbsp;(struc--&gt;AUXF_MAGIC&nbsp;~=&nbsp;AUXF_MAGIC_VALUE))&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line141">141</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_BINARY)&nbsp;usage&nbsp;=&nbsp;fileusage_BinaryMode;</span></span>
+<span class="tr"><span class="th" id="line142">142</span><span class="td">&nbsp;else&nbsp;usage&nbsp;=&nbsp;fileusage_TextMode;</span></span>
+<span class="tr"><span class="th" id="line143">143</span><span class="td">&nbsp;fref&nbsp;=&nbsp;glk_fileref_create_by_name(fileusage_Data&nbsp;+&nbsp;usage,</span></span>
+<span class="tr"><span class="th" id="line144">144</span><span class="td">&nbsp;&nbsp;Glulx_ChangeAnyToCString(struc--&gt;AUXF_FILENAME),&nbsp;0);</span></span>
+<span class="tr"><span class="th" id="line145">145</span><span class="td">&nbsp;if&nbsp;(glk_fileref_does_file_exist(fref)&nbsp;==&nbsp;false)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line146">146</span><span class="td">&nbsp;&nbsp;glk_fileref_destroy(fref);</span></span>
+<span class="tr"><span class="th" id="line147">147</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;only&nbsp;existing&nbsp;files&nbsp;can&nbsp;be&nbsp;marked&quot;);</span></span>
+<span class="tr"><span class="th" id="line148">148</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line149">149</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_STATUS&nbsp;~=&nbsp;AUXF_STATUS_IS_CLOSED)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line150">150</span><span class="td">&nbsp;&nbsp;glk_fileref_destroy(fref);</span></span>
+<span class="tr"><span class="th" id="line151">151</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;only&nbsp;closed&nbsp;files&nbsp;can&nbsp;be&nbsp;marked&quot;);</span></span>
+<span class="tr"><span class="th" id="line152">152</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line153">153</span><span class="td">&nbsp;str&nbsp;=&nbsp;glk_stream_open_file(fref,&nbsp;filemode_ReadWrite,&nbsp;0);</span></span>
+<span class="tr"><span class="th" id="line154">154</span><span class="td">&nbsp;glk_stream_set_position(str,&nbsp;0,&nbsp;0);&nbsp;!&nbsp;seek&nbsp;start</span></span>
+<span class="tr"><span class="th" id="line155">155</span><span class="td">&nbsp;if&nbsp;(readiness)&nbsp;ch&nbsp;=&nbsp;&#39;*&#39;;&nbsp;else&nbsp;ch&nbsp;=&nbsp;&#39;-&#39;;</span></span>
+<span class="tr"><span class="th" id="line156">156</span><span class="td">&nbsp;glk_put_char_stream(str,&nbsp;ch);&nbsp;!&nbsp;mark&nbsp;as&nbsp;complete</span></span>
+<span class="tr"><span class="th" id="line157">157</span><span class="td">&nbsp;glk_stream_close(str,&nbsp;0);</span></span>
+<span class="tr"><span class="th" id="line158">158</span><span class="td">&nbsp;glk_fileref_destroy(fref);</span></span>
+<span class="tr"><span class="th" id="line159">159</span><span class="td">];</span></span>
 </div><div class='text'>
-<h2>Open File.</h2><p><p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line163">163</span><span class="td">[&nbsp;FileIO_Open&nbsp;extf&nbsp;write_flag&nbsp;append_flag</span></span>
-<span class="tr"><span class="th" id="line164">164</span><span class="td">&nbsp;struc&nbsp;fref&nbsp;str&nbsp;mode&nbsp;ix&nbsp;ch&nbsp;not_this_ifid&nbsp;owner&nbsp;force_header&nbsp;usage;</span></span>
-<span class="tr"><span class="th" id="line165">165</span><span class="td">&nbsp;if&nbsp;((extf&nbsp;&lt;&nbsp;1)&nbsp;||&nbsp;(extf&nbsp;&gt;&nbsp;NO_EXTERNAL_FILES))</span></span>
-<span class="tr"><span class="th" id="line166">166</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;open&nbsp;a&nbsp;non-file&quot;);</span></span>
-<span class="tr"><span class="th" id="line167">167</span><span class="td">&nbsp;struc&nbsp;=&nbsp;TableOfExternalFiles--&gt;extf;</span></span>
-<span class="tr"><span class="th" id="line168">168</span><span class="td">&nbsp;if&nbsp;((struc&nbsp;==&nbsp;0)&nbsp;||&nbsp;(struc--&gt;AUXF_MAGIC&nbsp;~=&nbsp;AUXF_MAGIC_VALUE))&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line169">169</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_STATUS&nbsp;~=&nbsp;AUXF_STATUS_IS_CLOSED)</span></span>
-<span class="tr"><span class="th" id="line170">170</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;open&nbsp;a&nbsp;file&nbsp;already&nbsp;open&quot;);</span></span>
-<span class="tr"><span class="th" id="line171">171</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_BINARY)&nbsp;usage&nbsp;=&nbsp;fileusage_BinaryMode;</span></span>
-<span class="tr"><span class="th" id="line172">172</span><span class="td">&nbsp;else&nbsp;usage&nbsp;=&nbsp;fileusage_TextMode;</span></span>
-<span class="tr"><span class="th" id="line173">173</span><span class="td">&nbsp;fref&nbsp;=&nbsp;glk_fileref_create_by_name(fileusage_Data&nbsp;+&nbsp;usage,</span></span>
-<span class="tr"><span class="th" id="line174">174</span><span class="td">&nbsp;&nbsp;Glulx_ChangeAnyToCString(struc--&gt;AUXF_FILENAME),&nbsp;0);</span></span>
-<span class="tr"><span class="th" id="line175">175</span><span class="td">&nbsp;if&nbsp;(write_flag)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line176">176</span><span class="td">&nbsp;&nbsp;if&nbsp;(append_flag)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line177">177</span><span class="td">&nbsp;&nbsp;&nbsp;mode&nbsp;=&nbsp;filemode_WriteAppend;</span></span>
-<span class="tr"><span class="th" id="line178">178</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(glk_fileref_does_file_exist(fref)&nbsp;==&nbsp;false)</span></span>
-<span class="tr"><span class="th" id="line179">179</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;force_header&nbsp;=&nbsp;true;</span></span>
-<span class="tr"><span class="th" id="line180">180</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line181">181</span><span class="td">&nbsp;&nbsp;else&nbsp;mode&nbsp;=&nbsp;filemode_Write;</span></span>
-<span class="tr"><span class="th" id="line182">182</span><span class="td">&nbsp;}&nbsp;else&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line183">183</span><span class="td">&nbsp;&nbsp;mode&nbsp;=&nbsp;filemode_Read;</span></span>
-<span class="tr"><span class="th" id="line184">184</span><span class="td">&nbsp;&nbsp;if&nbsp;(glk_fileref_does_file_exist(fref)&nbsp;==&nbsp;false)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line185">185</span><span class="td">&nbsp;&nbsp;&nbsp;glk_fileref_destroy(fref);</span></span>
-<span class="tr"><span class="th" id="line186">186</span><span class="td">&nbsp;&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;open&nbsp;a&nbsp;file&nbsp;which&nbsp;does&nbsp;not&nbsp;exist&quot;);</span></span>
-<span class="tr"><span class="th" id="line187">187</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line188">188</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line189">189</span><span class="td">&nbsp;str&nbsp;=&nbsp;glk_stream_open_file(fref,&nbsp;mode,&nbsp;0);</span></span>
-<span class="tr"><span class="th" id="line190">190</span><span class="td">&nbsp;glk_fileref_destroy(fref);</span></span>
-<span class="tr"><span class="th" id="line191">191</span><span class="td">&nbsp;if&nbsp;(str&nbsp;==&nbsp;0)&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;open&nbsp;a&nbsp;file&nbsp;but&nbsp;failed&quot;);</span></span>
-<span class="tr"><span class="th" id="line192">192</span><span class="td">&nbsp;struc--&gt;AUXF_STREAM&nbsp;=&nbsp;str;</span></span>
-<span class="tr"><span class="th" id="line193">193</span><span class="td">&nbsp;if&nbsp;(write_flag)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line194">194</span><span class="td">&nbsp;&nbsp;if&nbsp;(append_flag)</span></span>
-<span class="tr"><span class="th" id="line195">195</span><span class="td">&nbsp;&nbsp;&nbsp;struc--&gt;AUXF_STATUS&nbsp;=&nbsp;AUXF_STATUS_IS_OPEN_FOR_APPEND;</span></span>
-<span class="tr"><span class="th" id="line196">196</span><span class="td">&nbsp;&nbsp;else</span></span>
-<span class="tr"><span class="th" id="line197">197</span><span class="td">&nbsp;&nbsp;&nbsp;struc--&gt;AUXF_STATUS&nbsp;=&nbsp;AUXF_STATUS_IS_OPEN_FOR_WRITE;</span></span>
-<span class="tr"><span class="th" id="line198">198</span><span class="td">&nbsp;&nbsp;glk_stream_set_current(str);</span></span>
-<span class="tr"><span class="th" id="line199">199</span><span class="td">&nbsp;&nbsp;if&nbsp;((append_flag&nbsp;==&nbsp;FALSE)&nbsp;||&nbsp;(force_header))&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line200">200</span><span class="td">&nbsp;&nbsp;&nbsp;print&nbsp;&quot;-&nbsp;&quot;;</span></span>
-<span class="tr"><span class="th" id="line201">201</span><span class="td">&nbsp;&nbsp;&nbsp;for&nbsp;(ix=6:&nbsp;ix&nbsp;&lt;=&nbsp;UUID_ARRAY-&gt;0:&nbsp;ix++)&nbsp;print&nbsp;(char)&nbsp;UUID_ARRAY-&gt;ix;</span></span>
-<span class="tr"><span class="th" id="line202">202</span><span class="td">&nbsp;&nbsp;&nbsp;print&nbsp;&quot;&nbsp;&quot;,&nbsp;(string)&nbsp;struc--&gt;AUXF_FILENAME,&nbsp;&quot;^&quot;;</span></span>
-<span class="tr"><span class="th" id="line203">203</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line204">204</span><span class="td">&nbsp;}&nbsp;else&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line205">205</span><span class="td">&nbsp;&nbsp;struc--&gt;AUXF_STATUS&nbsp;=&nbsp;AUXF_STATUS_IS_OPEN_FOR_READ;</span></span>
-<span class="tr"><span class="th" id="line206">206</span><span class="td">&nbsp;&nbsp;ch&nbsp;=&nbsp;FileIO_GetC(extf);</span></span>
-<span class="tr"><span class="th" id="line207">207</span><span class="td">&nbsp;&nbsp;if&nbsp;(ch&nbsp;~=&nbsp;&#39;-&#39;&nbsp;or&nbsp;&#39;*&#39;)&nbsp;{&nbsp;jump&nbsp;<a href="./FileIO.i6t.html#line243">BadFile</a>;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line208">208</span><span class="td">&nbsp;&nbsp;if&nbsp;(ch&nbsp;==&nbsp;&#39;-&#39;)</span></span>
-<span class="tr"><span class="th" id="line209">209</span><span class="td">&nbsp;&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;open&nbsp;a&nbsp;file&nbsp;which&nbsp;was&nbsp;incomplete&quot;);</span></span>
-<span class="tr"><span class="th" id="line210">210</span><span class="td">&nbsp;&nbsp;ch&nbsp;=&nbsp;FileIO_GetC(extf);</span></span>
-<span class="tr"><span class="th" id="line211">211</span><span class="td">&nbsp;&nbsp;if&nbsp;(ch&nbsp;~=&nbsp;&#39;&nbsp;&#39;)&nbsp;{&nbsp;jump&nbsp;<a href="./FileIO.i6t.html#line243">BadFile</a>;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line212">212</span><span class="td">&nbsp;&nbsp;ch&nbsp;=&nbsp;FileIO_GetC(extf);</span></span>
-<span class="tr"><span class="th" id="line213">213</span><span class="td">&nbsp;&nbsp;if&nbsp;(ch&nbsp;~=&nbsp;&#39;/&#39;)&nbsp;{&nbsp;jump&nbsp;<a href="./FileIO.i6t.html#line243">BadFile</a>;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line214">214</span><span class="td">&nbsp;&nbsp;ch&nbsp;=&nbsp;FileIO_GetC(extf);</span></span>
-<span class="tr"><span class="th" id="line215">215</span><span class="td">&nbsp;&nbsp;if&nbsp;(ch&nbsp;~=&nbsp;&#39;/&#39;)&nbsp;{&nbsp;jump&nbsp;<a href="./FileIO.i6t.html#line243">BadFile</a>;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line216">216</span><span class="td">&nbsp;&nbsp;owner&nbsp;=&nbsp;struc--&gt;AUXF_IFID_OF_OWNER;</span></span>
-<span class="tr"><span class="th" id="line217">217</span><span class="td">&nbsp;&nbsp;ix&nbsp;=&nbsp;3;</span></span>
-<span class="tr"><span class="th" id="line218">218</span><span class="td">&nbsp;&nbsp;if&nbsp;(owner&nbsp;==&nbsp;UUID_ARRAY)&nbsp;ix&nbsp;=&nbsp;8;</span></span>
-<span class="tr"><span class="th" id="line219">219</span><span class="td">&nbsp;&nbsp;if&nbsp;(owner&nbsp;~=&nbsp;NULL)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line220">220</span><span class="td">&nbsp;&nbsp;&nbsp;for&nbsp;(:&nbsp;ix&nbsp;&lt;=&nbsp;owner-&gt;0:&nbsp;ix++)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line221">221</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;ch&nbsp;=&nbsp;FileIO_GetC(extf);</span></span>
-<span class="tr"><span class="th" id="line222">222</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(ch&nbsp;==&nbsp;-1)&nbsp;{&nbsp;jump&nbsp;<a href="./FileIO.i6t.html#line243">BadFile</a>;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line223">223</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(ch&nbsp;~=&nbsp;owner-&gt;ix)&nbsp;not_this_ifid&nbsp;=&nbsp;true;</span></span>
-<span class="tr"><span class="th" id="line224">224</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(ch&nbsp;==&nbsp;&#39;&nbsp;&#39;)&nbsp;break;</span></span>
-<span class="tr"><span class="th" id="line225">225</span><span class="td">&nbsp;&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line226">226</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(not_this_ifid&nbsp;==&nbsp;false)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line227">227</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;ch&nbsp;=&nbsp;FileIO_GetC(extf);</span></span>
-<span class="tr"><span class="th" id="line228">228</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(ch&nbsp;~=&nbsp;&#39;&nbsp;&#39;)&nbsp;{&nbsp;jump&nbsp;<a href="./FileIO.i6t.html#line243">BadFile</a>;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line229">229</span><span class="td">&nbsp;&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line230">230</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line231">231</span><span class="td">&nbsp;&nbsp;while&nbsp;(ch&nbsp;~=&nbsp;-1)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line232">232</span><span class="td">&nbsp;&nbsp;&nbsp;ch&nbsp;=&nbsp;FileIO_GetC(extf);</span></span>
-<span class="tr"><span class="th" id="line233">233</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(ch&nbsp;==&nbsp;10&nbsp;or&nbsp;13)&nbsp;break;</span></span>
-<span class="tr"><span class="th" id="line234">234</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line235">235</span><span class="td">&nbsp;&nbsp;if&nbsp;(not_this_ifid)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line236">236</span><span class="td">&nbsp;&nbsp;&nbsp;struc--&gt;AUXF_STATUS&nbsp;=&nbsp;AUXF_STATUS_IS_CLOSED;</span></span>
-<span class="tr"><span class="th" id="line237">237</span><span class="td">&nbsp;&nbsp;&nbsp;glk_stream_close(str,&nbsp;0);</span></span>
-<span class="tr"><span class="th" id="line238">238</span><span class="td">&nbsp;&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,</span></span>
-<span class="tr"><span class="th" id="line239">239</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&quot;tried&nbsp;to&nbsp;open&nbsp;a&nbsp;file&nbsp;owned&nbsp;by&nbsp;another&nbsp;project&quot;);</span></span>
-<span class="tr"><span class="th" id="line240">240</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line241">241</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line242">242</span><span class="td">&nbsp;return&nbsp;struc--&gt;AUXF_STREAM;</span></span>
-<span class="tr"><span class="th" id="line243">243</span><span class="td">&nbsp;.BadFile;</span></span>
-<span class="tr"><span class="th" id="line244">244</span><span class="td">&nbsp;struc--&gt;AUXF_STATUS&nbsp;=&nbsp;AUXF_STATUS_IS_CLOSED;</span></span>
-<span class="tr"><span class="th" id="line245">245</span><span class="td">&nbsp;glk_stream_close(str,&nbsp;0);</span></span>
-<span class="tr"><span class="th" id="line246">246</span><span class="td">&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;open&nbsp;a&nbsp;file&nbsp;which&nbsp;seems&nbsp;to&nbsp;be&nbsp;malformed&quot;);</span></span>
-<span class="tr"><span class="th" id="line247">247</span><span class="td">];</span></span>
-<span class="tr"><span class="th" id="line248">248</span><span class="td"></span></span>
+<h3>Open File.</h3><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line164">164</span><span class="td">[&nbsp;FileIO_Open&nbsp;extf&nbsp;write_flag&nbsp;append_flag</span></span>
+<span class="tr"><span class="th" id="line165">165</span><span class="td">&nbsp;struc&nbsp;fref&nbsp;str&nbsp;mode&nbsp;ix&nbsp;ch&nbsp;not_this_ifid&nbsp;owner&nbsp;force_header&nbsp;usage;</span></span>
+<span class="tr"><span class="th" id="line166">166</span><span class="td">&nbsp;if&nbsp;((extf&nbsp;&lt;&nbsp;1)&nbsp;||&nbsp;(extf&nbsp;&gt;&nbsp;NO_EXTERNAL_FILES))</span></span>
+<span class="tr"><span class="th" id="line167">167</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;open&nbsp;a&nbsp;non-file&quot;);</span></span>
+<span class="tr"><span class="th" id="line168">168</span><span class="td">&nbsp;struc&nbsp;=&nbsp;TableOfExternalFiles--&gt;extf;</span></span>
+<span class="tr"><span class="th" id="line169">169</span><span class="td">&nbsp;if&nbsp;((struc&nbsp;==&nbsp;0)&nbsp;||&nbsp;(struc--&gt;AUXF_MAGIC&nbsp;~=&nbsp;AUXF_MAGIC_VALUE))&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line170">170</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_STATUS&nbsp;~=&nbsp;AUXF_STATUS_IS_CLOSED)</span></span>
+<span class="tr"><span class="th" id="line171">171</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;open&nbsp;a&nbsp;file&nbsp;already&nbsp;open&quot;);</span></span>
+<span class="tr"><span class="th" id="line172">172</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_BINARY)&nbsp;usage&nbsp;=&nbsp;fileusage_BinaryMode;</span></span>
+<span class="tr"><span class="th" id="line173">173</span><span class="td">&nbsp;else&nbsp;usage&nbsp;=&nbsp;fileusage_TextMode;</span></span>
+<span class="tr"><span class="th" id="line174">174</span><span class="td">&nbsp;fref&nbsp;=&nbsp;glk_fileref_create_by_name(fileusage_Data&nbsp;+&nbsp;usage,</span></span>
+<span class="tr"><span class="th" id="line175">175</span><span class="td">&nbsp;&nbsp;Glulx_ChangeAnyToCString(struc--&gt;AUXF_FILENAME),&nbsp;0);</span></span>
+<span class="tr"><span class="th" id="line176">176</span><span class="td">&nbsp;if&nbsp;(write_flag)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line177">177</span><span class="td">&nbsp;&nbsp;if&nbsp;(append_flag)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line178">178</span><span class="td">&nbsp;&nbsp;&nbsp;mode&nbsp;=&nbsp;filemode_WriteAppend;</span></span>
+<span class="tr"><span class="th" id="line179">179</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(glk_fileref_does_file_exist(fref)&nbsp;==&nbsp;false)</span></span>
+<span class="tr"><span class="th" id="line180">180</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;force_header&nbsp;=&nbsp;true;</span></span>
+<span class="tr"><span class="th" id="line181">181</span><span class="td">&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line182">182</span><span class="td">&nbsp;&nbsp;else&nbsp;mode&nbsp;=&nbsp;filemode_Write;</span></span>
+<span class="tr"><span class="th" id="line183">183</span><span class="td">&nbsp;}&nbsp;else&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line184">184</span><span class="td">&nbsp;&nbsp;mode&nbsp;=&nbsp;filemode_Read;</span></span>
+<span class="tr"><span class="th" id="line185">185</span><span class="td">&nbsp;&nbsp;if&nbsp;(glk_fileref_does_file_exist(fref)&nbsp;==&nbsp;false)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line186">186</span><span class="td">&nbsp;&nbsp;&nbsp;glk_fileref_destroy(fref);</span></span>
+<span class="tr"><span class="th" id="line187">187</span><span class="td">&nbsp;&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;open&nbsp;a&nbsp;file&nbsp;which&nbsp;does&nbsp;not&nbsp;exist&quot;);</span></span>
+<span class="tr"><span class="th" id="line188">188</span><span class="td">&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line189">189</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line190">190</span><span class="td">&nbsp;str&nbsp;=&nbsp;glk_stream_open_file(fref,&nbsp;mode,&nbsp;0);</span></span>
+<span class="tr"><span class="th" id="line191">191</span><span class="td">&nbsp;glk_fileref_destroy(fref);</span></span>
+<span class="tr"><span class="th" id="line192">192</span><span class="td">&nbsp;if&nbsp;(str&nbsp;==&nbsp;0)&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;open&nbsp;a&nbsp;file&nbsp;but&nbsp;failed&quot;);</span></span>
+<span class="tr"><span class="th" id="line193">193</span><span class="td">&nbsp;struc--&gt;AUXF_STREAM&nbsp;=&nbsp;str;</span></span>
+<span class="tr"><span class="th" id="line194">194</span><span class="td">&nbsp;if&nbsp;(write_flag)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line195">195</span><span class="td">&nbsp;&nbsp;if&nbsp;(append_flag)</span></span>
+<span class="tr"><span class="th" id="line196">196</span><span class="td">&nbsp;&nbsp;&nbsp;struc--&gt;AUXF_STATUS&nbsp;=&nbsp;AUXF_STATUS_IS_OPEN_FOR_APPEND;</span></span>
+<span class="tr"><span class="th" id="line197">197</span><span class="td">&nbsp;&nbsp;else</span></span>
+<span class="tr"><span class="th" id="line198">198</span><span class="td">&nbsp;&nbsp;&nbsp;struc--&gt;AUXF_STATUS&nbsp;=&nbsp;AUXF_STATUS_IS_OPEN_FOR_WRITE;</span></span>
+<span class="tr"><span class="th" id="line199">199</span><span class="td">&nbsp;&nbsp;glk_stream_set_current(str);</span></span>
+<span class="tr"><span class="th" id="line200">200</span><span class="td">&nbsp;&nbsp;if&nbsp;((append_flag&nbsp;==&nbsp;FALSE)&nbsp;||&nbsp;(force_header))&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line201">201</span><span class="td">&nbsp;&nbsp;&nbsp;print&nbsp;&quot;-&nbsp;&quot;;</span></span>
+<span class="tr"><span class="th" id="line202">202</span><span class="td">&nbsp;&nbsp;&nbsp;for&nbsp;(ix=6:&nbsp;ix&nbsp;&lt;=&nbsp;UUID_ARRAY-&gt;0:&nbsp;ix++)&nbsp;print&nbsp;(char)&nbsp;UUID_ARRAY-&gt;ix;</span></span>
+<span class="tr"><span class="th" id="line203">203</span><span class="td">&nbsp;&nbsp;&nbsp;print&nbsp;&quot;&nbsp;&quot;,&nbsp;(string)&nbsp;struc--&gt;AUXF_FILENAME,&nbsp;&quot;^&quot;;</span></span>
+<span class="tr"><span class="th" id="line204">204</span><span class="td">&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line205">205</span><span class="td">&nbsp;}&nbsp;else&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line206">206</span><span class="td">&nbsp;&nbsp;struc--&gt;AUXF_STATUS&nbsp;=&nbsp;AUXF_STATUS_IS_OPEN_FOR_READ;</span></span>
+<span class="tr"><span class="th" id="line207">207</span><span class="td">&nbsp;&nbsp;ch&nbsp;=&nbsp;FileIO_GetC(extf);</span></span>
+<span class="tr"><span class="th" id="line208">208</span><span class="td">&nbsp;&nbsp;if&nbsp;(ch&nbsp;~=&nbsp;&#39;-&#39;&nbsp;or&nbsp;&#39;*&#39;)&nbsp;{&nbsp;jump&nbsp;<a href="./FileIO.i6t.html#line244">BadFile</a>;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line209">209</span><span class="td">&nbsp;&nbsp;if&nbsp;(ch&nbsp;==&nbsp;&#39;-&#39;)</span></span>
+<span class="tr"><span class="th" id="line210">210</span><span class="td">&nbsp;&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;open&nbsp;a&nbsp;file&nbsp;which&nbsp;was&nbsp;incomplete&quot;);</span></span>
+<span class="tr"><span class="th" id="line211">211</span><span class="td">&nbsp;&nbsp;ch&nbsp;=&nbsp;FileIO_GetC(extf);</span></span>
+<span class="tr"><span class="th" id="line212">212</span><span class="td">&nbsp;&nbsp;if&nbsp;(ch&nbsp;~=&nbsp;&#39;&nbsp;&#39;)&nbsp;{&nbsp;jump&nbsp;<a href="./FileIO.i6t.html#line244">BadFile</a>;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line213">213</span><span class="td">&nbsp;&nbsp;ch&nbsp;=&nbsp;FileIO_GetC(extf);</span></span>
+<span class="tr"><span class="th" id="line214">214</span><span class="td">&nbsp;&nbsp;if&nbsp;(ch&nbsp;~=&nbsp;&#39;/&#39;)&nbsp;{&nbsp;jump&nbsp;<a href="./FileIO.i6t.html#line244">BadFile</a>;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line215">215</span><span class="td">&nbsp;&nbsp;ch&nbsp;=&nbsp;FileIO_GetC(extf);</span></span>
+<span class="tr"><span class="th" id="line216">216</span><span class="td">&nbsp;&nbsp;if&nbsp;(ch&nbsp;~=&nbsp;&#39;/&#39;)&nbsp;{&nbsp;jump&nbsp;<a href="./FileIO.i6t.html#line244">BadFile</a>;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line217">217</span><span class="td">&nbsp;&nbsp;owner&nbsp;=&nbsp;struc--&gt;AUXF_IFID_OF_OWNER;</span></span>
+<span class="tr"><span class="th" id="line218">218</span><span class="td">&nbsp;&nbsp;ix&nbsp;=&nbsp;3;</span></span>
+<span class="tr"><span class="th" id="line219">219</span><span class="td">&nbsp;&nbsp;if&nbsp;(owner&nbsp;==&nbsp;UUID_ARRAY)&nbsp;ix&nbsp;=&nbsp;8;</span></span>
+<span class="tr"><span class="th" id="line220">220</span><span class="td">&nbsp;&nbsp;if&nbsp;(owner&nbsp;~=&nbsp;NULL)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line221">221</span><span class="td">&nbsp;&nbsp;&nbsp;for&nbsp;(:&nbsp;ix&nbsp;&lt;=&nbsp;owner-&gt;0:&nbsp;ix++)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line222">222</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;ch&nbsp;=&nbsp;FileIO_GetC(extf);</span></span>
+<span class="tr"><span class="th" id="line223">223</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(ch&nbsp;==&nbsp;-1)&nbsp;{&nbsp;jump&nbsp;<a href="./FileIO.i6t.html#line244">BadFile</a>;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line224">224</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(ch&nbsp;~=&nbsp;owner-&gt;ix)&nbsp;not_this_ifid&nbsp;=&nbsp;true;</span></span>
+<span class="tr"><span class="th" id="line225">225</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(ch&nbsp;==&nbsp;&#39;&nbsp;&#39;)&nbsp;break;</span></span>
+<span class="tr"><span class="th" id="line226">226</span><span class="td">&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line227">227</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(not_this_ifid&nbsp;==&nbsp;false)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line228">228</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;ch&nbsp;=&nbsp;FileIO_GetC(extf);</span></span>
+<span class="tr"><span class="th" id="line229">229</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(ch&nbsp;~=&nbsp;&#39;&nbsp;&#39;)&nbsp;{&nbsp;jump&nbsp;<a href="./FileIO.i6t.html#line244">BadFile</a>;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line230">230</span><span class="td">&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line231">231</span><span class="td">&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line232">232</span><span class="td">&nbsp;&nbsp;while&nbsp;(ch&nbsp;~=&nbsp;-1)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line233">233</span><span class="td">&nbsp;&nbsp;&nbsp;ch&nbsp;=&nbsp;FileIO_GetC(extf);</span></span>
+<span class="tr"><span class="th" id="line234">234</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(ch&nbsp;==&nbsp;10&nbsp;or&nbsp;13)&nbsp;break;</span></span>
+<span class="tr"><span class="th" id="line235">235</span><span class="td">&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line236">236</span><span class="td">&nbsp;&nbsp;if&nbsp;(not_this_ifid)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line237">237</span><span class="td">&nbsp;&nbsp;&nbsp;struc--&gt;AUXF_STATUS&nbsp;=&nbsp;AUXF_STATUS_IS_CLOSED;</span></span>
+<span class="tr"><span class="th" id="line238">238</span><span class="td">&nbsp;&nbsp;&nbsp;glk_stream_close(str,&nbsp;0);</span></span>
+<span class="tr"><span class="th" id="line239">239</span><span class="td">&nbsp;&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,</span></span>
+<span class="tr"><span class="th" id="line240">240</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&quot;tried&nbsp;to&nbsp;open&nbsp;a&nbsp;file&nbsp;owned&nbsp;by&nbsp;another&nbsp;project&quot;);</span></span>
+<span class="tr"><span class="th" id="line241">241</span><span class="td">&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line242">242</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line243">243</span><span class="td">&nbsp;return&nbsp;struc--&gt;AUXF_STREAM;</span></span>
+<span class="tr"><span class="th" id="line244">244</span><span class="td">&nbsp;.BadFile;</span></span>
+<span class="tr"><span class="th" id="line245">245</span><span class="td">&nbsp;struc--&gt;AUXF_STATUS&nbsp;=&nbsp;AUXF_STATUS_IS_CLOSED;</span></span>
+<span class="tr"><span class="th" id="line246">246</span><span class="td">&nbsp;glk_stream_close(str,&nbsp;0);</span></span>
+<span class="tr"><span class="th" id="line247">247</span><span class="td">&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;open&nbsp;a&nbsp;file&nbsp;which&nbsp;seems&nbsp;to&nbsp;be&nbsp;malformed&quot;);</span></span>
+<span class="tr"><span class="th" id="line248">248</span><span class="td">];</span></span>
 </div><div class='text'>
-<h2>Close File.</h2><p><p> Note that a call to the following, in write mode, must be followed by a <span class="fixed">glk_stream_set_current()</span>, or else the next print statement will run into Glk errors.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line255">255</span><span class="td">[&nbsp;FileIO_Close&nbsp;extf&nbsp;&nbsp;struc;</span></span>
-<span class="tr"><span class="th" id="line256">256</span><span class="td">&nbsp;if&nbsp;((extf&nbsp;&lt;&nbsp;1)&nbsp;||&nbsp;(extf&nbsp;&gt;&nbsp;NO_EXTERNAL_FILES))</span></span>
-<span class="tr"><span class="th" id="line257">257</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;open&nbsp;a&nbsp;non-file&quot;);</span></span>
-<span class="tr"><span class="th" id="line258">258</span><span class="td">&nbsp;struc&nbsp;=&nbsp;TableOfExternalFiles--&gt;extf;</span></span>
-<span class="tr"><span class="th" id="line259">259</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_STATUS&nbsp;~=</span></span>
-<span class="tr"><span class="th" id="line260">260</span><span class="td">&nbsp;&nbsp;AUXF_STATUS_IS_OPEN_FOR_READ&nbsp;or</span></span>
-<span class="tr"><span class="th" id="line261">261</span><span class="td">&nbsp;&nbsp;AUXF_STATUS_IS_OPEN_FOR_WRITE&nbsp;or</span></span>
-<span class="tr"><span class="th" id="line262">262</span><span class="td">&nbsp;&nbsp;AUXF_STATUS_IS_OPEN_FOR_APPEND)</span></span>
-<span class="tr"><span class="th" id="line263">263</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;close&nbsp;a&nbsp;file&nbsp;which&nbsp;is&nbsp;not&nbsp;open&quot;);</span></span>
-<span class="tr"><span class="th" id="line264">264</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_STATUS&nbsp;==</span></span>
-<span class="tr"><span class="th" id="line265">265</span><span class="td">&nbsp;&nbsp;AUXF_STATUS_IS_OPEN_FOR_WRITE&nbsp;or</span></span>
-<span class="tr"><span class="th" id="line266">266</span><span class="td">&nbsp;&nbsp;AUXF_STATUS_IS_OPEN_FOR_APPEND)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line267">267</span><span class="td">&nbsp;&nbsp;glk_stream_set_position(struc--&gt;AUXF_STREAM,&nbsp;0,&nbsp;0);&nbsp;!&nbsp;seek&nbsp;start</span></span>
-<span class="tr"><span class="th" id="line268">268</span><span class="td">&nbsp;&nbsp;glk_put_char_stream(struc--&gt;AUXF_STREAM,&nbsp;&#39;*&#39;);&nbsp;!&nbsp;mark&nbsp;as&nbsp;complete</span></span>
-<span class="tr"><span class="th" id="line269">269</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line270">270</span><span class="td">&nbsp;glk_stream_close(struc--&gt;AUXF_STREAM,&nbsp;0);</span></span>
-<span class="tr"><span class="th" id="line271">271</span><span class="td">&nbsp;struc--&gt;AUXF_STATUS&nbsp;=&nbsp;AUXF_STATUS_IS_CLOSED;</span></span>
-<span class="tr"><span class="th" id="line272">272</span><span class="td">];</span></span>
-<span class="tr"><span class="th" id="line273">273</span><span class="td"></span></span>
+<h3>Close File.</h3><p><p> Note that a call to the following, in write mode, must be followed by a <span class="fixed"><a href="./Glulx.i6t.html#line351">glk_stream_set_current()</a></span>, or else the next print statement will run into Glk errors.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line256">256</span><span class="td">[&nbsp;FileIO_Close&nbsp;extf&nbsp;&nbsp;struc;</span></span>
+<span class="tr"><span class="th" id="line257">257</span><span class="td">&nbsp;if&nbsp;((extf&nbsp;&lt;&nbsp;1)&nbsp;||&nbsp;(extf&nbsp;&gt;&nbsp;NO_EXTERNAL_FILES))</span></span>
+<span class="tr"><span class="th" id="line258">258</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;open&nbsp;a&nbsp;non-file&quot;);</span></span>
+<span class="tr"><span class="th" id="line259">259</span><span class="td">&nbsp;struc&nbsp;=&nbsp;TableOfExternalFiles--&gt;extf;</span></span>
+<span class="tr"><span class="th" id="line260">260</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_STATUS&nbsp;~=</span></span>
+<span class="tr"><span class="th" id="line261">261</span><span class="td">&nbsp;&nbsp;AUXF_STATUS_IS_OPEN_FOR_READ&nbsp;or</span></span>
+<span class="tr"><span class="th" id="line262">262</span><span class="td">&nbsp;&nbsp;AUXF_STATUS_IS_OPEN_FOR_WRITE&nbsp;or</span></span>
+<span class="tr"><span class="th" id="line263">263</span><span class="td">&nbsp;&nbsp;AUXF_STATUS_IS_OPEN_FOR_APPEND)</span></span>
+<span class="tr"><span class="th" id="line264">264</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;close&nbsp;a&nbsp;file&nbsp;which&nbsp;is&nbsp;not&nbsp;open&quot;);</span></span>
+<span class="tr"><span class="th" id="line265">265</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_STATUS&nbsp;==</span></span>
+<span class="tr"><span class="th" id="line266">266</span><span class="td">&nbsp;&nbsp;AUXF_STATUS_IS_OPEN_FOR_WRITE&nbsp;or</span></span>
+<span class="tr"><span class="th" id="line267">267</span><span class="td">&nbsp;&nbsp;AUXF_STATUS_IS_OPEN_FOR_APPEND)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line268">268</span><span class="td">&nbsp;&nbsp;glk_stream_set_position(struc--&gt;AUXF_STREAM,&nbsp;0,&nbsp;0);&nbsp;!&nbsp;seek&nbsp;start</span></span>
+<span class="tr"><span class="th" id="line269">269</span><span class="td">&nbsp;&nbsp;glk_put_char_stream(struc--&gt;AUXF_STREAM,&nbsp;&#39;*&#39;);&nbsp;!&nbsp;mark&nbsp;as&nbsp;complete</span></span>
+<span class="tr"><span class="th" id="line270">270</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line271">271</span><span class="td">&nbsp;glk_stream_close(struc--&gt;AUXF_STREAM,&nbsp;0);</span></span>
+<span class="tr"><span class="th" id="line272">272</span><span class="td">&nbsp;struc--&gt;AUXF_STATUS&nbsp;=&nbsp;AUXF_STATUS_IS_CLOSED;</span></span>
+<span class="tr"><span class="th" id="line273">273</span><span class="td">];</span></span>
 </div><div class='text'>
-<h2>Get Character.</h2><p><p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line277">277</span><span class="td">[&nbsp;FileIO_GetC&nbsp;extf&nbsp;&nbsp;struc;</span></span>
-<span class="tr"><span class="th" id="line278">278</span><span class="td">&nbsp;if&nbsp;((extf&nbsp;&lt;&nbsp;1)&nbsp;||&nbsp;(extf&nbsp;&gt;&nbsp;NO_EXTERNAL_FILES))&nbsp;return&nbsp;-1;</span></span>
-<span class="tr"><span class="th" id="line279">279</span><span class="td">&nbsp;struc&nbsp;=&nbsp;TableOfExternalFiles--&gt;extf;</span></span>
-<span class="tr"><span class="th" id="line280">280</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_STATUS&nbsp;~=&nbsp;AUXF_STATUS_IS_OPEN_FOR_READ)&nbsp;return&nbsp;-1;</span></span>
-<span class="tr"><span class="th" id="line281">281</span><span class="td">&nbsp;return&nbsp;glk_get_char_stream(struc--&gt;AUXF_STREAM);</span></span>
-<span class="tr"><span class="th" id="line282">282</span><span class="td">];</span></span>
-<span class="tr"><span class="th" id="line283">283</span><span class="td"></span></span>
+<h3>Get Character.</h3><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line278">278</span><span class="td">[&nbsp;FileIO_GetC&nbsp;extf&nbsp;&nbsp;struc;</span></span>
+<span class="tr"><span class="th" id="line279">279</span><span class="td">&nbsp;if&nbsp;((extf&nbsp;&lt;&nbsp;1)&nbsp;||&nbsp;(extf&nbsp;&gt;&nbsp;NO_EXTERNAL_FILES))&nbsp;return&nbsp;-1;</span></span>
+<span class="tr"><span class="th" id="line280">280</span><span class="td">&nbsp;struc&nbsp;=&nbsp;TableOfExternalFiles--&gt;extf;</span></span>
+<span class="tr"><span class="th" id="line281">281</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_STATUS&nbsp;~=&nbsp;AUXF_STATUS_IS_OPEN_FOR_READ)&nbsp;return&nbsp;-1;</span></span>
+<span class="tr"><span class="th" id="line282">282</span><span class="td">&nbsp;return&nbsp;glk_get_char_stream(struc--&gt;AUXF_STREAM);</span></span>
+<span class="tr"><span class="th" id="line283">283</span><span class="td">];</span></span>
 </div><div class='text'>
-<h2>Put Character.</h2><p><p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line287">287</span><span class="td">[&nbsp;FileIO_PutC&nbsp;extf&nbsp;char&nbsp;&nbsp;struc;</span></span>
-<span class="tr"><span class="th" id="line288">288</span><span class="td">&nbsp;if&nbsp;((extf&nbsp;&lt;&nbsp;1)&nbsp;||&nbsp;(extf&nbsp;&gt;&nbsp;NO_EXTERNAL_FILES))&nbsp;return&nbsp;-1;</span></span>
-<span class="tr"><span class="th" id="line289">289</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;write&nbsp;to&nbsp;a&nbsp;non-file&quot;);</span></span>
-<span class="tr"><span class="th" id="line290">290</span><span class="td">&nbsp;struc&nbsp;=&nbsp;TableOfExternalFiles--&gt;extf;</span></span>
-<span class="tr"><span class="th" id="line291">291</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_STATUS&nbsp;~=</span></span>
-<span class="tr"><span class="th" id="line292">292</span><span class="td">&nbsp;&nbsp;AUXF_STATUS_IS_OPEN_FOR_WRITE&nbsp;or</span></span>
-<span class="tr"><span class="th" id="line293">293</span><span class="td">&nbsp;&nbsp;AUXF_STATUS_IS_OPEN_FOR_APPEND)</span></span>
-<span class="tr"><span class="th" id="line294">294</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,</span></span>
-<span class="tr"><span class="th" id="line295">295</span><span class="td">&nbsp;&nbsp;&nbsp;&quot;tried&nbsp;to&nbsp;write&nbsp;to&nbsp;a&nbsp;file&nbsp;which&nbsp;is&nbsp;not&nbsp;open&nbsp;for&nbsp;writing&quot;);</span></span>
-<span class="tr"><span class="th" id="line296">296</span><span class="td">&nbsp;return&nbsp;glk_put_char_stream(struc--&gt;AUXF_STREAM,&nbsp;char);</span></span>
-<span class="tr"><span class="th" id="line297">297</span><span class="td">];</span></span>
-<span class="tr"><span class="th" id="line298">298</span><span class="td"></span></span>
+<h3>Put Character.</h3><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line288">288</span><span class="td">[&nbsp;FileIO_PutC&nbsp;extf&nbsp;char&nbsp;&nbsp;struc;</span></span>
+<span class="tr"><span class="th" id="line289">289</span><span class="td">&nbsp;if&nbsp;((extf&nbsp;&lt;&nbsp;1)&nbsp;||&nbsp;(extf&nbsp;&gt;&nbsp;NO_EXTERNAL_FILES))&nbsp;return&nbsp;-1;</span></span>
+<span class="tr"><span class="th" id="line290">290</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;write&nbsp;to&nbsp;a&nbsp;non-file&quot;);</span></span>
+<span class="tr"><span class="th" id="line291">291</span><span class="td">&nbsp;struc&nbsp;=&nbsp;TableOfExternalFiles--&gt;extf;</span></span>
+<span class="tr"><span class="th" id="line292">292</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_STATUS&nbsp;~=</span></span>
+<span class="tr"><span class="th" id="line293">293</span><span class="td">&nbsp;&nbsp;AUXF_STATUS_IS_OPEN_FOR_WRITE&nbsp;or</span></span>
+<span class="tr"><span class="th" id="line294">294</span><span class="td">&nbsp;&nbsp;AUXF_STATUS_IS_OPEN_FOR_APPEND)</span></span>
+<span class="tr"><span class="th" id="line295">295</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,</span></span>
+<span class="tr"><span class="th" id="line296">296</span><span class="td">&nbsp;&nbsp;&nbsp;&quot;tried&nbsp;to&nbsp;write&nbsp;to&nbsp;a&nbsp;file&nbsp;which&nbsp;is&nbsp;not&nbsp;open&nbsp;for&nbsp;writing&quot;);</span></span>
+<span class="tr"><span class="th" id="line297">297</span><span class="td">&nbsp;return&nbsp;glk_put_char_stream(struc--&gt;AUXF_STREAM,&nbsp;char);</span></span>
+<span class="tr"><span class="th" id="line298">298</span><span class="td">];</span></span>
 </div><div class='text'>
-<h2>Print Line.</h2><p><p> We read characters from the supplied file until the next newline character. (We allow for that to be encoded as either a single <span class="fixed">0a</span> or a single <span class="fixed">0d</span>.) Each character is printed, and at the end we print a newline.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line305">305</span><span class="td">[&nbsp;FileIO_PrintLine&nbsp;extf&nbsp;ch&nbsp;&nbsp;struc;</span></span>
-<span class="tr"><span class="th" id="line306">306</span><span class="td">&nbsp;if&nbsp;((extf&nbsp;&lt;&nbsp;1)&nbsp;||&nbsp;(extf&nbsp;&gt;&nbsp;NO_EXTERNAL_FILES))</span></span>
-<span class="tr"><span class="th" id="line307">307</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;write&nbsp;to&nbsp;a&nbsp;non-file&quot;);</span></span>
-<span class="tr"><span class="th" id="line308">308</span><span class="td">&nbsp;struc&nbsp;=&nbsp;TableOfExternalFiles--&gt;extf;</span></span>
-<span class="tr"><span class="th" id="line309">309</span><span class="td">&nbsp;for&nbsp;(::)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line310">310</span><span class="td">&nbsp;&nbsp;ch&nbsp;=&nbsp;FileIO_GetC(extf);</span></span>
-<span class="tr"><span class="th" id="line311">311</span><span class="td">&nbsp;&nbsp;if&nbsp;(ch&nbsp;==&nbsp;-1)&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line312">312</span><span class="td">&nbsp;&nbsp;if&nbsp;(ch&nbsp;==&nbsp;10&nbsp;or&nbsp;13)&nbsp;{&nbsp;print&nbsp;&quot;^&quot;;&nbsp;rtrue;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line313">313</span><span class="td">&nbsp;&nbsp;print&nbsp;(char)&nbsp;ch;</span></span>
-<span class="tr"><span class="th" id="line314">314</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line315">315</span><span class="td">];</span></span>
-<span class="tr"><span class="th" id="line316">316</span><span class="td"></span></span>
+<h3>Print Line.</h3><p><p> We read characters from the supplied file until the next newline character. (We allow for that to be encoded as either a single <span class="fixed">0a</span> or a single <span class="fixed">0d</span>.) Each character is printed, and at the end we print a newline.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line306">306</span><span class="td">[&nbsp;FileIO_PrintLine&nbsp;extf&nbsp;ch&nbsp;&nbsp;struc;</span></span>
+<span class="tr"><span class="th" id="line307">307</span><span class="td">&nbsp;if&nbsp;((extf&nbsp;&lt;&nbsp;1)&nbsp;||&nbsp;(extf&nbsp;&gt;&nbsp;NO_EXTERNAL_FILES))</span></span>
+<span class="tr"><span class="th" id="line308">308</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;write&nbsp;to&nbsp;a&nbsp;non-file&quot;);</span></span>
+<span class="tr"><span class="th" id="line309">309</span><span class="td">&nbsp;struc&nbsp;=&nbsp;TableOfExternalFiles--&gt;extf;</span></span>
+<span class="tr"><span class="th" id="line310">310</span><span class="td">&nbsp;for&nbsp;(::)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line311">311</span><span class="td">&nbsp;&nbsp;ch&nbsp;=&nbsp;FileIO_GetC(extf);</span></span>
+<span class="tr"><span class="th" id="line312">312</span><span class="td">&nbsp;&nbsp;if&nbsp;(ch&nbsp;==&nbsp;-1)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line313">313</span><span class="td">&nbsp;&nbsp;if&nbsp;(ch&nbsp;==&nbsp;10&nbsp;or&nbsp;13)&nbsp;{&nbsp;print&nbsp;&quot;^&quot;;&nbsp;rtrue;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line314">314</span><span class="td">&nbsp;&nbsp;print&nbsp;(char)&nbsp;ch;</span></span>
+<span class="tr"><span class="th" id="line315">315</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line316">316</span><span class="td">];</span></span>
 </div><div class='text'>
-<h2>Print Contents.</h2><p><p> Repeating this until the file runs out is equivalent to the Unix command <span class="fixed">cat</span>, that is, it copies the stream of characters from the file to the output stream. (This might well be another file, just as with <span class="fixed">cat</span>, in which case we have a copy utility.)<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line324">324</span><span class="td">[&nbsp;FileIO_PrintContents&nbsp;extf&nbsp;tab&nbsp;&nbsp;struc;</span></span>
-<span class="tr"><span class="th" id="line325">325</span><span class="td">&nbsp;if&nbsp;((extf&nbsp;&lt;&nbsp;1)&nbsp;||&nbsp;(extf&nbsp;&gt;&nbsp;NO_EXTERNAL_FILES))</span></span>
-<span class="tr"><span class="th" id="line326">326</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;access&nbsp;a&nbsp;non-file&quot;);</span></span>
-<span class="tr"><span class="th" id="line327">327</span><span class="td">&nbsp;struc&nbsp;=&nbsp;TableOfExternalFiles--&gt;extf;</span></span>
-<span class="tr"><span class="th" id="line328">328</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_BINARY)</span></span>
-<span class="tr"><span class="th" id="line329">329</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;printing&nbsp;text&nbsp;will&nbsp;not&nbsp;work&nbsp;with&nbsp;binary&nbsp;files&quot;);</span></span>
-<span class="tr"><span class="th" id="line330">330</span><span class="td">&nbsp;if&nbsp;(FileIO_Open(extf,&nbsp;false)&nbsp;==&nbsp;0)&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line331">331</span><span class="td">&nbsp;while&nbsp;(FileIO_PrintLine(extf))&nbsp;;</span></span>
-<span class="tr"><span class="th" id="line332">332</span><span class="td">&nbsp;FileIO_Close(extf);</span></span>
-<span class="tr"><span class="th" id="line333">333</span><span class="td">&nbsp;rtrue;</span></span>
-<span class="tr"><span class="th" id="line334">334</span><span class="td">];</span></span>
-<span class="tr"><span class="th" id="line335">335</span><span class="td"></span></span>
+<h3>Print Contents.</h3><p><p> Repeating this until the file runs out is equivalent to the Unix command <span class="fixed">cat</span>, that is, it copies the stream of characters from the file to the output stream. (This might well be another file, just as with <span class="fixed">cat</span>, in which case we have a copy utility.)<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line325">325</span><span class="td">[&nbsp;FileIO_PrintContents&nbsp;extf&nbsp;tab&nbsp;&nbsp;struc;</span></span>
+<span class="tr"><span class="th" id="line326">326</span><span class="td">&nbsp;if&nbsp;((extf&nbsp;&lt;&nbsp;1)&nbsp;||&nbsp;(extf&nbsp;&gt;&nbsp;NO_EXTERNAL_FILES))</span></span>
+<span class="tr"><span class="th" id="line327">327</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;access&nbsp;a&nbsp;non-file&quot;);</span></span>
+<span class="tr"><span class="th" id="line328">328</span><span class="td">&nbsp;struc&nbsp;=&nbsp;TableOfExternalFiles--&gt;extf;</span></span>
+<span class="tr"><span class="th" id="line329">329</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_BINARY)</span></span>
+<span class="tr"><span class="th" id="line330">330</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;printing&nbsp;text&nbsp;will&nbsp;not&nbsp;work&nbsp;with&nbsp;binary&nbsp;files&quot;);</span></span>
+<span class="tr"><span class="th" id="line331">331</span><span class="td">&nbsp;if&nbsp;(FileIO_Open(extf,&nbsp;false)&nbsp;==&nbsp;0)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line332">332</span><span class="td">&nbsp;while&nbsp;(FileIO_PrintLine(extf))&nbsp;;</span></span>
+<span class="tr"><span class="th" id="line333">333</span><span class="td">&nbsp;FileIO_Close(extf);</span></span>
+<span class="tr"><span class="th" id="line334">334</span><span class="td">&nbsp;rtrue;</span></span>
+<span class="tr"><span class="th" id="line335">335</span><span class="td">];</span></span>
 </div><div class='text'>
-<h2>Print Text.</h2><p><p> The following writes a given piece of text as the new content of the file, either as the whole file (if <span class="fixed">append_flag</span> is false) or adding only to the end (if true).<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line342">342</span><span class="td">[&nbsp;FileIO_PutContents&nbsp;extf&nbsp;text&nbsp;append_flag&nbsp;&nbsp;struc&nbsp;str&nbsp;ch&nbsp;oldstream;</span></span>
-<span class="tr"><span class="th" id="line343">343</span><span class="td">&nbsp;if&nbsp;((extf&nbsp;&lt;&nbsp;1)&nbsp;||&nbsp;(extf&nbsp;&gt;&nbsp;NO_EXTERNAL_FILES))</span></span>
-<span class="tr"><span class="th" id="line344">344</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;access&nbsp;a&nbsp;non-file&quot;);</span></span>
-<span class="tr"><span class="th" id="line345">345</span><span class="td">&nbsp;struc&nbsp;=&nbsp;TableOfExternalFiles--&gt;extf;</span></span>
-<span class="tr"><span class="th" id="line346">346</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_BINARY)</span></span>
-<span class="tr"><span class="th" id="line347">347</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;writing&nbsp;text&nbsp;will&nbsp;not&nbsp;work&nbsp;with&nbsp;binary&nbsp;files&quot;);</span></span>
-<span class="tr"><span class="th" id="line348">348</span><span class="td">&nbsp;oldstream&nbsp;=&nbsp;glk_stream_get_current();</span></span>
-<span class="tr"><span class="th" id="line349">349</span><span class="td">&nbsp;str&nbsp;=&nbsp;FileIO_Open(extf,&nbsp;true,&nbsp;append_flag);</span></span>
-<span class="tr"><span class="th" id="line350">350</span><span class="td">&nbsp;if&nbsp;(str&nbsp;==&nbsp;0)&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line351">351</span><span class="td">&nbsp;@push&nbsp;say__p;&nbsp;@push&nbsp;say__pc;</span></span>
-<span class="tr"><span class="th" id="line352">352</span><span class="td">&nbsp;ClearParagraphing(19);</span></span>
-<span class="tr"><span class="th" id="line353">353</span><span class="td">&nbsp;TEXT_TY_Say(text);</span></span>
-<span class="tr"><span class="th" id="line354">354</span><span class="td">&nbsp;FileIO_Close(extf);</span></span>
-<span class="tr"><span class="th" id="line355">355</span><span class="td">&nbsp;if&nbsp;(oldstream)&nbsp;glk_stream_set_current(oldstream);</span></span>
-<span class="tr"><span class="th" id="line356">356</span><span class="td">&nbsp;@pull&nbsp;say__pc;&nbsp;@pull&nbsp;say__p;</span></span>
-<span class="tr"><span class="th" id="line357">357</span><span class="td">&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line358">358</span><span class="td">];</span></span>
-<span class="tr"><span class="th" id="line359">359</span><span class="td"></span></span>
+<h3>Print Text.</h3><p><p> The following writes a given piece of text as the new content of the file, either as the whole file (if <span class="fixed">append_flag</span> is false) or adding only to the end (if true).<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line343">343</span><span class="td">[&nbsp;FileIO_PutContents&nbsp;extf&nbsp;text&nbsp;append_flag&nbsp;&nbsp;struc&nbsp;str&nbsp;ch&nbsp;oldstream;</span></span>
+<span class="tr"><span class="th" id="line344">344</span><span class="td">&nbsp;if&nbsp;((extf&nbsp;&lt;&nbsp;1)&nbsp;||&nbsp;(extf&nbsp;&gt;&nbsp;NO_EXTERNAL_FILES))</span></span>
+<span class="tr"><span class="th" id="line345">345</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;access&nbsp;a&nbsp;non-file&quot;);</span></span>
+<span class="tr"><span class="th" id="line346">346</span><span class="td">&nbsp;struc&nbsp;=&nbsp;TableOfExternalFiles--&gt;extf;</span></span>
+<span class="tr"><span class="th" id="line347">347</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_BINARY)</span></span>
+<span class="tr"><span class="th" id="line348">348</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;writing&nbsp;text&nbsp;will&nbsp;not&nbsp;work&nbsp;with&nbsp;binary&nbsp;files&quot;);</span></span>
+<span class="tr"><span class="th" id="line349">349</span><span class="td">&nbsp;oldstream&nbsp;=&nbsp;glk_stream_get_current();</span></span>
+<span class="tr"><span class="th" id="line350">350</span><span class="td">&nbsp;str&nbsp;=&nbsp;FileIO_Open(extf,&nbsp;true,&nbsp;append_flag);</span></span>
+<span class="tr"><span class="th" id="line351">351</span><span class="td">&nbsp;if&nbsp;(str&nbsp;==&nbsp;0)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line352">352</span><span class="td">&nbsp;@push&nbsp;say__p;&nbsp;@push&nbsp;say__pc;</span></span>
+<span class="tr"><span class="th" id="line353">353</span><span class="td">&nbsp;ClearParagraphing(19);</span></span>
+<span class="tr"><span class="th" id="line354">354</span><span class="td">&nbsp;TEXT_TY_Say(text);</span></span>
+<span class="tr"><span class="th" id="line355">355</span><span class="td">&nbsp;FileIO_Close(extf);</span></span>
+<span class="tr"><span class="th" id="line356">356</span><span class="td">&nbsp;if&nbsp;(oldstream)&nbsp;glk_stream_set_current(oldstream);</span></span>
+<span class="tr"><span class="th" id="line357">357</span><span class="td">&nbsp;@pull&nbsp;say__pc;&nbsp;@pull&nbsp;say__p;</span></span>
+<span class="tr"><span class="th" id="line358">358</span><span class="td">&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line359">359</span><span class="td">];</span></span>
 </div><div class='text'>
-<h2>Serialising Tables.</h2><p><p> The most important data structures to &quot;serialise&quot; &ndash; that is, to convert from their binary representations in memory into text representations in an external file &ndash; are Tables. Here we only carry out the file-handling; the actual translations are in <a href="./Tables.i6t.html">Tables.i6t</a>.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line367">367</span><span class="td">[&nbsp;FileIO_PutTable&nbsp;extf&nbsp;tab&nbsp;rv&nbsp;&nbsp;struc&nbsp;oldstream;</span></span>
-<span class="tr"><span class="th" id="line368">368</span><span class="td">&nbsp;if&nbsp;((extf&nbsp;&lt;&nbsp;1)&nbsp;||&nbsp;(extf&nbsp;&gt;&nbsp;NO_EXTERNAL_FILES))</span></span>
-<span class="tr"><span class="th" id="line369">369</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;write&nbsp;table&nbsp;to&nbsp;a&nbsp;non-file&quot;);</span></span>
-<span class="tr"><span class="th" id="line370">370</span><span class="td">&nbsp;struc&nbsp;=&nbsp;TableOfExternalFiles--&gt;extf;</span></span>
-<span class="tr"><span class="th" id="line371">371</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_BINARY)</span></span>
-<span class="tr"><span class="th" id="line372">372</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;writing&nbsp;a&nbsp;table&nbsp;will&nbsp;not&nbsp;work&nbsp;with&nbsp;binary&nbsp;files&quot;);</span></span>
-<span class="tr"><span class="th" id="line373">373</span><span class="td">&nbsp;oldstream&nbsp;=&nbsp;glk_stream_get_current();</span></span>
-<span class="tr"><span class="th" id="line374">374</span><span class="td">&nbsp;if&nbsp;(FileIO_Open(extf,&nbsp;true)&nbsp;==&nbsp;0)&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line375">375</span><span class="td">&nbsp;rv&nbsp;=&nbsp;TablePrint(tab);</span></span>
-<span class="tr"><span class="th" id="line376">376</span><span class="td">&nbsp;FileIO_Close(extf);</span></span>
-<span class="tr"><span class="th" id="line377">377</span><span class="td">&nbsp;if&nbsp;(oldstream)&nbsp;glk_stream_set_current(oldstream);</span></span>
-<span class="tr"><span class="th" id="line378">378</span><span class="td">&nbsp;if&nbsp;(rv)&nbsp;return&nbsp;RunTimeProblem(RTP_TABLE_CANTSAVE,&nbsp;tab);</span></span>
-<span class="tr"><span class="th" id="line379">379</span><span class="td">&nbsp;rtrue;</span></span>
-<span class="tr"><span class="th" id="line380">380</span><span class="td">];</span></span>
-<span class="tr"><span class="th" id="line381">381</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line382">382</span><span class="td">[&nbsp;FileIO_GetTable&nbsp;extf&nbsp;tab&nbsp;&nbsp;struc;</span></span>
-<span class="tr"><span class="th" id="line383">383</span><span class="td">&nbsp;if&nbsp;((extf&nbsp;&lt;&nbsp;1)&nbsp;||&nbsp;(extf&nbsp;&gt;&nbsp;NO_EXTERNAL_FILES))</span></span>
-<span class="tr"><span class="th" id="line384">384</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;read&nbsp;table&nbsp;from&nbsp;a&nbsp;non-file&quot;);</span></span>
-<span class="tr"><span class="th" id="line385">385</span><span class="td">&nbsp;struc&nbsp;=&nbsp;TableOfExternalFiles--&gt;extf;</span></span>
-<span class="tr"><span class="th" id="line386">386</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_BINARY)</span></span>
-<span class="tr"><span class="th" id="line387">387</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;reading&nbsp;a&nbsp;table&nbsp;will&nbsp;not&nbsp;work&nbsp;with&nbsp;binary&nbsp;files&quot;);</span></span>
-<span class="tr"><span class="th" id="line388">388</span><span class="td">&nbsp;if&nbsp;(FileIO_Open(extf,&nbsp;false)&nbsp;==&nbsp;0)&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line389">389</span><span class="td">&nbsp;TableRead(tab,&nbsp;extf);</span></span>
-<span class="tr"><span class="th" id="line390">390</span><span class="td">&nbsp;FileIO_Close(extf);</span></span>
-<span class="tr"><span class="th" id="line391">391</span><span class="td">&nbsp;rtrue;</span></span>
-<span class="tr"><span class="th" id="line392">392</span><span class="td">];</span></span>
-<span class="tr"><span class="th" id="line393">393</span><span class="td"></span></span>
+<h3>Serialising Tables.</h3><p><p> The most important data structures to &quot;serialise&quot; &ndash; that is, to convert from their binary representations in memory into text representations in an external file &ndash; are Tables. Here we only carry out the file-handling; the actual translations are in <span class="fixed"><a href="./Tables.i6t.html">Tables.i6t</a></span>.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line368">368</span><span class="td">[&nbsp;FileIO_PutTable&nbsp;extf&nbsp;tab&nbsp;rv&nbsp;&nbsp;struc&nbsp;oldstream;</span></span>
+<span class="tr"><span class="th" id="line369">369</span><span class="td">&nbsp;if&nbsp;((extf&nbsp;&lt;&nbsp;1)&nbsp;||&nbsp;(extf&nbsp;&gt;&nbsp;NO_EXTERNAL_FILES))</span></span>
+<span class="tr"><span class="th" id="line370">370</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;write&nbsp;table&nbsp;to&nbsp;a&nbsp;non-file&quot;);</span></span>
+<span class="tr"><span class="th" id="line371">371</span><span class="td">&nbsp;struc&nbsp;=&nbsp;TableOfExternalFiles--&gt;extf;</span></span>
+<span class="tr"><span class="th" id="line372">372</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_BINARY)</span></span>
+<span class="tr"><span class="th" id="line373">373</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;writing&nbsp;a&nbsp;table&nbsp;will&nbsp;not&nbsp;work&nbsp;with&nbsp;binary&nbsp;files&quot;);</span></span>
+<span class="tr"><span class="th" id="line374">374</span><span class="td">&nbsp;oldstream&nbsp;=&nbsp;glk_stream_get_current();</span></span>
+<span class="tr"><span class="th" id="line375">375</span><span class="td">&nbsp;if&nbsp;(FileIO_Open(extf,&nbsp;true)&nbsp;==&nbsp;0)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line376">376</span><span class="td">&nbsp;rv&nbsp;=&nbsp;TablePrint(tab);</span></span>
+<span class="tr"><span class="th" id="line377">377</span><span class="td">&nbsp;FileIO_Close(extf);</span></span>
+<span class="tr"><span class="th" id="line378">378</span><span class="td">&nbsp;if&nbsp;(oldstream)&nbsp;glk_stream_set_current(oldstream);</span></span>
+<span class="tr"><span class="th" id="line379">379</span><span class="td">&nbsp;if&nbsp;(rv)&nbsp;return&nbsp;RunTimeProblem(RTP_TABLE_CANTSAVE,&nbsp;tab);</span></span>
+<span class="tr"><span class="th" id="line380">380</span><span class="td">&nbsp;rtrue;</span></span>
+<span class="tr"><span class="th" id="line381">381</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line382">382</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line383">383</span><span class="td">[&nbsp;FileIO_GetTable&nbsp;extf&nbsp;tab&nbsp;&nbsp;struc;</span></span>
+<span class="tr"><span class="th" id="line384">384</span><span class="td">&nbsp;if&nbsp;((extf&nbsp;&lt;&nbsp;1)&nbsp;||&nbsp;(extf&nbsp;&gt;&nbsp;NO_EXTERNAL_FILES))</span></span>
+<span class="tr"><span class="th" id="line385">385</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;tried&nbsp;to&nbsp;read&nbsp;table&nbsp;from&nbsp;a&nbsp;non-file&quot;);</span></span>
+<span class="tr"><span class="th" id="line386">386</span><span class="td">&nbsp;struc&nbsp;=&nbsp;TableOfExternalFiles--&gt;extf;</span></span>
+<span class="tr"><span class="th" id="line387">387</span><span class="td">&nbsp;if&nbsp;(struc--&gt;AUXF_BINARY)</span></span>
+<span class="tr"><span class="th" id="line388">388</span><span class="td">&nbsp;&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;reading&nbsp;a&nbsp;table&nbsp;will&nbsp;not&nbsp;work&nbsp;with&nbsp;binary&nbsp;files&quot;);</span></span>
+<span class="tr"><span class="th" id="line389">389</span><span class="td">&nbsp;if&nbsp;(FileIO_Open(extf,&nbsp;false)&nbsp;==&nbsp;0)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line390">390</span><span class="td">&nbsp;TableRead(tab,&nbsp;extf);</span></span>
+<span class="tr"><span class="th" id="line391">391</span><span class="td">&nbsp;FileIO_Close(extf);</span></span>
+<span class="tr"><span class="th" id="line392">392</span><span class="td">&nbsp;rtrue;</span></span>
+<span class="tr"><span class="th" id="line393">393</span><span class="td">];</span></span>
 </div><div class='text'>
-<h2>Z-Machine Stubs.</h2><p><p> These routines do the minimum possible, but equally, they only generate a run-time problem when there is no alternative.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line399">399</span><span class="td">#IFNOT;&nbsp;!&nbsp;TARGET_GLULX</span></span>
-<span class="tr"><span class="th" id="line400">400</span><span class="td">[&nbsp;FileIO_Exists&nbsp;extf;&nbsp;rfalse;&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line401">401</span><span class="td">[&nbsp;FileIO_Ready&nbsp;extf;&nbsp;rfalse;&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line402">402</span><span class="td">[&nbsp;FileIO_GetC&nbsp;extf;&nbsp;return&nbsp;-1;&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line403">403</span><span class="td">[&nbsp;FileIO_PutTable&nbsp;extf&nbsp;tab;</span></span>
-<span class="tr"><span class="th" id="line404">404</span><span class="td">&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;external&nbsp;files&nbsp;can&nbsp;only&nbsp;be&nbsp;used&nbsp;under&nbsp;Glulx&quot;);</span></span>
-<span class="tr"><span class="th" id="line405">405</span><span class="td">];</span></span>
-<span class="tr"><span class="th" id="line406">406</span><span class="td">[&nbsp;FileIO_MarkReady&nbsp;extf&nbsp;status;&nbsp;FileIO_PutTable(extf);&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line407">407</span><span class="td">[&nbsp;FileIO_GetTable&nbsp;extf&nbsp;tab;&nbsp;FileIO_PutTable(extf);&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line408">408</span><span class="td">[&nbsp;FileIO_PrintContents&nbsp;extf;&nbsp;FileIO_PutTable(extf);&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line409">409</span><span class="td">[&nbsp;FileIO_PutContents&nbsp;extf;&nbsp;FileIO_PutTable(extf);&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line410">410</span><span class="td">#ENDIF;&nbsp;!&nbsp;TARGET_GLULX</span></span>
-<span class="tr"><span class="th" id="line411">411</span><span class="td"></span></span>
+<h3>Z-Machine Stubs.</h3><p><p> These routines do the minimum possible, but equally, they only generate a run-time problem when there is no alternative.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line400">400</span><span class="td">#IFNOT;&nbsp;!&nbsp;TARGET_GLULX</span></span>
+<span class="tr"><span class="th" id="line401">401</span><span class="td">[&nbsp;FileIO_Exists&nbsp;extf;&nbsp;rfalse;&nbsp;];</span></span>
+<span class="tr"><span class="th" id="line402">402</span><span class="td">[&nbsp;FileIO_Ready&nbsp;extf;&nbsp;rfalse;&nbsp;];</span></span>
+<span class="tr"><span class="th" id="line403">403</span><span class="td">[&nbsp;FileIO_GetC&nbsp;extf;&nbsp;return&nbsp;-1;&nbsp;];</span></span>
+<span class="tr"><span class="th" id="line404">404</span><span class="td">[&nbsp;FileIO_PutTable&nbsp;extf&nbsp;tab;</span></span>
+<span class="tr"><span class="th" id="line405">405</span><span class="td">&nbsp;return&nbsp;FileIO_Error(extf,&nbsp;&quot;external&nbsp;files&nbsp;can&nbsp;only&nbsp;be&nbsp;used&nbsp;under&nbsp;Glulx&quot;);</span></span>
+<span class="tr"><span class="th" id="line406">406</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line407">407</span><span class="td">[&nbsp;FileIO_MarkReady&nbsp;extf&nbsp;status;&nbsp;FileIO_PutTable(extf);&nbsp;];</span></span>
+<span class="tr"><span class="th" id="line408">408</span><span class="td">[&nbsp;FileIO_GetTable&nbsp;extf&nbsp;tab;&nbsp;FileIO_PutTable(extf);&nbsp;];</span></span>
+<span class="tr"><span class="th" id="line409">409</span><span class="td">[&nbsp;FileIO_PrintContents&nbsp;extf;&nbsp;FileIO_PutTable(extf);&nbsp;];</span></span>
+<span class="tr"><span class="th" id="line410">410</span><span class="td">[&nbsp;FileIO_PutContents&nbsp;extf;&nbsp;FileIO_PutTable(extf);&nbsp;];</span></span>
+<span class="tr"><span class="th" id="line411">411</span><span class="td">#ENDIF;&nbsp;!&nbsp;TARGET_GLULX</span></span>
 </div><div class='text'>
-<h2>Back To Core.</h2><p><p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line415">415</span><span class="td">#IFNOT;&nbsp;!&nbsp;PLUGIN_FILES</span></span>
-<span class="tr"><span class="th" id="line416">416</span><span class="td">[&nbsp;FileIO_GetC&nbsp;extf;&nbsp;return&nbsp;-1;&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line417">417</span><span class="td">#ENDIF;&nbsp;!&nbsp;PLUGIN_FILES</span></span>
+<h3>Back To Core.</h3><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line416">416</span><span class="td">#IFNOT;&nbsp;!&nbsp;PLUGIN_FILES</span></span>
+<span class="tr"><span class="th" id="line417">417</span><span class="td">[&nbsp;FileIO_GetC&nbsp;extf;&nbsp;return&nbsp;-1;&nbsp;];</span></span>
+<span class="tr"><span class="th" id="line418">418</span><span class="td">#ENDIF;&nbsp;!&nbsp;PLUGIN_FILES</span></span>
 </div><footer><hr><p><em>From I6T lib 6/12N &copy; Graham Nelson and published under the <a href="https://github.com/zedlopez/standard_rules/blob/main/LICENSE.md">Artistic License 2.0</a>. Distributed with <a href="http://inform7.com/">Inform 7 6M62</a>.</em></p></footer></body></html>

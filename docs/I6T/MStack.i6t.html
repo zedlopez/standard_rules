@@ -14,148 +14,144 @@ span.line_no::before {
     font-family: monospace;
     font-weight: normal;
 }
-
+h1 { margin: 0; }
 .fixed { font-family: monospace }
 .em { font-style: italic; }
 .center { text-align: center; }
-    body { font-family: sans-serif; margin: 3rem; background-color: #fafaf0; width: 80rem; }
+    body { font-family: sans-serif; margin: 1.5rem 0 0 3rem; background-color: #fafaf0; width: 80rem; }
     .pre { font-family: monospace; margin: auto; width: 80rem; }
 #front_matter,.text { width: 50rem; }
 .text { border-bottom: .5px solid black; border-top: .5px solid black; margin-top: 1rem;
 padding-bottom: 1rem; margin-bottom: 2rem; }
+/*.subtitle { font-weight: bold; font-size: 1.2rem; }*/
     </style>
 </head>
 <body>
+<header>
+<h1>I6 Template Layer</h1>
+<div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Index</a> &bull; <a href="./Introduction.html">Introduction</a></div><hr></header>
 <div id="front_matter">
-<h1><a href="./MStack.i6t">MStack</a></h1><h2>The Memory Stack.</h2><p><p> The M-Stack, or memory stack, is a sequence of frames, piled upwards. If we had an accessible stack in memory, we could use that, but neither the Z-machine nor Glulx has such a stack, alas, alas, alas. The following is not a very good solution, but it just about works.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line14">14</span><span class="td">Constant&nbsp;MAX_MSTACK_FRAME&nbsp;=&nbsp;2&nbsp;+&nbsp;{-value:max_frame_size_needed};</span></span>
-<span class="tr"><span class="th" id="line15">15</span><span class="td">Constant&nbsp;MSTACK_CAPACITY&nbsp;=&nbsp;20;</span></span>
-<span class="tr"><span class="th" id="line16">16</span><span class="td">Constant&nbsp;MSTACK_SIZE&nbsp;=&nbsp;MSTACK_CAPACITY*MAX_MSTACK_FRAME;</span></span>
-<span class="tr"><span class="th" id="line17">17</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line18">18</span><span class="td">Array&nbsp;MStack&nbsp;--&gt;&nbsp;MSTACK_SIZE;</span></span>
-<span class="tr"><span class="th" id="line19">19</span><span class="td">Global&nbsp;MStack_Top&nbsp;=&nbsp;0;&nbsp;!&nbsp;Topmost&nbsp;word&nbsp;currently&nbsp;used</span></span>
-<span class="tr"><span class="th" id="line20">20</span><span class="td"></span></span>
+<h2><a href="./MStack.i6t">MStack.i6t</a></h2><h3>The Memory Stack.</h3><p><p> The M-Stack, or memory stack, is a sequence of frames, piled upwards. If we had an accessible stack in memory, we could use that, but neither the Z-machine nor Glulx has such a stack, alas, alas, alas. The following is not a very good solution, but it just about works.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line15">15</span><span class="td">Constant&nbsp;MAX_MSTACK_FRAME&nbsp;=&nbsp;2&nbsp;+&nbsp;{-value:max_frame_size_needed};</span></span>
+<span class="tr"><span class="th" id="line16">16</span><span class="td">Constant&nbsp;MSTACK_CAPACITY&nbsp;=&nbsp;20;</span></span>
+<span class="tr"><span class="th" id="line17">17</span><span class="td">Constant&nbsp;MSTACK_SIZE&nbsp;=&nbsp;MSTACK_CAPACITY*MAX_MSTACK_FRAME;</span></span>
+<span class="tr"><span class="th" id="line18">18</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line19">19</span><span class="td">Array&nbsp;MStack&nbsp;--&gt;&nbsp;MSTACK_SIZE;</span></span>
+<span class="tr"><span class="th" id="line20">20</span><span class="td">Global&nbsp;MStack_Top&nbsp;=&nbsp;0;&nbsp;!&nbsp;Topmost&nbsp;word&nbsp;currently&nbsp;used</span></span>
 </div><div class='text'>
-<h2>Create Frame.</h2><p><p> A frame is created by calling the following function with two arguments: <span class="fixed">creator</span>, a function which initialises a block of variables, and an ID number identifying the owner.<p></p><p> The <span class="fixed">creator</span> function is called with the address at which to initialise the variables as its first argument, and the value 1 as the second argument. (The idea is that the same function can be used later to deallocate the variables, and then the second argument will be $-1$.) The <span class="fixed">creator</span> function returns the extent of the block of memory it has used, in words. Thus is required to be strictly less than <a href="./MStack.i6t.html#line14">MAX_MSTACK_FRAME</a> minus 1.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line35">35</span><span class="td">[&nbsp;Mstack_Create_Frame&nbsp;creator&nbsp;id&nbsp;extent;</span></span>
-<span class="tr"><span class="th" id="line36">36</span><span class="td">&nbsp;if&nbsp;(creator&nbsp;==&nbsp;0)&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line37">37</span><span class="td">&nbsp;extent&nbsp;=&nbsp;creator.call(MStack_Top+2,&nbsp;1);</span></span>
-<span class="tr"><span class="th" id="line38">38</span><span class="td">&nbsp;if&nbsp;(extent&nbsp;==&nbsp;0)&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line39">39</span><span class="td">&nbsp;if&nbsp;(MStack_Top&nbsp;+&nbsp;MAX_MSTACK_FRAME&nbsp;&gt;=&nbsp;MSTACK_SIZE&nbsp;+&nbsp;2)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line40">40</span><span class="td">&nbsp;&nbsp;RunTimeProblem(RTP_MSTACKMEMORY,&nbsp;MSTACK_SIZE);</span></span>
-<span class="tr"><span class="th" id="line41">41</span><span class="td">&nbsp;&nbsp;Mstack_Backtrace();</span></span>
-<span class="tr"><span class="th" id="line42">42</span><span class="td">&nbsp;&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line43">43</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line44">44</span><span class="td">&nbsp;MStack_Top++;</span></span>
-<span class="tr"><span class="th" id="line45">45</span><span class="td">&nbsp;MStack--&gt;MStack_Top&nbsp;=&nbsp;id;</span></span>
-<span class="tr"><span class="th" id="line46">46</span><span class="td">&nbsp;MStack_Top++;</span></span>
-<span class="tr"><span class="th" id="line47">47</span><span class="td">&nbsp;MStack_Top&nbsp;=&nbsp;MStack_Top&nbsp;+&nbsp;extent;</span></span>
-<span class="tr"><span class="th" id="line48">48</span><span class="td">&nbsp;MStack--&gt;MStack_Top&nbsp;=&nbsp;-(extent+2);</span></span>
-<span class="tr"><span class="th" id="line49">49</span><span class="td">&nbsp;rtrue;</span></span>
-<span class="tr"><span class="th" id="line50">50</span><span class="td">];</span></span>
-<span class="tr"><span class="th" id="line51">51</span><span class="td"></span></span>
+<h3>Create Frame.</h3><p><p> A frame is created by calling the following function with two arguments: <span class="fixed">creator</span>, a function which initialises a block of variables, and an ID number identifying the owner.<p></p><p> The <span class="fixed">creator</span> function is called with the address at which to initialise the variables as its first argument, and the value 1 as the second argument. (The idea is that the same function can be used later to deallocate the variables, and then the second argument will be <em></em>.) The <span class="fixed">creator</span> function returns the extent of the block of memory it has used, in words. Thus is required to be strictly less than <span class="fixed"><a href="./MStack.i6t.html#line15">MAX_MSTACK_FRAME</a></span> minus 1.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line36">36</span><span class="td">[&nbsp;Mstack_Create_Frame&nbsp;creator&nbsp;id&nbsp;extent;</span></span>
+<span class="tr"><span class="th" id="line37">37</span><span class="td">&nbsp;if&nbsp;(creator&nbsp;==&nbsp;0)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line38">38</span><span class="td">&nbsp;extent&nbsp;=&nbsp;creator.call(MStack_Top+2,&nbsp;1);</span></span>
+<span class="tr"><span class="th" id="line39">39</span><span class="td">&nbsp;if&nbsp;(extent&nbsp;==&nbsp;0)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line40">40</span><span class="td">&nbsp;if&nbsp;(MStack_Top&nbsp;+&nbsp;MAX_MSTACK_FRAME&nbsp;&gt;=&nbsp;MSTACK_SIZE&nbsp;+&nbsp;2)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line41">41</span><span class="td">&nbsp;&nbsp;RunTimeProblem(RTP_MSTACKMEMORY,&nbsp;MSTACK_SIZE);</span></span>
+<span class="tr"><span class="th" id="line42">42</span><span class="td">&nbsp;&nbsp;Mstack_Backtrace();</span></span>
+<span class="tr"><span class="th" id="line43">43</span><span class="td">&nbsp;&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line44">44</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line45">45</span><span class="td">&nbsp;MStack_Top++;</span></span>
+<span class="tr"><span class="th" id="line46">46</span><span class="td">&nbsp;MStack--&gt;MStack_Top&nbsp;=&nbsp;id;</span></span>
+<span class="tr"><span class="th" id="line47">47</span><span class="td">&nbsp;MStack_Top++;</span></span>
+<span class="tr"><span class="th" id="line48">48</span><span class="td">&nbsp;MStack_Top&nbsp;=&nbsp;MStack_Top&nbsp;+&nbsp;extent;</span></span>
+<span class="tr"><span class="th" id="line49">49</span><span class="td">&nbsp;MStack--&gt;MStack_Top&nbsp;=&nbsp;-(extent+2);</span></span>
+<span class="tr"><span class="th" id="line50">50</span><span class="td">&nbsp;rtrue;</span></span>
+<span class="tr"><span class="th" id="line51">51</span><span class="td">];</span></span>
 </div><div class='text'>
-<h2>Destroy Frame.</h2><p><p> As sketched above, the same creator function and ID number are passed to the following routine to destroy the frame again. It takes the stack down to the level of the most recently created frame with this ID number: note that each action, for instance, has its own ID number for this purpose, but can be taking place several times in a nested fashion &ndash; one taking action might have caused another taking action which caused a third, for instance, so that there are three incomplete taking actions at once. In that case, there will be three independent sets of taking action variables on the M-stack, all with the same ID number. We remove the topmost one: the implication of that is that frames must always be destroyed in reverse order of creation.<p></p><p> In practice, I7 uses frames such that the frame sought should always be the topmost one in any case, and so that frames are always explicitly destroyed, not wiped by being undercut when an earlier-created frame is destroyed.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line71">71</span><span class="td">[&nbsp;Mstack_Destroy_Frame&nbsp;creator&nbsp;id&nbsp;pos;</span></span>
-<span class="tr"><span class="th" id="line72">72</span><span class="td">&nbsp;pos&nbsp;=&nbsp;Mstack_Seek_Frame(id);</span></span>
-<span class="tr"><span class="th" id="line73">73</span><span class="td">&nbsp;if&nbsp;(pos&nbsp;==&nbsp;0)&nbsp;rfalse;&nbsp;!&nbsp;Not&nbsp;found:&nbsp;do&nbsp;nothing</span></span>
-<span class="tr"><span class="th" id="line74">74</span><span class="td">&nbsp;MStack_Top&nbsp;=&nbsp;pos&nbsp;-&nbsp;2;&nbsp;!&nbsp;Clear&nbsp;mstack&nbsp;down&nbsp;to&nbsp;just&nbsp;below&nbsp;this&nbsp;frame</span></span>
-<span class="tr"><span class="th" id="line75">75</span><span class="td">&nbsp;if&nbsp;(creator)&nbsp;creator.call(pos,&nbsp;-1);</span></span>
-<span class="tr"><span class="th" id="line76">76</span><span class="td">&nbsp;rtrue;</span></span>
-<span class="tr"><span class="th" id="line77">77</span><span class="td">];</span></span>
-<span class="tr"><span class="th" id="line78">78</span><span class="td"></span></span>
+<h3>Destroy Frame.</h3><p><p> As sketched above, the same creator function and ID number are passed to the following routine to destroy the frame again. It takes the stack down to the level of the most recently created frame with this ID number: note that each action, for instance, has its own ID number for this purpose, but can be taking place several times in a nested fashion &ndash; one taking action might have caused another taking action which caused a third, for instance, so that there are three incomplete taking actions at once. In that case, there will be three independent sets of taking action variables on the M-stack, all with the same ID number. We remove the topmost one: the implication of that is that frames must always be destroyed in reverse order of creation.<p></p><p> In practice, I7 uses frames such that the frame sought should always be the topmost one in any case, and so that frames are always explicitly destroyed, not wiped by being undercut when an earlier-created frame is destroyed.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line72">72</span><span class="td">[&nbsp;Mstack_Destroy_Frame&nbsp;creator&nbsp;id&nbsp;pos;</span></span>
+<span class="tr"><span class="th" id="line73">73</span><span class="td">&nbsp;pos&nbsp;=&nbsp;Mstack_Seek_Frame(id);</span></span>
+<span class="tr"><span class="th" id="line74">74</span><span class="td">&nbsp;if&nbsp;(pos&nbsp;==&nbsp;0)&nbsp;rfalse;&nbsp;!&nbsp;Not&nbsp;found:&nbsp;do&nbsp;nothing</span></span>
+<span class="tr"><span class="th" id="line75">75</span><span class="td">&nbsp;MStack_Top&nbsp;=&nbsp;pos&nbsp;-&nbsp;2;&nbsp;!&nbsp;Clear&nbsp;mstack&nbsp;down&nbsp;to&nbsp;just&nbsp;below&nbsp;this&nbsp;frame</span></span>
+<span class="tr"><span class="th" id="line76">76</span><span class="td">&nbsp;if&nbsp;(creator)&nbsp;creator.call(pos,&nbsp;-1);</span></span>
+<span class="tr"><span class="th" id="line77">77</span><span class="td">&nbsp;rtrue;</span></span>
+<span class="tr"><span class="th" id="line78">78</span><span class="td">];</span></span>
 </div><div class='text'>
-<h2>Seek Frame.</h2><p><p> We return the position on the M-stack of the most recently created frame with the given ID number (see above), or 0 if no such frame exists; the size is stored in the global variable <a href="./MStack.i6t.html#line87">MStack_Frame_Extent</a>. (Because word 0 on the stack is used as a sentinel &ndash; all frames are placed above it &ndash; no frame can actually begin at word 0 on the stack, so 0 is safe to use as an exception.)<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line87">87</span><span class="td">Global&nbsp;MStack_Frame_Extent&nbsp;=&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line88">88</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line89">89</span><span class="td">[&nbsp;Mstack_Seek_Frame&nbsp;id&nbsp;pos;</span></span>
-<span class="tr"><span class="th" id="line90">90</span><span class="td">&nbsp;pos&nbsp;=&nbsp;MStack_Top;</span></span>
-<span class="tr"><span class="th" id="line91">91</span><span class="td">&nbsp;while&nbsp;((pos&nbsp;&gt;&nbsp;0)&nbsp;&amp;&amp;&nbsp;(MStack--&gt;pos&nbsp;~=&nbsp;0))&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line92">92</span><span class="td">&nbsp;&nbsp;MStack_Frame_Extent&nbsp;=&nbsp;MStack--&gt;pos;</span></span>
-<span class="tr"><span class="th" id="line93">93</span><span class="td">&nbsp;&nbsp;pos&nbsp;=&nbsp;pos&nbsp;+&nbsp;MStack_Frame_Extent;</span></span>
-<span class="tr"><span class="th" id="line94">94</span><span class="td">&nbsp;&nbsp;MStack_Frame_Extent&nbsp;=&nbsp;(-2)&nbsp;-&nbsp;MStack_Frame_Extent;</span></span>
-<span class="tr"><span class="th" id="line95">95</span><span class="td">&nbsp;&nbsp;if&nbsp;(MStack--&gt;(pos+1)&nbsp;==&nbsp;id)&nbsp;return&nbsp;pos+2;</span></span>
-<span class="tr"><span class="th" id="line96">96</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line97">97</span><span class="td">&nbsp;MStack_Frame_Extent&nbsp;=&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line98">98</span><span class="td">&nbsp;return&nbsp;0;&nbsp;!&nbsp;Not&nbsp;found</span></span>
-<span class="tr"><span class="th" id="line99">99</span><span class="td">];</span></span>
-<span class="tr"><span class="th" id="line100">100</span><span class="td"></span></span>
+<h3>Seek Frame.</h3><p><p> We return the position on the M-stack of the most recently created frame with the given ID number (see above), or 0 if no such frame exists; the size is stored in the global variable <span class="fixed"><a href="./MStack.i6t.html#line88">MStack_Frame_Extent</a></span>. (Because word 0 on the stack is used as a sentinel &ndash; all frames are placed above it &ndash; no frame can actually begin at word 0 on the stack, so 0 is safe to use as an exception.)<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line88">88</span><span class="td">Global&nbsp;MStack_Frame_Extent&nbsp;=&nbsp;0;</span></span>
+<span class="tr"><span class="th" id="line89">89</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line90">90</span><span class="td">[&nbsp;Mstack_Seek_Frame&nbsp;id&nbsp;pos;</span></span>
+<span class="tr"><span class="th" id="line91">91</span><span class="td">&nbsp;pos&nbsp;=&nbsp;MStack_Top;</span></span>
+<span class="tr"><span class="th" id="line92">92</span><span class="td">&nbsp;while&nbsp;((pos&nbsp;&gt;&nbsp;0)&nbsp;&amp;&amp;&nbsp;(MStack--&gt;pos&nbsp;~=&nbsp;0))&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line93">93</span><span class="td">&nbsp;&nbsp;MStack_Frame_Extent&nbsp;=&nbsp;MStack--&gt;pos;</span></span>
+<span class="tr"><span class="th" id="line94">94</span><span class="td">&nbsp;&nbsp;pos&nbsp;=&nbsp;pos&nbsp;+&nbsp;MStack_Frame_Extent;</span></span>
+<span class="tr"><span class="th" id="line95">95</span><span class="td">&nbsp;&nbsp;MStack_Frame_Extent&nbsp;=&nbsp;(-2)&nbsp;-&nbsp;MStack_Frame_Extent;</span></span>
+<span class="tr"><span class="th" id="line96">96</span><span class="td">&nbsp;&nbsp;if&nbsp;(MStack--&gt;(pos+1)&nbsp;==&nbsp;id)&nbsp;return&nbsp;pos+2;</span></span>
+<span class="tr"><span class="th" id="line97">97</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line98">98</span><span class="td">&nbsp;MStack_Frame_Extent&nbsp;=&nbsp;0;</span></span>
+<span class="tr"><span class="th" id="line99">99</span><span class="td">&nbsp;return&nbsp;0;&nbsp;!&nbsp;Not&nbsp;found</span></span>
+<span class="tr"><span class="th" id="line100">100</span><span class="td">];</span></span>
 </div><div class='text'>
-<h2>Backtrace.</h2><p><p> Purely for debugging purposes, and giving feedback if the stack runs out of memory:<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line106">106</span><span class="td">[&nbsp;Mstack_Backtrace&nbsp;pos&nbsp;k;</span></span>
-<span class="tr"><span class="th" id="line107">107</span><span class="td">&nbsp;print&nbsp;&quot;Mstack&nbsp;backtrace:&nbsp;size&nbsp;&quot;,&nbsp;MStack_Top+1,&nbsp;&quot;&nbsp;words^&quot;;</span></span>
-<span class="tr"><span class="th" id="line108">108</span><span class="td">&nbsp;pos&nbsp;=&nbsp;MStack_Top;</span></span>
-<span class="tr"><span class="th" id="line109">109</span><span class="td">&nbsp;while&nbsp;(MStack--&gt;pos&nbsp;~=&nbsp;0)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line110">110</span><span class="td">&nbsp;&nbsp;MStack_Frame_Extent&nbsp;=&nbsp;MStack--&gt;pos;</span></span>
-<span class="tr"><span class="th" id="line111">111</span><span class="td">&nbsp;&nbsp;pos&nbsp;=&nbsp;pos&nbsp;+&nbsp;MStack_Frame_Extent;</span></span>
-<span class="tr"><span class="th" id="line112">112</span><span class="td">&nbsp;&nbsp;MStack_Frame_Extent&nbsp;=&nbsp;(-2)&nbsp;-&nbsp;MStack_Frame_Extent;</span></span>
-<span class="tr"><span class="th" id="line113">113</span><span class="td">&nbsp;&nbsp;print&nbsp;&quot;Block&nbsp;at&nbsp;&quot;,&nbsp;pos+2,</span></span>
-<span class="tr"><span class="th" id="line114">114</span><span class="td">&nbsp;&nbsp;&nbsp;&quot;&nbsp;owner&nbsp;ID&nbsp;&quot;,&nbsp;MStack--&gt;(pos+1),&nbsp;&quot;&nbsp;size&nbsp;&quot;,&nbsp;MStack_Frame_Extent,&nbsp;&quot;^&quot;;</span></span>
-<span class="tr"><span class="th" id="line115">115</span><span class="td">&nbsp;&nbsp;for&nbsp;(k=0:&nbsp;k&lt;MStack_Frame_Extent:&nbsp;k++)&nbsp;print&nbsp;MStack--&gt;(pos+2+k),&nbsp;&quot;&nbsp;&quot;;</span></span>
-<span class="tr"><span class="th" id="line116">116</span><span class="td">&nbsp;&nbsp;print&nbsp;&quot;^&quot;;</span></span>
-<span class="tr"><span class="th" id="line117">117</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line118">118</span><span class="td">];</span></span>
-<span class="tr"><span class="th" id="line119">119</span><span class="td"></span></span>
+<h3>Backtrace.</h3><p><p> Purely for debugging purposes, and giving feedback if the stack runs out of memory:<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line107">107</span><span class="td">[&nbsp;Mstack_Backtrace&nbsp;pos&nbsp;k;</span></span>
+<span class="tr"><span class="th" id="line108">108</span><span class="td">&nbsp;print&nbsp;&quot;Mstack&nbsp;backtrace:&nbsp;size&nbsp;&quot;,&nbsp;MStack_Top+1,&nbsp;&quot;&nbsp;words^&quot;;</span></span>
+<span class="tr"><span class="th" id="line109">109</span><span class="td">&nbsp;pos&nbsp;=&nbsp;MStack_Top;</span></span>
+<span class="tr"><span class="th" id="line110">110</span><span class="td">&nbsp;while&nbsp;(MStack--&gt;pos&nbsp;~=&nbsp;0)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line111">111</span><span class="td">&nbsp;&nbsp;MStack_Frame_Extent&nbsp;=&nbsp;MStack--&gt;pos;</span></span>
+<span class="tr"><span class="th" id="line112">112</span><span class="td">&nbsp;&nbsp;pos&nbsp;=&nbsp;pos&nbsp;+&nbsp;MStack_Frame_Extent;</span></span>
+<span class="tr"><span class="th" id="line113">113</span><span class="td">&nbsp;&nbsp;MStack_Frame_Extent&nbsp;=&nbsp;(-2)&nbsp;-&nbsp;MStack_Frame_Extent;</span></span>
+<span class="tr"><span class="th" id="line114">114</span><span class="td">&nbsp;&nbsp;print&nbsp;&quot;Block&nbsp;at&nbsp;&quot;,&nbsp;pos+2,</span></span>
+<span class="tr"><span class="th" id="line115">115</span><span class="td">&nbsp;&nbsp;&nbsp;&quot;&nbsp;owner&nbsp;ID&nbsp;&quot;,&nbsp;MStack--&gt;(pos+1),&nbsp;&quot;&nbsp;size&nbsp;&quot;,&nbsp;MStack_Frame_Extent,&nbsp;&quot;^&quot;;</span></span>
+<span class="tr"><span class="th" id="line116">116</span><span class="td">&nbsp;&nbsp;for&nbsp;(k=0:&nbsp;k&lt;MStack_Frame_Extent:&nbsp;k++)&nbsp;print&nbsp;MStack--&gt;(pos+2+k),&nbsp;&quot;&nbsp;&quot;;</span></span>
+<span class="tr"><span class="th" id="line117">117</span><span class="td">&nbsp;&nbsp;print&nbsp;&quot;^&quot;;</span></span>
+<span class="tr"><span class="th" id="line118">118</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line119">119</span><span class="td">];</span></span>
 </div><div class='text'>
-<h2>Access to Variables.</h2><p><p> An M-stack variable is identified by a combination of ID number and offset: for instance ID 20007, offset 1, is the variable &quot;room gone to&quot; belonging to the going action. The following routine converts that into an address on the M-stack, in the topmost block with the given ID number (since &quot;room gone to&quot;, for instance, always means its value in the most current going action of those now under way). Typechecking in the compiler should mean that it is impossible to produce either error message below: NI will only compile valid uses of <a href="./MStack.i6t.html#line132">MstVO</a> (&quot;M-stack variable offset&quot;) where the seek succeeds and the offset is within range.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line132">132</span><span class="td">[&nbsp;MstVO&nbsp;id&nbsp;off&nbsp;pos;</span></span>
-<span class="tr"><span class="th" id="line133">133</span><span class="td">&nbsp;pos&nbsp;=&nbsp;Mstack_Seek_Frame(id);</span></span>
-<span class="tr"><span class="th" id="line134">134</span><span class="td">&nbsp;if&nbsp;(pos&nbsp;==&nbsp;0)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line135">135</span><span class="td">&nbsp;&nbsp;print&nbsp;&quot;Variable&nbsp;unavailable&nbsp;for&nbsp;this&nbsp;action,&nbsp;activity&nbsp;or&nbsp;rulebook:&nbsp;&quot;,</span></span>
-<span class="tr"><span class="th" id="line136">136</span><span class="td">&nbsp;&nbsp;&nbsp;&quot;internal&nbsp;ID&nbsp;number&nbsp;&quot;,</span></span>
-<span class="tr"><span class="th" id="line137">137</span><span class="td">&nbsp;&nbsp;&nbsp;id,&nbsp;&quot;/&quot;,&nbsp;off,&nbsp;&quot;^&quot;;</span></span>
-<span class="tr"><span class="th" id="line138">138</span><span class="td">&nbsp;&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line139">139</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line140">140</span><span class="td">&nbsp;if&nbsp;((off&lt;0)&nbsp;||&nbsp;(off&nbsp;&gt;=&nbsp;MStack_Frame_Extent))&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line141">141</span><span class="td">&nbsp;&nbsp;print&nbsp;&quot;Variable&nbsp;stack&nbsp;offset&nbsp;wrong:&nbsp;&quot;,&nbsp;id,&nbsp;&quot;/&quot;,&nbsp;off,&nbsp;&quot;&nbsp;at&nbsp;&quot;,&nbsp;pos,&nbsp;&quot;^&quot;;</span></span>
-<span class="tr"><span class="th" id="line142">142</span><span class="td">&nbsp;&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line143">143</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line144">144</span><span class="td">&nbsp;return&nbsp;pos+off;</span></span>
-<span class="tr"><span class="th" id="line145">145</span><span class="td">];</span></span>
-<span class="tr"><span class="th" id="line146">146</span><span class="td"></span></span>
+<h3>Access to Variables.</h3><p><p> An M-stack variable is identified by a combination of ID number and offset: for instance ID 20007, offset 1, is the variable &quot;room gone to&quot; belonging to the going action. The following routine converts that into an address on the M-stack, in the topmost block with the given ID number (since &quot;room gone to&quot;, for instance, always means its value in the most current going action of those now under way). Typechecking in the compiler should mean that it is impossible to produce either error message below: NI will only compile valid uses of <span class="fixed"><a href="./MStack.i6t.html#line133">MstVO</a></span> (&quot;M-stack variable offset&quot;) where the seek succeeds and the offset is within range.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line133">133</span><span class="td">[&nbsp;MstVO&nbsp;id&nbsp;off&nbsp;pos;</span></span>
+<span class="tr"><span class="th" id="line134">134</span><span class="td">&nbsp;pos&nbsp;=&nbsp;Mstack_Seek_Frame(id);</span></span>
+<span class="tr"><span class="th" id="line135">135</span><span class="td">&nbsp;if&nbsp;(pos&nbsp;==&nbsp;0)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line136">136</span><span class="td">&nbsp;&nbsp;print&nbsp;&quot;Variable&nbsp;unavailable&nbsp;for&nbsp;this&nbsp;action,&nbsp;activity&nbsp;or&nbsp;rulebook:&nbsp;&quot;,</span></span>
+<span class="tr"><span class="th" id="line137">137</span><span class="td">&nbsp;&nbsp;&nbsp;&quot;internal&nbsp;ID&nbsp;number&nbsp;&quot;,</span></span>
+<span class="tr"><span class="th" id="line138">138</span><span class="td">&nbsp;&nbsp;&nbsp;id,&nbsp;&quot;/&quot;,&nbsp;off,&nbsp;&quot;^&quot;;</span></span>
+<span class="tr"><span class="th" id="line139">139</span><span class="td">&nbsp;&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line140">140</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line141">141</span><span class="td">&nbsp;if&nbsp;((off&lt;0)&nbsp;||&nbsp;(off&nbsp;&gt;=&nbsp;MStack_Frame_Extent))&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line142">142</span><span class="td">&nbsp;&nbsp;print&nbsp;&quot;Variable&nbsp;stack&nbsp;offset&nbsp;wrong:&nbsp;&quot;,&nbsp;id,&nbsp;&quot;/&quot;,&nbsp;off,&nbsp;&quot;&nbsp;at&nbsp;&quot;,&nbsp;pos,&nbsp;&quot;^&quot;;</span></span>
+<span class="tr"><span class="th" id="line143">143</span><span class="td">&nbsp;&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line144">144</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line145">145</span><span class="td">&nbsp;return&nbsp;pos+off;</span></span>
+<span class="tr"><span class="th" id="line146">146</span><span class="td">];</span></span>
 </div><div class='text'>
-<h2>Access to Nonexistent Variables.</h2><p><p> A long-standing point where I7 is not as strict in type-checking as it might be occurs when checking rule preambles like &quot;Before going to a dead end...&quot;. Such a preamble must be checked whatever the current action is &ndash; in many cases, it will not be a going action at all; which means that &quot;room gone to&quot;, a value implied by the &quot;to&quot; clause, will not exist. If the type-checking were stricter, it would be a nuisance for authors, and instead we relax a little by accessing such variables using a more forgiving routine. Here, if a variable does not exist, we return 0 to mean that it can be read at M-stack position 0: this is the sentinel word, which is not part of any  frame, and which contains 0. Thus the variable reads as if it is 0, the default for the kind of value &quot;object&quot;, which is the KOV for action variables such as &quot;room gone to&quot;.<p></p><p> The routine may only be used where the variable is being read, and never where it is to be written, of course: that would corrupt the sentinel.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line165">165</span><span class="td">[&nbsp;MstVON&nbsp;id&nbsp;off&nbsp;pos;</span></span>
-<span class="tr"><span class="th" id="line166">166</span><span class="td">&nbsp;pos&nbsp;=&nbsp;Mstack_Seek_Frame(id);</span></span>
-<span class="tr"><span class="th" id="line167">167</span><span class="td">&nbsp;if&nbsp;(pos&nbsp;==&nbsp;0)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line168">168</span><span class="td">&nbsp;&nbsp;return&nbsp;0;&nbsp;!&nbsp;word&nbsp;position&nbsp;0&nbsp;on&nbsp;the&nbsp;M-stack</span></span>
-<span class="tr"><span class="th" id="line169">169</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line170">170</span><span class="td">&nbsp;if&nbsp;((off&lt;0)&nbsp;||&nbsp;(off&nbsp;&gt;=&nbsp;MStack_Frame_Extent))&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line171">171</span><span class="td">&nbsp;&nbsp;print&nbsp;&quot;Variable&nbsp;stack&nbsp;offset&nbsp;wrong:&nbsp;&quot;,&nbsp;id,&nbsp;&quot;/&quot;,&nbsp;off,&nbsp;&quot;&nbsp;at&nbsp;&quot;,&nbsp;pos,&nbsp;&quot;^&quot;;</span></span>
-<span class="tr"><span class="th" id="line172">172</span><span class="td">&nbsp;&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line173">173</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line174">174</span><span class="td">&nbsp;return&nbsp;pos+off;</span></span>
-<span class="tr"><span class="th" id="line175">175</span><span class="td">];</span></span>
-<span class="tr"><span class="th" id="line176">176</span><span class="td"></span></span>
+<h3>Access to Nonexistent Variables.</h3><p><p> A long-standing point where I7 is not as strict in type-checking as it might be occurs when checking rule preambles like &quot;Before going to a dead end...&quot;. Such a preamble must be checked whatever the current action is &ndash; in many cases, it will not be a going action at all; which means that &quot;room gone to&quot;, a value implied by the &quot;to&quot; clause, will not exist. If the type-checking were stricter, it would be a nuisance for authors, and instead we relax a little by accessing such variables using a more forgiving routine. Here, if a variable does not exist, we return 0 to mean that it can be read at M-stack position 0: this is the sentinel word, which is not part of any  frame, and which contains 0. Thus the variable reads as if it is 0, the default for the kind of value &quot;object&quot;, which is the KOV for action variables such as &quot;room gone to&quot;.<p></p><p> The routine may only be used where the variable is being read, and never where it is to be written, of course: that would corrupt the sentinel.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line166">166</span><span class="td">[&nbsp;MstVON&nbsp;id&nbsp;off&nbsp;pos;</span></span>
+<span class="tr"><span class="th" id="line167">167</span><span class="td">&nbsp;pos&nbsp;=&nbsp;Mstack_Seek_Frame(id);</span></span>
+<span class="tr"><span class="th" id="line168">168</span><span class="td">&nbsp;if&nbsp;(pos&nbsp;==&nbsp;0)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line169">169</span><span class="td">&nbsp;&nbsp;return&nbsp;0;&nbsp;!&nbsp;word&nbsp;position&nbsp;0&nbsp;on&nbsp;the&nbsp;M-stack</span></span>
+<span class="tr"><span class="th" id="line170">170</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line171">171</span><span class="td">&nbsp;if&nbsp;((off&lt;0)&nbsp;||&nbsp;(off&nbsp;&gt;=&nbsp;MStack_Frame_Extent))&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line172">172</span><span class="td">&nbsp;&nbsp;print&nbsp;&quot;Variable&nbsp;stack&nbsp;offset&nbsp;wrong:&nbsp;&quot;,&nbsp;id,&nbsp;&quot;/&quot;,&nbsp;off,&nbsp;&quot;&nbsp;at&nbsp;&quot;,&nbsp;pos,&nbsp;&quot;^&quot;;</span></span>
+<span class="tr"><span class="th" id="line173">173</span><span class="td">&nbsp;&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line174">174</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line175">175</span><span class="td">&nbsp;return&nbsp;pos+off;</span></span>
+<span class="tr"><span class="th" id="line176">176</span><span class="td">];</span></span>
 </div><div class='text'>
-<h2>Rulebook Variables.</h2><p><p> Each rulebook has a slate of variables, usually empty, with ID number the same as the rulebook&#39;s own ID number. (Rulebook IDs number upwards from 0 in order of creation in the source text.) The associated creator functions, usually null, are stored in an array if there is no problem about memory usage, but with a switch statement if <span class="fixed">MEMORY_ECONOMY</span> is in force; this costs a very small amount of time, but saves 1K of readable memory.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line186">186</span><span class="td">{-array:Rulebooks::rulebook_var_creators}</span></span>
-<span class="tr"><span class="th" id="line187">187</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line188">188</span><span class="td">[&nbsp;MStack_CreateRBVars&nbsp;rb&nbsp;cr;</span></span>
-<span class="tr"><span class="th" id="line189">189</span><span class="td">{-call:Rulebooks::rulebook_var_creators_lookup}</span></span>
-<span class="tr"><span class="th" id="line190">190</span><span class="td">&nbsp;if&nbsp;(cr&nbsp;==&nbsp;0)&nbsp;return;</span></span>
-<span class="tr"><span class="th" id="line191">191</span><span class="td">&nbsp;Mstack_Create_Frame(cr,&nbsp;rb);</span></span>
-<span class="tr"><span class="th" id="line192">192</span><span class="td">];</span></span>
-<span class="tr"><span class="th" id="line193">193</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line194">194</span><span class="td">[&nbsp;MStack_DestroyRBVars&nbsp;rb&nbsp;cr;</span></span>
-<span class="tr"><span class="th" id="line195">195</span><span class="td">{-call:Rulebooks::rulebook_var_creators_lookup}</span></span>
-<span class="tr"><span class="th" id="line196">196</span><span class="td">&nbsp;if&nbsp;(cr&nbsp;==&nbsp;0)&nbsp;return;</span></span>
-<span class="tr"><span class="th" id="line197">197</span><span class="td">&nbsp;Mstack_Destroy_Frame(cr,&nbsp;rb);</span></span>
-<span class="tr"><span class="th" id="line198">198</span><span class="td">];</span></span>
-<span class="tr"><span class="th" id="line199">199</span><span class="td"></span></span>
+<h3>Rulebook Variables.</h3><p><p> Each rulebook has a slate of variables, usually empty, with ID number the same as the rulebook&#39;s own ID number. (Rulebook IDs number upwards from 0 in order of creation in the source text.) The associated creator functions, usually null, are stored in an array if there is no problem about memory usage, but with a switch statement if <span class="fixed">MEMORY_ECONOMY</span> is in force; this costs a very small amount of time, but saves 1K of readable memory.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line187">187</span><span class="td">{-array:Rulebooks::rulebook_var_creators}</span></span>
+<span class="tr"><span class="th" id="line188">188</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line189">189</span><span class="td">[&nbsp;MStack_CreateRBVars&nbsp;rb&nbsp;cr;</span></span>
+<span class="tr"><span class="th" id="line190">190</span><span class="td">{-call:Rulebooks::rulebook_var_creators_lookup}</span></span>
+<span class="tr"><span class="th" id="line191">191</span><span class="td">&nbsp;if&nbsp;(cr&nbsp;==&nbsp;0)&nbsp;return;</span></span>
+<span class="tr"><span class="th" id="line192">192</span><span class="td">&nbsp;Mstack_Create_Frame(cr,&nbsp;rb);</span></span>
+<span class="tr"><span class="th" id="line193">193</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line194">194</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line195">195</span><span class="td">[&nbsp;MStack_DestroyRBVars&nbsp;rb&nbsp;cr;</span></span>
+<span class="tr"><span class="th" id="line196">196</span><span class="td">{-call:Rulebooks::rulebook_var_creators_lookup}</span></span>
+<span class="tr"><span class="th" id="line197">197</span><span class="td">&nbsp;if&nbsp;(cr&nbsp;==&nbsp;0)&nbsp;return;</span></span>
+<span class="tr"><span class="th" id="line198">198</span><span class="td">&nbsp;Mstack_Destroy_Frame(cr,&nbsp;rb);</span></span>
+<span class="tr"><span class="th" id="line199">199</span><span class="td">];</span></span>
 </div><div class='text'>
-<h2>Activity Variables.</h2><p><p> Exactly the same goes for activity variables except that here the ID number is $10000+N$, where $N$ is the allocation ID of the activity. (This would fail if there were more than 10,000 rulebooks, but this is very difficult to see happening.)<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line207">207</span><span class="td">{-array:Activities::activity_var_creators}</span></span>
-<span class="tr"><span class="th" id="line208">208</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line209">209</span><span class="td">[&nbsp;MStack_CreateAVVars&nbsp;av&nbsp;cr;</span></span>
-<span class="tr"><span class="th" id="line210">210</span><span class="td">&nbsp;cr&nbsp;=&nbsp;activity_var_creators--&gt;av;</span></span>
-<span class="tr"><span class="th" id="line211">211</span><span class="td">&nbsp;if&nbsp;(cr&nbsp;==&nbsp;0)&nbsp;return;</span></span>
-<span class="tr"><span class="th" id="line212">212</span><span class="td">&nbsp;Mstack_Create_Frame(cr,&nbsp;av&nbsp;+&nbsp;10000);</span></span>
-<span class="tr"><span class="th" id="line213">213</span><span class="td">];</span></span>
-<span class="tr"><span class="th" id="line214">214</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line215">215</span><span class="td">[&nbsp;MStack_DestroyAVVars&nbsp;av&nbsp;cr;</span></span>
-<span class="tr"><span class="th" id="line216">216</span><span class="td">&nbsp;cr&nbsp;=&nbsp;activity_var_creators--&gt;av;</span></span>
-<span class="tr"><span class="th" id="line217">217</span><span class="td">&nbsp;if&nbsp;(cr&nbsp;==&nbsp;0)&nbsp;return;</span></span>
-<span class="tr"><span class="th" id="line218">218</span><span class="td">&nbsp;Mstack_Destroy_Frame(cr,&nbsp;av&nbsp;+&nbsp;10000);</span></span>
-<span class="tr"><span class="th" id="line219">219</span><span class="td">];</span></span>
+<h3>Activity Variables.</h3><p><p> Exactly the same goes for activity variables except that here the ID number is <em></em>, where <em></em> is the allocation ID of the activity. (This would fail if there were more than 10,000 rulebooks, but this is very difficult to see happening.)<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line208">208</span><span class="td">{-array:Activities::activity_var_creators}</span></span>
+<span class="tr"><span class="th" id="line209">209</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line210">210</span><span class="td">[&nbsp;MStack_CreateAVVars&nbsp;av&nbsp;cr;</span></span>
+<span class="tr"><span class="th" id="line211">211</span><span class="td">&nbsp;cr&nbsp;=&nbsp;activity_var_creators--&gt;av;</span></span>
+<span class="tr"><span class="th" id="line212">212</span><span class="td">&nbsp;if&nbsp;(cr&nbsp;==&nbsp;0)&nbsp;return;</span></span>
+<span class="tr"><span class="th" id="line213">213</span><span class="td">&nbsp;Mstack_Create_Frame(cr,&nbsp;av&nbsp;+&nbsp;10000);</span></span>
+<span class="tr"><span class="th" id="line214">214</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line215">215</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line216">216</span><span class="td">[&nbsp;MStack_DestroyAVVars&nbsp;av&nbsp;cr;</span></span>
+<span class="tr"><span class="th" id="line217">217</span><span class="td">&nbsp;cr&nbsp;=&nbsp;activity_var_creators--&gt;av;</span></span>
+<span class="tr"><span class="th" id="line218">218</span><span class="td">&nbsp;if&nbsp;(cr&nbsp;==&nbsp;0)&nbsp;return;</span></span>
+<span class="tr"><span class="th" id="line219">219</span><span class="td">&nbsp;Mstack_Destroy_Frame(cr,&nbsp;av&nbsp;+&nbsp;10000);</span></span>
+<span class="tr"><span class="th" id="line220">220</span><span class="td">];</span></span>
 </div><footer><hr><p><em>From I6T lib 6/12N &copy; Graham Nelson and published under the <a href="https://github.com/zedlopez/standard_rules/blob/main/LICENSE.md">Artistic License 2.0</a>. Distributed with <a href="http://inform7.com/">Inform 7 6M62</a>.</em></p></footer></body></html>
