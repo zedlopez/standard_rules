@@ -1,181 +1,166 @@
 <!doctype html>
-<html><head><title>
-Combinations
-</title></head><body><h1>
-Combinations
-</h1><pre>
-B/combt: Combinations Template.
- 
-@Purpose: Code to support the combination kind of value constructor.
- 
-@-------------------------------------------------------------------------------
+<html lang="en">
+<meta charset="utf-8">
+<head><title>Combinations</title>
+  <style>
+span.th, span.td { display: table-cell; }
+span.td { padding-left: 2rem; }
+span.th { width:4rem; text-align: right; }
+span.tr { display: table-row;     counter-increment: linenum; }
+span.line_no::before {
+    content: counter(linenum);
+    text-align: right;
+    display: block;
+    font-family: monospace;
+    font-weight: normal;
+}
 
-@p Block Format.
-A combination is like a list, but simpler; it has a fixed, usually short,
-size. On the other hand, its entries are not all of the same kind as each
-other.
-
-The short block for a combination is simply a pointer to the long block.
-This consists of one word to hold the strong kind ID, and then one word
-for each entry in the combination. Thus, a triple combination uses 4 words.
-
-@c
-Constant COMBINATION_KIND_F = 0;    ! Strong kind ID
-Constant COMBINATION_ITEM_BASE = 1; ! List items begin at this entry
-
-@p KOV Support.
-See the "BlockValues.i6t" segment for the specification of the following
-routines.
-
-@c
-[ COMBINATION_TY_Support task arg1 arg2 arg3;
-	switch(task) {
-		CREATE_KOVS:      return COMBINATION_TY_Create(arg1, arg2);
-		DESTROY_KOVS:     COMBINATION_TY_Destroy(arg1);
-		MAKEMUTABLE_KOVS: return 1;
-		COPYKIND_KOVS:    return COMBINATION_TY_CopyKind(arg1, arg2);
-		COPYQUICK_KOVS:   rtrue;
-		COPYSB_KOVS:	  BlkValueCopySB1(arg1, arg2);
-		KINDDATA_KOVS:    return COMBINATION_TY_KindData(arg1);
-		EXTENT_KOVS:      return -1;
-		COPY_KOVS:        COMBINATION_TY_Copy(arg1, arg2, arg3);
-		COMPARE_KOVS:     return COMBINATION_TY_Compare(arg1, arg2);
-		HASH_KOVS:        return COMBINATION_TY_Hash(arg1);
-		DEBUG_KOVS:       print " = ", (COMBINATION_TY_Say) arg1;
-	}
-	! We choose not to respond to: CAST_KOVS, READ_FILE_KOVS, WRITE_FILE_KOVS
-	rfalse;
-];
-
-@p Creation.
-A combination is like a list, but simpler; it has a fixed, usually short,
-size. On the other hand, its entries are not all of the same kind as each
-other.
-
-Combinations are stored as a fixed-sized block of word entries. The first
-block is the only header information: a pointer to a further structure in
-memory, describing the kind. The subsequent blocks are the actual records.
-Thus, a triple $(x, y, z)$ uses 4 words.
-
-@c
-[ COMBINATION_TY_Create kind sb long_block N i bk v;
-	N = KindBaseArity(kind);
-	long_block = FlexAllocate(
-		(COMBINATION_ITEM_BASE+N)*WORDSIZE, COMBINATION_TY, BLK_FLAG_WORD);
-	BlkValueWrite(long_block, COMBINATION_KIND_F, kind, true);
-	for (i=0: i<N: i++) {
-		bk = KindBaseTerm(kind, i);
-		if (KOVIsBlockValue(bk)) v = BlkValueCreate(bk);
-		else v = DefaultValueOfKOV(bk);
-		BlkValueWrite(long_block, COMBINATION_ITEM_BASE+i, v, true);
-	}
-	return BlkValueCreateSB1(sb, long_block);
-];
-
-@p Destruction.
-If the comb items are themselves block-values, they must all be freed before
-the comb itself can be freed.
-
-@c
-[ COMBINATION_TY_Destroy comb kind no_items i bk;
-	kind = BlkValueRead(comb, COMBINATION_KIND_F);
-	no_items = KindBaseArity(kind);
-	for (i=0: i<no_items: i++) {
-		bk = KindBaseTerm(kind, i);
-		if (KOVIsBlockValue(bk))
-			BlkValueFree(BlkValueRead(comb, i+COMBINATION_ITEM_BASE));
-	}
-];
-
-@p Copying.
-Again, if the comb contains block-values then they must be duplicated rather
-than bitwise copied as pointers.
-
-@c
-[ COMBINATION_TY_CopyKind to from;
-	BlkValueWrite(to, COMBINATION_KIND_F, BlkValueRead(from, COMBINATION_KIND_F));
-];
-
-[ COMBINATION_TY_CopySB to from;
-	BlkValueCopySB1(to, from);
-];
-
-[ COMBINATION_TY_KindData comb;
-	return BlkValueRead(comb, COMBINATION_KIND_F);
-];
-
-[ COMBINATION_TY_Copy to_comb from_comb precopied_comb_kov  no_items i nv kind bk;
-	! kind = BlkValueRead(to_comb, COMBINATION_KIND_F);
-	no_items = KindBaseArity(precopied_comb_kov);
-	BlkValueWrite(to_comb, COMBINATION_KIND_F, precopied_comb_kov);
-	for (i=0: i<no_items: i++) {
-		bk = KindBaseTerm(kind, i);
-		if (KOVIsBlockValue(bk)) {
-			nv = BlkValueCreate(bk);
-			BlkValueCopy(nv, BlkValueRead(from_comb, i+COMBINATION_ITEM_BASE));
-			BlkValueWrite(to_comb, i+COMBINATION_ITEM_BASE, nv);
-		}
-	}
-];
-
-@p Comparison.
-This is a lexicographic comparison and assumes both combinations have the
-same kind.
-
-@c
-[ COMBINATION_TY_Compare left_comb right_comb delta no_items i cf kind bk;
-	kind = BlkValueRead(left_comb, COMBINATION_KIND_F);
-	no_items = KindBaseArity(kind);
-	for (i=0: i<no_items: i++) {
-		bk = KindBaseTerm(kind, i);
-		cf = KOVComparisonFunction(bk);
-		if (cf == 0 or UnsignedCompare) {
-			delta = BlkValueRead(left_comb, i+COMBINATION_ITEM_BASE) -
-				BlkValueRead(right_comb, i+COMBINATION_ITEM_BASE);
-			if (delta) return delta;
-		} else {
-			delta = cf(BlkValueRead(left_comb, i+COMBINATION_ITEM_BASE),
-				BlkValueRead(right_comb, i+COMBINATION_ITEM_BASE));
-			if (delta) return delta;
-		}
-	}
-	return 0;
-];
-
-[ COMBINATION_TY_Distinguish left_comb right_comb;
-	if (COMBINATION_TY_Compare(left_comb, right_comb) == 0) rfalse;
-	rtrue;
-];
-
-@p Hashing.
-
-@c
-[ COMBINATION_TY_Hash comb  kind rv no_items i bk;
-	rv = 0;
-	kind = BlkValueRead(comb, COMBINATION_KIND_F);
-	no_items = KindBaseArity(kind);
-	for (i=0: i<no_items: i++) {
-		bk = KindBaseTerm(kind, i);
-		rv = rv * 33 + GetHashValue(bk, BlkValueRead(comb, i+COMBINATION_ITEM_BASE));
-	}
-	return rv;
-];
-
-@p Printing.
-
-@c
-[ COMBINATION_TY_Say comb format no_items v i kind bk;
-	if ((comb==0) || (BlkValueWeakKind(comb) ~= COMBINATION_TY)) return;
-	kind = BlkValueRead(comb, COMBINATION_KIND_F);
-	no_items = KindBaseArity(kind);
-	print "(";
-	for (i=0: i<no_items: i++) {
-		if (i>0) print ", ";
-		bk = KindBaseTerm(kind, i);
-		v = BlkValueRead(comb, i+COMBINATION_ITEM_BASE);
-		if (bk == LIST_OF_TY) LIST_OF_TY_Say(v, 1);
-		else PrintKindValuePair(bk, v);
-	}
-	print ")";
-];
-</pre><footer><br><p>From I6T lib 6/12N, distributed with Inform 7 6M62 by Graham Nelson</p></footer></body></html>
+.fixed { font-family: monospace }
+.em { font-style: italic; }
+.center { text-align: center; }
+    body { font-family: sans-serif; margin: 3rem; background-color: #fafaf0; width: 80rem; }
+    .pre { font-family: monospace; margin: auto; width: 80rem; }
+#front_matter,.text { width: 50rem; }
+.text { border-bottom: .5px solid black; border-top: .5px solid black; margin-top: 1rem;
+padding-bottom: 1rem; margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+<div id="front_matter">
+<h1><a href="./Combinations.i6t">Combinations</a></h1><h2>Block Format.</h2><p><p> A combination is like a list, but simpler; it has a fixed, usually short, size. On the other hand, its entries are not all of the same kind as each other.<p></p><p> The short block for a combination is simply a pointer to the long block. This consists of one word to hold the strong kind ID, and then one word for each entry in the combination. Thus, a triple combination uses 4 words.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line16">16</span><span class="td">Constant&nbsp;COMBINATION_KIND_F&nbsp;=&nbsp;0;&nbsp;&nbsp;&nbsp;&nbsp;!&nbsp;Strong&nbsp;kind&nbsp;ID</span></span>
+<span class="tr"><span class="th" id="line17">17</span><span class="td">Constant&nbsp;COMBINATION_ITEM_BASE&nbsp;=&nbsp;1;&nbsp;!&nbsp;List&nbsp;items&nbsp;begin&nbsp;at&nbsp;this&nbsp;entry</span></span>
+<span class="tr"><span class="th" id="line18">18</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>KOV Support.</h2><p><p> See the <a href="./BlockValues.i6t.html">BlockValues.i6t</a> segment for the specification of the following routines.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line24">24</span><span class="td">[&nbsp;COMBINATION_TY_Support&nbsp;task&nbsp;arg1&nbsp;arg2&nbsp;arg3;</span></span>
+<span class="tr"><span class="th" id="line25">25</span><span class="td">&nbsp;switch(task)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line26">26</span><span class="td">&nbsp;&nbsp;CREATE_KOVS:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;COMBINATION_TY_Create(arg1,&nbsp;arg2);</span></span>
+<span class="tr"><span class="th" id="line27">27</span><span class="td">&nbsp;&nbsp;DESTROY_KOVS:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;COMBINATION_TY_Destroy(arg1);</span></span>
+<span class="tr"><span class="th" id="line28">28</span><span class="td">&nbsp;&nbsp;MAKEMUTABLE_KOVS:&nbsp;return&nbsp;1;</span></span>
+<span class="tr"><span class="th" id="line29">29</span><span class="td">&nbsp;&nbsp;COPYKIND_KOVS:&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;COMBINATION_TY_CopyKind(arg1,&nbsp;arg2);</span></span>
+<span class="tr"><span class="th" id="line30">30</span><span class="td">&nbsp;&nbsp;COPYQUICK_KOVS:&nbsp;&nbsp;&nbsp;rtrue;</span></span>
+<span class="tr"><span class="th" id="line31">31</span><span class="td">&nbsp;&nbsp;COPYSB_KOVS:&nbsp;&nbsp;&nbsp;BlkValueCopySB1(arg1,&nbsp;arg2);</span></span>
+<span class="tr"><span class="th" id="line32">32</span><span class="td">&nbsp;&nbsp;KINDDATA_KOVS:&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;COMBINATION_TY_KindData(arg1);</span></span>
+<span class="tr"><span class="th" id="line33">33</span><span class="td">&nbsp;&nbsp;EXTENT_KOVS:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;-1;</span></span>
+<span class="tr"><span class="th" id="line34">34</span><span class="td">&nbsp;&nbsp;COPY_KOVS:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;COMBINATION_TY_Copy(arg1,&nbsp;arg2,&nbsp;arg3);</span></span>
+<span class="tr"><span class="th" id="line35">35</span><span class="td">&nbsp;&nbsp;COMPARE_KOVS:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;COMBINATION_TY_Compare(arg1,&nbsp;arg2);</span></span>
+<span class="tr"><span class="th" id="line36">36</span><span class="td">&nbsp;&nbsp;HASH_KOVS:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;COMBINATION_TY_Hash(arg1);</span></span>
+<span class="tr"><span class="th" id="line37">37</span><span class="td">&nbsp;&nbsp;DEBUG_KOVS:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;&quot;&nbsp;=&nbsp;&quot;,&nbsp;(COMBINATION_TY_Say)&nbsp;arg1;</span></span>
+<span class="tr"><span class="th" id="line38">38</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line39">39</span><span class="td">&nbsp;!&nbsp;We&nbsp;choose&nbsp;not&nbsp;to&nbsp;respond&nbsp;to:&nbsp;CAST_KOVS,&nbsp;READ_FILE_KOVS,&nbsp;WRITE_FILE_KOVS</span></span>
+<span class="tr"><span class="th" id="line40">40</span><span class="td">&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line41">41</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line42">42</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Creation.</h2><p><p> A combination is like a list, but simpler; it has a fixed, usually short, size. On the other hand, its entries are not all of the same kind as each other.<p></p><p> Combinations are stored as a fixed-sized block of word entries. The first block is the only header information: a pointer to a further structure in memory, describing the kind. The subsequent blocks are the actual records. Thus, a triple $(x, y, z)$ uses 4 words.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line54">54</span><span class="td">[&nbsp;COMBINATION_TY_Create&nbsp;kind&nbsp;sb&nbsp;long_block&nbsp;N&nbsp;i&nbsp;bk&nbsp;v;</span></span>
+<span class="tr"><span class="th" id="line55">55</span><span class="td">&nbsp;N&nbsp;=&nbsp;KindBaseArity(kind);</span></span>
+<span class="tr"><span class="th" id="line56">56</span><span class="td">&nbsp;long_block&nbsp;=&nbsp;FlexAllocate(</span></span>
+<span class="tr"><span class="th" id="line57">57</span><span class="td">&nbsp;&nbsp;(COMBINATION_ITEM_BASE+N)*WORDSIZE,&nbsp;COMBINATION_TY,&nbsp;BLK_FLAG_WORD);</span></span>
+<span class="tr"><span class="th" id="line58">58</span><span class="td">&nbsp;BlkValueWrite(long_block,&nbsp;COMBINATION_KIND_F,&nbsp;kind,&nbsp;true);</span></span>
+<span class="tr"><span class="th" id="line59">59</span><span class="td">&nbsp;for&nbsp;(i=0:&nbsp;i&lt;N:&nbsp;i++)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line60">60</span><span class="td">&nbsp;&nbsp;bk&nbsp;=&nbsp;KindBaseTerm(kind,&nbsp;i);</span></span>
+<span class="tr"><span class="th" id="line61">61</span><span class="td">&nbsp;&nbsp;if&nbsp;(KOVIsBlockValue(bk))&nbsp;v&nbsp;=&nbsp;BlkValueCreate(bk);</span></span>
+<span class="tr"><span class="th" id="line62">62</span><span class="td">&nbsp;&nbsp;else&nbsp;v&nbsp;=&nbsp;DefaultValueOfKOV(bk);</span></span>
+<span class="tr"><span class="th" id="line63">63</span><span class="td">&nbsp;&nbsp;BlkValueWrite(long_block,&nbsp;COMBINATION_ITEM_BASE+i,&nbsp;v,&nbsp;true);</span></span>
+<span class="tr"><span class="th" id="line64">64</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line65">65</span><span class="td">&nbsp;return&nbsp;BlkValueCreateSB1(sb,&nbsp;long_block);</span></span>
+<span class="tr"><span class="th" id="line66">66</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line67">67</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Destruction.</h2><p><p> If the comb items are themselves block-values, they must all be freed before the comb itself can be freed.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line73">73</span><span class="td">[&nbsp;COMBINATION_TY_Destroy&nbsp;comb&nbsp;kind&nbsp;no_items&nbsp;i&nbsp;bk;</span></span>
+<span class="tr"><span class="th" id="line74">74</span><span class="td">&nbsp;kind&nbsp;=&nbsp;BlkValueRead(comb,&nbsp;COMBINATION_KIND_F);</span></span>
+<span class="tr"><span class="th" id="line75">75</span><span class="td">&nbsp;no_items&nbsp;=&nbsp;KindBaseArity(kind);</span></span>
+<span class="tr"><span class="th" id="line76">76</span><span class="td">&nbsp;for&nbsp;(i=0:&nbsp;i&lt;no_items:&nbsp;i++)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line77">77</span><span class="td">&nbsp;&nbsp;bk&nbsp;=&nbsp;KindBaseTerm(kind,&nbsp;i);</span></span>
+<span class="tr"><span class="th" id="line78">78</span><span class="td">&nbsp;&nbsp;if&nbsp;(KOVIsBlockValue(bk))</span></span>
+<span class="tr"><span class="th" id="line79">79</span><span class="td">&nbsp;&nbsp;&nbsp;BlkValueFree(BlkValueRead(comb,&nbsp;i+COMBINATION_ITEM_BASE));</span></span>
+<span class="tr"><span class="th" id="line80">80</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line81">81</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line82">82</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Copying.</h2><p><p> Again, if the comb contains block-values then they must be duplicated rather than bitwise copied as pointers.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line88">88</span><span class="td">[&nbsp;COMBINATION_TY_CopyKind&nbsp;to&nbsp;from;</span></span>
+<span class="tr"><span class="th" id="line89">89</span><span class="td">&nbsp;BlkValueWrite(to,&nbsp;COMBINATION_KIND_F,&nbsp;BlkValueRead(from,&nbsp;COMBINATION_KIND_F));</span></span>
+<span class="tr"><span class="th" id="line90">90</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line91">91</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line92">92</span><span class="td">[&nbsp;COMBINATION_TY_CopySB&nbsp;to&nbsp;from;</span></span>
+<span class="tr"><span class="th" id="line93">93</span><span class="td">&nbsp;BlkValueCopySB1(to,&nbsp;from);</span></span>
+<span class="tr"><span class="th" id="line94">94</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line95">95</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line96">96</span><span class="td">[&nbsp;COMBINATION_TY_KindData&nbsp;comb;</span></span>
+<span class="tr"><span class="th" id="line97">97</span><span class="td">&nbsp;return&nbsp;BlkValueRead(comb,&nbsp;COMBINATION_KIND_F);</span></span>
+<span class="tr"><span class="th" id="line98">98</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line99">99</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line100">100</span><span class="td">[&nbsp;COMBINATION_TY_Copy&nbsp;to_comb&nbsp;from_comb&nbsp;precopied_comb_kov&nbsp;&nbsp;no_items&nbsp;i&nbsp;nv&nbsp;kind&nbsp;bk;</span></span>
+<span class="tr"><span class="th" id="line101">101</span><span class="td">&nbsp;!&nbsp;kind&nbsp;=&nbsp;BlkValueRead(to_comb,&nbsp;COMBINATION_KIND_F);</span></span>
+<span class="tr"><span class="th" id="line102">102</span><span class="td">&nbsp;no_items&nbsp;=&nbsp;KindBaseArity(precopied_comb_kov);</span></span>
+<span class="tr"><span class="th" id="line103">103</span><span class="td">&nbsp;BlkValueWrite(to_comb,&nbsp;COMBINATION_KIND_F,&nbsp;precopied_comb_kov);</span></span>
+<span class="tr"><span class="th" id="line104">104</span><span class="td">&nbsp;for&nbsp;(i=0:&nbsp;i&lt;no_items:&nbsp;i++)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line105">105</span><span class="td">&nbsp;&nbsp;bk&nbsp;=&nbsp;KindBaseTerm(kind,&nbsp;i);</span></span>
+<span class="tr"><span class="th" id="line106">106</span><span class="td">&nbsp;&nbsp;if&nbsp;(KOVIsBlockValue(bk))&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line107">107</span><span class="td">&nbsp;&nbsp;&nbsp;nv&nbsp;=&nbsp;BlkValueCreate(bk);</span></span>
+<span class="tr"><span class="th" id="line108">108</span><span class="td">&nbsp;&nbsp;&nbsp;BlkValueCopy(nv,&nbsp;BlkValueRead(from_comb,&nbsp;i+COMBINATION_ITEM_BASE));</span></span>
+<span class="tr"><span class="th" id="line109">109</span><span class="td">&nbsp;&nbsp;&nbsp;BlkValueWrite(to_comb,&nbsp;i+COMBINATION_ITEM_BASE,&nbsp;nv);</span></span>
+<span class="tr"><span class="th" id="line110">110</span><span class="td">&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line111">111</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line112">112</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line113">113</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Comparison.</h2><p><p> This is a lexicographic comparison and assumes both combinations have the same kind.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line119">119</span><span class="td">[&nbsp;COMBINATION_TY_Compare&nbsp;left_comb&nbsp;right_comb&nbsp;delta&nbsp;no_items&nbsp;i&nbsp;cf&nbsp;kind&nbsp;bk;</span></span>
+<span class="tr"><span class="th" id="line120">120</span><span class="td">&nbsp;kind&nbsp;=&nbsp;BlkValueRead(left_comb,&nbsp;COMBINATION_KIND_F);</span></span>
+<span class="tr"><span class="th" id="line121">121</span><span class="td">&nbsp;no_items&nbsp;=&nbsp;KindBaseArity(kind);</span></span>
+<span class="tr"><span class="th" id="line122">122</span><span class="td">&nbsp;for&nbsp;(i=0:&nbsp;i&lt;no_items:&nbsp;i++)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line123">123</span><span class="td">&nbsp;&nbsp;bk&nbsp;=&nbsp;KindBaseTerm(kind,&nbsp;i);</span></span>
+<span class="tr"><span class="th" id="line124">124</span><span class="td">&nbsp;&nbsp;cf&nbsp;=&nbsp;KOVComparisonFunction(bk);</span></span>
+<span class="tr"><span class="th" id="line125">125</span><span class="td">&nbsp;&nbsp;if&nbsp;(cf&nbsp;==&nbsp;0&nbsp;or&nbsp;UnsignedCompare)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line126">126</span><span class="td">&nbsp;&nbsp;&nbsp;delta&nbsp;=&nbsp;BlkValueRead(left_comb,&nbsp;i+COMBINATION_ITEM_BASE)&nbsp;-</span></span>
+<span class="tr"><span class="th" id="line127">127</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;BlkValueRead(right_comb,&nbsp;i+COMBINATION_ITEM_BASE);</span></span>
+<span class="tr"><span class="th" id="line128">128</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(delta)&nbsp;return&nbsp;delta;</span></span>
+<span class="tr"><span class="th" id="line129">129</span><span class="td">&nbsp;&nbsp;}&nbsp;else&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line130">130</span><span class="td">&nbsp;&nbsp;&nbsp;delta&nbsp;=&nbsp;cf(BlkValueRead(left_comb,&nbsp;i+COMBINATION_ITEM_BASE),</span></span>
+<span class="tr"><span class="th" id="line131">131</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;BlkValueRead(right_comb,&nbsp;i+COMBINATION_ITEM_BASE));</span></span>
+<span class="tr"><span class="th" id="line132">132</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(delta)&nbsp;return&nbsp;delta;</span></span>
+<span class="tr"><span class="th" id="line133">133</span><span class="td">&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line134">134</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line135">135</span><span class="td">&nbsp;return&nbsp;0;</span></span>
+<span class="tr"><span class="th" id="line136">136</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line137">137</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line138">138</span><span class="td">[&nbsp;COMBINATION_TY_Distinguish&nbsp;left_comb&nbsp;right_comb;</span></span>
+<span class="tr"><span class="th" id="line139">139</span><span class="td">&nbsp;if&nbsp;(COMBINATION_TY_Compare(left_comb,&nbsp;right_comb)&nbsp;==&nbsp;0)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line140">140</span><span class="td">&nbsp;rtrue;</span></span>
+<span class="tr"><span class="th" id="line141">141</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line142">142</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Hashing.</h2><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line146">146</span><span class="td">[&nbsp;COMBINATION_TY_Hash&nbsp;comb&nbsp;&nbsp;kind&nbsp;rv&nbsp;no_items&nbsp;i&nbsp;bk;</span></span>
+<span class="tr"><span class="th" id="line147">147</span><span class="td">&nbsp;rv&nbsp;=&nbsp;0;</span></span>
+<span class="tr"><span class="th" id="line148">148</span><span class="td">&nbsp;kind&nbsp;=&nbsp;BlkValueRead(comb,&nbsp;COMBINATION_KIND_F);</span></span>
+<span class="tr"><span class="th" id="line149">149</span><span class="td">&nbsp;no_items&nbsp;=&nbsp;KindBaseArity(kind);</span></span>
+<span class="tr"><span class="th" id="line150">150</span><span class="td">&nbsp;for&nbsp;(i=0:&nbsp;i&lt;no_items:&nbsp;i++)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line151">151</span><span class="td">&nbsp;&nbsp;bk&nbsp;=&nbsp;KindBaseTerm(kind,&nbsp;i);</span></span>
+<span class="tr"><span class="th" id="line152">152</span><span class="td">&nbsp;&nbsp;rv&nbsp;=&nbsp;rv&nbsp;*&nbsp;33&nbsp;+&nbsp;GetHashValue(bk,&nbsp;BlkValueRead(comb,&nbsp;i+COMBINATION_ITEM_BASE));</span></span>
+<span class="tr"><span class="th" id="line153">153</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line154">154</span><span class="td">&nbsp;return&nbsp;rv;</span></span>
+<span class="tr"><span class="th" id="line155">155</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line156">156</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Printing.</h2><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line160">160</span><span class="td">[&nbsp;COMBINATION_TY_Say&nbsp;comb&nbsp;format&nbsp;no_items&nbsp;v&nbsp;i&nbsp;kind&nbsp;bk;</span></span>
+<span class="tr"><span class="th" id="line161">161</span><span class="td">&nbsp;if&nbsp;((comb==0)&nbsp;||&nbsp;(BlkValueWeakKind(comb)&nbsp;~=&nbsp;COMBINATION_TY))&nbsp;return;</span></span>
+<span class="tr"><span class="th" id="line162">162</span><span class="td">&nbsp;kind&nbsp;=&nbsp;BlkValueRead(comb,&nbsp;COMBINATION_KIND_F);</span></span>
+<span class="tr"><span class="th" id="line163">163</span><span class="td">&nbsp;no_items&nbsp;=&nbsp;KindBaseArity(kind);</span></span>
+<span class="tr"><span class="th" id="line164">164</span><span class="td">&nbsp;print&nbsp;&quot;(&quot;;</span></span>
+<span class="tr"><span class="th" id="line165">165</span><span class="td">&nbsp;for&nbsp;(i=0:&nbsp;i&lt;no_items:&nbsp;i++)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line166">166</span><span class="td">&nbsp;&nbsp;if&nbsp;(i&gt;0)&nbsp;print&nbsp;&quot;,&nbsp;&quot;;</span></span>
+<span class="tr"><span class="th" id="line167">167</span><span class="td">&nbsp;&nbsp;bk&nbsp;=&nbsp;KindBaseTerm(kind,&nbsp;i);</span></span>
+<span class="tr"><span class="th" id="line168">168</span><span class="td">&nbsp;&nbsp;v&nbsp;=&nbsp;BlkValueRead(comb,&nbsp;i+COMBINATION_ITEM_BASE);</span></span>
+<span class="tr"><span class="th" id="line169">169</span><span class="td">&nbsp;&nbsp;if&nbsp;(bk&nbsp;==&nbsp;LIST_OF_TY)&nbsp;LIST_OF_TY_Say(v,&nbsp;1);</span></span>
+<span class="tr"><span class="th" id="line170">170</span><span class="td">&nbsp;&nbsp;else&nbsp;PrintKindValuePair(bk,&nbsp;v);</span></span>
+<span class="tr"><span class="th" id="line171">171</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line172">172</span><span class="td">&nbsp;print&nbsp;&quot;)&quot;;</span></span>
+<span class="tr"><span class="th" id="line173">173</span><span class="td">];</span></span>
+</div><footer><hr><p><em>From I6T lib 6/12N &copy; Graham Nelson and published under the <a href="https://github.com/zedlopez/standard_rules/blob/main/LICENSE.md">Artistic License 2.0</a>. Distributed with <a href="http://inform7.com/">Inform 7 6M62</a>.</em></p></footer></body></html>

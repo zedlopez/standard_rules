@@ -1,93 +1,99 @@
 <!doctype html>
-<html><head><title>
-Number
-</title></head><body><h1>
-Number
-</h1><pre>
-B/numt: Number Template.
- 
-@Purpose: Support for parsing integers.
- 
-@-------------------------------------------------------------------------------
+<html lang="en">
+<meta charset="utf-8">
+<head><title>Number</title>
+  <style>
+span.th, span.td { display: table-cell; }
+span.td { padding-left: 2rem; }
+span.th { width:4rem; text-align: right; }
+span.tr { display: table-row;     counter-increment: linenum; }
+span.line_no::before {
+    content: counter(linenum);
+    text-align: right;
+    display: block;
+    font-family: monospace;
+    font-weight: normal;
+}
 
-@p Understanding.
-In our target virtual machines, numbers are stored in twos-complement form,
-so that a 16-bit VM can hold the range of integers $-2^{15} = -32768$ to
-$2^{15}-1 = +32767$, while a 32-bit VM can hold $-2^{31} = -2147483648$ to
-$2^{31}-1 = +2147483647$: the token below accepts exactly those ranges.
-
-@c
-[ DECIMAL_TOKEN wnc wna r n wa wl sign base digit digit_count original_wn group_wn;
-	wnc = wn; original_wn = wn; group_wn = wn;
-{-call:PL::Parsing::Tokens::Values::number}
-	wn = wnc;
-	r = ParseTokenStopped(ELEMENTARY_TT, NUMBER_TOKEN);
-	if ((r == GPR_NUMBER) && (parsed_number ~= 10000)) return r;
-	wn = wnc;
-	wa = WordAddress(wn);
-	wl = WordLength(wn);
-	sign = 1; base = 10; digit_count = 0;
-	if (wa->0 ~= '-' or '$' or '0' or '1' or '2' or '3' or '4'
-		or '5' or '6' or '7' or '8' or '9')
-		return GPR_FAIL;
-	if (wa->0 == '-') { sign = -1; wl--; wa++; }
-	if (wl == 0) return GPR_FAIL;
-	n = 0;
-	while (wl > 0) {
-		if (wa->0 >= 'a') digit = wa->0 - 'a' + 10;
-		else digit = wa->0 - '0';
-		digit_count++;
-		switch (base) {
-			2:  if (digit_count == 17) return GPR_FAIL;
-			10:
-				#Iftrue (WORDSIZE == 2);
-				if (digit_count == 6) return GPR_FAIL;
-				if (digit_count == 5) {
-					if (n > 3276) return GPR_FAIL;
-					if (n == 3276) {
-						if (sign == 1 && digit > 7) return GPR_FAIL;
-						if (sign == -1 && digit > 8) return GPR_FAIL;
-					}
-				}
-				#Ifnot; ! i.e., if (WORDSIZE == 4)
-				if (digit_count == 11) return GPR_FAIL;
-				if (digit_count == 10) {
-					if (n > 214748364) return GPR_FAIL;
-					if (n == 214748364) {
-						if (sign == 1 && digit > 7) return GPR_FAIL;
-						if (sign == -1 && digit > 8) return GPR_FAIL;
-					}
-				}
-				#Endif; 
-			16: if (digit_count == 5) return GPR_FAIL;
-		}
-		if (digit >= 0 && digit < base) n = base*n + digit;
-		else return GPR_FAIL;
-		wl--; wa++;
-	}
-	parsed_number = n*sign; wn++;
-	return GPR_NUMBER;
-];
-
-@p Truth states.
-And although truth states are not strictly speaking numbers, this seems as
-good a point as any to parse them:
-
-@c
-[ TRUTH_STATE_TOKEN original_wn wd;
-	original_wn = wn;
-{-call:PL::Parsing::Tokens::Values::truth_state}
-	wn = original_wn;
-	wd = NextWordStopped();
-	if (wd == 'true') { parsed_number = 1; return GPR_NUMBER; }
-	if (wd == 'false') { parsed_number = 0; return GPR_NUMBER; }
-	wn = original_wn;
-	return GPR_FAIL;
-];
-
-@p Absolute value.
-It's convenient to have this around somewhere:
-
-@c
-[ NUMBER_TY_Abs x; if (x<0) return -x; return x; ];
-</pre><footer><br><p>From I6T lib 6/12N, distributed with Inform 7 6M62 by Graham Nelson</p></footer></body></html>
+.fixed { font-family: monospace }
+.em { font-style: italic; }
+.center { text-align: center; }
+    body { font-family: sans-serif; margin: 3rem; background-color: #fafaf0; width: 80rem; }
+    .pre { font-family: monospace; margin: auto; width: 80rem; }
+#front_matter,.text { width: 50rem; }
+.text { border-bottom: .5px solid black; border-top: .5px solid black; margin-top: 1rem;
+padding-bottom: 1rem; margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+<div id="front_matter">
+<h1><a href="./Number.i6t">Number</a></h1><h2>Understanding.</h2><p><p> In our target virtual machines, numbers are stored in twos-complement form, so that a 16-bit VM can hold the range of integers $-2^{15} = -32768$ to $2^{15}-1 = +32767$, while a 32-bit VM can hold $-2^{31} = -2147483648$ to $2^{31}-1 = +2147483647$: the token below accepts exactly those ranges.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line13">13</span><span class="td">[&nbsp;DECIMAL_TOKEN&nbsp;wnc&nbsp;wna&nbsp;r&nbsp;n&nbsp;wa&nbsp;wl&nbsp;sign&nbsp;base&nbsp;digit&nbsp;digit_count&nbsp;original_wn&nbsp;group_wn;</span></span>
+<span class="tr"><span class="th" id="line14">14</span><span class="td">&nbsp;wnc&nbsp;=&nbsp;wn;&nbsp;original_wn&nbsp;=&nbsp;wn;&nbsp;group_wn&nbsp;=&nbsp;wn;</span></span>
+<span class="tr"><span class="th" id="line15">15</span><span class="td">{-call:PL::Parsing::Tokens::Values::number}</span></span>
+<span class="tr"><span class="th" id="line16">16</span><span class="td">&nbsp;wn&nbsp;=&nbsp;wnc;</span></span>
+<span class="tr"><span class="th" id="line17">17</span><span class="td">&nbsp;r&nbsp;=&nbsp;ParseTokenStopped(ELEMENTARY_TT,&nbsp;NUMBER_TOKEN);</span></span>
+<span class="tr"><span class="th" id="line18">18</span><span class="td">&nbsp;if&nbsp;((r&nbsp;==&nbsp;GPR_NUMBER)&nbsp;&amp;&amp;&nbsp;(parsed_number&nbsp;~=&nbsp;10000))&nbsp;return&nbsp;r;</span></span>
+<span class="tr"><span class="th" id="line19">19</span><span class="td">&nbsp;wn&nbsp;=&nbsp;wnc;</span></span>
+<span class="tr"><span class="th" id="line20">20</span><span class="td">&nbsp;wa&nbsp;=&nbsp;WordAddress(wn);</span></span>
+<span class="tr"><span class="th" id="line21">21</span><span class="td">&nbsp;wl&nbsp;=&nbsp;WordLength(wn);</span></span>
+<span class="tr"><span class="th" id="line22">22</span><span class="td">&nbsp;sign&nbsp;=&nbsp;1;&nbsp;base&nbsp;=&nbsp;10;&nbsp;digit_count&nbsp;=&nbsp;0;</span></span>
+<span class="tr"><span class="th" id="line23">23</span><span class="td">&nbsp;if&nbsp;(wa-&gt;0&nbsp;~=&nbsp;&#39;-&#39;&nbsp;or&nbsp;&#39;$&#39;&nbsp;or&nbsp;&#39;0&#39;&nbsp;or&nbsp;&#39;1&#39;&nbsp;or&nbsp;&#39;2&#39;&nbsp;or&nbsp;&#39;3&#39;&nbsp;or&nbsp;&#39;4&#39;</span></span>
+<span class="tr"><span class="th" id="line24">24</span><span class="td">&nbsp;&nbsp;or&nbsp;&#39;5&#39;&nbsp;or&nbsp;&#39;6&#39;&nbsp;or&nbsp;&#39;7&#39;&nbsp;or&nbsp;&#39;8&#39;&nbsp;or&nbsp;&#39;9&#39;)</span></span>
+<span class="tr"><span class="th" id="line25">25</span><span class="td">&nbsp;&nbsp;return&nbsp;GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line26">26</span><span class="td">&nbsp;if&nbsp;(wa-&gt;0&nbsp;==&nbsp;&#39;-&#39;)&nbsp;{&nbsp;sign&nbsp;=&nbsp;-1;&nbsp;wl--;&nbsp;wa++;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line27">27</span><span class="td">&nbsp;if&nbsp;(wl&nbsp;==&nbsp;0)&nbsp;return&nbsp;GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line28">28</span><span class="td">&nbsp;n&nbsp;=&nbsp;0;</span></span>
+<span class="tr"><span class="th" id="line29">29</span><span class="td">&nbsp;while&nbsp;(wl&nbsp;&gt;&nbsp;0)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line30">30</span><span class="td">&nbsp;&nbsp;if&nbsp;(wa-&gt;0&nbsp;&gt;=&nbsp;&#39;a&#39;)&nbsp;digit&nbsp;=&nbsp;wa-&gt;0&nbsp;-&nbsp;&#39;a&#39;&nbsp;+&nbsp;10;</span></span>
+<span class="tr"><span class="th" id="line31">31</span><span class="td">&nbsp;&nbsp;else&nbsp;digit&nbsp;=&nbsp;wa-&gt;0&nbsp;-&nbsp;&#39;0&#39;;</span></span>
+<span class="tr"><span class="th" id="line32">32</span><span class="td">&nbsp;&nbsp;digit_count++;</span></span>
+<span class="tr"><span class="th" id="line33">33</span><span class="td">&nbsp;&nbsp;switch&nbsp;(base)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line34">34</span><span class="td">&nbsp;&nbsp;&nbsp;2:&nbsp;&nbsp;if&nbsp;(digit_count&nbsp;==&nbsp;17)&nbsp;return&nbsp;GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line35">35</span><span class="td">&nbsp;&nbsp;&nbsp;10:</span></span>
+<span class="tr"><span class="th" id="line36">36</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;#Iftrue&nbsp;(WORDSIZE&nbsp;==&nbsp;2);</span></span>
+<span class="tr"><span class="th" id="line37">37</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(digit_count&nbsp;==&nbsp;6)&nbsp;return&nbsp;GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line38">38</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(digit_count&nbsp;==&nbsp;5)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line39">39</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(n&nbsp;&gt;&nbsp;3276)&nbsp;return&nbsp;GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line40">40</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(n&nbsp;==&nbsp;3276)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line41">41</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(sign&nbsp;==&nbsp;1&nbsp;&amp;&amp;&nbsp;digit&nbsp;&gt;&nbsp;7)&nbsp;return&nbsp;GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line42">42</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(sign&nbsp;==&nbsp;-1&nbsp;&amp;&amp;&nbsp;digit&nbsp;&gt;&nbsp;8)&nbsp;return&nbsp;GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line43">43</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line44">44</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line45">45</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;#Ifnot;&nbsp;!&nbsp;i.e.,&nbsp;if&nbsp;(WORDSIZE&nbsp;==&nbsp;4)</span></span>
+<span class="tr"><span class="th" id="line46">46</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(digit_count&nbsp;==&nbsp;11)&nbsp;return&nbsp;GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line47">47</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(digit_count&nbsp;==&nbsp;10)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line48">48</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(n&nbsp;&gt;&nbsp;214748364)&nbsp;return&nbsp;GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line49">49</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(n&nbsp;==&nbsp;214748364)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line50">50</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(sign&nbsp;==&nbsp;1&nbsp;&amp;&amp;&nbsp;digit&nbsp;&gt;&nbsp;7)&nbsp;return&nbsp;GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line51">51</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(sign&nbsp;==&nbsp;-1&nbsp;&amp;&amp;&nbsp;digit&nbsp;&gt;&nbsp;8)&nbsp;return&nbsp;GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line52">52</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line53">53</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line54">54</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;#Endif;&nbsp;</span></span>
+<span class="tr"><span class="th" id="line55">55</span><span class="td">&nbsp;&nbsp;&nbsp;16:&nbsp;if&nbsp;(digit_count&nbsp;==&nbsp;5)&nbsp;return&nbsp;GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line56">56</span><span class="td">&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line57">57</span><span class="td">&nbsp;&nbsp;if&nbsp;(digit&nbsp;&gt;=&nbsp;0&nbsp;&amp;&amp;&nbsp;digit&nbsp;&lt;&nbsp;base)&nbsp;n&nbsp;=&nbsp;base*n&nbsp;+&nbsp;digit;</span></span>
+<span class="tr"><span class="th" id="line58">58</span><span class="td">&nbsp;&nbsp;else&nbsp;return&nbsp;GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line59">59</span><span class="td">&nbsp;&nbsp;wl--;&nbsp;wa++;</span></span>
+<span class="tr"><span class="th" id="line60">60</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line61">61</span><span class="td">&nbsp;parsed_number&nbsp;=&nbsp;n*sign;&nbsp;wn++;</span></span>
+<span class="tr"><span class="th" id="line62">62</span><span class="td">&nbsp;return&nbsp;GPR_NUMBER;</span></span>
+<span class="tr"><span class="th" id="line63">63</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line64">64</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Truth states.</h2><p><p> And although truth states are not strictly speaking numbers, this seems as good a point as any to parse them:<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line70">70</span><span class="td">[&nbsp;TRUTH_STATE_TOKEN&nbsp;original_wn&nbsp;wd;</span></span>
+<span class="tr"><span class="th" id="line71">71</span><span class="td">&nbsp;original_wn&nbsp;=&nbsp;wn;</span></span>
+<span class="tr"><span class="th" id="line72">72</span><span class="td">{-call:PL::Parsing::Tokens::Values::truth_state}</span></span>
+<span class="tr"><span class="th" id="line73">73</span><span class="td">&nbsp;wn&nbsp;=&nbsp;original_wn;</span></span>
+<span class="tr"><span class="th" id="line74">74</span><span class="td">&nbsp;wd&nbsp;=&nbsp;NextWordStopped();</span></span>
+<span class="tr"><span class="th" id="line75">75</span><span class="td">&nbsp;if&nbsp;(wd&nbsp;==&nbsp;&#39;true&#39;)&nbsp;{&nbsp;parsed_number&nbsp;=&nbsp;1;&nbsp;return&nbsp;GPR_NUMBER;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line76">76</span><span class="td">&nbsp;if&nbsp;(wd&nbsp;==&nbsp;&#39;false&#39;)&nbsp;{&nbsp;parsed_number&nbsp;=&nbsp;0;&nbsp;return&nbsp;GPR_NUMBER;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line77">77</span><span class="td">&nbsp;wn&nbsp;=&nbsp;original_wn;</span></span>
+<span class="tr"><span class="th" id="line78">78</span><span class="td">&nbsp;return&nbsp;GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line79">79</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line80">80</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Absolute value.</h2><p><p> It&#39;s convenient to have this around somewhere:<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line85">85</span><span class="td">[&nbsp;NUMBER_TY_Abs&nbsp;x;&nbsp;if&nbsp;(x&lt;0)&nbsp;return&nbsp;-x;&nbsp;return&nbsp;x;&nbsp;];</span></span>
+</div><footer><hr><p><em>From I6T lib 6/12N &copy; Graham Nelson and published under the <a href="https://github.com/zedlopez/standard_rules/blob/main/LICENSE.md">Artistic License 2.0</a>. Distributed with <a href="http://inform7.com/">Inform 7 6M62</a>.</em></p></footer></body></html>

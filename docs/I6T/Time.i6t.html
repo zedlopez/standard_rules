@@ -1,309 +1,283 @@
 <!doctype html>
-<html><head><title>
-Time
-</title></head><body><h1>
-Time
-</h1><pre>
-B/timet: Time Template.
- 
-@Purpose: Support for parsing and printing times of day.
- 
-@-------------------------------------------------------------------------------
+<html lang="en">
+<meta charset="utf-8">
+<head><title>Time</title>
+  <style>
+span.th, span.td { display: table-cell; }
+span.td { padding-left: 2rem; }
+span.th { width:4rem; text-align: right; }
+span.tr { display: table-row;     counter-increment: linenum; }
+span.line_no::before {
+    content: counter(linenum);
+    text-align: right;
+    display: block;
+    font-family: monospace;
+    font-weight: normal;
+}
 
-@p Rounding.
-The following rounds a numerical value |t1| to the nearest unit of |t2|;
-for instance, if |t2| is 5 then it rounds to the nearest 5. The name is an
-anachronism, as it's used for all kinds of value.
-
-@c
-[ RoundOffTime t1 t2;
-	if (t1 >= 0) return ((t1+t2/2)/t2)*t2;
-	return -((-t1+t2/2)/t2)*t2;
-];
-
-@p Conversion To Number.
-
-@c
-[ NUMBER_TY_to_TIME_TY n;
-	n = n%1440;
-	if (n < 0) return n + 1440;
-	return n;
-];
-
-@p Square Root.
-Although this routine performs integer square root, it does so using Glulx's
-floating-point operations if available (with code contributed by Andrew
-Plotkin): this is fast and remains accurate up to about 16 million.
-
-The slower integer method is an old algorithm for extracting binary square
-roots, taking 2 bits at a time. We start out with |one| at the highest bit
-which isn't the sign bit; that used to be worked out as |WORD_HIGHBIT/2|, but
-this caused unexpected portability problems (exposing a minor bug in Inform
-and also glulxe) because of differences in how C compilers handle signed
-division of constants in the case where the dividend is $-2^{31}$, the unique
-number which cannot be negated in 32-bit twos complement arithmetic.
-
-@c
-[ SquareRoot num
-    op res one n x;
-    if (num < 0) { RunTimeProblem(RTP_NEGATIVEROOT); return 1; }
-
-    ! Use floating-point ops if available.
-    #ifdef TARGET_GLULX;
-    @gestalt 11 0 n;
-    if (n) {
-        @numtof num x;
-        @sqrt x x;
-        @ftonumz x num;
-        return num;
-    }
-   #endif;
-	op = num;
-	if (num < 0) { RunTimeProblem(RTP_NEGATIVEROOT); return 1; }
-	! "one" starts at the highest power of four <= the argument.
-	for (one = WORD_NEXTTOHIGHBIT: one > op: one = one/4) ;
-
-	while (one ~= 0) {
-		! print "Round: op = ", op, " res = ", res, ", res**2 = ", res*res, " one = ", one, " nthb = ", WORD_NEXTTOHIGHBIT, "^";
-		if (op >= res + one) {
-			op = op - res - one;
-			res = res/2 + one;
-		} else {
-			res = res/2;
-		}
-		one = one/4;
-	}
-	! print "Res is ", res, "^";
-	return res;
-];
-
-@p Cube Root.
-The following, again, uses floating-point arithmetic if it's available:
-this is fast and gives good accuracy for smallish numbers, but limited
-precision begins to tell at around 2000000.
-
-The alternative is an iterative scheme for finding cube roots by
-Newton-Raphson approximation, not a great method but which, on the narrow
-ranges of integers we deal with, just about good enough. The square root is
-used only as a sighting shot.
-
-@c
-[ CubeRoot num neg x y n;
-    ! Use floating-point ops if available.
-    #ifdef TARGET_GLULX;
-    @gestalt 11 0 n;
-    if (n) {
-        if (num < 0) {
-            neg = true;
-            num = -num;
-        }
-        @numtof num x;
-        @pow x 1051372203 x; ! pow(x, 0.3333)
-        @ftonumz x num;
-        if (neg)
-            return -num;
-        else
-            return num;
-    }
-    #endif;
-	if (num < 0) x = -SquareRoot(-num); else x = SquareRoot(num);
-	for (n=0: (y ~= x) && (n++ < 100): y = x, x = (2*x + num/x/x)/3) ;
-	return x;
-];
-
-@p Digital Printing.
-For instance, "2:06 am".
-
-@c
-[ PrintTimeOfDay t h aop;
-	if (t<0) { print "<no time>"; return; }
-	if (t >= TWELVE_HOURS) { aop = "pm"; t = t - TWELVE_HOURS; } else aop = "am";
-	h = t/ONE_HOUR; if (h==0) h=12;
-	print h, ":";
-	if (t%ONE_HOUR < 10) print "0"; print t%ONE_HOUR, " ", (string) aop;
-];
-
-@p Analogue Printing.
-For instance, "six minutes past two".
-
-@c
-[ PrintTimeOfDayEnglish t h m dir aop;
-	h = (t/ONE_HOUR) % 12; m = t%ONE_HOUR; if (h==0) h=12;
-	if (m==0) { print (number) h, " o'clock"; return; }
-	dir = "past";
-	if (m > HALF_HOUR) { m = ONE_HOUR-m; h = (h+1)%12; if (h==0) h=12; dir = "to"; }
-	switch(m) {
-		QUARTER_HOUR: print "quarter"; HALF_HOUR: print "half";
-		default: print (number) m;
-		    if (m%5 ~= 0) {
-				if (m == 1) print " minute"; else print " minutes";
-		    }
-	}
-	print " ", (string) dir, " ", (number) h;
-];
-
-@p Understanding.
-This I6 grammar token converts words in the player's command to a valid
-I7 time, and is heavily based on the one presented as a solution to an
-exercise in the DM4.
-
-@c
-[ TIME_TOKEN first_word second_word at length flag
-	illegal_char offhour hr mn i original_wn;
-	original_wn = wn;
-{-call:PL::Parsing::Tokens::Values::time}
-	wn = original_wn;
-	first_word = NextWordStopped();
-	switch (first_word) {
-		'midnight': parsed_number = 0; return GPR_NUMBER;
-		'midday', 'noon': parsed_number = TWELVE_HOURS;
-		return GPR_NUMBER;
-	}
-	! Next try the format 12:02
-	at = WordAddress(wn-1); length = WordLength(wn-1);
-	for (i=0: i<length: i++) {
-		switch (at->i) {
-			':': if (flag == false && i>0 && i<length-1) flag = true;
-			else illegal_char = true;
-			'0', '1', '2', '3', '4', '5', '6', '7', '8', '9': ;
-			default: illegal_char = true;
-		}
-	}
-	if (length < 3 || length > 5 || illegal_char) flag = false;
-	if (flag) {
-		for (i=0: at->i~=':': i++, hr=hr*10) hr = hr + at->i - '0';
-		hr = hr/10;
-		for (i++: i<length: i++, mn=mn*10) mn = mn + at->i - '0';
-		mn = mn/10;
-		second_word = NextWordStopped();
-		parsed_number = HoursMinsWordToTime(hr, mn, second_word);
-		if (parsed_number == -1) return GPR_FAIL;
-		if (second_word ~= 'pm' or 'am') wn--;
-		return GPR_NUMBER;
-	}
-	! Lastly the wordy format
-	offhour = -1;
-	if (first_word == 'half') offhour = HALF_HOUR;
-	if (first_word == 'quarter') offhour = QUARTER_HOUR;
-	if (offhour < 0) offhour = TryNumber(wn-1);
-	if (offhour < 0 || offhour >= ONE_HOUR) return GPR_FAIL;
-	second_word = NextWordStopped();
-	switch (second_word) {
-		! "six o'clock", "six"
-		'o^clock', 'am', 'pm', -1:
-			hr = offhour; if (hr > 12) return GPR_FAIL;
-		! "quarter to six", "twenty past midnight"
-		'to', 'past':
-			mn = offhour; hr = TryNumber(wn);
-			if (hr <= 0) {
-				switch (NextWordStopped()) {
-					'noon', 'midday': hr = 12;
-					'midnight': hr = 0;
-					default: return GPR_FAIL;
-				}
-			}
-			if (hr >= 13) return GPR_FAIL;
-			if (second_word == 'to') {
-				mn = ONE_HOUR-mn; hr--; if (hr<0) hr=23;
-			}
-			wn++; second_word = NextWordStopped();
-		! "six thirty"
-		default:
-			hr = offhour; mn = TryNumber(--wn);
-			if (mn < 0 || mn >= ONE_HOUR) return GPR_FAIL;
-			wn++; second_word = NextWordStopped();
-	}
-	parsed_number = HoursMinsWordToTime(hr, mn, second_word);
-	if (parsed_number < 0) return GPR_FAIL;
-	if (second_word ~= 'pm' or 'am' or 'o^clock') wn--;
-	return GPR_NUMBER;
-];
-
-[ HoursMinsWordToTime hour minute word x;
-	if (hour >= 24) return -1;
-	if (minute >= ONE_HOUR) return -1;
-	x = hour*ONE_HOUR + minute; if (hour >= 13) return x;
-	x = x % TWELVE_HOURS; if (word == 'pm') x = x + TWELVE_HOURS;
-	if (word ~= 'am' or 'pm' && hour == 12) x = x + TWELVE_HOURS;
-	return x;
-];
-
-@p Relative Time Token.
-"Time" is an interesting kind of value since it can hold two conceptually
-different ways of thinking about time: absolute times, such as "12:03 PM",
-and also relative times, like "ten minutes". For parsing purposes, these
-are completely different from each other, and the time token above handles
-only absolute times; we need the following for relative ones.
-
-@c
-[ RELATIVE_TIME_TOKEN first_word second_word offhour mult mn original_wn;
-	original_wn = wn;
-	wn = original_wn;
-	
-	first_word = NextWordStopped(); wn--;
-	if (first_word == 'an' or 'a//') mn=1; else mn=TryNumber(wn);
-	
-    if (mn == -1000) {
-		first_word = NextWordStopped();
-		if (first_word == 'half') offhour = HALF_HOUR;
-		if (first_word == 'quarter') offhour = QUARTER_HOUR;
-		if (offhour > 0) {
-			second_word = NextWordStopped();
-			if (second_word == 'of') second_word = NextWordStopped();
-			if (second_word == 'an') second_word = NextWordStopped();
-			if (second_word == 'hour') {
-				parsed_number = offhour;
-				return GPR_NUMBER;
-			}
-		}
-		return GPR_FAIL;
-    }
-	wn++;
-	
-	first_word = NextWordStopped();
-	switch (first_word) {
-		'minutes', 'minute': mult = 1;
-		'hours', 'hour': mult = 60;
-		default: return GPR_FAIL;
-	}
-	parsed_number = mn*mult;
-	if (mult == 60) {
-		mn=TryNumber(wn);
-		if (mn ~= -1000) {
-			wn++;
-			first_word = NextWordStopped();
-			if (first_word == 'minutes' or 'minute')
-				parsed_number = parsed_number + mn;
-			else wn = wn - 2;
-		}
-	}
-	return GPR_NUMBER;
-];
-
-@p During Scene Matching.
-
-@c
-[ DuringSceneMatching prop sc;
-	for (sc=0: sc<NUMBER_SCENES_CREATED: sc++)
-		if ((scene_status-->sc == 1) && (prop(sc+1))) rtrue;
-	rfalse;
-];
-
-@p Scene Questions.
-
-@c
-[ SceneUtility sc task;
-	if (sc <= 0) return 0;
-	if (task == 1 or 2) {
-		if (scene_endings-->(sc-1) == 0) return RunTimeProblem(RTP_SCENEHASNTSTARTED, sc);
-	} else {
-		if (scene_endings-->(sc-1) <= 1) return RunTimeProblem(RTP_SCENEHASNTENDED, sc);
-	}
-	switch (task) {
-		1: return (the_time - scene_started-->(sc-1))%(TWENTY_FOUR_HOURS);
-		2: return scene_started-->(sc-1);
-		3: return (the_time - scene_ended-->(sc-1))%(TWENTY_FOUR_HOURS);
-		4: return scene_ended-->(sc-1);
-	}
-];
-</pre><footer><br><p>From I6T lib 6/12N, distributed with Inform 7 6M62 by Graham Nelson</p></footer></body></html>
+.fixed { font-family: monospace }
+.em { font-style: italic; }
+.center { text-align: center; }
+    body { font-family: sans-serif; margin: 3rem; background-color: #fafaf0; width: 80rem; }
+    .pre { font-family: monospace; margin: auto; width: 80rem; }
+#front_matter,.text { width: 50rem; }
+.text { border-bottom: .5px solid black; border-top: .5px solid black; margin-top: 1rem;
+padding-bottom: 1rem; margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+<div id="front_matter">
+<h1><a href="./Time.i6t">Time</a></h1><h2>Rounding.</h2><p><p> The following rounds a numerical value <span class="fixed">t1</span> to the nearest unit of <span class="fixed">t2</span>; for instance, if <span class="fixed">t2</span> is 5 then it rounds to the nearest 5. The name is an anachronism, as it&#39;s used for all kinds of value.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line12">12</span><span class="td">[&nbsp;RoundOffTime&nbsp;t1&nbsp;t2;</span></span>
+<span class="tr"><span class="th" id="line13">13</span><span class="td">&nbsp;if&nbsp;(t1&nbsp;&gt;=&nbsp;0)&nbsp;return&nbsp;((t1+t2/2)/t2)*t2;</span></span>
+<span class="tr"><span class="th" id="line14">14</span><span class="td">&nbsp;return&nbsp;-((-t1+t2/2)/t2)*t2;</span></span>
+<span class="tr"><span class="th" id="line15">15</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line16">16</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Conversion To Number.</h2><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line20">20</span><span class="td">[&nbsp;NUMBER_TY_to_TIME_TY&nbsp;n;</span></span>
+<span class="tr"><span class="th" id="line21">21</span><span class="td">&nbsp;n&nbsp;=&nbsp;n%1440;</span></span>
+<span class="tr"><span class="th" id="line22">22</span><span class="td">&nbsp;if&nbsp;(n&nbsp;&lt;&nbsp;0)&nbsp;return&nbsp;n&nbsp;+&nbsp;1440;</span></span>
+<span class="tr"><span class="th" id="line23">23</span><span class="td">&nbsp;return&nbsp;n;</span></span>
+<span class="tr"><span class="th" id="line24">24</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line25">25</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Square Root.</h2><p><p> Although this routine performs integer square root, it does so using Glulx&#39;s floating-point operations if available (with code contributed by Andrew Plotkin): this is fast and remains accurate up to about 16 million.<p></p><p> The slower integer method is an old algorithm for extracting binary square roots, taking 2 bits at a time. We start out with <span class="fixed">one</span> at the highest bit which isn&#39;t the sign bit; that used to be worked out as <span class="fixed">WORD_HIGHBIT/2</span>, but this caused unexpected portability problems (exposing a minor bug in Inform and also glulxe) because of differences in how C compilers handle signed division of constants in the case where the dividend is $-2^{31}$, the unique number which cannot be negated in 32-bit twos complement arithmetic.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line40">40</span><span class="td">[&nbsp;SquareRoot&nbsp;num</span></span>
+<span class="tr"><span class="th" id="line41">41</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;op&nbsp;res&nbsp;one&nbsp;n&nbsp;x;</span></span>
+<span class="tr"><span class="th" id="line42">42</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(num&nbsp;&lt;&nbsp;0)&nbsp;{&nbsp;RunTimeProblem(RTP_NEGATIVEROOT);&nbsp;return&nbsp;1;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line43">43</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line44">44</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;!&nbsp;Use&nbsp;floating-point&nbsp;ops&nbsp;if&nbsp;available.</span></span>
+<span class="tr"><span class="th" id="line45">45</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;#ifdef&nbsp;TARGET_GLULX;</span></span>
+<span class="tr"><span class="th" id="line46">46</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;@gestalt&nbsp;11&nbsp;0&nbsp;n;</span></span>
+<span class="tr"><span class="th" id="line47">47</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(n)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line48">48</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@numtof&nbsp;num&nbsp;x;</span></span>
+<span class="tr"><span class="th" id="line49">49</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@sqrt&nbsp;x&nbsp;x;</span></span>
+<span class="tr"><span class="th" id="line50">50</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@ftonumz&nbsp;x&nbsp;num;</span></span>
+<span class="tr"><span class="th" id="line51">51</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;num;</span></span>
+<span class="tr"><span class="th" id="line52">52</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line53">53</span><span class="td">&nbsp;&nbsp;&nbsp;#endif;</span></span>
+<span class="tr"><span class="th" id="line54">54</span><span class="td">&nbsp;op&nbsp;=&nbsp;num;</span></span>
+<span class="tr"><span class="th" id="line55">55</span><span class="td">&nbsp;if&nbsp;(num&nbsp;&lt;&nbsp;0)&nbsp;{&nbsp;RunTimeProblem(RTP_NEGATIVEROOT);&nbsp;return&nbsp;1;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line56">56</span><span class="td">&nbsp;!&nbsp;&quot;one&quot;&nbsp;starts&nbsp;at&nbsp;the&nbsp;highest&nbsp;power&nbsp;of&nbsp;four&nbsp;&lt;=&nbsp;the&nbsp;argument.</span></span>
+<span class="tr"><span class="th" id="line57">57</span><span class="td">&nbsp;for&nbsp;(one&nbsp;=&nbsp;WORD_NEXTTOHIGHBIT:&nbsp;one&nbsp;&gt;&nbsp;op:&nbsp;one&nbsp;=&nbsp;one/4)&nbsp;;</span></span>
+<span class="tr"><span class="th" id="line58">58</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line59">59</span><span class="td">&nbsp;while&nbsp;(one&nbsp;~=&nbsp;0)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line60">60</span><span class="td">&nbsp;&nbsp;!&nbsp;print&nbsp;&quot;Round:&nbsp;op&nbsp;=&nbsp;&quot;,&nbsp;op,&nbsp;&quot;&nbsp;res&nbsp;=&nbsp;&quot;,&nbsp;res,&nbsp;&quot;,&nbsp;res**2&nbsp;=&nbsp;&quot;,&nbsp;res*res,&nbsp;&quot;&nbsp;one&nbsp;=&nbsp;&quot;,&nbsp;one,&nbsp;&quot;&nbsp;nthb&nbsp;=&nbsp;&quot;,&nbsp;WORD_NEXTTOHIGHBIT,&nbsp;&quot;^&quot;;</span></span>
+<span class="tr"><span class="th" id="line61">61</span><span class="td">&nbsp;&nbsp;if&nbsp;(op&nbsp;&gt;=&nbsp;res&nbsp;+&nbsp;one)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line62">62</span><span class="td">&nbsp;&nbsp;&nbsp;op&nbsp;=&nbsp;op&nbsp;-&nbsp;res&nbsp;-&nbsp;one;</span></span>
+<span class="tr"><span class="th" id="line63">63</span><span class="td">&nbsp;&nbsp;&nbsp;res&nbsp;=&nbsp;res/2&nbsp;+&nbsp;one;</span></span>
+<span class="tr"><span class="th" id="line64">64</span><span class="td">&nbsp;&nbsp;}&nbsp;else&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line65">65</span><span class="td">&nbsp;&nbsp;&nbsp;res&nbsp;=&nbsp;res/2;</span></span>
+<span class="tr"><span class="th" id="line66">66</span><span class="td">&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line67">67</span><span class="td">&nbsp;&nbsp;one&nbsp;=&nbsp;one/4;</span></span>
+<span class="tr"><span class="th" id="line68">68</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line69">69</span><span class="td">&nbsp;!&nbsp;print&nbsp;&quot;Res&nbsp;is&nbsp;&quot;,&nbsp;res,&nbsp;&quot;^&quot;;</span></span>
+<span class="tr"><span class="th" id="line70">70</span><span class="td">&nbsp;return&nbsp;res;</span></span>
+<span class="tr"><span class="th" id="line71">71</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line72">72</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Cube Root.</h2><p><p> The following, again, uses floating-point arithmetic if it&#39;s available: this is fast and gives good accuracy for smallish numbers, but limited precision begins to tell at around 2000000.<p></p><p> The alternative is an iterative scheme for finding cube roots by Newton-Raphson approximation, not a great method but which, on the narrow ranges of integers we deal with, just about good enough. The square root is used only as a sighting shot.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line84">84</span><span class="td">[&nbsp;CubeRoot&nbsp;num&nbsp;neg&nbsp;x&nbsp;y&nbsp;n;</span></span>
+<span class="tr"><span class="th" id="line85">85</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;!&nbsp;Use&nbsp;floating-point&nbsp;ops&nbsp;if&nbsp;available.</span></span>
+<span class="tr"><span class="th" id="line86">86</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;#ifdef&nbsp;TARGET_GLULX;</span></span>
+<span class="tr"><span class="th" id="line87">87</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;@gestalt&nbsp;11&nbsp;0&nbsp;n;</span></span>
+<span class="tr"><span class="th" id="line88">88</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(n)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line89">89</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(num&nbsp;&lt;&nbsp;0)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line90">90</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;neg&nbsp;=&nbsp;true;</span></span>
+<span class="tr"><span class="th" id="line91">91</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;num&nbsp;=&nbsp;-num;</span></span>
+<span class="tr"><span class="th" id="line92">92</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line93">93</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@numtof&nbsp;num&nbsp;x;</span></span>
+<span class="tr"><span class="th" id="line94">94</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@pow&nbsp;x&nbsp;1051372203&nbsp;x;&nbsp;!&nbsp;pow(x,&nbsp;0.3333)</span></span>
+<span class="tr"><span class="th" id="line95">95</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@ftonumz&nbsp;x&nbsp;num;</span></span>
+<span class="tr"><span class="th" id="line96">96</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(neg)</span></span>
+<span class="tr"><span class="th" id="line97">97</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;-num;</span></span>
+<span class="tr"><span class="th" id="line98">98</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else</span></span>
+<span class="tr"><span class="th" id="line99">99</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;num;</span></span>
+<span class="tr"><span class="th" id="line100">100</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line101">101</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;#endif;</span></span>
+<span class="tr"><span class="th" id="line102">102</span><span class="td">&nbsp;if&nbsp;(num&nbsp;&lt;&nbsp;0)&nbsp;x&nbsp;=&nbsp;-SquareRoot(-num);&nbsp;else&nbsp;x&nbsp;=&nbsp;SquareRoot(num);</span></span>
+<span class="tr"><span class="th" id="line103">103</span><span class="td">&nbsp;for&nbsp;(n=0:&nbsp;(y&nbsp;~=&nbsp;x)&nbsp;&amp;&amp;&nbsp;(n++&nbsp;&lt;&nbsp;100):&nbsp;y&nbsp;=&nbsp;x,&nbsp;x&nbsp;=&nbsp;(2*x&nbsp;+&nbsp;num/x/x)/3)&nbsp;;</span></span>
+<span class="tr"><span class="th" id="line104">104</span><span class="td">&nbsp;return&nbsp;x;</span></span>
+<span class="tr"><span class="th" id="line105">105</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line106">106</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Digital Printing.</h2><p><p> For instance, &quot;2:06 am&quot;.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line111">111</span><span class="td">[&nbsp;PrintTimeOfDay&nbsp;t&nbsp;h&nbsp;aop;</span></span>
+<span class="tr"><span class="th" id="line112">112</span><span class="td">&nbsp;if&nbsp;(t&lt;0)&nbsp;{&nbsp;print&nbsp;&quot;&lt;no&nbsp;time&gt;&quot;;&nbsp;return;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line113">113</span><span class="td">&nbsp;if&nbsp;(t&nbsp;&gt;=&nbsp;TWELVE_HOURS)&nbsp;{&nbsp;aop&nbsp;=&nbsp;&quot;pm&quot;;&nbsp;t&nbsp;=&nbsp;t&nbsp;-&nbsp;TWELVE_HOURS;&nbsp;}&nbsp;else&nbsp;aop&nbsp;=&nbsp;&quot;am&quot;;</span></span>
+<span class="tr"><span class="th" id="line114">114</span><span class="td">&nbsp;h&nbsp;=&nbsp;t/ONE_HOUR;&nbsp;if&nbsp;(h==0)&nbsp;h=12;</span></span>
+<span class="tr"><span class="th" id="line115">115</span><span class="td">&nbsp;print&nbsp;h,&nbsp;&quot;:&quot;;</span></span>
+<span class="tr"><span class="th" id="line116">116</span><span class="td">&nbsp;if&nbsp;(t%ONE_HOUR&nbsp;&lt;&nbsp;10)&nbsp;print&nbsp;&quot;0&quot;;&nbsp;print&nbsp;t%ONE_HOUR,&nbsp;&quot;&nbsp;&quot;,&nbsp;(string)&nbsp;aop;</span></span>
+<span class="tr"><span class="th" id="line117">117</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line118">118</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Analogue Printing.</h2><p><p> For instance, &quot;six minutes past two&quot;.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line123">123</span><span class="td">[&nbsp;PrintTimeOfDayEnglish&nbsp;t&nbsp;h&nbsp;m&nbsp;dir&nbsp;aop;</span></span>
+<span class="tr"><span class="th" id="line124">124</span><span class="td">&nbsp;h&nbsp;=&nbsp;(t/ONE_HOUR)&nbsp;%&nbsp;12;&nbsp;m&nbsp;=&nbsp;t%ONE_HOUR;&nbsp;if&nbsp;(h==0)&nbsp;h=12;</span></span>
+<span class="tr"><span class="th" id="line125">125</span><span class="td">&nbsp;if&nbsp;(m==0)&nbsp;{&nbsp;print&nbsp;(number)&nbsp;h,&nbsp;&quot;&nbsp;o&#39;clock&quot;;&nbsp;return;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line126">126</span><span class="td">&nbsp;dir&nbsp;=&nbsp;&quot;past&quot;;</span></span>
+<span class="tr"><span class="th" id="line127">127</span><span class="td">&nbsp;if&nbsp;(m&nbsp;&gt;&nbsp;HALF_HOUR)&nbsp;{&nbsp;m&nbsp;=&nbsp;ONE_HOUR-m;&nbsp;h&nbsp;=&nbsp;(h+1)%12;&nbsp;if&nbsp;(h==0)&nbsp;h=12;&nbsp;dir&nbsp;=&nbsp;&quot;to&quot;;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line128">128</span><span class="td">&nbsp;switch(m)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line129">129</span><span class="td">&nbsp;&nbsp;QUARTER_HOUR:&nbsp;print&nbsp;&quot;quarter&quot;;&nbsp;HALF_HOUR:&nbsp;print&nbsp;&quot;half&quot;;</span></span>
+<span class="tr"><span class="th" id="line130">130</span><span class="td">&nbsp;&nbsp;default:&nbsp;print&nbsp;(number)&nbsp;m;</span></span>
+<span class="tr"><span class="th" id="line131">131</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(m%5&nbsp;~=&nbsp;0)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line132">132</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(m&nbsp;==&nbsp;1)&nbsp;print&nbsp;&quot;&nbsp;minute&quot;;&nbsp;else&nbsp;print&nbsp;&quot;&nbsp;minutes&quot;;</span></span>
+<span class="tr"><span class="th" id="line133">133</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line134">134</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line135">135</span><span class="td">&nbsp;print&nbsp;&quot;&nbsp;&quot;,&nbsp;(string)&nbsp;dir,&nbsp;&quot;&nbsp;&quot;,&nbsp;(number)&nbsp;h;</span></span>
+<span class="tr"><span class="th" id="line136">136</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line137">137</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Understanding.</h2><p><p> This I6 grammar token converts words in the player&#39;s command to a valid I7 time, and is heavily based on the one presented as a solution to an exercise in the DM4.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line144">144</span><span class="td">[&nbsp;TIME_TOKEN&nbsp;first_word&nbsp;second_word&nbsp;at&nbsp;length&nbsp;flag</span></span>
+<span class="tr"><span class="th" id="line145">145</span><span class="td">&nbsp;illegal_char&nbsp;offhour&nbsp;hr&nbsp;mn&nbsp;i&nbsp;original_wn;</span></span>
+<span class="tr"><span class="th" id="line146">146</span><span class="td">&nbsp;original_wn&nbsp;=&nbsp;wn;</span></span>
+<span class="tr"><span class="th" id="line147">147</span><span class="td">{-call:PL::Parsing::Tokens::Values::time}</span></span>
+<span class="tr"><span class="th" id="line148">148</span><span class="td">&nbsp;wn&nbsp;=&nbsp;original_wn;</span></span>
+<span class="tr"><span class="th" id="line149">149</span><span class="td">&nbsp;first_word&nbsp;=&nbsp;NextWordStopped();</span></span>
+<span class="tr"><span class="th" id="line150">150</span><span class="td">&nbsp;switch&nbsp;(first_word)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line151">151</span><span class="td">&nbsp;&nbsp;&#39;midnight&#39;:&nbsp;parsed_number&nbsp;=&nbsp;0;&nbsp;return&nbsp;GPR_NUMBER;</span></span>
+<span class="tr"><span class="th" id="line152">152</span><span class="td">&nbsp;&nbsp;&#39;midday&#39;,&nbsp;&#39;noon&#39;:&nbsp;parsed_number&nbsp;=&nbsp;TWELVE_HOURS;</span></span>
+<span class="tr"><span class="th" id="line153">153</span><span class="td">&nbsp;&nbsp;return&nbsp;GPR_NUMBER;</span></span>
+<span class="tr"><span class="th" id="line154">154</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line155">155</span><span class="td">&nbsp;!&nbsp;Next&nbsp;try&nbsp;the&nbsp;format&nbsp;12:02</span></span>
+<span class="tr"><span class="th" id="line156">156</span><span class="td">&nbsp;at&nbsp;=&nbsp;WordAddress(wn-1);&nbsp;length&nbsp;=&nbsp;WordLength(wn-1);</span></span>
+<span class="tr"><span class="th" id="line157">157</span><span class="td">&nbsp;for&nbsp;(i=0:&nbsp;i&lt;length:&nbsp;i++)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line158">158</span><span class="td">&nbsp;&nbsp;switch&nbsp;(at-&gt;i)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line159">159</span><span class="td">&nbsp;&nbsp;&nbsp;&#39;:&#39;:&nbsp;if&nbsp;(flag&nbsp;==&nbsp;false&nbsp;&amp;&amp;&nbsp;i&gt;0&nbsp;&amp;&amp;&nbsp;i&lt;length-1)&nbsp;flag&nbsp;=&nbsp;true;</span></span>
+<span class="tr"><span class="th" id="line160">160</span><span class="td">&nbsp;&nbsp;&nbsp;else&nbsp;illegal_char&nbsp;=&nbsp;true;</span></span>
+<span class="tr"><span class="th" id="line161">161</span><span class="td">&nbsp;&nbsp;&nbsp;&#39;0&#39;,&nbsp;&#39;1&#39;,&nbsp;&#39;2&#39;,&nbsp;&#39;3&#39;,&nbsp;&#39;4&#39;,&nbsp;&#39;5&#39;,&nbsp;&#39;6&#39;,&nbsp;&#39;7&#39;,&nbsp;&#39;8&#39;,&nbsp;&#39;9&#39;:&nbsp;;</span></span>
+<span class="tr"><span class="th" id="line162">162</span><span class="td">&nbsp;&nbsp;&nbsp;default:&nbsp;illegal_char&nbsp;=&nbsp;true;</span></span>
+<span class="tr"><span class="th" id="line163">163</span><span class="td">&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line164">164</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line165">165</span><span class="td">&nbsp;if&nbsp;(length&nbsp;&lt;&nbsp;3&nbsp;||&nbsp;length&nbsp;&gt;&nbsp;5&nbsp;||&nbsp;illegal_char)&nbsp;flag&nbsp;=&nbsp;false;</span></span>
+<span class="tr"><span class="th" id="line166">166</span><span class="td">&nbsp;if&nbsp;(flag)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line167">167</span><span class="td">&nbsp;&nbsp;for&nbsp;(i=0:&nbsp;at-&gt;i~=&#39;:&#39;:&nbsp;i++,&nbsp;hr=hr*10)&nbsp;hr&nbsp;=&nbsp;hr&nbsp;+&nbsp;at-&gt;i&nbsp;-&nbsp;&#39;0&#39;;</span></span>
+<span class="tr"><span class="th" id="line168">168</span><span class="td">&nbsp;&nbsp;hr&nbsp;=&nbsp;hr/10;</span></span>
+<span class="tr"><span class="th" id="line169">169</span><span class="td">&nbsp;&nbsp;for&nbsp;(i++:&nbsp;i&lt;length:&nbsp;i++,&nbsp;mn=mn*10)&nbsp;mn&nbsp;=&nbsp;mn&nbsp;+&nbsp;at-&gt;i&nbsp;-&nbsp;&#39;0&#39;;</span></span>
+<span class="tr"><span class="th" id="line170">170</span><span class="td">&nbsp;&nbsp;mn&nbsp;=&nbsp;mn/10;</span></span>
+<span class="tr"><span class="th" id="line171">171</span><span class="td">&nbsp;&nbsp;second_word&nbsp;=&nbsp;NextWordStopped();</span></span>
+<span class="tr"><span class="th" id="line172">172</span><span class="td">&nbsp;&nbsp;parsed_number&nbsp;=&nbsp;HoursMinsWordToTime(hr,&nbsp;mn,&nbsp;second_word);</span></span>
+<span class="tr"><span class="th" id="line173">173</span><span class="td">&nbsp;&nbsp;if&nbsp;(parsed_number&nbsp;==&nbsp;-1)&nbsp;return&nbsp;GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line174">174</span><span class="td">&nbsp;&nbsp;if&nbsp;(second_word&nbsp;~=&nbsp;&#39;pm&#39;&nbsp;or&nbsp;&#39;am&#39;)&nbsp;wn--;</span></span>
+<span class="tr"><span class="th" id="line175">175</span><span class="td">&nbsp;&nbsp;return&nbsp;GPR_NUMBER;</span></span>
+<span class="tr"><span class="th" id="line176">176</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line177">177</span><span class="td">&nbsp;!&nbsp;Lastly&nbsp;the&nbsp;wordy&nbsp;format</span></span>
+<span class="tr"><span class="th" id="line178">178</span><span class="td">&nbsp;offhour&nbsp;=&nbsp;-1;</span></span>
+<span class="tr"><span class="th" id="line179">179</span><span class="td">&nbsp;if&nbsp;(first_word&nbsp;==&nbsp;&#39;half&#39;)&nbsp;offhour&nbsp;=&nbsp;HALF_HOUR;</span></span>
+<span class="tr"><span class="th" id="line180">180</span><span class="td">&nbsp;if&nbsp;(first_word&nbsp;==&nbsp;&#39;quarter&#39;)&nbsp;offhour&nbsp;=&nbsp;QUARTER_HOUR;</span></span>
+<span class="tr"><span class="th" id="line181">181</span><span class="td">&nbsp;if&nbsp;(offhour&nbsp;&lt;&nbsp;0)&nbsp;offhour&nbsp;=&nbsp;TryNumber(wn-1);</span></span>
+<span class="tr"><span class="th" id="line182">182</span><span class="td">&nbsp;if&nbsp;(offhour&nbsp;&lt;&nbsp;0&nbsp;||&nbsp;offhour&nbsp;&gt;=&nbsp;ONE_HOUR)&nbsp;return&nbsp;GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line183">183</span><span class="td">&nbsp;second_word&nbsp;=&nbsp;NextWordStopped();</span></span>
+<span class="tr"><span class="th" id="line184">184</span><span class="td">&nbsp;switch&nbsp;(second_word)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line185">185</span><span class="td">&nbsp;&nbsp;!&nbsp;&quot;six&nbsp;o&#39;clock&quot;,&nbsp;&quot;six&quot;</span></span>
+<span class="tr"><span class="th" id="line186">186</span><span class="td">&nbsp;&nbsp;&#39;o^clock&#39;,&nbsp;&#39;am&#39;,&nbsp;&#39;pm&#39;,&nbsp;-1:</span></span>
+<span class="tr"><span class="th" id="line187">187</span><span class="td">&nbsp;&nbsp;&nbsp;hr&nbsp;=&nbsp;offhour;&nbsp;if&nbsp;(hr&nbsp;&gt;&nbsp;12)&nbsp;return&nbsp;GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line188">188</span><span class="td">&nbsp;&nbsp;!&nbsp;&quot;quarter&nbsp;to&nbsp;six&quot;,&nbsp;&quot;twenty&nbsp;past&nbsp;midnight&quot;</span></span>
+<span class="tr"><span class="th" id="line189">189</span><span class="td">&nbsp;&nbsp;&#39;to&#39;,&nbsp;&#39;past&#39;:</span></span>
+<span class="tr"><span class="th" id="line190">190</span><span class="td">&nbsp;&nbsp;&nbsp;mn&nbsp;=&nbsp;offhour;&nbsp;hr&nbsp;=&nbsp;TryNumber(wn);</span></span>
+<span class="tr"><span class="th" id="line191">191</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(hr&nbsp;&lt;=&nbsp;0)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line192">192</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;switch&nbsp;(NextWordStopped())&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line193">193</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#39;noon&#39;,&nbsp;&#39;midday&#39;:&nbsp;hr&nbsp;=&nbsp;12;</span></span>
+<span class="tr"><span class="th" id="line194">194</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#39;midnight&#39;:&nbsp;hr&nbsp;=&nbsp;0;</span></span>
+<span class="tr"><span class="th" id="line195">195</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default:&nbsp;return&nbsp;GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line196">196</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line197">197</span><span class="td">&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line198">198</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(hr&nbsp;&gt;=&nbsp;13)&nbsp;return&nbsp;GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line199">199</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(second_word&nbsp;==&nbsp;&#39;to&#39;)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line200">200</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;mn&nbsp;=&nbsp;ONE_HOUR-mn;&nbsp;hr--;&nbsp;if&nbsp;(hr&lt;0)&nbsp;hr=23;</span></span>
+<span class="tr"><span class="th" id="line201">201</span><span class="td">&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line202">202</span><span class="td">&nbsp;&nbsp;&nbsp;wn++;&nbsp;second_word&nbsp;=&nbsp;NextWordStopped();</span></span>
+<span class="tr"><span class="th" id="line203">203</span><span class="td">&nbsp;&nbsp;!&nbsp;&quot;six&nbsp;thirty&quot;</span></span>
+<span class="tr"><span class="th" id="line204">204</span><span class="td">&nbsp;&nbsp;default:</span></span>
+<span class="tr"><span class="th" id="line205">205</span><span class="td">&nbsp;&nbsp;&nbsp;hr&nbsp;=&nbsp;offhour;&nbsp;mn&nbsp;=&nbsp;TryNumber(--wn);</span></span>
+<span class="tr"><span class="th" id="line206">206</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(mn&nbsp;&lt;&nbsp;0&nbsp;||&nbsp;mn&nbsp;&gt;=&nbsp;ONE_HOUR)&nbsp;return&nbsp;GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line207">207</span><span class="td">&nbsp;&nbsp;&nbsp;wn++;&nbsp;second_word&nbsp;=&nbsp;NextWordStopped();</span></span>
+<span class="tr"><span class="th" id="line208">208</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line209">209</span><span class="td">&nbsp;parsed_number&nbsp;=&nbsp;HoursMinsWordToTime(hr,&nbsp;mn,&nbsp;second_word);</span></span>
+<span class="tr"><span class="th" id="line210">210</span><span class="td">&nbsp;if&nbsp;(parsed_number&nbsp;&lt;&nbsp;0)&nbsp;return&nbsp;GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line211">211</span><span class="td">&nbsp;if&nbsp;(second_word&nbsp;~=&nbsp;&#39;pm&#39;&nbsp;or&nbsp;&#39;am&#39;&nbsp;or&nbsp;&#39;o^clock&#39;)&nbsp;wn--;</span></span>
+<span class="tr"><span class="th" id="line212">212</span><span class="td">&nbsp;return&nbsp;GPR_NUMBER;</span></span>
+<span class="tr"><span class="th" id="line213">213</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line214">214</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line215">215</span><span class="td">[&nbsp;HoursMinsWordToTime&nbsp;hour&nbsp;minute&nbsp;word&nbsp;x;</span></span>
+<span class="tr"><span class="th" id="line216">216</span><span class="td">&nbsp;if&nbsp;(hour&nbsp;&gt;=&nbsp;24)&nbsp;return&nbsp;-1;</span></span>
+<span class="tr"><span class="th" id="line217">217</span><span class="td">&nbsp;if&nbsp;(minute&nbsp;&gt;=&nbsp;ONE_HOUR)&nbsp;return&nbsp;-1;</span></span>
+<span class="tr"><span class="th" id="line218">218</span><span class="td">&nbsp;x&nbsp;=&nbsp;hour*ONE_HOUR&nbsp;+&nbsp;minute;&nbsp;if&nbsp;(hour&nbsp;&gt;=&nbsp;13)&nbsp;return&nbsp;x;</span></span>
+<span class="tr"><span class="th" id="line219">219</span><span class="td">&nbsp;x&nbsp;=&nbsp;x&nbsp;%&nbsp;TWELVE_HOURS;&nbsp;if&nbsp;(word&nbsp;==&nbsp;&#39;pm&#39;)&nbsp;x&nbsp;=&nbsp;x&nbsp;+&nbsp;TWELVE_HOURS;</span></span>
+<span class="tr"><span class="th" id="line220">220</span><span class="td">&nbsp;if&nbsp;(word&nbsp;~=&nbsp;&#39;am&#39;&nbsp;or&nbsp;&#39;pm&#39;&nbsp;&amp;&amp;&nbsp;hour&nbsp;==&nbsp;12)&nbsp;x&nbsp;=&nbsp;x&nbsp;+&nbsp;TWELVE_HOURS;</span></span>
+<span class="tr"><span class="th" id="line221">221</span><span class="td">&nbsp;return&nbsp;x;</span></span>
+<span class="tr"><span class="th" id="line222">222</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line223">223</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Relative Time Token.</h2><p><p> &quot;Time&quot; is an interesting kind of value since it can hold two conceptually different ways of thinking about time: absolute times, such as &quot;12:03 PM&quot;, and also relative times, like &quot;ten minutes&quot;. For parsing purposes, these are completely different from each other, and the time token above handles only absolute times; we need the following for relative ones.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line232">232</span><span class="td">[&nbsp;RELATIVE_TIME_TOKEN&nbsp;first_word&nbsp;second_word&nbsp;offhour&nbsp;mult&nbsp;mn&nbsp;original_wn;</span></span>
+<span class="tr"><span class="th" id="line233">233</span><span class="td">&nbsp;original_wn&nbsp;=&nbsp;wn;</span></span>
+<span class="tr"><span class="th" id="line234">234</span><span class="td">&nbsp;wn&nbsp;=&nbsp;original_wn;</span></span>
+<span class="tr"><span class="th" id="line235">235</span><span class="td">&nbsp;</span></span>
+<span class="tr"><span class="th" id="line236">236</span><span class="td">&nbsp;first_word&nbsp;=&nbsp;NextWordStopped();&nbsp;wn--;</span></span>
+<span class="tr"><span class="th" id="line237">237</span><span class="td">&nbsp;if&nbsp;(first_word&nbsp;==&nbsp;&#39;an&#39;&nbsp;or&nbsp;&#39;a//&#39;)&nbsp;mn=1;&nbsp;else&nbsp;mn=TryNumber(wn);</span></span>
+<span class="tr"><span class="th" id="line238">238</span><span class="td">&nbsp;</span></span>
+<span class="tr"><span class="th" id="line239">239</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(mn&nbsp;==&nbsp;-1000)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line240">240</span><span class="td">&nbsp;&nbsp;first_word&nbsp;=&nbsp;NextWordStopped();</span></span>
+<span class="tr"><span class="th" id="line241">241</span><span class="td">&nbsp;&nbsp;if&nbsp;(first_word&nbsp;==&nbsp;&#39;half&#39;)&nbsp;offhour&nbsp;=&nbsp;HALF_HOUR;</span></span>
+<span class="tr"><span class="th" id="line242">242</span><span class="td">&nbsp;&nbsp;if&nbsp;(first_word&nbsp;==&nbsp;&#39;quarter&#39;)&nbsp;offhour&nbsp;=&nbsp;QUARTER_HOUR;</span></span>
+<span class="tr"><span class="th" id="line243">243</span><span class="td">&nbsp;&nbsp;if&nbsp;(offhour&nbsp;&gt;&nbsp;0)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line244">244</span><span class="td">&nbsp;&nbsp;&nbsp;second_word&nbsp;=&nbsp;NextWordStopped();</span></span>
+<span class="tr"><span class="th" id="line245">245</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(second_word&nbsp;==&nbsp;&#39;of&#39;)&nbsp;second_word&nbsp;=&nbsp;NextWordStopped();</span></span>
+<span class="tr"><span class="th" id="line246">246</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(second_word&nbsp;==&nbsp;&#39;an&#39;)&nbsp;second_word&nbsp;=&nbsp;NextWordStopped();</span></span>
+<span class="tr"><span class="th" id="line247">247</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(second_word&nbsp;==&nbsp;&#39;hour&#39;)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line248">248</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;parsed_number&nbsp;=&nbsp;offhour;</span></span>
+<span class="tr"><span class="th" id="line249">249</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;GPR_NUMBER;</span></span>
+<span class="tr"><span class="th" id="line250">250</span><span class="td">&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line251">251</span><span class="td">&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line252">252</span><span class="td">&nbsp;&nbsp;return&nbsp;GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line253">253</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line254">254</span><span class="td">&nbsp;wn++;</span></span>
+<span class="tr"><span class="th" id="line255">255</span><span class="td">&nbsp;</span></span>
+<span class="tr"><span class="th" id="line256">256</span><span class="td">&nbsp;first_word&nbsp;=&nbsp;NextWordStopped();</span></span>
+<span class="tr"><span class="th" id="line257">257</span><span class="td">&nbsp;switch&nbsp;(first_word)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line258">258</span><span class="td">&nbsp;&nbsp;&#39;minutes&#39;,&nbsp;&#39;minute&#39;:&nbsp;mult&nbsp;=&nbsp;1;</span></span>
+<span class="tr"><span class="th" id="line259">259</span><span class="td">&nbsp;&nbsp;&#39;hours&#39;,&nbsp;&#39;hour&#39;:&nbsp;mult&nbsp;=&nbsp;60;</span></span>
+<span class="tr"><span class="th" id="line260">260</span><span class="td">&nbsp;&nbsp;default:&nbsp;return&nbsp;GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line261">261</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line262">262</span><span class="td">&nbsp;parsed_number&nbsp;=&nbsp;mn*mult;</span></span>
+<span class="tr"><span class="th" id="line263">263</span><span class="td">&nbsp;if&nbsp;(mult&nbsp;==&nbsp;60)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line264">264</span><span class="td">&nbsp;&nbsp;mn=TryNumber(wn);</span></span>
+<span class="tr"><span class="th" id="line265">265</span><span class="td">&nbsp;&nbsp;if&nbsp;(mn&nbsp;~=&nbsp;-1000)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line266">266</span><span class="td">&nbsp;&nbsp;&nbsp;wn++;</span></span>
+<span class="tr"><span class="th" id="line267">267</span><span class="td">&nbsp;&nbsp;&nbsp;first_word&nbsp;=&nbsp;NextWordStopped();</span></span>
+<span class="tr"><span class="th" id="line268">268</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(first_word&nbsp;==&nbsp;&#39;minutes&#39;&nbsp;or&nbsp;&#39;minute&#39;)</span></span>
+<span class="tr"><span class="th" id="line269">269</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;parsed_number&nbsp;=&nbsp;parsed_number&nbsp;+&nbsp;mn;</span></span>
+<span class="tr"><span class="th" id="line270">270</span><span class="td">&nbsp;&nbsp;&nbsp;else&nbsp;wn&nbsp;=&nbsp;wn&nbsp;-&nbsp;2;</span></span>
+<span class="tr"><span class="th" id="line271">271</span><span class="td">&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line272">272</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line273">273</span><span class="td">&nbsp;return&nbsp;GPR_NUMBER;</span></span>
+<span class="tr"><span class="th" id="line274">274</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line275">275</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>During Scene Matching.</h2><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line279">279</span><span class="td">[&nbsp;DuringSceneMatching&nbsp;prop&nbsp;sc;</span></span>
+<span class="tr"><span class="th" id="line280">280</span><span class="td">&nbsp;for&nbsp;(sc=0:&nbsp;sc&lt;NUMBER_SCENES_CREATED:&nbsp;sc++)</span></span>
+<span class="tr"><span class="th" id="line281">281</span><span class="td">&nbsp;&nbsp;if&nbsp;((scene_status--&gt;sc&nbsp;==&nbsp;1)&nbsp;&amp;&amp;&nbsp;(prop(sc+1)))&nbsp;rtrue;</span></span>
+<span class="tr"><span class="th" id="line282">282</span><span class="td">&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line283">283</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line284">284</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Scene Questions.</h2><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line288">288</span><span class="td">[&nbsp;SceneUtility&nbsp;sc&nbsp;task;</span></span>
+<span class="tr"><span class="th" id="line289">289</span><span class="td">&nbsp;if&nbsp;(sc&nbsp;&lt;=&nbsp;0)&nbsp;return&nbsp;0;</span></span>
+<span class="tr"><span class="th" id="line290">290</span><span class="td">&nbsp;if&nbsp;(task&nbsp;==&nbsp;1&nbsp;or&nbsp;2)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line291">291</span><span class="td">&nbsp;&nbsp;if&nbsp;(scene_endings--&gt;(sc-1)&nbsp;==&nbsp;0)&nbsp;return&nbsp;RunTimeProblem(RTP_SCENEHASNTSTARTED,&nbsp;sc);</span></span>
+<span class="tr"><span class="th" id="line292">292</span><span class="td">&nbsp;}&nbsp;else&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line293">293</span><span class="td">&nbsp;&nbsp;if&nbsp;(scene_endings--&gt;(sc-1)&nbsp;&lt;=&nbsp;1)&nbsp;return&nbsp;RunTimeProblem(RTP_SCENEHASNTENDED,&nbsp;sc);</span></span>
+<span class="tr"><span class="th" id="line294">294</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line295">295</span><span class="td">&nbsp;switch&nbsp;(task)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line296">296</span><span class="td">&nbsp;&nbsp;1:&nbsp;return&nbsp;(the_time&nbsp;-&nbsp;scene_started--&gt;(sc-1))%(TWENTY_FOUR_HOURS);</span></span>
+<span class="tr"><span class="th" id="line297">297</span><span class="td">&nbsp;&nbsp;2:&nbsp;return&nbsp;scene_started--&gt;(sc-1);</span></span>
+<span class="tr"><span class="th" id="line298">298</span><span class="td">&nbsp;&nbsp;3:&nbsp;return&nbsp;(the_time&nbsp;-&nbsp;scene_ended--&gt;(sc-1))%(TWENTY_FOUR_HOURS);</span></span>
+<span class="tr"><span class="th" id="line299">299</span><span class="td">&nbsp;&nbsp;4:&nbsp;return&nbsp;scene_ended--&gt;(sc-1);</span></span>
+<span class="tr"><span class="th" id="line300">300</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line301">301</span><span class="td">];</span></span>
+</div><footer><hr><p><em>From I6T lib 6/12N &copy; Graham Nelson and published under the <a href="https://github.com/zedlopez/standard_rules/blob/main/LICENSE.md">Artistic License 2.0</a>. Distributed with <a href="http://inform7.com/">Inform 7 6M62</a>.</em></p></footer></body></html>

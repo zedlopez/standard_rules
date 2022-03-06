@@ -1,48 +1,50 @@
 <!doctype html>
-<html><head><title>
-Figures
-</title></head><body><h1>
-Figures
-</h1><pre>
-B/figst: Figures Template.
- 
-@Purpose: To display figures and play sound effects.
- 
-@-------------------------------------------------------------------------------
+<html lang="en">
+<meta charset="utf-8">
+<head><title>Figures</title>
+  <style>
+span.th, span.td { display: table-cell; }
+span.td { padding-left: 2rem; }
+span.th { width:4rem; text-align: right; }
+span.tr { display: table-row;     counter-increment: linenum; }
+span.line_no::before {
+    content: counter(linenum);
+    text-align: right;
+    display: block;
+    font-family: monospace;
+    font-weight: normal;
+}
 
-@p Resource Usage.
-We record whether pictures or sounds have been used before by storing
-single byte flags in the following array. (The extra 5 values allow for the
-fact that it can be legal to use low undeclared sound effect resource
-numbers in the Z-machine for short beeps, though this is deprecated in I7.)
-
-Pictures and sounds are identified within blorb archives by resource ID
-numbers which count upwards from 1 in order of creation, but can mix
-pictures and sounds freely. (For instance, 1 might be a picture, 2 and 3
-sound effects, then 4 a picture again, etc.) ID number 1 is in fact always
-a picture: it means the cover art, and is the I6 representation of the
-value "figure of cover".
-
-@c
-Array ResourceUsageFlags ->
-	({-value:NUMBER_CREATED(blorb_figure)}+{-value:NUMBER_CREATED(blorb_sound)}+5);
-
-@p Figures.
-
-@c
-[ DisplayFigure resource_ID one_time;
-	if ((one_time) && (ResourceUsageFlags->resource_ID)) return;
-	ResourceUsageFlags->resource_ID = true;
-	print "^"; VM_Picture(resource_ID); print "^";
-];
-
-@p Sound Effects.
-
-@c
-[ PlaySound resource_ID one_time;
-	if (resource_ID == 0) return; ! The "silence" non-sound effect
-	if ((one_time) && (ResourceUsageFlags->resource_ID)) return;
-	ResourceUsageFlags->resource_ID = true;
-	VM_SoundEffect(resource_ID);
-];
-</pre><footer><br><p>From I6T lib 6/12N, distributed with Inform 7 6M62 by Graham Nelson</p></footer></body></html>
+.fixed { font-family: monospace }
+.em { font-style: italic; }
+.center { text-align: center; }
+    body { font-family: sans-serif; margin: 3rem; background-color: #fafaf0; width: 80rem; }
+    .pre { font-family: monospace; margin: auto; width: 80rem; }
+#front_matter,.text { width: 50rem; }
+.text { border-bottom: .5px solid black; border-top: .5px solid black; margin-top: 1rem;
+padding-bottom: 1rem; margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+<div id="front_matter">
+<h1><a href="./Figures.i6t">Figures</a></h1><h2>Resource Usage.</h2><p><p> We record whether pictures or sounds have been used before by storing single byte flags in the following array. (The extra 5 values allow for the fact that it can be legal to use low undeclared sound effect resource numbers in the Z-machine for short beeps, though this is deprecated in I7.)<p></p><p> Pictures and sounds are identified within blorb archives by resource ID numbers which count upwards from 1 in order of creation, but can mix pictures and sounds freely. (For instance, 1 might be a picture, 2 and 3 sound effects, then 4 a picture again, etc.) ID number 1 is in fact always a picture: it means the cover art, and is the I6 representation of the value &quot;figure of cover&quot;.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line20">20</span><span class="td">Array&nbsp;ResourceUsageFlags&nbsp;-&gt;</span></span>
+<span class="tr"><span class="th" id="line21">21</span><span class="td">&nbsp;({-value:NUMBER_CREATED(blorb_figure)}+{-value:NUMBER_CREATED(blorb_sound)}+5);</span></span>
+<span class="tr"><span class="th" id="line22">22</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Figures.</h2><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line26">26</span><span class="td">[&nbsp;DisplayFigure&nbsp;resource_ID&nbsp;one_time;</span></span>
+<span class="tr"><span class="th" id="line27">27</span><span class="td">&nbsp;if&nbsp;((one_time)&nbsp;&amp;&amp;&nbsp;(ResourceUsageFlags-&gt;resource_ID))&nbsp;return;</span></span>
+<span class="tr"><span class="th" id="line28">28</span><span class="td">&nbsp;ResourceUsageFlags-&gt;resource_ID&nbsp;=&nbsp;true;</span></span>
+<span class="tr"><span class="th" id="line29">29</span><span class="td">&nbsp;print&nbsp;&quot;^&quot;;&nbsp;VM_Picture(resource_ID);&nbsp;print&nbsp;&quot;^&quot;;</span></span>
+<span class="tr"><span class="th" id="line30">30</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line31">31</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Sound Effects.</h2><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line35">35</span><span class="td">[&nbsp;PlaySound&nbsp;resource_ID&nbsp;one_time;</span></span>
+<span class="tr"><span class="th" id="line36">36</span><span class="td">&nbsp;if&nbsp;(resource_ID&nbsp;==&nbsp;0)&nbsp;return;&nbsp;!&nbsp;The&nbsp;&quot;silence&quot;&nbsp;non-sound&nbsp;effect</span></span>
+<span class="tr"><span class="th" id="line37">37</span><span class="td">&nbsp;if&nbsp;((one_time)&nbsp;&amp;&amp;&nbsp;(ResourceUsageFlags-&gt;resource_ID))&nbsp;return;</span></span>
+<span class="tr"><span class="th" id="line38">38</span><span class="td">&nbsp;ResourceUsageFlags-&gt;resource_ID&nbsp;=&nbsp;true;</span></span>
+<span class="tr"><span class="th" id="line39">39</span><span class="td">&nbsp;VM_SoundEffect(resource_ID);</span></span>
+<span class="tr"><span class="th" id="line40">40</span><span class="td">];</span></span>
+</div><footer><hr><p><em>From I6T lib 6/12N &copy; Graham Nelson and published under the <a href="https://github.com/zedlopez/standard_rules/blob/main/LICENSE.md">Artistic License 2.0</a>. Distributed with <a href="http://inform7.com/">Inform 7 6M62</a>.</em></p></footer></body></html>

@@ -1,180 +1,156 @@
 <!doctype html>
-<html><head><title>
-Activities
-</title></head><body><h1>
-Activities
-</h1><pre>
-B/acvt: Activities Template.
- 
-@Purpose: To run the necessary rulebooks to carry out an activity.
- 
-@-------------------------------------------------------------------------------
+<html lang="en">
+<meta charset="utf-8">
+<head><title>Activities</title>
+  <style>
+span.th, span.td { display: table-cell; }
+span.td { padding-left: 2rem; }
+span.th { width:4rem; text-align: right; }
+span.tr { display: table-row;     counter-increment: linenum; }
+span.line_no::before {
+    content: counter(linenum);
+    text-align: right;
+    display: block;
+    font-family: monospace;
+    font-weight: normal;
+}
 
-@p The Activities Stack.
-Activities are more like nested function calls than independent processes;
-they finish in reverse order of starting, and are placed on a stack. This
-needs only very limited size in practice: 20 might seem a bit low, but making
-it much higher simply means that oddball bugs in the user's code -- where
-activities recursively cause themselves ad infinitum -- will be caught less
-efficiently.
-
-@c
-Constant MAX_NESTED_ACTIVITIES = 20;
-Global activities_sp = 0;
-Array activities_stack --> MAX_NESTED_ACTIVITIES;
-Array activity_parameters_stack --> MAX_NESTED_ACTIVITIES;
-
-@p Rule Debugging Inhibition.
-The output from RULES or RULES ALL becomes totally illegible if it is applied
-even to the activities printing names of objects, so this is inhibited when
-any such activity is running. |FixInhibitFlag| is called each time the stack
-changes and ensures that |inhibit_flag| has exactly this meaning.
-
-@c
-Global inhibit_flag = 0;
-Global saved_debug_rules = 0;
-[ FixInhibitFlag n act inhibit_rule_debugging;
-	for (n=0:n<activities_sp:n++) {
-		act = activities_stack-->n;
-		if (act == PRINTING_THE_NAME_ACT or PRINTING_THE_PLURAL_NAME_ACT or
-			PRINTING_ROOM_DESC_DETAILS_ACT or PRINTING_INVENTORY_DETAILS_ACT or
-			LISTING_CONTENTS_ACT or GROUPING_TOGETHER_ACT or PRINTING_RESPONSE_ACT)
-				inhibit_rule_debugging = true;
-	}
-	if ((inhibit_flag == false) && (inhibit_rule_debugging)) {
-		saved_debug_rules = debug_rules;
-		debug_rules = 0;
-	}
-	if ((inhibit_flag) && (inhibit_rule_debugging == false)) {
-		debug_rules = saved_debug_rules;
-	}
-	inhibit_flag = inhibit_rule_debugging;
-];
-
-@p Testing Activities.
-The following tests whether a given activity |A| is currently running
-whose parameter-object matches description |desc|, where as usual the
-description is represented by a routine testing membership, and where
-zero |desc| means that any parameter is valid. Alternatively, we can
-require a specific parameter value of |val|.
-
-@c
-[ TestActivity A desc val i;
-	for (i=0:i<activities_sp:i++)
-		if (activities_stack-->i == A) {
-			if (desc) {
-				if ((desc)(activity_parameters_stack-->i)) rtrue;
-			} else if (val) {
-				if (val == activity_parameters_stack-->i) rtrue;
-			} else rtrue;
-		}
-	rfalse;
-];
-
-@p Emptiness.
-An activity is defined by its three rulebooks: it is empty if they are all
-empty.
-
-@c
-[ ActivityEmpty A x;
-	x = Activity_before_rulebooks-->A;
-	if (rulebooks_array-->x ~= EMPTY_RULEBOOK) rfalse;
-	x = Activity_for_rulebooks-->A;
-	if (rulebooks_array-->x ~= EMPTY_RULEBOOK) rfalse;
-	x = Activity_after_rulebooks-->A;
-	if (rulebooks_array-->x ~= EMPTY_RULEBOOK) rfalse;
-	rtrue;
-];
-
-[ RulebookEmpty rb;
-	if (rulebooks_array-->rb ~= EMPTY_RULEBOOK) rfalse;
-	rtrue;
-];
-
-@p Process Activity Rulebook.
-This is really much like processing any rulebook, except that |self| is
-temporarily set to the parameter, and is preserved by the process.
-
-@c
-[ ProcessActivityRulebook rulebook parameter  rv;
-	@push self;
-	if (parameter) self = parameter;
-	rv = FollowRulebook(rulebook, parameter, true);
-	@pull self;
-	if (rv) rtrue;
-	rfalse;
-];
-
-@p Carrying Out Activities.
-This is a three-stage process; most activities are run by calling the following
-simple routine, but some are run by calling the three subroutines independently.
-
-@c
-[ CarryOutActivity A o rv;
-	BeginActivity(A, o);
-	rv = ForActivity(A, o);
-	EndActivity(A, o);
-	return rv;
-];
-
-@p Begin.
-Note that when an activity based on the conjectural "future action" is
-being run -- in a few parser-related cases, that is -- the identity of this
-action is put temporarily into |action|, and the current value saved while
-this takes place. That allows rules in the activity rulebooks to have
-preambles based on the current action, and yet be tested against what is not
-yet the current action.
-
-@c
-[ BeginActivity A o x;
-	if (activities_sp == MAX_NESTED_ACTIVITIES) return RunTimeProblem(RTP_TOOMANYACTS);
-	activity_parameters_stack-->activities_sp = o;
-	activities_stack-->(activities_sp++) = A;
-	FixInhibitFlag();
-	MStack_CreateAVVars(A);
-	if (Activity_atb_rulebooks->A) { x = action; action = action_to_be; }
-	o = ProcessActivityRulebook(Activity_before_rulebooks-->A, o);
-	if (Activity_atb_rulebooks->A) action = x;
-	return o;
-];
-
-@p For.
-
-@c
-[ ForActivity A o x;
-	if (Activity_atb_rulebooks->A) { x = action; action = action_to_be; }
-	o = ProcessActivityRulebook(Activity_for_rulebooks-->A, o);
-	if (Activity_atb_rulebooks->A) action = x;
-	return o;
-];
-
-@p End.
-
-@c
-[ EndActivity A o rv x;
-	if ((activities_sp > 0) && (activities_stack-->(activities_sp-1) == A)) {
-		if (Activity_atb_rulebooks->A) { x = action; action = action_to_be; }
-		rv = ProcessActivityRulebook(Activity_after_rulebooks-->A, o);
-		if (Activity_atb_rulebooks->A) action = x;
-		activities_sp--; FixInhibitFlag();
-		MStack_DestroyAVVars(A);
-		return rv;
-	}
-	return RunTimeProblem(RTP_CANTABANDON);
-];
-
-@p Abandon.
-For (very) rare cases where an activity must be abandoned midway; such an
-activity must be being run by calling the three stages individually, and
-|EndActivity| must not have been called yet.
-
-@c
-[ AbandonActivity A o;
-	if ((activities_sp > 0) && (activities_stack-->(activities_sp-1) == A)) {
-		activities_sp--; FixInhibitFlag();
-		MStack_DestroyAVVars(A);
-		return;
-	}
-	return RunTimeProblem(RTP_CANTEND);
-];
-</pre><footer><br><p>From I6T lib 6/12N, distributed with Inform 7 6M62 by Graham Nelson</p></footer></body></html>
+.fixed { font-family: monospace }
+.em { font-style: italic; }
+.center { text-align: center; }
+    body { font-family: sans-serif; margin: 3rem; background-color: #fafaf0; width: 80rem; }
+    .pre { font-family: monospace; margin: auto; width: 80rem; }
+#front_matter,.text { width: 50rem; }
+.text { border-bottom: .5px solid black; border-top: .5px solid black; margin-top: 1rem;
+padding-bottom: 1rem; margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+<div id="front_matter">
+<h1><a href="./Activities.i6t">Activities</a></h1><h2>The Activities Stack.</h2><p><p> Activities are more like nested function calls than independent processes; they finish in reverse order of starting, and are placed on a stack. This needs only very limited size in practice: 20 might seem a bit low, but making it much higher simply means that oddball bugs in the user&#39;s code &ndash; where activities recursively cause themselves ad infinitum &ndash; will be caught less efficiently.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line15">15</span><span class="td">Constant&nbsp;MAX_NESTED_ACTIVITIES&nbsp;=&nbsp;20;</span></span>
+<span class="tr"><span class="th" id="line16">16</span><span class="td">Global&nbsp;activities_sp&nbsp;=&nbsp;0;</span></span>
+<span class="tr"><span class="th" id="line17">17</span><span class="td">Array&nbsp;activities_stack&nbsp;--&gt;&nbsp;MAX_NESTED_ACTIVITIES;</span></span>
+<span class="tr"><span class="th" id="line18">18</span><span class="td">Array&nbsp;activity_parameters_stack&nbsp;--&gt;&nbsp;MAX_NESTED_ACTIVITIES;</span></span>
+<span class="tr"><span class="th" id="line19">19</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Rule Debugging Inhibition.</h2><p><p> The output from RULES or RULES ALL becomes totally illegible if it is applied even to the activities printing names of objects, so this is inhibited when any such activity is running. <a href="./Activities.i6t.html#line29">FixInhibitFlag</a> is called each time the stack changes and ensures that <a href="./Activities.i6t.html#line27">inhibit_flag</a> has exactly this meaning.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line27">27</span><span class="td">Global&nbsp;inhibit_flag&nbsp;=&nbsp;0;</span></span>
+<span class="tr"><span class="th" id="line28">28</span><span class="td">Global&nbsp;saved_debug_rules&nbsp;=&nbsp;0;</span></span>
+<span class="tr"><span class="th" id="line29">29</span><span class="td">[&nbsp;FixInhibitFlag&nbsp;n&nbsp;act&nbsp;inhibit_rule_debugging;</span></span>
+<span class="tr"><span class="th" id="line30">30</span><span class="td">&nbsp;for&nbsp;(n=0:n&lt;activities_sp:n++)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line31">31</span><span class="td">&nbsp;&nbsp;act&nbsp;=&nbsp;activities_stack--&gt;n;</span></span>
+<span class="tr"><span class="th" id="line32">32</span><span class="td">&nbsp;&nbsp;if&nbsp;(act&nbsp;==&nbsp;PRINTING_THE_NAME_ACT&nbsp;or&nbsp;PRINTING_THE_PLURAL_NAME_ACT&nbsp;or</span></span>
+<span class="tr"><span class="th" id="line33">33</span><span class="td">&nbsp;&nbsp;&nbsp;PRINTING_ROOM_DESC_DETAILS_ACT&nbsp;or&nbsp;PRINTING_INVENTORY_DETAILS_ACT&nbsp;or</span></span>
+<span class="tr"><span class="th" id="line34">34</span><span class="td">&nbsp;&nbsp;&nbsp;LISTING_CONTENTS_ACT&nbsp;or&nbsp;GROUPING_TOGETHER_ACT&nbsp;or&nbsp;PRINTING_RESPONSE_ACT)</span></span>
+<span class="tr"><span class="th" id="line35">35</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;inhibit_rule_debugging&nbsp;=&nbsp;true;</span></span>
+<span class="tr"><span class="th" id="line36">36</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line37">37</span><span class="td">&nbsp;if&nbsp;((inhibit_flag&nbsp;==&nbsp;false)&nbsp;&amp;&amp;&nbsp;(inhibit_rule_debugging))&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line38">38</span><span class="td">&nbsp;&nbsp;saved_debug_rules&nbsp;=&nbsp;debug_rules;</span></span>
+<span class="tr"><span class="th" id="line39">39</span><span class="td">&nbsp;&nbsp;debug_rules&nbsp;=&nbsp;0;</span></span>
+<span class="tr"><span class="th" id="line40">40</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line41">41</span><span class="td">&nbsp;if&nbsp;((inhibit_flag)&nbsp;&amp;&amp;&nbsp;(inhibit_rule_debugging&nbsp;==&nbsp;false))&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line42">42</span><span class="td">&nbsp;&nbsp;debug_rules&nbsp;=&nbsp;saved_debug_rules;</span></span>
+<span class="tr"><span class="th" id="line43">43</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line44">44</span><span class="td">&nbsp;inhibit_flag&nbsp;=&nbsp;inhibit_rule_debugging;</span></span>
+<span class="tr"><span class="th" id="line45">45</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line46">46</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Testing Activities.</h2><p><p> The following tests whether a given activity <span class="fixed">A</span> is currently running whose parameter-object matches description <span class="fixed">desc</span>, where as usual the description is represented by a routine testing membership, and where zero <span class="fixed">desc</span> means that any parameter is valid. Alternatively, we can require a specific parameter value of <span class="fixed">val</span>.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line55">55</span><span class="td">[&nbsp;TestActivity&nbsp;A&nbsp;desc&nbsp;val&nbsp;i;</span></span>
+<span class="tr"><span class="th" id="line56">56</span><span class="td">&nbsp;for&nbsp;(i=0:i&lt;activities_sp:i++)</span></span>
+<span class="tr"><span class="th" id="line57">57</span><span class="td">&nbsp;&nbsp;if&nbsp;(activities_stack--&gt;i&nbsp;==&nbsp;A)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line58">58</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(desc)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line59">59</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;((desc)(activity_parameters_stack--&gt;i))&nbsp;rtrue;</span></span>
+<span class="tr"><span class="th" id="line60">60</span><span class="td">&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;if&nbsp;(val)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line61">61</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(val&nbsp;==&nbsp;activity_parameters_stack--&gt;i)&nbsp;rtrue;</span></span>
+<span class="tr"><span class="th" id="line62">62</span><span class="td">&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;rtrue;</span></span>
+<span class="tr"><span class="th" id="line63">63</span><span class="td">&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line64">64</span><span class="td">&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line65">65</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line66">66</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Emptiness.</h2><p><p> An activity is defined by its three rulebooks: it is empty if they are all empty.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line72">72</span><span class="td">[&nbsp;ActivityEmpty&nbsp;A&nbsp;x;</span></span>
+<span class="tr"><span class="th" id="line73">73</span><span class="td">&nbsp;x&nbsp;=&nbsp;Activity_before_rulebooks--&gt;A;</span></span>
+<span class="tr"><span class="th" id="line74">74</span><span class="td">&nbsp;if&nbsp;(rulebooks_array--&gt;x&nbsp;~=&nbsp;EMPTY_RULEBOOK)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line75">75</span><span class="td">&nbsp;x&nbsp;=&nbsp;Activity_for_rulebooks--&gt;A;</span></span>
+<span class="tr"><span class="th" id="line76">76</span><span class="td">&nbsp;if&nbsp;(rulebooks_array--&gt;x&nbsp;~=&nbsp;EMPTY_RULEBOOK)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line77">77</span><span class="td">&nbsp;x&nbsp;=&nbsp;Activity_after_rulebooks--&gt;A;</span></span>
+<span class="tr"><span class="th" id="line78">78</span><span class="td">&nbsp;if&nbsp;(rulebooks_array--&gt;x&nbsp;~=&nbsp;EMPTY_RULEBOOK)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line79">79</span><span class="td">&nbsp;rtrue;</span></span>
+<span class="tr"><span class="th" id="line80">80</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line81">81</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line82">82</span><span class="td">[&nbsp;RulebookEmpty&nbsp;rb;</span></span>
+<span class="tr"><span class="th" id="line83">83</span><span class="td">&nbsp;if&nbsp;(rulebooks_array--&gt;rb&nbsp;~=&nbsp;EMPTY_RULEBOOK)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line84">84</span><span class="td">&nbsp;rtrue;</span></span>
+<span class="tr"><span class="th" id="line85">85</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line86">86</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Process Activity Rulebook.</h2><p><p> This is really much like processing any rulebook, except that <span class="fixed">self</span> is temporarily set to the parameter, and is preserved by the process.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line92">92</span><span class="td">[&nbsp;ProcessActivityRulebook&nbsp;rulebook&nbsp;parameter&nbsp;&nbsp;rv;</span></span>
+<span class="tr"><span class="th" id="line93">93</span><span class="td">&nbsp;@push&nbsp;self;</span></span>
+<span class="tr"><span class="th" id="line94">94</span><span class="td">&nbsp;if&nbsp;(parameter)&nbsp;self&nbsp;=&nbsp;parameter;</span></span>
+<span class="tr"><span class="th" id="line95">95</span><span class="td">&nbsp;rv&nbsp;=&nbsp;FollowRulebook(rulebook,&nbsp;parameter,&nbsp;true);</span></span>
+<span class="tr"><span class="th" id="line96">96</span><span class="td">&nbsp;@pull&nbsp;self;</span></span>
+<span class="tr"><span class="th" id="line97">97</span><span class="td">&nbsp;if&nbsp;(rv)&nbsp;rtrue;</span></span>
+<span class="tr"><span class="th" id="line98">98</span><span class="td">&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line99">99</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line100">100</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Carrying Out Activities.</h2><p><p> This is a three-stage process; most activities are run by calling the following simple routine, but some are run by calling the three subroutines independently.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line106">106</span><span class="td">[&nbsp;CarryOutActivity&nbsp;A&nbsp;o&nbsp;rv;</span></span>
+<span class="tr"><span class="th" id="line107">107</span><span class="td">&nbsp;BeginActivity(A,&nbsp;o);</span></span>
+<span class="tr"><span class="th" id="line108">108</span><span class="td">&nbsp;rv&nbsp;=&nbsp;ForActivity(A,&nbsp;o);</span></span>
+<span class="tr"><span class="th" id="line109">109</span><span class="td">&nbsp;EndActivity(A,&nbsp;o);</span></span>
+<span class="tr"><span class="th" id="line110">110</span><span class="td">&nbsp;return&nbsp;rv;</span></span>
+<span class="tr"><span class="th" id="line111">111</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line112">112</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Begin.</h2><p><p> Note that when an activity based on the conjectural &quot;future action&quot; is being run &ndash; in a few parser-related cases, that is &ndash; the identity of this action is put temporarily into <span class="fixed">action</span>, and the current value saved while this takes place. That allows rules in the activity rulebooks to have preambles based on the current action, and yet be tested against what is not yet the current action.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line122">122</span><span class="td">[&nbsp;BeginActivity&nbsp;A&nbsp;o&nbsp;x;</span></span>
+<span class="tr"><span class="th" id="line123">123</span><span class="td">&nbsp;if&nbsp;(activities_sp&nbsp;==&nbsp;MAX_NESTED_ACTIVITIES)&nbsp;return&nbsp;RunTimeProblem(RTP_TOOMANYACTS);</span></span>
+<span class="tr"><span class="th" id="line124">124</span><span class="td">&nbsp;activity_parameters_stack--&gt;activities_sp&nbsp;=&nbsp;o;</span></span>
+<span class="tr"><span class="th" id="line125">125</span><span class="td">&nbsp;activities_stack--&gt;(activities_sp++)&nbsp;=&nbsp;A;</span></span>
+<span class="tr"><span class="th" id="line126">126</span><span class="td">&nbsp;FixInhibitFlag();</span></span>
+<span class="tr"><span class="th" id="line127">127</span><span class="td">&nbsp;MStack_CreateAVVars(A);</span></span>
+<span class="tr"><span class="th" id="line128">128</span><span class="td">&nbsp;if&nbsp;(Activity_atb_rulebooks-&gt;A)&nbsp;{&nbsp;x&nbsp;=&nbsp;action;&nbsp;action&nbsp;=&nbsp;action_to_be;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line129">129</span><span class="td">&nbsp;o&nbsp;=&nbsp;ProcessActivityRulebook(Activity_before_rulebooks--&gt;A,&nbsp;o);</span></span>
+<span class="tr"><span class="th" id="line130">130</span><span class="td">&nbsp;if&nbsp;(Activity_atb_rulebooks-&gt;A)&nbsp;action&nbsp;=&nbsp;x;</span></span>
+<span class="tr"><span class="th" id="line131">131</span><span class="td">&nbsp;return&nbsp;o;</span></span>
+<span class="tr"><span class="th" id="line132">132</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line133">133</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>For.</h2><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line137">137</span><span class="td">[&nbsp;ForActivity&nbsp;A&nbsp;o&nbsp;x;</span></span>
+<span class="tr"><span class="th" id="line138">138</span><span class="td">&nbsp;if&nbsp;(Activity_atb_rulebooks-&gt;A)&nbsp;{&nbsp;x&nbsp;=&nbsp;action;&nbsp;action&nbsp;=&nbsp;action_to_be;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line139">139</span><span class="td">&nbsp;o&nbsp;=&nbsp;ProcessActivityRulebook(Activity_for_rulebooks--&gt;A,&nbsp;o);</span></span>
+<span class="tr"><span class="th" id="line140">140</span><span class="td">&nbsp;if&nbsp;(Activity_atb_rulebooks-&gt;A)&nbsp;action&nbsp;=&nbsp;x;</span></span>
+<span class="tr"><span class="th" id="line141">141</span><span class="td">&nbsp;return&nbsp;o;</span></span>
+<span class="tr"><span class="th" id="line142">142</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line143">143</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>End.</h2><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line147">147</span><span class="td">[&nbsp;EndActivity&nbsp;A&nbsp;o&nbsp;rv&nbsp;x;</span></span>
+<span class="tr"><span class="th" id="line148">148</span><span class="td">&nbsp;if&nbsp;((activities_sp&nbsp;&gt;&nbsp;0)&nbsp;&amp;&amp;&nbsp;(activities_stack--&gt;(activities_sp-1)&nbsp;==&nbsp;A))&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line149">149</span><span class="td">&nbsp;&nbsp;if&nbsp;(Activity_atb_rulebooks-&gt;A)&nbsp;{&nbsp;x&nbsp;=&nbsp;action;&nbsp;action&nbsp;=&nbsp;action_to_be;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line150">150</span><span class="td">&nbsp;&nbsp;rv&nbsp;=&nbsp;ProcessActivityRulebook(Activity_after_rulebooks--&gt;A,&nbsp;o);</span></span>
+<span class="tr"><span class="th" id="line151">151</span><span class="td">&nbsp;&nbsp;if&nbsp;(Activity_atb_rulebooks-&gt;A)&nbsp;action&nbsp;=&nbsp;x;</span></span>
+<span class="tr"><span class="th" id="line152">152</span><span class="td">&nbsp;&nbsp;activities_sp--;&nbsp;FixInhibitFlag();</span></span>
+<span class="tr"><span class="th" id="line153">153</span><span class="td">&nbsp;&nbsp;MStack_DestroyAVVars(A);</span></span>
+<span class="tr"><span class="th" id="line154">154</span><span class="td">&nbsp;&nbsp;return&nbsp;rv;</span></span>
+<span class="tr"><span class="th" id="line155">155</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line156">156</span><span class="td">&nbsp;return&nbsp;RunTimeProblem(RTP_CANTABANDON);</span></span>
+<span class="tr"><span class="th" id="line157">157</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line158">158</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Abandon.</h2><p><p> For (very) rare cases where an activity must be abandoned midway; such an activity must be being run by calling the three stages individually, and <a href="./Activities.i6t.html#line147">EndActivity</a> must not have been called yet.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line165">165</span><span class="td">[&nbsp;AbandonActivity&nbsp;A&nbsp;o;</span></span>
+<span class="tr"><span class="th" id="line166">166</span><span class="td">&nbsp;if&nbsp;((activities_sp&nbsp;&gt;&nbsp;0)&nbsp;&amp;&amp;&nbsp;(activities_stack--&gt;(activities_sp-1)&nbsp;==&nbsp;A))&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line167">167</span><span class="td">&nbsp;&nbsp;activities_sp--;&nbsp;FixInhibitFlag();</span></span>
+<span class="tr"><span class="th" id="line168">168</span><span class="td">&nbsp;&nbsp;MStack_DestroyAVVars(A);</span></span>
+<span class="tr"><span class="th" id="line169">169</span><span class="td">&nbsp;&nbsp;return;</span></span>
+<span class="tr"><span class="th" id="line170">170</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line171">171</span><span class="td">&nbsp;return&nbsp;RunTimeProblem(RTP_CANTEND);</span></span>
+<span class="tr"><span class="th" id="line172">172</span><span class="td">];</span></span>
+</div><footer><hr><p><em>From I6T lib 6/12N &copy; Graham Nelson and published under the <a href="https://github.com/zedlopez/standard_rules/blob/main/LICENSE.md">Artistic License 2.0</a>. Distributed with <a href="http://inform7.com/">Inform 7 6M62</a>.</em></p></footer></body></html>

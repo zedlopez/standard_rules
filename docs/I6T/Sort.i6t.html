@@ -1,243 +1,210 @@
 <!doctype html>
-<html><head><title>
-Sort
-</title></head><body><h1>
-Sort
-</h1><pre>
-B/sortt: Sort Template.
- 
-@Purpose: To sort arrays.
- 
-@-------------------------------------------------------------------------------
+<html lang="en">
+<meta charset="utf-8">
+<head><title>Sort</title>
+  <style>
+span.th, span.td { display: table-cell; }
+span.td { padding-left: 2rem; }
+span.th { width:4rem; text-align: right; }
+span.tr { display: table-row;     counter-increment: linenum; }
+span.line_no::before {
+    content: counter(linenum);
+    text-align: right;
+    display: block;
+    font-family: monospace;
+    font-weight: normal;
+}
 
-@p Storage.
-We are required to use a stable sorting algorithm with very low, ideally zero,
-auxiliary storage requirement. Exchanges are generally slower than comparisons
-for the typical application (sorting tables, where entire rows must be
-exchanged whereas only entries in a single column need be compared).
-
-In fact, we store some details in global variables for convenience and to
-avoid filling the stack with copies, but otherwise we will hardly need any
-auxiliary storage.
-
-@c
-Global I7S_Tab; ! The array to be sorted, which can have almost any format
-Global I7S_Col; ! The "column number" in the array, if any
-Global I7S_Dir; ! The direction of sorting: ascending (1) or descending (-1)
-Global I7S_Swap; ! The current routine for swapping two fields
-Global I7S_Comp; ! The current routine for comparing two fields
-
-#ifdef MEASURE_SORT_PERFORMANCE;
-Global I7S_CCOUNT; Global I7S_CCOUNT2; Global I7S_XCOUNT; ! For testing only
-#endif;
-
-@p Front End.
-To perform a sort, we first call |SetSortDomain| to declare the swap and
-compare functions to be used, and then call |SortArray| actually to sort. (It
-would be nice to combine these in a single call, but I6 allows a maximum of
-7 call arguments for a routine, and that would make 8.) These are the only
-two routines which should ever be called from outside of this template
-segment.
-
-The swap and compare functions are expected to take two arguments, which
-are the field numbers of the fields being swapped or compared, where fields
-are numbered from 1. Comparison is like |strcmp|: it returns 0 on equality,
-and then is positive or negative according to which of the fields is
-greater in value.
-
-@c
-[ SetSortDomain swapf compf;
-	I7S_Swap = swapf;
-	I7S_Comp = compf;
-];
-
-[ SortArray tab col dir size test_flag algorithm;
-	I7S_Tab = tab;
-	I7S_Col = col;
-	I7S_Dir = dir;
-	#ifdef MEASURE_SORT_PERFORMANCE;
-	I7S_CCOUNT = 0;
-	I7S_CCOUNT2 = 0;
-	I7S_XCOUNT = 0;
-	#endif;
-	SortRange(0, size, algorithm);
-	#ifdef MEASURE_SORT_PERFORMANCE;
-	if (test_flag)
-		print "Sorted array of size ", size, " with ", I7S_CCOUNT2, "*10000 + ", I7S_CCOUNT,
-			" comparisons and ", I7S_XCOUNT, " exchanges^";
-	#endif;
-];
-
-@p Sort Range.
-This routine sorts a range of fields $x\leq i < y$ within the array. Fields
-are numbered from 0. The supplied |algorithm| is an I6 routine to implement
-a particular sorting algorithm; if it is not supplied, then in-place merge
-sort is used by default.
-
-@c
-[ SortRange x y algorithm;
-	if (y - x < 2) return;
-	if (algorithm) {
-		(algorithm)(x, y);
-	} else {
-		InPlaceMergeSortAlgorithm(x, y);
-	}
-];
-
-@p Comparison and Exchange.
-These are instrumented versions of how to swap and compare fields; note that
-the swap and compare functions are expected to number the fields from 1, not
-from 0. (This is convenient both for tables and lists, where rows and entries
-respectively are both numbered from 1.) The only access which the sorting
-algorithms have to the actual data being sorted is through these routines.
-
-@c
-[ CompareFields x y;
-	#ifdef MEASURE_SORT_PERFORMANCE;
-	I7S_CCOUNT++;
-	if (I7S_CCOUNT == 10000) { I7S_CCOUNT = 0; I7S_CCOUNT2++; }
-	#endif;
-	return I7S_Dir*I7S_Comp(I7S_Tab, I7S_Col, x+1, y+1, I7S_Dir);
-];
-
-[ ExchangeFields x y r;
-	#ifdef MEASURE_SORT_PERFORMANCE;
-	I7S_XCOUNT++;
-	if (I7S_XCOUNT < 0) { print "XO^"; I7S_XCOUNT = 0; }
-	#endif;
-	r = I7S_Swap(I7S_Tab, x+1, y+1);
-	
-	return r; 
-];
-
-@p 4W37 Sort.
-We now present three alternative sorting algorithms.
-
-The first is the one used in builds up to and including 4W37: note that this is
-not quite bubble sort, and that it is unstable. It is now no longer used, but
-is so short that we might as well keep it in the code base in case anyone needs
-to resurrect a very early I7 project.
-
-@c
-[ OldSortAlgorithm x y
-	f i j;
-	if (y - x < 2) return;
-	f = true;
-	while (f) {
-		f = false;
-		for (i=x:i<y:i++)
-		    for (j=i+1:j<y:j++)
-				if (CompareFields(i, j) > 0) {
-					ExchangeFields(i, j); f = true; break;
-				}
-	}
-];
-
-@p Insertion Sort.
-A stable algorithm which has $O(n^2)$ running time and therefore cannot be
-used with large arrays, but which has good performance on nearly sorted tables,
-and which has very low overhead.
-
-@c
-[ InsertionSortAlgorithm from to
-	i j;
-	if (to > from+1) { 
-		for (i = from+1: i < to: i++) { 
-			for (j = i: j > from: j--) { 
-				if (CompareFields(j, j-1) < 0) 
-					ExchangeFields(j, j-1);
-				else break;
-			}
-		}
-	}
-];
-
-@p In-Place Mergesort.
-A stable algorithm with $O(n\log n)$ running time, at some stack cost, and
-which is generally good for nearly sorted tables, but which is also complex
-and has some overhead. The code here mostly follows Thomas Baudel's
-implementation, which in turn follows the |C++| STL library.
-
-@c
-[ InPlaceMergeSortAlgorithm from to
-	middle;
-	if (to - from < 12) {
-		if (to - from < 2) return;
-		InsertionSortAlgorithm(from, to);
-		return;
-	}
-	middle = (from + to)/2; 
-	InPlaceMergeSortAlgorithm(from, middle); 
-	InPlaceMergeSortAlgorithm(middle, to); 
-	IPMS_Merge(from, middle, to, middle-from, to - middle); 
-];
-
-[ IPMS_Lower from to val
-	len half mid;
-	len = to - from;
-	while (len > 0) { 
-		half = len/2; 
-		mid = from + half;
-		if (CompareFields(mid, val) < 0) {
-			from = mid + 1;
-			len = len - half -1; 
-		} else len = half;
-	}
-	return from;
-];
-
-[ IPMS_Upper from to val
-	len half mid;
-	len = to - from;
-	while (len > 0) { 
-		half = len/2; 
-		mid = from + half;
-		if (CompareFields(val, mid) < 0)
-			len = half;
-		else {
-			from = mid + 1;
-			len = len - half -1; 
-		}
-	}
-	return from;
-];
-
-[ IPMS_Reverse from to;
-	while (from < to) {
-		ExchangeFields(from++, to--);
-	}
-];
-
-[ IPMS_Rotate from mid to
-	n val shift p1 p2;
-	if ((from==mid) || (mid==to)) return; 
-	IPMS_Reverse(from, mid-1); 
-	IPMS_Reverse(mid, to-1); 
-	IPMS_Reverse(from, to-1);
-];
-
-[ IPMS_Merge from pivot to len1 len2
-	first_cut second_cut len11 len22 new_mid;
-	if ((len1 == 0) || (len2 == 0)) return; 
-	if (len1+len2 == 2) { 
-		if (CompareFields(pivot, from) < 0) 
-		ExchangeFields(pivot, from); 
-		return; 
-	}
-	if (len1 > len2) { 
-		len11 = len1/2; 
-		first_cut = from + len11; 
-		second_cut = IPMS_Lower(pivot, to, first_cut); 
-		len22 = second_cut - pivot; 
-	} else { 
-		len22 = len2/2; 
-		second_cut = pivot + len22; 
-		first_cut = IPMS_Upper(from, pivot, second_cut); 
-		len11 = first_cut - from; 
-	} 
-	IPMS_Rotate(first_cut, pivot, second_cut); 
-	new_mid = first_cut + len22; 
-	IPMS_Merge(from, first_cut, new_mid, len11, len22); 
-	IPMS_Merge(new_mid, second_cut, to, len1 - len11, len2 - len22); 
-];
-</pre><footer><br><p>From I6T lib 6/12N, distributed with Inform 7 6M62 by Graham Nelson</p></footer></body></html>
+.fixed { font-family: monospace }
+.em { font-style: italic; }
+.center { text-align: center; }
+    body { font-family: sans-serif; margin: 3rem; background-color: #fafaf0; width: 80rem; }
+    .pre { font-family: monospace; margin: auto; width: 80rem; }
+#front_matter,.text { width: 50rem; }
+.text { border-bottom: .5px solid black; border-top: .5px solid black; margin-top: 1rem;
+padding-bottom: 1rem; margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+<div id="front_matter">
+<h1><a href="./Sort.i6t">Sort</a></h1><h2>Storage.</h2><p><p> We are required to use a stable sorting algorithm with very low, ideally zero, auxiliary storage requirement. Exchanges are generally slower than comparisons for the typical application (sorting tables, where entire rows must be exchanged whereas only entries in a single column need be compared).<p></p><p> In fact, we store some details in global variables for convenience and to avoid filling the stack with copies, but otherwise we will hardly need any auxiliary storage.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line17">17</span><span class="td">Global&nbsp;I7S_Tab;&nbsp;!&nbsp;The&nbsp;array&nbsp;to&nbsp;be&nbsp;sorted,&nbsp;which&nbsp;can&nbsp;have&nbsp;almost&nbsp;any&nbsp;format</span></span>
+<span class="tr"><span class="th" id="line18">18</span><span class="td">Global&nbsp;I7S_Col;&nbsp;!&nbsp;The&nbsp;&quot;column&nbsp;number&quot;&nbsp;in&nbsp;the&nbsp;array,&nbsp;if&nbsp;any</span></span>
+<span class="tr"><span class="th" id="line19">19</span><span class="td">Global&nbsp;I7S_Dir;&nbsp;!&nbsp;The&nbsp;direction&nbsp;of&nbsp;sorting:&nbsp;ascending&nbsp;(1)&nbsp;or&nbsp;descending&nbsp;(-1)</span></span>
+<span class="tr"><span class="th" id="line20">20</span><span class="td">Global&nbsp;I7S_Swap;&nbsp;!&nbsp;The&nbsp;current&nbsp;routine&nbsp;for&nbsp;swapping&nbsp;two&nbsp;fields</span></span>
+<span class="tr"><span class="th" id="line21">21</span><span class="td">Global&nbsp;I7S_Comp;&nbsp;!&nbsp;The&nbsp;current&nbsp;routine&nbsp;for&nbsp;comparing&nbsp;two&nbsp;fields</span></span>
+<span class="tr"><span class="th" id="line22">22</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line23">23</span><span class="td">#ifdef&nbsp;MEASURE_SORT_PERFORMANCE;</span></span>
+<span class="tr"><span class="th" id="line24">24</span><span class="td">Global&nbsp;I7S_CCOUNT;&nbsp;Global&nbsp;I7S_CCOUNT2;&nbsp;Global&nbsp;I7S_XCOUNT;&nbsp;!&nbsp;For&nbsp;testing&nbsp;only</span></span>
+<span class="tr"><span class="th" id="line25">25</span><span class="td">#endif;</span></span>
+<span class="tr"><span class="th" id="line26">26</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Front End.</h2><p><p> To perform a sort, we first call <a href="./Sort.i6t.html#line42">SetSortDomain</a> to declare the swap and compare functions to be used, and then call <a href="./Sort.i6t.html#line47">SortArray</a> actually to sort. (It would be nice to combine these in a single call, but I6 allows a maximum of 7 call arguments for a routine, and that would make 8.) These are the only two routines which should ever be called from outside of this template segment.<p></p><p> The swap and compare functions are expected to take two arguments, which are the field numbers of the fields being swapped or compared, where fields are numbered from 1. Comparison is like <span class="fixed">strcmp</span>: it returns 0 on equality, and then is positive or negative according to which of the fields is greater in value.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line42">42</span><span class="td">[&nbsp;SetSortDomain&nbsp;swapf&nbsp;compf;</span></span>
+<span class="tr"><span class="th" id="line43">43</span><span class="td">&nbsp;I7S_Swap&nbsp;=&nbsp;swapf;</span></span>
+<span class="tr"><span class="th" id="line44">44</span><span class="td">&nbsp;I7S_Comp&nbsp;=&nbsp;compf;</span></span>
+<span class="tr"><span class="th" id="line45">45</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line46">46</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line47">47</span><span class="td">[&nbsp;SortArray&nbsp;tab&nbsp;col&nbsp;dir&nbsp;size&nbsp;test_flag&nbsp;algorithm;</span></span>
+<span class="tr"><span class="th" id="line48">48</span><span class="td">&nbsp;I7S_Tab&nbsp;=&nbsp;tab;</span></span>
+<span class="tr"><span class="th" id="line49">49</span><span class="td">&nbsp;I7S_Col&nbsp;=&nbsp;col;</span></span>
+<span class="tr"><span class="th" id="line50">50</span><span class="td">&nbsp;I7S_Dir&nbsp;=&nbsp;dir;</span></span>
+<span class="tr"><span class="th" id="line51">51</span><span class="td">&nbsp;#ifdef&nbsp;MEASURE_SORT_PERFORMANCE;</span></span>
+<span class="tr"><span class="th" id="line52">52</span><span class="td">&nbsp;I7S_CCOUNT&nbsp;=&nbsp;0;</span></span>
+<span class="tr"><span class="th" id="line53">53</span><span class="td">&nbsp;I7S_CCOUNT2&nbsp;=&nbsp;0;</span></span>
+<span class="tr"><span class="th" id="line54">54</span><span class="td">&nbsp;I7S_XCOUNT&nbsp;=&nbsp;0;</span></span>
+<span class="tr"><span class="th" id="line55">55</span><span class="td">&nbsp;#endif;</span></span>
+<span class="tr"><span class="th" id="line56">56</span><span class="td">&nbsp;SortRange(0,&nbsp;size,&nbsp;algorithm);</span></span>
+<span class="tr"><span class="th" id="line57">57</span><span class="td">&nbsp;#ifdef&nbsp;MEASURE_SORT_PERFORMANCE;</span></span>
+<span class="tr"><span class="th" id="line58">58</span><span class="td">&nbsp;if&nbsp;(test_flag)</span></span>
+<span class="tr"><span class="th" id="line59">59</span><span class="td">&nbsp;&nbsp;print&nbsp;&quot;Sorted&nbsp;array&nbsp;of&nbsp;size&nbsp;&quot;,&nbsp;size,&nbsp;&quot;&nbsp;with&nbsp;&quot;,&nbsp;I7S_CCOUNT2,&nbsp;&quot;*10000&nbsp;+&nbsp;&quot;,&nbsp;I7S_CCOUNT,</span></span>
+<span class="tr"><span class="th" id="line60">60</span><span class="td">&nbsp;&nbsp;&nbsp;&quot;&nbsp;comparisons&nbsp;and&nbsp;&quot;,&nbsp;I7S_XCOUNT,&nbsp;&quot;&nbsp;exchanges^&quot;;</span></span>
+<span class="tr"><span class="th" id="line61">61</span><span class="td">&nbsp;#endif;</span></span>
+<span class="tr"><span class="th" id="line62">62</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line63">63</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Sort Range.</h2><p><p> This routine sorts a range of fields $x\leq i &lt; y$ within the array. Fields are numbered from 0. The supplied <span class="fixed">algorithm</span> is an I6 routine to implement a particular sorting algorithm; if it is not supplied, then in-place merge sort is used by default.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line71">71</span><span class="td">[&nbsp;SortRange&nbsp;x&nbsp;y&nbsp;algorithm;</span></span>
+<span class="tr"><span class="th" id="line72">72</span><span class="td">&nbsp;if&nbsp;(y&nbsp;-&nbsp;x&nbsp;&lt;&nbsp;2)&nbsp;return;</span></span>
+<span class="tr"><span class="th" id="line73">73</span><span class="td">&nbsp;if&nbsp;(algorithm)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line74">74</span><span class="td">&nbsp;&nbsp;(algorithm)(x,&nbsp;y);</span></span>
+<span class="tr"><span class="th" id="line75">75</span><span class="td">&nbsp;}&nbsp;else&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line76">76</span><span class="td">&nbsp;&nbsp;InPlaceMergeSortAlgorithm(x,&nbsp;y);</span></span>
+<span class="tr"><span class="th" id="line77">77</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line78">78</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line79">79</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Comparison and Exchange.</h2><p><p> These are instrumented versions of how to swap and compare fields; note that the swap and compare functions are expected to number the fields from 1, not from 0. (This is convenient both for tables and lists, where rows and entries respectively are both numbered from 1.) The only access which the sorting algorithms have to the actual data being sorted is through these routines.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line88">88</span><span class="td">[&nbsp;CompareFields&nbsp;x&nbsp;y;</span></span>
+<span class="tr"><span class="th" id="line89">89</span><span class="td">&nbsp;#ifdef&nbsp;MEASURE_SORT_PERFORMANCE;</span></span>
+<span class="tr"><span class="th" id="line90">90</span><span class="td">&nbsp;I7S_CCOUNT++;</span></span>
+<span class="tr"><span class="th" id="line91">91</span><span class="td">&nbsp;if&nbsp;(I7S_CCOUNT&nbsp;==&nbsp;10000)&nbsp;{&nbsp;I7S_CCOUNT&nbsp;=&nbsp;0;&nbsp;I7S_CCOUNT2++;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line92">92</span><span class="td">&nbsp;#endif;</span></span>
+<span class="tr"><span class="th" id="line93">93</span><span class="td">&nbsp;return&nbsp;I7S_Dir*I7S_Comp(I7S_Tab,&nbsp;I7S_Col,&nbsp;x+1,&nbsp;y+1,&nbsp;I7S_Dir);</span></span>
+<span class="tr"><span class="th" id="line94">94</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line95">95</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line96">96</span><span class="td">[&nbsp;ExchangeFields&nbsp;x&nbsp;y&nbsp;r;</span></span>
+<span class="tr"><span class="th" id="line97">97</span><span class="td">&nbsp;#ifdef&nbsp;MEASURE_SORT_PERFORMANCE;</span></span>
+<span class="tr"><span class="th" id="line98">98</span><span class="td">&nbsp;I7S_XCOUNT++;</span></span>
+<span class="tr"><span class="th" id="line99">99</span><span class="td">&nbsp;if&nbsp;(I7S_XCOUNT&nbsp;&lt;&nbsp;0)&nbsp;{&nbsp;print&nbsp;&quot;XO^&quot;;&nbsp;I7S_XCOUNT&nbsp;=&nbsp;0;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line100">100</span><span class="td">&nbsp;#endif;</span></span>
+<span class="tr"><span class="th" id="line101">101</span><span class="td">&nbsp;r&nbsp;=&nbsp;I7S_Swap(I7S_Tab,&nbsp;x+1,&nbsp;y+1);</span></span>
+<span class="tr"><span class="th" id="line102">102</span><span class="td">&nbsp;</span></span>
+<span class="tr"><span class="th" id="line103">103</span><span class="td">&nbsp;return&nbsp;r;&nbsp;</span></span>
+<span class="tr"><span class="th" id="line104">104</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line105">105</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>4W37 Sort.</h2><p><p> We now present three alternative sorting algorithms.<p></p><p> The first is the one used in builds up to and including 4W37: note that this is not quite bubble sort, and that it is unstable. It is now no longer used, but is so short that we might as well keep it in the code base in case anyone needs to resurrect a very early I7 project.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line115">115</span><span class="td">[&nbsp;OldSortAlgorithm&nbsp;x&nbsp;y</span></span>
+<span class="tr"><span class="th" id="line116">116</span><span class="td">&nbsp;f&nbsp;i&nbsp;j;</span></span>
+<span class="tr"><span class="th" id="line117">117</span><span class="td">&nbsp;if&nbsp;(y&nbsp;-&nbsp;x&nbsp;&lt;&nbsp;2)&nbsp;return;</span></span>
+<span class="tr"><span class="th" id="line118">118</span><span class="td">&nbsp;f&nbsp;=&nbsp;true;</span></span>
+<span class="tr"><span class="th" id="line119">119</span><span class="td">&nbsp;while&nbsp;(f)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line120">120</span><span class="td">&nbsp;&nbsp;f&nbsp;=&nbsp;false;</span></span>
+<span class="tr"><span class="th" id="line121">121</span><span class="td">&nbsp;&nbsp;for&nbsp;(i=x:i&lt;y:i++)</span></span>
+<span class="tr"><span class="th" id="line122">122</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(j=i+1:j&lt;y:j++)</span></span>
+<span class="tr"><span class="th" id="line123">123</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(CompareFields(i,&nbsp;j)&nbsp;&gt;&nbsp;0)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line124">124</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ExchangeFields(i,&nbsp;j);&nbsp;f&nbsp;=&nbsp;true;&nbsp;break;</span></span>
+<span class="tr"><span class="th" id="line125">125</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line126">126</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line127">127</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line128">128</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Insertion Sort.</h2><p><p> A stable algorithm which has $O(n^2)$ running time and therefore cannot be used with large arrays, but which has good performance on nearly sorted tables, and which has very low overhead.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line135">135</span><span class="td">[&nbsp;InsertionSortAlgorithm&nbsp;from&nbsp;to</span></span>
+<span class="tr"><span class="th" id="line136">136</span><span class="td">&nbsp;i&nbsp;j;</span></span>
+<span class="tr"><span class="th" id="line137">137</span><span class="td">&nbsp;if&nbsp;(to&nbsp;&gt;&nbsp;from+1)&nbsp;{&nbsp;</span></span>
+<span class="tr"><span class="th" id="line138">138</span><span class="td">&nbsp;&nbsp;for&nbsp;(i&nbsp;=&nbsp;from+1:&nbsp;i&nbsp;&lt;&nbsp;to:&nbsp;i++)&nbsp;{&nbsp;</span></span>
+<span class="tr"><span class="th" id="line139">139</span><span class="td">&nbsp;&nbsp;&nbsp;for&nbsp;(j&nbsp;=&nbsp;i:&nbsp;j&nbsp;&gt;&nbsp;from:&nbsp;j--)&nbsp;{&nbsp;</span></span>
+<span class="tr"><span class="th" id="line140">140</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(CompareFields(j,&nbsp;j-1)&nbsp;&lt;&nbsp;0)&nbsp;</span></span>
+<span class="tr"><span class="th" id="line141">141</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ExchangeFields(j,&nbsp;j-1);</span></span>
+<span class="tr"><span class="th" id="line142">142</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;else&nbsp;break;</span></span>
+<span class="tr"><span class="th" id="line143">143</span><span class="td">&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line144">144</span><span class="td">&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line145">145</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line146">146</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line147">147</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>In-Place Mergesort.</h2><p><p> A stable algorithm with $O(n\log n)$ running time, at some stack cost, and which is generally good for nearly sorted tables, but which is also complex and has some overhead. The code here mostly follows Thomas Baudel&#39;s implementation, which in turn follows the <span class="fixed">C++</span> STL library.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line155">155</span><span class="td">[&nbsp;InPlaceMergeSortAlgorithm&nbsp;from&nbsp;to</span></span>
+<span class="tr"><span class="th" id="line156">156</span><span class="td">&nbsp;middle;</span></span>
+<span class="tr"><span class="th" id="line157">157</span><span class="td">&nbsp;if&nbsp;(to&nbsp;-&nbsp;from&nbsp;&lt;&nbsp;12)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line158">158</span><span class="td">&nbsp;&nbsp;if&nbsp;(to&nbsp;-&nbsp;from&nbsp;&lt;&nbsp;2)&nbsp;return;</span></span>
+<span class="tr"><span class="th" id="line159">159</span><span class="td">&nbsp;&nbsp;InsertionSortAlgorithm(from,&nbsp;to);</span></span>
+<span class="tr"><span class="th" id="line160">160</span><span class="td">&nbsp;&nbsp;return;</span></span>
+<span class="tr"><span class="th" id="line161">161</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line162">162</span><span class="td">&nbsp;middle&nbsp;=&nbsp;(from&nbsp;+&nbsp;to)/2;&nbsp;</span></span>
+<span class="tr"><span class="th" id="line163">163</span><span class="td">&nbsp;InPlaceMergeSortAlgorithm(from,&nbsp;middle);&nbsp;</span></span>
+<span class="tr"><span class="th" id="line164">164</span><span class="td">&nbsp;InPlaceMergeSortAlgorithm(middle,&nbsp;to);&nbsp;</span></span>
+<span class="tr"><span class="th" id="line165">165</span><span class="td">&nbsp;IPMS_Merge(from,&nbsp;middle,&nbsp;to,&nbsp;middle-from,&nbsp;to&nbsp;-&nbsp;middle);&nbsp;</span></span>
+<span class="tr"><span class="th" id="line166">166</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line167">167</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line168">168</span><span class="td">[&nbsp;IPMS_Lower&nbsp;from&nbsp;to&nbsp;val</span></span>
+<span class="tr"><span class="th" id="line169">169</span><span class="td">&nbsp;len&nbsp;half&nbsp;mid;</span></span>
+<span class="tr"><span class="th" id="line170">170</span><span class="td">&nbsp;len&nbsp;=&nbsp;to&nbsp;-&nbsp;from;</span></span>
+<span class="tr"><span class="th" id="line171">171</span><span class="td">&nbsp;while&nbsp;(len&nbsp;&gt;&nbsp;0)&nbsp;{&nbsp;</span></span>
+<span class="tr"><span class="th" id="line172">172</span><span class="td">&nbsp;&nbsp;half&nbsp;=&nbsp;len/2;&nbsp;</span></span>
+<span class="tr"><span class="th" id="line173">173</span><span class="td">&nbsp;&nbsp;mid&nbsp;=&nbsp;from&nbsp;+&nbsp;half;</span></span>
+<span class="tr"><span class="th" id="line174">174</span><span class="td">&nbsp;&nbsp;if&nbsp;(CompareFields(mid,&nbsp;val)&nbsp;&lt;&nbsp;0)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line175">175</span><span class="td">&nbsp;&nbsp;&nbsp;from&nbsp;=&nbsp;mid&nbsp;+&nbsp;1;</span></span>
+<span class="tr"><span class="th" id="line176">176</span><span class="td">&nbsp;&nbsp;&nbsp;len&nbsp;=&nbsp;len&nbsp;-&nbsp;half&nbsp;-1;&nbsp;</span></span>
+<span class="tr"><span class="th" id="line177">177</span><span class="td">&nbsp;&nbsp;}&nbsp;else&nbsp;len&nbsp;=&nbsp;half;</span></span>
+<span class="tr"><span class="th" id="line178">178</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line179">179</span><span class="td">&nbsp;return&nbsp;from;</span></span>
+<span class="tr"><span class="th" id="line180">180</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line181">181</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line182">182</span><span class="td">[&nbsp;IPMS_Upper&nbsp;from&nbsp;to&nbsp;val</span></span>
+<span class="tr"><span class="th" id="line183">183</span><span class="td">&nbsp;len&nbsp;half&nbsp;mid;</span></span>
+<span class="tr"><span class="th" id="line184">184</span><span class="td">&nbsp;len&nbsp;=&nbsp;to&nbsp;-&nbsp;from;</span></span>
+<span class="tr"><span class="th" id="line185">185</span><span class="td">&nbsp;while&nbsp;(len&nbsp;&gt;&nbsp;0)&nbsp;{&nbsp;</span></span>
+<span class="tr"><span class="th" id="line186">186</span><span class="td">&nbsp;&nbsp;half&nbsp;=&nbsp;len/2;&nbsp;</span></span>
+<span class="tr"><span class="th" id="line187">187</span><span class="td">&nbsp;&nbsp;mid&nbsp;=&nbsp;from&nbsp;+&nbsp;half;</span></span>
+<span class="tr"><span class="th" id="line188">188</span><span class="td">&nbsp;&nbsp;if&nbsp;(CompareFields(val,&nbsp;mid)&nbsp;&lt;&nbsp;0)</span></span>
+<span class="tr"><span class="th" id="line189">189</span><span class="td">&nbsp;&nbsp;&nbsp;len&nbsp;=&nbsp;half;</span></span>
+<span class="tr"><span class="th" id="line190">190</span><span class="td">&nbsp;&nbsp;else&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line191">191</span><span class="td">&nbsp;&nbsp;&nbsp;from&nbsp;=&nbsp;mid&nbsp;+&nbsp;1;</span></span>
+<span class="tr"><span class="th" id="line192">192</span><span class="td">&nbsp;&nbsp;&nbsp;len&nbsp;=&nbsp;len&nbsp;-&nbsp;half&nbsp;-1;&nbsp;</span></span>
+<span class="tr"><span class="th" id="line193">193</span><span class="td">&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line194">194</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line195">195</span><span class="td">&nbsp;return&nbsp;from;</span></span>
+<span class="tr"><span class="th" id="line196">196</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line197">197</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line198">198</span><span class="td">[&nbsp;IPMS_Reverse&nbsp;from&nbsp;to;</span></span>
+<span class="tr"><span class="th" id="line199">199</span><span class="td">&nbsp;while&nbsp;(from&nbsp;&lt;&nbsp;to)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line200">200</span><span class="td">&nbsp;&nbsp;ExchangeFields(from++,&nbsp;to--);</span></span>
+<span class="tr"><span class="th" id="line201">201</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line202">202</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line203">203</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line204">204</span><span class="td">[&nbsp;IPMS_Rotate&nbsp;from&nbsp;mid&nbsp;to</span></span>
+<span class="tr"><span class="th" id="line205">205</span><span class="td">&nbsp;n&nbsp;val&nbsp;shift&nbsp;p1&nbsp;p2;</span></span>
+<span class="tr"><span class="th" id="line206">206</span><span class="td">&nbsp;if&nbsp;((from==mid)&nbsp;||&nbsp;(mid==to))&nbsp;return;&nbsp;</span></span>
+<span class="tr"><span class="th" id="line207">207</span><span class="td">&nbsp;IPMS_Reverse(from,&nbsp;mid-1);&nbsp;</span></span>
+<span class="tr"><span class="th" id="line208">208</span><span class="td">&nbsp;IPMS_Reverse(mid,&nbsp;to-1);&nbsp;</span></span>
+<span class="tr"><span class="th" id="line209">209</span><span class="td">&nbsp;IPMS_Reverse(from,&nbsp;to-1);</span></span>
+<span class="tr"><span class="th" id="line210">210</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line211">211</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line212">212</span><span class="td">[&nbsp;IPMS_Merge&nbsp;from&nbsp;pivot&nbsp;to&nbsp;len1&nbsp;len2</span></span>
+<span class="tr"><span class="th" id="line213">213</span><span class="td">&nbsp;first_cut&nbsp;second_cut&nbsp;len11&nbsp;len22&nbsp;new_mid;</span></span>
+<span class="tr"><span class="th" id="line214">214</span><span class="td">&nbsp;if&nbsp;((len1&nbsp;==&nbsp;0)&nbsp;||&nbsp;(len2&nbsp;==&nbsp;0))&nbsp;return;&nbsp;</span></span>
+<span class="tr"><span class="th" id="line215">215</span><span class="td">&nbsp;if&nbsp;(len1+len2&nbsp;==&nbsp;2)&nbsp;{&nbsp;</span></span>
+<span class="tr"><span class="th" id="line216">216</span><span class="td">&nbsp;&nbsp;if&nbsp;(CompareFields(pivot,&nbsp;from)&nbsp;&lt;&nbsp;0)&nbsp;</span></span>
+<span class="tr"><span class="th" id="line217">217</span><span class="td">&nbsp;&nbsp;ExchangeFields(pivot,&nbsp;from);&nbsp;</span></span>
+<span class="tr"><span class="th" id="line218">218</span><span class="td">&nbsp;&nbsp;return;&nbsp;</span></span>
+<span class="tr"><span class="th" id="line219">219</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line220">220</span><span class="td">&nbsp;if&nbsp;(len1&nbsp;&gt;&nbsp;len2)&nbsp;{&nbsp;</span></span>
+<span class="tr"><span class="th" id="line221">221</span><span class="td">&nbsp;&nbsp;len11&nbsp;=&nbsp;len1/2;&nbsp;</span></span>
+<span class="tr"><span class="th" id="line222">222</span><span class="td">&nbsp;&nbsp;first_cut&nbsp;=&nbsp;from&nbsp;+&nbsp;len11;&nbsp;</span></span>
+<span class="tr"><span class="th" id="line223">223</span><span class="td">&nbsp;&nbsp;second_cut&nbsp;=&nbsp;IPMS_Lower(pivot,&nbsp;to,&nbsp;first_cut);&nbsp;</span></span>
+<span class="tr"><span class="th" id="line224">224</span><span class="td">&nbsp;&nbsp;len22&nbsp;=&nbsp;second_cut&nbsp;-&nbsp;pivot;&nbsp;</span></span>
+<span class="tr"><span class="th" id="line225">225</span><span class="td">&nbsp;}&nbsp;else&nbsp;{&nbsp;</span></span>
+<span class="tr"><span class="th" id="line226">226</span><span class="td">&nbsp;&nbsp;len22&nbsp;=&nbsp;len2/2;&nbsp;</span></span>
+<span class="tr"><span class="th" id="line227">227</span><span class="td">&nbsp;&nbsp;second_cut&nbsp;=&nbsp;pivot&nbsp;+&nbsp;len22;&nbsp;</span></span>
+<span class="tr"><span class="th" id="line228">228</span><span class="td">&nbsp;&nbsp;first_cut&nbsp;=&nbsp;IPMS_Upper(from,&nbsp;pivot,&nbsp;second_cut);&nbsp;</span></span>
+<span class="tr"><span class="th" id="line229">229</span><span class="td">&nbsp;&nbsp;len11&nbsp;=&nbsp;first_cut&nbsp;-&nbsp;from;&nbsp;</span></span>
+<span class="tr"><span class="th" id="line230">230</span><span class="td">&nbsp;}&nbsp;</span></span>
+<span class="tr"><span class="th" id="line231">231</span><span class="td">&nbsp;IPMS_Rotate(first_cut,&nbsp;pivot,&nbsp;second_cut);&nbsp;</span></span>
+<span class="tr"><span class="th" id="line232">232</span><span class="td">&nbsp;new_mid&nbsp;=&nbsp;first_cut&nbsp;+&nbsp;len22;&nbsp;</span></span>
+<span class="tr"><span class="th" id="line233">233</span><span class="td">&nbsp;IPMS_Merge(from,&nbsp;first_cut,&nbsp;new_mid,&nbsp;len11,&nbsp;len22);&nbsp;</span></span>
+<span class="tr"><span class="th" id="line234">234</span><span class="td">&nbsp;IPMS_Merge(new_mid,&nbsp;second_cut,&nbsp;to,&nbsp;len1&nbsp;-&nbsp;len11,&nbsp;len2&nbsp;-&nbsp;len22);&nbsp;</span></span>
+<span class="tr"><span class="th" id="line235">235</span><span class="td">];</span></span>
+</div><footer><hr><p><em>From I6T lib 6/12N &copy; Graham Nelson and published under the <a href="https://github.com/zedlopez/standard_rules/blob/main/LICENSE.md">Artistic License 2.0</a>. Distributed with <a href="http://inform7.com/">Inform 7 6M62</a>.</em></p></footer></body></html>

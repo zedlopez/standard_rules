@@ -1,147 +1,150 @@
 <!doctype html>
-<html><head><title>
-OutOfWorld
-</title></head><body><h1>
-OutOfWorld
-</h1><pre>
-B/oowt: OutOfWorld Template.
- 
-@Purpose: To implement some of the out of world actions.
- 
-@-------------------------------------------------------------------------------
+<html lang="en">
+<meta charset="utf-8">
+<head><title>OutOfWorld</title>
+  <style>
+span.th, span.td { display: table-cell; }
+span.td { padding-left: 2rem; }
+span.th { width:4rem; text-align: right; }
+span.tr { display: table-row;     counter-increment: linenum; }
+span.line_no::before {
+    content: counter(linenum);
+    text-align: right;
+    display: block;
+    font-family: monospace;
+    font-weight: normal;
+}
 
-@p Perform Undo.
-
-@c
-[ Perform_Undo;
-	#ifdef PREVENT_UNDO; IMMEDIATELY_UNDO_RM('A'); new_line; return; #endif;
-	if (IterationsOfTurnSequence == 0) { IMMEDIATELY_UNDO_RM('B'); new_line; return; }
-	if (undo_flag == 0) { IMMEDIATELY_UNDO_RM('C'); new_line; return; }
-	if (undo_flag == 1) { IMMEDIATELY_UNDO_RM('D'); new_line; return; }
-	if (VM_Undo() == 0) { IMMEDIATELY_UNDO_RM('F'); new_line; }
-];
-
-@p Announce Score Rule.
-
-@c
-[ ANNOUNCE_SCORE_R;
-	if (actor ~= player) rfalse;
-	#Iftrue USE_SCORING == 0; ANNOUNCE_SCORE_RM('C'); new_line;
-	#ifnot; ANNOUNCE_SCORE_RM('A'); PrintRank();
-	#endif;
-];
-
-@p Switch Score Notification On Rule.
-
-@c
-[ SWITCH_SCORE_NOTIFY_ON_R;
-	if (actor ~= player) rfalse;
-	#Iftrue USE_SCORING == 0; ANNOUNCE_SCORE_R();
-	#ifnot; notify_mode=1; #endif;
-];
-
-@p Standard Report Switching Score Notification On Rule.
-
-@c
-[ REP_SWITCH_NOTIFY_ON_R;
-	if (actor ~= player) rfalse;
-	#Iftrue USE_SCORING ~= 0; REP_SWITCH_NOTIFY_ON_RM('A'); new_line; #endif;
-];
-
-@p Switch Score Notification Off Rule.
-
-@c
-[ SWITCH_SCORE_NOTIFY_OFF_R;
-	if (actor ~= player) rfalse;
-	#Iftrue USE_SCORING == 0; ANNOUNCE_SCORE_R();
-	#ifnot; notify_mode=0; #endif;
-];
-
-@p Standard Report Switching Score Notification Off Rule.
-
-@c
-[ REP_SWITCH_NOTIFY_OFF_R;
-	if (actor ~= player) rfalse;
-	#Iftrue USE_SCORING ~= 0; REP_SWITCH_NOTIFY_OFF_RM('A'); new_line; #endif;
-];
-
-@p Prefer Sometimes Abbreviated Room Descriptions Rule.
-
-@c
-[ PREFER_SOMETIMES_ABBREVIATED_R;
-	if (actor ~= player) rfalse;
-	lookmode=1;
-]; ! Brief
-
-@p Standard Report Prefer Sometimes Abbreviated Room Descriptions Rule.
-
-@c
-[ REP_PREFER_SOMETIMES_ABBR_R;
-	if (actor ~= player) rfalse;
-	print (TEXT_TY_Say) Story; REP_PREFER_SOMETIMES_ABBR_RM('A'); new_line;
-]; ! Brief
-
-@p Prefer Unabbreviated Room Descriptions Rule.
-
-@c
-[ PREFER_UNABBREVIATED_R;
-	if (actor ~= player) rfalse;
-	lookmode=2;
-]; ! Verbose
-
-@p Standard Report Prefer Unabbreviated Room Descriptions Rule.
-
-@c
-[ REP_PREFER_UNABBREVIATED_R;
-	if (actor ~= player) rfalse;
-	print (TEXT_TY_Say) Story; REP_PREFER_UNABBREVIATED_RM('A'); new_line;
-]; ! Verbose
-
-@p Prefer Abbreviated Room Descriptions Rule.
-
-@c
-[ PREFER_ABBREVIATED_R;
-	if (actor ~= player) rfalse;
-	lookmode=3;
-]; ! Superbrief
-
-@p Standard Report Prefer Abbreviated Room Descriptions Rule.
-
-@c
-[ REP_PREFER_ABBREVIATED_R;
-	if (actor ~= player) rfalse;
-	print (TEXT_TY_Say) Story; REP_PREFER_ABBREVIATED_RM('A'); new_line;
-]; ! Superbrief
-
-@p Announce Pronoun Meanings Rule.
-
-@c
-[ ANNOUNCE_PRONOUN_MEANINGS_R x y c d;
-	if (actor ~= player) rfalse;
-	ANNOUNCE_PRONOUN_MEANINGS_RM('A');
-
-	c = (LanguagePronouns-->0)/3;
-	if (player ~= selfobj) c++;
-
-	if (c==0) { ANNOUNCE_PRONOUN_MEANINGS_RM('D'); rtrue; }
-
-	for (x = 1, d = 0 : x <= LanguagePronouns-->0: x = x+3) {
-		print "~", (address) LanguagePronouns-->x, "~ ";
-		y = LanguagePronouns-->(x+2);
-		if (y == NULL) ANNOUNCE_PRONOUN_MEANINGS_RM('C');
-		else { ANNOUNCE_PRONOUN_MEANINGS_RM('B'); print (the) y; }
-		d++;
-		if (d < c-1) print ", ";
-		if (d == c-1) {
-			#ifdef SERIAL_COMMA; print ","; #endif;
-			LIST_WRITER_INTERNAL_RM('C');
-		}
-	}
-	if (player ~= selfobj) {
-		print "~", (address) ME1__WD, "~ "; ANNOUNCE_PRONOUN_MEANINGS_RM('B');
-		c = player; player = selfobj;
-		print (the) c; player = c;
-	}
-	".";
-];
-</pre><footer><br><p>From I6T lib 6/12N, distributed with Inform 7 6M62 by Graham Nelson</p></footer></body></html>
+.fixed { font-family: monospace }
+.em { font-style: italic; }
+.center { text-align: center; }
+    body { font-family: sans-serif; margin: 3rem; background-color: #fafaf0; width: 80rem; }
+    .pre { font-family: monospace; margin: auto; width: 80rem; }
+#front_matter,.text { width: 50rem; }
+.text { border-bottom: .5px solid black; border-top: .5px solid black; margin-top: 1rem;
+padding-bottom: 1rem; margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+<div id="front_matter">
+<h1><a href="./OutOfWorld.i6t">OutOfWorld</a></h1><h2>Perform Undo.</h2><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line9">9</span><span class="td">[&nbsp;Perform_Undo;</span></span>
+<span class="tr"><span class="th" id="line10">10</span><span class="td">&nbsp;#ifdef&nbsp;PREVENT_UNDO;&nbsp;IMMEDIATELY_UNDO_RM(&#39;A&#39;);&nbsp;new_line;&nbsp;return;&nbsp;#endif;</span></span>
+<span class="tr"><span class="th" id="line11">11</span><span class="td">&nbsp;if&nbsp;(IterationsOfTurnSequence&nbsp;==&nbsp;0)&nbsp;{&nbsp;IMMEDIATELY_UNDO_RM(&#39;B&#39;);&nbsp;new_line;&nbsp;return;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line12">12</span><span class="td">&nbsp;if&nbsp;(undo_flag&nbsp;==&nbsp;0)&nbsp;{&nbsp;IMMEDIATELY_UNDO_RM(&#39;C&#39;);&nbsp;new_line;&nbsp;return;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line13">13</span><span class="td">&nbsp;if&nbsp;(undo_flag&nbsp;==&nbsp;1)&nbsp;{&nbsp;IMMEDIATELY_UNDO_RM(&#39;D&#39;);&nbsp;new_line;&nbsp;return;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line14">14</span><span class="td">&nbsp;if&nbsp;(VM_Undo()&nbsp;==&nbsp;0)&nbsp;{&nbsp;IMMEDIATELY_UNDO_RM(&#39;F&#39;);&nbsp;new_line;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line15">15</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line16">16</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Announce Score Rule.</h2><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line20">20</span><span class="td">[&nbsp;ANNOUNCE_SCORE_R;</span></span>
+<span class="tr"><span class="th" id="line21">21</span><span class="td">&nbsp;if&nbsp;(actor&nbsp;~=&nbsp;player)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line22">22</span><span class="td">&nbsp;#Iftrue&nbsp;USE_SCORING&nbsp;==&nbsp;0;&nbsp;ANNOUNCE_SCORE_RM(&#39;C&#39;);&nbsp;new_line;</span></span>
+<span class="tr"><span class="th" id="line23">23</span><span class="td">&nbsp;#ifnot;&nbsp;ANNOUNCE_SCORE_RM(&#39;A&#39;);&nbsp;PrintRank();</span></span>
+<span class="tr"><span class="th" id="line24">24</span><span class="td">&nbsp;#endif;</span></span>
+<span class="tr"><span class="th" id="line25">25</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line26">26</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Switch Score Notification On Rule.</h2><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line30">30</span><span class="td">[&nbsp;SWITCH_SCORE_NOTIFY_ON_R;</span></span>
+<span class="tr"><span class="th" id="line31">31</span><span class="td">&nbsp;if&nbsp;(actor&nbsp;~=&nbsp;player)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line32">32</span><span class="td">&nbsp;#Iftrue&nbsp;USE_SCORING&nbsp;==&nbsp;0;&nbsp;ANNOUNCE_SCORE_R();</span></span>
+<span class="tr"><span class="th" id="line33">33</span><span class="td">&nbsp;#ifnot;&nbsp;notify_mode=1;&nbsp;#endif;</span></span>
+<span class="tr"><span class="th" id="line34">34</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line35">35</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Standard Report Switching Score Notification On Rule.</h2><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line39">39</span><span class="td">[&nbsp;REP_SWITCH_NOTIFY_ON_R;</span></span>
+<span class="tr"><span class="th" id="line40">40</span><span class="td">&nbsp;if&nbsp;(actor&nbsp;~=&nbsp;player)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line41">41</span><span class="td">&nbsp;#Iftrue&nbsp;USE_SCORING&nbsp;~=&nbsp;0;&nbsp;REP_SWITCH_NOTIFY_ON_RM(&#39;A&#39;);&nbsp;new_line;&nbsp;#endif;</span></span>
+<span class="tr"><span class="th" id="line42">42</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line43">43</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Switch Score Notification Off Rule.</h2><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line47">47</span><span class="td">[&nbsp;SWITCH_SCORE_NOTIFY_OFF_R;</span></span>
+<span class="tr"><span class="th" id="line48">48</span><span class="td">&nbsp;if&nbsp;(actor&nbsp;~=&nbsp;player)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line49">49</span><span class="td">&nbsp;#Iftrue&nbsp;USE_SCORING&nbsp;==&nbsp;0;&nbsp;ANNOUNCE_SCORE_R();</span></span>
+<span class="tr"><span class="th" id="line50">50</span><span class="td">&nbsp;#ifnot;&nbsp;notify_mode=0;&nbsp;#endif;</span></span>
+<span class="tr"><span class="th" id="line51">51</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line52">52</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Standard Report Switching Score Notification Off Rule.</h2><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line56">56</span><span class="td">[&nbsp;REP_SWITCH_NOTIFY_OFF_R;</span></span>
+<span class="tr"><span class="th" id="line57">57</span><span class="td">&nbsp;if&nbsp;(actor&nbsp;~=&nbsp;player)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line58">58</span><span class="td">&nbsp;#Iftrue&nbsp;USE_SCORING&nbsp;~=&nbsp;0;&nbsp;REP_SWITCH_NOTIFY_OFF_RM(&#39;A&#39;);&nbsp;new_line;&nbsp;#endif;</span></span>
+<span class="tr"><span class="th" id="line59">59</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line60">60</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Prefer Sometimes Abbreviated Room Descriptions Rule.</h2><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line64">64</span><span class="td">[&nbsp;PREFER_SOMETIMES_ABBREVIATED_R;</span></span>
+<span class="tr"><span class="th" id="line65">65</span><span class="td">&nbsp;if&nbsp;(actor&nbsp;~=&nbsp;player)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line66">66</span><span class="td">&nbsp;lookmode=1;</span></span>
+<span class="tr"><span class="th" id="line67">67</span><span class="td">];&nbsp;!&nbsp;Brief</span></span>
+<span class="tr"><span class="th" id="line68">68</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Standard Report Prefer Sometimes Abbreviated Room Descriptions Rule.</h2><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line72">72</span><span class="td">[&nbsp;REP_PREFER_SOMETIMES_ABBR_R;</span></span>
+<span class="tr"><span class="th" id="line73">73</span><span class="td">&nbsp;if&nbsp;(actor&nbsp;~=&nbsp;player)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line74">74</span><span class="td">&nbsp;print&nbsp;(TEXT_TY_Say)&nbsp;Story;&nbsp;REP_PREFER_SOMETIMES_ABBR_RM(&#39;A&#39;);&nbsp;new_line;</span></span>
+<span class="tr"><span class="th" id="line75">75</span><span class="td">];&nbsp;!&nbsp;Brief</span></span>
+<span class="tr"><span class="th" id="line76">76</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Prefer Unabbreviated Room Descriptions Rule.</h2><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line80">80</span><span class="td">[&nbsp;PREFER_UNABBREVIATED_R;</span></span>
+<span class="tr"><span class="th" id="line81">81</span><span class="td">&nbsp;if&nbsp;(actor&nbsp;~=&nbsp;player)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line82">82</span><span class="td">&nbsp;lookmode=2;</span></span>
+<span class="tr"><span class="th" id="line83">83</span><span class="td">];&nbsp;!&nbsp;Verbose</span></span>
+<span class="tr"><span class="th" id="line84">84</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Standard Report Prefer Unabbreviated Room Descriptions Rule.</h2><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line88">88</span><span class="td">[&nbsp;REP_PREFER_UNABBREVIATED_R;</span></span>
+<span class="tr"><span class="th" id="line89">89</span><span class="td">&nbsp;if&nbsp;(actor&nbsp;~=&nbsp;player)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line90">90</span><span class="td">&nbsp;print&nbsp;(TEXT_TY_Say)&nbsp;Story;&nbsp;REP_PREFER_UNABBREVIATED_RM(&#39;A&#39;);&nbsp;new_line;</span></span>
+<span class="tr"><span class="th" id="line91">91</span><span class="td">];&nbsp;!&nbsp;Verbose</span></span>
+<span class="tr"><span class="th" id="line92">92</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Prefer Abbreviated Room Descriptions Rule.</h2><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line96">96</span><span class="td">[&nbsp;PREFER_ABBREVIATED_R;</span></span>
+<span class="tr"><span class="th" id="line97">97</span><span class="td">&nbsp;if&nbsp;(actor&nbsp;~=&nbsp;player)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line98">98</span><span class="td">&nbsp;lookmode=3;</span></span>
+<span class="tr"><span class="th" id="line99">99</span><span class="td">];&nbsp;!&nbsp;Superbrief</span></span>
+<span class="tr"><span class="th" id="line100">100</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Standard Report Prefer Abbreviated Room Descriptions Rule.</h2><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line104">104</span><span class="td">[&nbsp;REP_PREFER_ABBREVIATED_R;</span></span>
+<span class="tr"><span class="th" id="line105">105</span><span class="td">&nbsp;if&nbsp;(actor&nbsp;~=&nbsp;player)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line106">106</span><span class="td">&nbsp;print&nbsp;(TEXT_TY_Say)&nbsp;Story;&nbsp;REP_PREFER_ABBREVIATED_RM(&#39;A&#39;);&nbsp;new_line;</span></span>
+<span class="tr"><span class="th" id="line107">107</span><span class="td">];&nbsp;!&nbsp;Superbrief</span></span>
+<span class="tr"><span class="th" id="line108">108</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Announce Pronoun Meanings Rule.</h2><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line112">112</span><span class="td">[&nbsp;ANNOUNCE_PRONOUN_MEANINGS_R&nbsp;x&nbsp;y&nbsp;c&nbsp;d;</span></span>
+<span class="tr"><span class="th" id="line113">113</span><span class="td">&nbsp;if&nbsp;(actor&nbsp;~=&nbsp;player)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line114">114</span><span class="td">&nbsp;ANNOUNCE_PRONOUN_MEANINGS_RM(&#39;A&#39;);</span></span>
+<span class="tr"><span class="th" id="line115">115</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line116">116</span><span class="td">&nbsp;c&nbsp;=&nbsp;(LanguagePronouns--&gt;0)/3;</span></span>
+<span class="tr"><span class="th" id="line117">117</span><span class="td">&nbsp;if&nbsp;(player&nbsp;~=&nbsp;selfobj)&nbsp;c++;</span></span>
+<span class="tr"><span class="th" id="line118">118</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line119">119</span><span class="td">&nbsp;if&nbsp;(c==0)&nbsp;{&nbsp;ANNOUNCE_PRONOUN_MEANINGS_RM(&#39;D&#39;);&nbsp;rtrue;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line120">120</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line121">121</span><span class="td">&nbsp;for&nbsp;(x&nbsp;=&nbsp;1,&nbsp;d&nbsp;=&nbsp;0&nbsp;:&nbsp;x&nbsp;&lt;=&nbsp;LanguagePronouns--&gt;0:&nbsp;x&nbsp;=&nbsp;x+3)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line122">122</span><span class="td">&nbsp;&nbsp;print&nbsp;&quot;~&quot;,&nbsp;(address)&nbsp;LanguagePronouns--&gt;x,&nbsp;&quot;~&nbsp;&quot;;</span></span>
+<span class="tr"><span class="th" id="line123">123</span><span class="td">&nbsp;&nbsp;y&nbsp;=&nbsp;LanguagePronouns--&gt;(x+2);</span></span>
+<span class="tr"><span class="th" id="line124">124</span><span class="td">&nbsp;&nbsp;if&nbsp;(y&nbsp;==&nbsp;NULL)&nbsp;ANNOUNCE_PRONOUN_MEANINGS_RM(&#39;C&#39;);</span></span>
+<span class="tr"><span class="th" id="line125">125</span><span class="td">&nbsp;&nbsp;else&nbsp;{&nbsp;ANNOUNCE_PRONOUN_MEANINGS_RM(&#39;B&#39;);&nbsp;print&nbsp;(the)&nbsp;y;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line126">126</span><span class="td">&nbsp;&nbsp;d++;</span></span>
+<span class="tr"><span class="th" id="line127">127</span><span class="td">&nbsp;&nbsp;if&nbsp;(d&nbsp;&lt;&nbsp;c-1)&nbsp;print&nbsp;&quot;,&nbsp;&quot;;</span></span>
+<span class="tr"><span class="th" id="line128">128</span><span class="td">&nbsp;&nbsp;if&nbsp;(d&nbsp;==&nbsp;c-1)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line129">129</span><span class="td">&nbsp;&nbsp;&nbsp;#ifdef&nbsp;SERIAL_COMMA;&nbsp;print&nbsp;&quot;,&quot;;&nbsp;#endif;</span></span>
+<span class="tr"><span class="th" id="line130">130</span><span class="td">&nbsp;&nbsp;&nbsp;LIST_WRITER_INTERNAL_RM(&#39;C&#39;);</span></span>
+<span class="tr"><span class="th" id="line131">131</span><span class="td">&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line132">132</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line133">133</span><span class="td">&nbsp;if&nbsp;(player&nbsp;~=&nbsp;selfobj)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line134">134</span><span class="td">&nbsp;&nbsp;print&nbsp;&quot;~&quot;,&nbsp;(address)&nbsp;ME1__WD,&nbsp;&quot;~&nbsp;&quot;;&nbsp;ANNOUNCE_PRONOUN_MEANINGS_RM(&#39;B&#39;);</span></span>
+<span class="tr"><span class="th" id="line135">135</span><span class="td">&nbsp;&nbsp;c&nbsp;=&nbsp;player;&nbsp;player&nbsp;=&nbsp;selfobj;</span></span>
+<span class="tr"><span class="th" id="line136">136</span><span class="td">&nbsp;&nbsp;print&nbsp;(the)&nbsp;c;&nbsp;player&nbsp;=&nbsp;c;</span></span>
+<span class="tr"><span class="th" id="line137">137</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line138">138</span><span class="td">&nbsp;&quot;.&quot;;</span></span>
+<span class="tr"><span class="th" id="line139">139</span><span class="td">];</span></span>
+</div><footer><hr><p><em>From I6T lib 6/12N &copy; Graham Nelson and published under the <a href="https://github.com/zedlopez/standard_rules/blob/main/LICENSE.md">Artistic License 2.0</a>. Distributed with <a href="http://inform7.com/">Inform 7 6M62</a>.</em></p></footer></body></html>

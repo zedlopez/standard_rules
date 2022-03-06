@@ -1,148 +1,149 @@
 <!doctype html>
-<html><head><title>
-Char
-</title></head><body><h1>
-Char
-</h1><pre>
-B/chart: Char Template.
- 
-@Purpose: To decide whether letters are upper or lower case, and convert
-between the two.
- 
-@-------------------------------------------------------------------------------
+<html lang="en">
+<meta charset="utf-8">
+<head><title>Char</title>
+  <style>
+span.th, span.td { display: table-cell; }
+span.td { padding-left: 2rem; }
+span.th { width:4rem; text-align: right; }
+span.tr { display: table-row;     counter-increment: linenum; }
+span.line_no::before {
+    content: counter(linenum);
+    text-align: right;
+    display: block;
+    font-family: monospace;
+    font-weight: normal;
+}
 
-@p Char Is Of Case.
-The following decides whether a character |c| belongs to case |case|, where
-0 means lower case and 1 means upper. |c| is interpreted according to the
-character casing chart in "UnicodeData.i6t", which means, it will be
-ZSCII for the Z-machine and Unicode for Glulx.
-
-@c
-[ CharIsOfCase c case
-	i tab min max len par;
-	if (c<'A') rfalse;
-	if (case == 0) {
-		if ((c >= 'a') && (c <= 'z')) rtrue;
-		tab = CharCasingChart0;
-	} else {
-		if ((c >= 'A') && (c <= 'Z')) rtrue;
-		tab = CharCasingChart1;
-	}
-	if (c<128) rfalse;
-	while (tab-->i) {
-		min = tab-->i; i++;
-		len = tab-->i; i++;
-		i++;
-		par = 0;
-		if (len<0) { par = 1; len = -len; }
-		if (c < min) rfalse;
-		if (c < min+len) {
-			if (par) { if ((c-min) % 2 == 0) rtrue; }
-			else { rtrue; }
-		}
-	}
-	rfalse;
-];
-
-@p Char To Case.
-And the following converts character |c| to the desired case, or returns
-it unchanged if it is not a letter with variant casings.
-
-@c
-[ CharToCase c case
-	i tab min max len par del f;
-	if (c<'A') return c;
-	if (case == 1) {
-		if ((c >= 'a') && (c <= 'z')) return c-32;
-		tab = CharCasingChart0;
-	} else {
-		if ((c >= 'A') && (c <= 'Z')) return c+32;
-		tab = CharCasingChart1;
-	}
-	if (c<128) return c;
-	while (tab-->i) {
-		min = tab-->i; i++;
-		len = tab-->i; i++;
-		del = tab-->i; i++;
-		par = 0;
-		if (len<0) { par = 1; len = -len; }
-		if (c < min) return c;
-		if (c < min+len) {
-			f = false;
-			if (par) { if ((c-min) % 2 == 0) f = true; }
-			else { f = true; }
-			if (f) {
-				if (del == UNIC_NCT) return c;
-				return c+del;
-			}
-		}
-	}
-	return c;
-];
-
-@p Reversing Case.
-It's convenient to provide this relatively fast routine to reverse the
-case of a letter since this is an operation used frequently in regular
-expression matching (see "RegExp.i6t").
-
-@c
-#IFDEF TARGET_ZCODE;
-[ TEXT_TY_RevCase ch;
-	if (ch<'A') return ch;
-	if ((ch >= 'a') && (ch <= 'z')) return ch-'a'+'A';
-	if ((ch >= 'A') && (ch <= 'Z')) return ch-'A'+'a';
-	if (ch<128) return ch;
-	if ((ch >= 155) && (ch <= 157)) return ch+3; ! a, o, u umlaut in ZSCII
-	if ((ch >= 158) && (ch <= 160)) return ch-3; ! A, O, U umlaut
-	if ((ch >= 164) && (ch <= 165)) return ch+3; ! e, i umlaut
-	if ((ch >= 167) && (ch <= 168)) return ch-3; ! E, I umlaut
-	if ((ch >= 169) && (ch <= 174)) return ch+6; ! a, e, i, o, u, y acute
-	if ((ch >= 175) && (ch <= 180)) return ch-6; ! A, E, I, O, U, Y acute
-	if ((ch >= 181) && (ch <= 185)) return ch+5; ! a, e, i, o, u grave
-	if ((ch >= 186) && (ch <= 190)) return ch-5; ! A, E, I, O, U grave
-	if ((ch >= 191) && (ch <= 195)) return ch+5; ! a, e, i, o, u circumflex
-	if ((ch >= 196) && (ch <= 200)) return ch-5; ! A, E, I, O, U circumflex
-	if (ch == 201) return 202; ! a circle
-	if (ch == 202) return 201; ! A circle
-	if (ch == 203) return 204; ! o slash
-	if (ch == 204) return 203; ! O slash
-	if ((ch >= 205) && (ch <= 207)) return ch+3; ! a, n, o tilde
-	if ((ch >= 208) && (ch <= 210)) return ch-3; ! A, N, O tilde
-	if (ch == 211) return 212; ! ae ligature
-	if (ch == 212) return 211; ! AE ligature
-	if (ch == 213) return 214; ! c cedilla
-	if (ch == 214) return 213; ! C cedilla
-	if (ch == 215 or 216) return ch+2; ! thorn, eth
-	if (ch == 217 or 218) return ch-2; ! Thorn, Eth
-	if (ch == 220) return 221; ! oe ligature
-	if (ch == 221) return 220; ! OE ligature
-	return ch;
-];
-#IFNOT;
-[ TEXT_TY_RevCase ch;
-	if (ch<'A') return ch;
-	if ((ch >= 'a') && (ch <= 'z')) return ch-'a'+'A';
-	if ((ch >= 'A') && (ch <= 'Z')) return ch-'A'+'a';
-	if (ch<128) return ch;
-	if (CharIsOfCase(ch, 0)) return CharToCase(ch, 1);
-	if (CharIsOfCase(ch, 1)) return CharToCase(ch, 0);
-	return ch;
-];
-#ENDIF;
-
-@p Testing.
-Not actually used: simply for testing the tables.
-
-@c
-[ CharTestCases case i j;
-	for (i=32: i<$E0; i++) {
-		if ((i>=127) && (i<155)) continue;
-		print i, " - ", (char) i, " -";
-		if (CharIsOfCase(i, 0)) print "  lower";
-		if (CharIsOfCase(i, 1)) print "  upper";
-		j = CharToCase(i, 0); if (j ~= i) print "  tolower: ", (char) j;
-		j = CharToCase(i, 1); if (j ~= i) print "  toupper: ", (char) j;
-		print "^";
-	}
-];
-</pre><footer><br><p>From I6T lib 6/12N, distributed with Inform 7 6M62 by Graham Nelson</p></footer></body></html>
+.fixed { font-family: monospace }
+.em { font-style: italic; }
+.center { text-align: center; }
+    body { font-family: sans-serif; margin: 3rem; background-color: #fafaf0; width: 80rem; }
+    .pre { font-family: monospace; margin: auto; width: 80rem; }
+#front_matter,.text { width: 50rem; }
+.text { border-bottom: .5px solid black; border-top: .5px solid black; margin-top: 1rem;
+padding-bottom: 1rem; margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+<div id="front_matter">
+<h1><a href="./Char.i6t">Char</a></h1><h2>Char Is Of Case.</h2><p><p> The following decides whether a character <span class="fixed">c</span> belongs to case <span class="fixed">case</span>, where 0 means lower case and 1 means upper. <span class="fixed">c</span> is interpreted according to the character casing chart in <a href="./UnicodeData.i6t.html">UnicodeData.i6t</a>, which means, it will be ZSCII for the Z-machine and Unicode for Glulx.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line14">14</span><span class="td">[&nbsp;CharIsOfCase&nbsp;c&nbsp;case</span></span>
+<span class="tr"><span class="th" id="line15">15</span><span class="td">&nbsp;i&nbsp;tab&nbsp;min&nbsp;max&nbsp;len&nbsp;par;</span></span>
+<span class="tr"><span class="th" id="line16">16</span><span class="td">&nbsp;if&nbsp;(c&lt;&#39;A&#39;)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line17">17</span><span class="td">&nbsp;if&nbsp;(case&nbsp;==&nbsp;0)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line18">18</span><span class="td">&nbsp;&nbsp;if&nbsp;((c&nbsp;&gt;=&nbsp;&#39;a&#39;)&nbsp;&amp;&amp;&nbsp;(c&nbsp;&lt;=&nbsp;&#39;z&#39;))&nbsp;rtrue;</span></span>
+<span class="tr"><span class="th" id="line19">19</span><span class="td">&nbsp;&nbsp;tab&nbsp;=&nbsp;CharCasingChart0;</span></span>
+<span class="tr"><span class="th" id="line20">20</span><span class="td">&nbsp;}&nbsp;else&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line21">21</span><span class="td">&nbsp;&nbsp;if&nbsp;((c&nbsp;&gt;=&nbsp;&#39;A&#39;)&nbsp;&amp;&amp;&nbsp;(c&nbsp;&lt;=&nbsp;&#39;Z&#39;))&nbsp;rtrue;</span></span>
+<span class="tr"><span class="th" id="line22">22</span><span class="td">&nbsp;&nbsp;tab&nbsp;=&nbsp;CharCasingChart1;</span></span>
+<span class="tr"><span class="th" id="line23">23</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line24">24</span><span class="td">&nbsp;if&nbsp;(c&lt;128)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line25">25</span><span class="td">&nbsp;while&nbsp;(tab--&gt;i)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line26">26</span><span class="td">&nbsp;&nbsp;min&nbsp;=&nbsp;tab--&gt;i;&nbsp;i++;</span></span>
+<span class="tr"><span class="th" id="line27">27</span><span class="td">&nbsp;&nbsp;len&nbsp;=&nbsp;tab--&gt;i;&nbsp;i++;</span></span>
+<span class="tr"><span class="th" id="line28">28</span><span class="td">&nbsp;&nbsp;i++;</span></span>
+<span class="tr"><span class="th" id="line29">29</span><span class="td">&nbsp;&nbsp;par&nbsp;=&nbsp;0;</span></span>
+<span class="tr"><span class="th" id="line30">30</span><span class="td">&nbsp;&nbsp;if&nbsp;(len&lt;0)&nbsp;{&nbsp;par&nbsp;=&nbsp;1;&nbsp;len&nbsp;=&nbsp;-len;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line31">31</span><span class="td">&nbsp;&nbsp;if&nbsp;(c&nbsp;&lt;&nbsp;min)&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line32">32</span><span class="td">&nbsp;&nbsp;if&nbsp;(c&nbsp;&lt;&nbsp;min+len)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line33">33</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(par)&nbsp;{&nbsp;if&nbsp;((c-min)&nbsp;%&nbsp;2&nbsp;==&nbsp;0)&nbsp;rtrue;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line34">34</span><span class="td">&nbsp;&nbsp;&nbsp;else&nbsp;{&nbsp;rtrue;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line35">35</span><span class="td">&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line36">36</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line37">37</span><span class="td">&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line38">38</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line39">39</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Char To Case.</h2><p><p> And the following converts character <span class="fixed">c</span> to the desired case, or returns it unchanged if it is not a letter with variant casings.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line45">45</span><span class="td">[&nbsp;CharToCase&nbsp;c&nbsp;case</span></span>
+<span class="tr"><span class="th" id="line46">46</span><span class="td">&nbsp;i&nbsp;tab&nbsp;min&nbsp;max&nbsp;len&nbsp;par&nbsp;del&nbsp;f;</span></span>
+<span class="tr"><span class="th" id="line47">47</span><span class="td">&nbsp;if&nbsp;(c&lt;&#39;A&#39;)&nbsp;return&nbsp;c;</span></span>
+<span class="tr"><span class="th" id="line48">48</span><span class="td">&nbsp;if&nbsp;(case&nbsp;==&nbsp;1)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line49">49</span><span class="td">&nbsp;&nbsp;if&nbsp;((c&nbsp;&gt;=&nbsp;&#39;a&#39;)&nbsp;&amp;&amp;&nbsp;(c&nbsp;&lt;=&nbsp;&#39;z&#39;))&nbsp;return&nbsp;c-32;</span></span>
+<span class="tr"><span class="th" id="line50">50</span><span class="td">&nbsp;&nbsp;tab&nbsp;=&nbsp;CharCasingChart0;</span></span>
+<span class="tr"><span class="th" id="line51">51</span><span class="td">&nbsp;}&nbsp;else&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line52">52</span><span class="td">&nbsp;&nbsp;if&nbsp;((c&nbsp;&gt;=&nbsp;&#39;A&#39;)&nbsp;&amp;&amp;&nbsp;(c&nbsp;&lt;=&nbsp;&#39;Z&#39;))&nbsp;return&nbsp;c+32;</span></span>
+<span class="tr"><span class="th" id="line53">53</span><span class="td">&nbsp;&nbsp;tab&nbsp;=&nbsp;CharCasingChart1;</span></span>
+<span class="tr"><span class="th" id="line54">54</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line55">55</span><span class="td">&nbsp;if&nbsp;(c&lt;128)&nbsp;return&nbsp;c;</span></span>
+<span class="tr"><span class="th" id="line56">56</span><span class="td">&nbsp;while&nbsp;(tab--&gt;i)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line57">57</span><span class="td">&nbsp;&nbsp;min&nbsp;=&nbsp;tab--&gt;i;&nbsp;i++;</span></span>
+<span class="tr"><span class="th" id="line58">58</span><span class="td">&nbsp;&nbsp;len&nbsp;=&nbsp;tab--&gt;i;&nbsp;i++;</span></span>
+<span class="tr"><span class="th" id="line59">59</span><span class="td">&nbsp;&nbsp;del&nbsp;=&nbsp;tab--&gt;i;&nbsp;i++;</span></span>
+<span class="tr"><span class="th" id="line60">60</span><span class="td">&nbsp;&nbsp;par&nbsp;=&nbsp;0;</span></span>
+<span class="tr"><span class="th" id="line61">61</span><span class="td">&nbsp;&nbsp;if&nbsp;(len&lt;0)&nbsp;{&nbsp;par&nbsp;=&nbsp;1;&nbsp;len&nbsp;=&nbsp;-len;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line62">62</span><span class="td">&nbsp;&nbsp;if&nbsp;(c&nbsp;&lt;&nbsp;min)&nbsp;return&nbsp;c;</span></span>
+<span class="tr"><span class="th" id="line63">63</span><span class="td">&nbsp;&nbsp;if&nbsp;(c&nbsp;&lt;&nbsp;min+len)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line64">64</span><span class="td">&nbsp;&nbsp;&nbsp;f&nbsp;=&nbsp;false;</span></span>
+<span class="tr"><span class="th" id="line65">65</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(par)&nbsp;{&nbsp;if&nbsp;((c-min)&nbsp;%&nbsp;2&nbsp;==&nbsp;0)&nbsp;f&nbsp;=&nbsp;true;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line66">66</span><span class="td">&nbsp;&nbsp;&nbsp;else&nbsp;{&nbsp;f&nbsp;=&nbsp;true;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line67">67</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(f)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line68">68</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(del&nbsp;==&nbsp;UNIC_NCT)&nbsp;return&nbsp;c;</span></span>
+<span class="tr"><span class="th" id="line69">69</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;c+del;</span></span>
+<span class="tr"><span class="th" id="line70">70</span><span class="td">&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line71">71</span><span class="td">&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line72">72</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line73">73</span><span class="td">&nbsp;return&nbsp;c;</span></span>
+<span class="tr"><span class="th" id="line74">74</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line75">75</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Reversing Case.</h2><p><p> It&#39;s convenient to provide this relatively fast routine to reverse the case of a letter since this is an operation used frequently in regular expression matching (see <a href="./RegExp.i6t.html">RegExp.i6t</a>).<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line82">82</span><span class="td">#IFDEF&nbsp;TARGET_ZCODE;</span></span>
+<span class="tr"><span class="th" id="line83">83</span><span class="td">[&nbsp;TEXT_TY_RevCase&nbsp;ch;</span></span>
+<span class="tr"><span class="th" id="line84">84</span><span class="td">&nbsp;if&nbsp;(ch&lt;&#39;A&#39;)&nbsp;return&nbsp;ch;</span></span>
+<span class="tr"><span class="th" id="line85">85</span><span class="td">&nbsp;if&nbsp;((ch&nbsp;&gt;=&nbsp;&#39;a&#39;)&nbsp;&amp;&amp;&nbsp;(ch&nbsp;&lt;=&nbsp;&#39;z&#39;))&nbsp;return&nbsp;ch-&#39;a&#39;+&#39;A&#39;;</span></span>
+<span class="tr"><span class="th" id="line86">86</span><span class="td">&nbsp;if&nbsp;((ch&nbsp;&gt;=&nbsp;&#39;A&#39;)&nbsp;&amp;&amp;&nbsp;(ch&nbsp;&lt;=&nbsp;&#39;Z&#39;))&nbsp;return&nbsp;ch-&#39;A&#39;+&#39;a&#39;;</span></span>
+<span class="tr"><span class="th" id="line87">87</span><span class="td">&nbsp;if&nbsp;(ch&lt;128)&nbsp;return&nbsp;ch;</span></span>
+<span class="tr"><span class="th" id="line88">88</span><span class="td">&nbsp;if&nbsp;((ch&nbsp;&gt;=&nbsp;155)&nbsp;&amp;&amp;&nbsp;(ch&nbsp;&lt;=&nbsp;157))&nbsp;return&nbsp;ch+3;&nbsp;!&nbsp;a,&nbsp;o,&nbsp;u&nbsp;umlaut&nbsp;in&nbsp;ZSCII</span></span>
+<span class="tr"><span class="th" id="line89">89</span><span class="td">&nbsp;if&nbsp;((ch&nbsp;&gt;=&nbsp;158)&nbsp;&amp;&amp;&nbsp;(ch&nbsp;&lt;=&nbsp;160))&nbsp;return&nbsp;ch-3;&nbsp;!&nbsp;A,&nbsp;O,&nbsp;U&nbsp;umlaut</span></span>
+<span class="tr"><span class="th" id="line90">90</span><span class="td">&nbsp;if&nbsp;((ch&nbsp;&gt;=&nbsp;164)&nbsp;&amp;&amp;&nbsp;(ch&nbsp;&lt;=&nbsp;165))&nbsp;return&nbsp;ch+3;&nbsp;!&nbsp;e,&nbsp;i&nbsp;umlaut</span></span>
+<span class="tr"><span class="th" id="line91">91</span><span class="td">&nbsp;if&nbsp;((ch&nbsp;&gt;=&nbsp;167)&nbsp;&amp;&amp;&nbsp;(ch&nbsp;&lt;=&nbsp;168))&nbsp;return&nbsp;ch-3;&nbsp;!&nbsp;E,&nbsp;I&nbsp;umlaut</span></span>
+<span class="tr"><span class="th" id="line92">92</span><span class="td">&nbsp;if&nbsp;((ch&nbsp;&gt;=&nbsp;169)&nbsp;&amp;&amp;&nbsp;(ch&nbsp;&lt;=&nbsp;174))&nbsp;return&nbsp;ch+6;&nbsp;!&nbsp;a,&nbsp;e,&nbsp;i,&nbsp;o,&nbsp;u,&nbsp;y&nbsp;acute</span></span>
+<span class="tr"><span class="th" id="line93">93</span><span class="td">&nbsp;if&nbsp;((ch&nbsp;&gt;=&nbsp;175)&nbsp;&amp;&amp;&nbsp;(ch&nbsp;&lt;=&nbsp;180))&nbsp;return&nbsp;ch-6;&nbsp;!&nbsp;A,&nbsp;E,&nbsp;I,&nbsp;O,&nbsp;U,&nbsp;Y&nbsp;acute</span></span>
+<span class="tr"><span class="th" id="line94">94</span><span class="td">&nbsp;if&nbsp;((ch&nbsp;&gt;=&nbsp;181)&nbsp;&amp;&amp;&nbsp;(ch&nbsp;&lt;=&nbsp;185))&nbsp;return&nbsp;ch+5;&nbsp;!&nbsp;a,&nbsp;e,&nbsp;i,&nbsp;o,&nbsp;u&nbsp;grave</span></span>
+<span class="tr"><span class="th" id="line95">95</span><span class="td">&nbsp;if&nbsp;((ch&nbsp;&gt;=&nbsp;186)&nbsp;&amp;&amp;&nbsp;(ch&nbsp;&lt;=&nbsp;190))&nbsp;return&nbsp;ch-5;&nbsp;!&nbsp;A,&nbsp;E,&nbsp;I,&nbsp;O,&nbsp;U&nbsp;grave</span></span>
+<span class="tr"><span class="th" id="line96">96</span><span class="td">&nbsp;if&nbsp;((ch&nbsp;&gt;=&nbsp;191)&nbsp;&amp;&amp;&nbsp;(ch&nbsp;&lt;=&nbsp;195))&nbsp;return&nbsp;ch+5;&nbsp;!&nbsp;a,&nbsp;e,&nbsp;i,&nbsp;o,&nbsp;u&nbsp;circumflex</span></span>
+<span class="tr"><span class="th" id="line97">97</span><span class="td">&nbsp;if&nbsp;((ch&nbsp;&gt;=&nbsp;196)&nbsp;&amp;&amp;&nbsp;(ch&nbsp;&lt;=&nbsp;200))&nbsp;return&nbsp;ch-5;&nbsp;!&nbsp;A,&nbsp;E,&nbsp;I,&nbsp;O,&nbsp;U&nbsp;circumflex</span></span>
+<span class="tr"><span class="th" id="line98">98</span><span class="td">&nbsp;if&nbsp;(ch&nbsp;==&nbsp;201)&nbsp;return&nbsp;202;&nbsp;!&nbsp;a&nbsp;circle</span></span>
+<span class="tr"><span class="th" id="line99">99</span><span class="td">&nbsp;if&nbsp;(ch&nbsp;==&nbsp;202)&nbsp;return&nbsp;201;&nbsp;!&nbsp;A&nbsp;circle</span></span>
+<span class="tr"><span class="th" id="line100">100</span><span class="td">&nbsp;if&nbsp;(ch&nbsp;==&nbsp;203)&nbsp;return&nbsp;204;&nbsp;!&nbsp;o&nbsp;slash</span></span>
+<span class="tr"><span class="th" id="line101">101</span><span class="td">&nbsp;if&nbsp;(ch&nbsp;==&nbsp;204)&nbsp;return&nbsp;203;&nbsp;!&nbsp;O&nbsp;slash</span></span>
+<span class="tr"><span class="th" id="line102">102</span><span class="td">&nbsp;if&nbsp;((ch&nbsp;&gt;=&nbsp;205)&nbsp;&amp;&amp;&nbsp;(ch&nbsp;&lt;=&nbsp;207))&nbsp;return&nbsp;ch+3;&nbsp;!&nbsp;a,&nbsp;n,&nbsp;o&nbsp;tilde</span></span>
+<span class="tr"><span class="th" id="line103">103</span><span class="td">&nbsp;if&nbsp;((ch&nbsp;&gt;=&nbsp;208)&nbsp;&amp;&amp;&nbsp;(ch&nbsp;&lt;=&nbsp;210))&nbsp;return&nbsp;ch-3;&nbsp;!&nbsp;A,&nbsp;N,&nbsp;O&nbsp;tilde</span></span>
+<span class="tr"><span class="th" id="line104">104</span><span class="td">&nbsp;if&nbsp;(ch&nbsp;==&nbsp;211)&nbsp;return&nbsp;212;&nbsp;!&nbsp;ae&nbsp;ligature</span></span>
+<span class="tr"><span class="th" id="line105">105</span><span class="td">&nbsp;if&nbsp;(ch&nbsp;==&nbsp;212)&nbsp;return&nbsp;211;&nbsp;!&nbsp;AE&nbsp;ligature</span></span>
+<span class="tr"><span class="th" id="line106">106</span><span class="td">&nbsp;if&nbsp;(ch&nbsp;==&nbsp;213)&nbsp;return&nbsp;214;&nbsp;!&nbsp;c&nbsp;cedilla</span></span>
+<span class="tr"><span class="th" id="line107">107</span><span class="td">&nbsp;if&nbsp;(ch&nbsp;==&nbsp;214)&nbsp;return&nbsp;213;&nbsp;!&nbsp;C&nbsp;cedilla</span></span>
+<span class="tr"><span class="th" id="line108">108</span><span class="td">&nbsp;if&nbsp;(ch&nbsp;==&nbsp;215&nbsp;or&nbsp;216)&nbsp;return&nbsp;ch+2;&nbsp;!&nbsp;thorn,&nbsp;eth</span></span>
+<span class="tr"><span class="th" id="line109">109</span><span class="td">&nbsp;if&nbsp;(ch&nbsp;==&nbsp;217&nbsp;or&nbsp;218)&nbsp;return&nbsp;ch-2;&nbsp;!&nbsp;Thorn,&nbsp;Eth</span></span>
+<span class="tr"><span class="th" id="line110">110</span><span class="td">&nbsp;if&nbsp;(ch&nbsp;==&nbsp;220)&nbsp;return&nbsp;221;&nbsp;!&nbsp;oe&nbsp;ligature</span></span>
+<span class="tr"><span class="th" id="line111">111</span><span class="td">&nbsp;if&nbsp;(ch&nbsp;==&nbsp;221)&nbsp;return&nbsp;220;&nbsp;!&nbsp;OE&nbsp;ligature</span></span>
+<span class="tr"><span class="th" id="line112">112</span><span class="td">&nbsp;return&nbsp;ch;</span></span>
+<span class="tr"><span class="th" id="line113">113</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line114">114</span><span class="td">#IFNOT;</span></span>
+<span class="tr"><span class="th" id="line115">115</span><span class="td">[&nbsp;TEXT_TY_RevCase&nbsp;ch;</span></span>
+<span class="tr"><span class="th" id="line116">116</span><span class="td">&nbsp;if&nbsp;(ch&lt;&#39;A&#39;)&nbsp;return&nbsp;ch;</span></span>
+<span class="tr"><span class="th" id="line117">117</span><span class="td">&nbsp;if&nbsp;((ch&nbsp;&gt;=&nbsp;&#39;a&#39;)&nbsp;&amp;&amp;&nbsp;(ch&nbsp;&lt;=&nbsp;&#39;z&#39;))&nbsp;return&nbsp;ch-&#39;a&#39;+&#39;A&#39;;</span></span>
+<span class="tr"><span class="th" id="line118">118</span><span class="td">&nbsp;if&nbsp;((ch&nbsp;&gt;=&nbsp;&#39;A&#39;)&nbsp;&amp;&amp;&nbsp;(ch&nbsp;&lt;=&nbsp;&#39;Z&#39;))&nbsp;return&nbsp;ch-&#39;A&#39;+&#39;a&#39;;</span></span>
+<span class="tr"><span class="th" id="line119">119</span><span class="td">&nbsp;if&nbsp;(ch&lt;128)&nbsp;return&nbsp;ch;</span></span>
+<span class="tr"><span class="th" id="line120">120</span><span class="td">&nbsp;if&nbsp;(CharIsOfCase(ch,&nbsp;0))&nbsp;return&nbsp;CharToCase(ch,&nbsp;1);</span></span>
+<span class="tr"><span class="th" id="line121">121</span><span class="td">&nbsp;if&nbsp;(CharIsOfCase(ch,&nbsp;1))&nbsp;return&nbsp;CharToCase(ch,&nbsp;0);</span></span>
+<span class="tr"><span class="th" id="line122">122</span><span class="td">&nbsp;return&nbsp;ch;</span></span>
+<span class="tr"><span class="th" id="line123">123</span><span class="td">];</span></span>
+<span class="tr"><span class="th" id="line124">124</span><span class="td">#ENDIF;</span></span>
+<span class="tr"><span class="th" id="line125">125</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Testing.</h2><p><p> Not actually used: simply for testing the tables.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line130">130</span><span class="td">[&nbsp;CharTestCases&nbsp;case&nbsp;i&nbsp;j;</span></span>
+<span class="tr"><span class="th" id="line131">131</span><span class="td">&nbsp;for&nbsp;(i=32:&nbsp;i&lt;$E0;&nbsp;i++)&nbsp;{</span></span>
+<span class="tr"><span class="th" id="line132">132</span><span class="td">&nbsp;&nbsp;if&nbsp;((i&gt;=127)&nbsp;&amp;&amp;&nbsp;(i&lt;155))&nbsp;continue;</span></span>
+<span class="tr"><span class="th" id="line133">133</span><span class="td">&nbsp;&nbsp;print&nbsp;i,&nbsp;&quot;&nbsp;-&nbsp;&quot;,&nbsp;(char)&nbsp;i,&nbsp;&quot;&nbsp;-&quot;;</span></span>
+<span class="tr"><span class="th" id="line134">134</span><span class="td">&nbsp;&nbsp;if&nbsp;(CharIsOfCase(i,&nbsp;0))&nbsp;print&nbsp;&quot;&nbsp;&nbsp;lower&quot;;</span></span>
+<span class="tr"><span class="th" id="line135">135</span><span class="td">&nbsp;&nbsp;if&nbsp;(CharIsOfCase(i,&nbsp;1))&nbsp;print&nbsp;&quot;&nbsp;&nbsp;upper&quot;;</span></span>
+<span class="tr"><span class="th" id="line136">136</span><span class="td">&nbsp;&nbsp;j&nbsp;=&nbsp;CharToCase(i,&nbsp;0);&nbsp;if&nbsp;(j&nbsp;~=&nbsp;i)&nbsp;print&nbsp;&quot;&nbsp;&nbsp;tolower:&nbsp;&quot;,&nbsp;(char)&nbsp;j;</span></span>
+<span class="tr"><span class="th" id="line137">137</span><span class="td">&nbsp;&nbsp;j&nbsp;=&nbsp;CharToCase(i,&nbsp;1);&nbsp;if&nbsp;(j&nbsp;~=&nbsp;i)&nbsp;print&nbsp;&quot;&nbsp;&nbsp;toupper:&nbsp;&quot;,&nbsp;(char)&nbsp;j;</span></span>
+<span class="tr"><span class="th" id="line138">138</span><span class="td">&nbsp;&nbsp;print&nbsp;&quot;^&quot;;</span></span>
+<span class="tr"><span class="th" id="line139">139</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line140">140</span><span class="td">];</span></span>
+</div><footer><hr><p><em>From I6T lib 6/12N &copy; Graham Nelson and published under the <a href="https://github.com/zedlopez/standard_rules/blob/main/LICENSE.md">Artistic License 2.0</a>. Distributed with <a href="http://inform7.com/">Inform 7 6M62</a>.</em></p></footer></body></html>

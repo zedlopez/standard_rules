@@ -1,167 +1,150 @@
 <!doctype html>
-<html><head><title>
-UnicodeData
-</title></head><body><h1>
-UnicodeData
-</h1><pre>
-B/unict: UnicodeData Template.
- 
-@Purpose: To tabulate casings in the character set.
- 
-@-------------------------------------------------------------------------------
+<html lang="en">
+<meta charset="utf-8">
+<head><title>UnicodeData</title>
+  <style>
+span.th, span.td { display: table-cell; }
+span.td { padding-left: 2rem; }
+span.th { width:4rem; text-align: right; }
+span.tr { display: table-row;     counter-increment: linenum; }
+span.line_no::before {
+    content: counter(linenum);
+    text-align: right;
+    display: block;
+    font-family: monospace;
+    font-weight: normal;
+}
 
-@p Source.
-When this section is included, exactly one of the following constants is
-defined:
-
-(a) |ZSCII_Tables|, meaning that we will use ZSCII as the character set
-for characters in text values.
-(b) |Small_Unicode_Tables|, meaning that we will use Unicode but store
-only single-byte characters, so that only the codes 0 to 255 are valid:
-in effect ISO Latin-1.
-(c) |Large_Unicode_Tables|, meaning that we will use Unicode and store
-two-byte characters, so that all of Unicode in the range 0 to 65535 are valid.
-
-Whichever is defined, we must create two arrays:
-
-(i) |CharCasingChart0|, a table indicating lower-case letters with
-transitions to convert them to upper case;
-(ii) |CharCasingChart1|, vice versa.
-
-Each array is a sequence of three-word records, consisting of the start of
-a character range, the size of the range (the number of characters in it),
-and the numerical offset to convert to the opposite case. For instance,
-the sequence $(97, 26, -32)$ means the 26 lower-case letters "a" to "z",
-and marks them as convertible to upper case by subtracting 32 from the
-character code (so "a", 97, becomes "A", 65). If the size of the
-range is negative, this indicates that only every alternate code is valid.
-(This makes for efficient storage since there are large parts of the
-Unicode number-space in which upper and lower case letters alternate.)
-
-An offset of |UNIC_NCT| means no case change is possible; and any character
-not included in the ranges below is not a letter.
-
-@c
-Constant UNIC_NCT = 10000; ! Safe as highest case-change delta is 8383
-
-@p ZSCII Casing Tables.
-
-@c
-#IFDEF ZSCII_Tables;
-Array CharCasingChart0 -->
-    $0061 (  26) (     -32) $009b (   3) (       3) $00a1 (   1) (UNIC_NCT)
-    $00a4 (   2) (       3) $00a6 (   1) (UNIC_NCT) $00a9 (   6) (       6)
-    $00b5 (   5) (       5) $00bf (   5) (       5) $00c9 (  -3) (       1)
-    $00cd (   3) (       3) $00d3 (  -3) (       1) $00d7 (   2) (       2)
-    $00dc (   1) (       1) $0000
-;
-
-Array CharCasingChart1 -->
-    $0041 (  26) (      32) $009e (   3) (      -3) $00a7 (   2) (      -3)
-    $00af (   6) (      -6) $00ba (   5) (      -5) $00c4 (   5) (      -5)
-    $00ca (  -3) (      -1) $00d0 (   3) (      -3) $00d4 (  -3) (      -1)
-    $00d9 (   2) (      -2) $00dd (   1) (      -1) $0000
-;
-#ENDIF; ! ZSCII_Tables
-
-@p Small Unicode Casing Tables.
-
-@c
-#IFDEF Small_Unicode_Tables;
-Array CharCasingChart0 -->
-    $0061 (  26) (     -32) $00aa (   1) (UNIC_NCT) $00b5 (   1) (UNIC_NCT) $00ba (   1) (UNIC_NCT)
-    $00df (   1) (UNIC_NCT) $00e0 (  23) (     -32) $00f8 (   7) (     -32) $00ff (   1) (UNIC_NCT)
-    $0000
-;
-
-Array CharCasingChart1 -->
-    $0041 (  26) (      32) $00c0 (  23) (      32) $00d8 (   7) (      32) $0000
-;
-
-#ENDIF; ! Small_Unicode_Tables
-
-@p Large Unicode Casing Tables.
-
-@c
-#IFDEF Large_Unicode_Tables;
-Array CharCasingChart0 -->
-    $0061 (  26) (     -32) $00aa (   1) (UNIC_NCT) $00b5 (   1) (     743) $00ba (   1) (UNIC_NCT)
-    $00df (   1) (UNIC_NCT) $00e0 (  23) (     -32) $00f8 (   7) (     -32) $00ff (   1) (     121)
-    $0101 ( -47) (      -1) $0131 (   1) (    -232) $0133 (  -5) (      -1) $0138 (   1) (UNIC_NCT)
-    $013a ( -15) (      -1) $0149 (   1) (UNIC_NCT) $014b ( -45) (      -1) $017a (  -5) (      -1)
-    $017f (   1) (    -300) $0180 (   1) (UNIC_NCT) $0183 (  -3) (      -1) $0188 (   1) (      -1)
-    $018c (   1) (      -1) $018d (   1) (UNIC_NCT) $0192 (   1) (      -1) $0195 (   1) (      97)
-    $0199 (   1) (      -1) $019a (   2) (UNIC_NCT) $019e (   1) (     130) $01a1 (  -5) (      -1)
-    $01a8 (   1) (      -1) $01aa (   2) (UNIC_NCT) $01ad (   1) (      -1) $01b0 (   1) (      -1)
-    $01b4 (  -3) (      -1) $01b9 (   1) (      -1) $01ba (   1) (UNIC_NCT) $01bd (   1) (      -1)
-    $01be (   1) (UNIC_NCT) $01bf (   1) (      56) $01c6 (   1) (      -2) $01c9 (   1) (      -2)
-    $01cc (   1) (      -2) $01ce ( -15) (      -1) $01dd (   1) (     -79) $01df ( -17) (      -1)
-    $01f0 (   1) (UNIC_NCT) $01f3 (   1) (      -2) $01f5 (   1) (      -1) $01f9 ( -39) (      -1)
-    $0221 (   1) (UNIC_NCT) $0223 ( -17) (      -1) $0234 (   3) (UNIC_NCT) $0250 (   3) (UNIC_NCT)
-    $0253 (   1) (    -210) $0254 (   1) (    -206) $0255 (   1) (UNIC_NCT) $0256 (   2) (    -205)
-    $0258 (   1) (UNIC_NCT) $0259 (   1) (    -202) $025a (   1) (UNIC_NCT) $025b (   1) (    -203)
-    $025c (   4) (UNIC_NCT) $0260 (   1) (    -205) $0261 (   2) (UNIC_NCT) $0263 (   1) (    -207)
-    $0264 (   4) (UNIC_NCT) $0268 (   1) (    -209) $0269 (   1) (    -211) $026a (   5) (UNIC_NCT)
-    $026f (   1) (    -211) $0270 (   2) (UNIC_NCT) $0272 (   1) (    -213) $0273 (   2) (UNIC_NCT)
-    $0275 (   1) (    -214) $0276 (  10) (UNIC_NCT) $0280 (   1) (    -218) $0281 (   2) (UNIC_NCT)
-    $0283 (   1) (    -218) $0284 (   4) (UNIC_NCT) $0288 (   1) (    -218) $0289 (   1) (UNIC_NCT)
-    $028a (   2) (    -217) $028c (   6) (UNIC_NCT) $0292 (   1) (    -219) $0293 (  29) (UNIC_NCT)
-    $0390 (   1) (UNIC_NCT) $03ac (   1) (     -38) $03ad (   3) (     -37) $03b0 (   1) (UNIC_NCT)
-    $03b1 (  17) (     -32) $03c2 (   1) (     -31) $03c3 (   9) (     -32) $03cc (   1) (     -64)
-    $03cd (   2) (     -63) $03d0 (   1) (     -62) $03d1 (   1) (     -57) $03d5 (   1) (     -47)
-    $03d6 (   1) (     -54) $03d7 (   1) (UNIC_NCT) $03d9 ( -23) (      -1) $03f0 (   1) (     -86)
-    $03f1 (   1) (     -80) $03f2 (   1) (       7) $03f3 (   1) (UNIC_NCT) $03f5 (   1) (     -96)
-    $03f8 (   1) (      -1) $03fb (   1) (      -1) $0430 (  32) (     -32) $0450 (  16) (     -80)
-    $0461 ( -33) (      -1) $048b ( -53) (      -1) $04c2 ( -13) (      -1) $04d1 ( -37) (      -1)
-    $04f9 (   1) (      -1) $0501 ( -15) (      -1) $0561 (  38) (     -48) $0587 (   1) (UNIC_NCT)
-    $1d00 (  44) (UNIC_NCT) $1d62 (  10) (UNIC_NCT) $1e01 (-149) (      -1) $1e96 (   5) (UNIC_NCT)
-    $1e9b (   1) (     -59) $1ea1 ( -89) (      -1) $1f00 (   8) (       8) $1f10 (   6) (       8)
-    $1f20 (   8) (       8) $1f30 (   8) (       8) $1f40 (   6) (       8) $1f50 (   1) (UNIC_NCT)
-    $1f51 (   1) (       8) $1f52 (   1) (UNIC_NCT) $1f53 (   1) (       8) $1f54 (   1) (UNIC_NCT)
-    $1f55 (   1) (       8) $1f56 (   1) (UNIC_NCT) $1f57 (   1) (       8) $1f60 (   8) (       8)
-    $1f70 (   2) (      74) $1f72 (   4) (      86) $1f76 (   2) (     100) $1f78 (   2) (     128)
-    $1f7a (   2) (     112) $1f7c (   2) (     126) $1f80 (   8) (       8) $1f90 (   8) (       8)
-    $1fa0 (   8) (       8) $1fb0 (   2) (       8) $1fb2 (   1) (UNIC_NCT) $1fb3 (   1) (       9)
-    $1fb4 (  -3) (UNIC_NCT) $1fb7 (   1) (UNIC_NCT) $1fbe (   1) (   -7205) $1fc2 (   1) (UNIC_NCT)
-    $1fc3 (   1) (       9) $1fc4 (  -3) (UNIC_NCT) $1fc7 (   1) (UNIC_NCT) $1fd0 (   2) (       8)
-    $1fd2 (   2) (UNIC_NCT) $1fd6 (   2) (UNIC_NCT) $1fe0 (   2) (       8) $1fe2 (   3) (UNIC_NCT)
-    $1fe5 (   1) (       7) $1fe6 (   2) (UNIC_NCT) $1ff2 (   1) (UNIC_NCT) $1ff3 (   1) (       9)
-    $1ff4 (  -3) (UNIC_NCT) $1ff7 (   1) (UNIC_NCT) $2071 (   1) (UNIC_NCT) $207f (   1) (UNIC_NCT)
-    $210a (   1) (UNIC_NCT) $210e (   2) (UNIC_NCT) $2113 (   1) (UNIC_NCT) $212f (   1) (UNIC_NCT)
-    $2134 (   1) (UNIC_NCT) $2139 (   1) (UNIC_NCT) $213d (   1) (UNIC_NCT) $2146 (   4) (UNIC_NCT)
-    $fb00 (   7) (UNIC_NCT) $fb13 (   5) (UNIC_NCT) $ff41 (  26) (     -32) $0000
-;
-
-Array CharCasingChart1 -->
-    $0041 (  26) (      32) $00c0 (  23) (      32) $00d8 (   7) (      32) $0100 ( -47) (       1)
-    $0130 (   1) (    -199) $0132 (  -5) (       1) $0139 ( -15) (       1) $014a ( -45) (       1)
-    $0178 (   1) (    -121) $0179 (  -5) (       1) $0181 (   1) (     210) $0182 (  -3) (       1)
-    $0186 (   1) (     206) $0187 (   1) (       1) $0189 (   2) (     205) $018b (   1) (       1)
-    $018e (   1) (      79) $018f (   1) (     202) $0190 (   1) (     203) $0191 (   1) (       1)
-    $0193 (   1) (     205) $0194 (   1) (     207) $0196 (   1) (     211) $0197 (   1) (     209)
-    $0198 (   1) (       1) $019c (   1) (     211) $019d (   1) (     213) $019f (   1) (     214)
-    $01a0 (  -5) (       1) $01a6 (   1) (     218) $01a7 (   1) (       1) $01a9 (   1) (     218)
-    $01ac (   1) (       1) $01ae (   1) (     218) $01af (   1) (       1) $01b1 (   2) (     217)
-    $01b3 (  -3) (       1) $01b7 (   1) (     219) $01b8 (   1) (       1) $01bc (   1) (       1)
-    $01c4 (   1) (       2) $01c7 (   1) (       2) $01ca (   1) (       2) $01cd ( -15) (       1)
-    $01de ( -17) (       1) $01f1 (   1) (       2) $01f4 (   1) (       1) $01f6 (   1) (     -97)
-    $01f7 (   1) (     -56) $01f8 ( -39) (       1) $0220 (   1) (    -130) $0222 ( -17) (       1)
-    $0386 (   1) (      38) $0388 (   3) (      37) $038c (   1) (      64) $038e (   2) (      63)
-    $0391 (  17) (      32) $03a3 (   9) (      32) $03d2 (   3) (UNIC_NCT) $03d8 ( -23) (       1)
-    $03f4 (   1) (     -60) $03f7 (   1) (       1) $03f9 (   1) (      -7) $03fa (   1) (       1)
-    $0400 (  16) (      80) $0410 (  32) (      32) $0460 ( -33) (       1) $048a ( -53) (       1)
-    $04c0 (   1) (UNIC_NCT) $04c1 ( -13) (       1) $04d0 ( -37) (       1) $04f8 (   1) (       1)
-    $0500 ( -15) (       1) $0531 (  38) (      48) $10a0 (  38) (UNIC_NCT) $1e00 (-149) (       1)
-    $1ea0 ( -89) (       1) $1f08 (   8) (      -8) $1f18 (   6) (      -8) $1f28 (   8) (      -8)
-    $1f38 (   8) (      -8) $1f48 (   6) (      -8) $1f59 (  -7) (      -8) $1f68 (   8) (      -8)
-    $1fb8 (   2) (      -8) $1fba (   2) (     -74) $1fc8 (   4) (     -86) $1fd8 (   2) (      -8)
-    $1fda (   2) (    -100) $1fe8 (   2) (      -8) $1fea (   2) (    -112) $1fec (   1) (      -7)
-    $1ff8 (   2) (    -128) $1ffa (   2) (    -126) $2102 (   1) (UNIC_NCT) $2107 (   1) (UNIC_NCT)
-    $210b (   3) (UNIC_NCT) $2110 (   3) (UNIC_NCT) $2115 (   1) (UNIC_NCT) $2119 (   5) (UNIC_NCT)
-    $2124 (   1) (UNIC_NCT) $2126 (   1) (   -7517) $2128 (   1) (UNIC_NCT) $212a (   1) (   -8383)
-    $212b (   1) (   -8262) $212c (   2) (UNIC_NCT) $2130 (   2) (UNIC_NCT) $2133 (   1) (UNIC_NCT)
-    $213e (   2) (UNIC_NCT) $2145 (   1) (UNIC_NCT) $ff21 (  26) (      32) $0000
-;
-
-#ENDIF; ! Large_Unicode_Tables
-</pre><footer><br><p>From I6T lib 6/12N, distributed with Inform 7 6M62 by Graham Nelson</p></footer></body></html>
+.fixed { font-family: monospace }
+.em { font-style: italic; }
+.center { text-align: center; }
+    body { font-family: sans-serif; margin: 3rem; background-color: #fafaf0; width: 80rem; }
+    .pre { font-family: monospace; margin: auto; width: 80rem; }
+#front_matter,.text { width: 50rem; }
+.text { border-bottom: .5px solid black; border-top: .5px solid black; margin-top: 1rem;
+padding-bottom: 1rem; margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+<div id="front_matter">
+<h1><a href="./UnicodeData.i6t">UnicodeData</a></h1><h2>Source.</h2><p><p> When this section is included, exactly one of the following constants is defined:<p></p><p> (a) <span class="fixed">ZSCII_Tables</span>, meaning that we will use ZSCII as the character set for characters in text values. (b) <span class="fixed">Small_Unicode_Tables</span>, meaning that we will use Unicode but store only single-byte characters, so that only the codes 0 to 255 are valid: in effect ISO Latin-1. (c) <span class="fixed">Large_Unicode_Tables</span>, meaning that we will use Unicode and store two-byte characters, so that all of Unicode in the range 0 to 65535 are valid.<p></p><p> Whichever is defined, we must create two arrays:<p></p><p> (i) <span class="fixed">CharCasingChart0</span>, a table indicating lower-case letters with transitions to convert them to upper case; (ii) <span class="fixed">CharCasingChart1</span>, vice versa.<p></p><p> Each array is a sequence of three-word records, consisting of the start of a character range, the size of the range (the number of characters in it), and the numerical offset to convert to the opposite case. For instance, the sequence $(97, 26, -32)$ means the 26 lower-case letters &quot;a&quot; to &quot;z&quot;, and marks them as convertible to upper case by subtracting 32 from the character code (so &quot;a&quot;, 97, becomes &quot;A&quot;, 65). If the size of the range is negative, this indicates that only every alternate code is valid. (This makes for efficient storage since there are large parts of the Unicode number-space in which upper and lower case letters alternate.)<p></p><p> An offset of <a href="./UnicodeData.i6t.html#line38">UNIC_NCT</a> means no case change is possible; and any character not included in the ranges below is not a letter.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line38">38</span><span class="td">Constant&nbsp;UNIC_NCT&nbsp;=&nbsp;10000;&nbsp;!&nbsp;Safe&nbsp;as&nbsp;highest&nbsp;case-change&nbsp;delta&nbsp;is&nbsp;8383</span></span>
+<span class="tr"><span class="th" id="line39">39</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>ZSCII Casing Tables.</h2><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line43">43</span><span class="td">#IFDEF&nbsp;ZSCII_Tables;</span></span>
+<span class="tr"><span class="th" id="line44">44</span><span class="td">Array&nbsp;CharCasingChart0&nbsp;--&gt;</span></span>
+<span class="tr"><span class="th" id="line45">45</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$0061&nbsp;(&nbsp;&nbsp;26)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-32)&nbsp;$009b&nbsp;(&nbsp;&nbsp;&nbsp;3)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3)&nbsp;$00a1&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)</span></span>
+<span class="tr"><span class="th" id="line46">46</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$00a4&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3)&nbsp;$00a6&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$00a9&nbsp;(&nbsp;&nbsp;&nbsp;6)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6)</span></span>
+<span class="tr"><span class="th" id="line47">47</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$00b5&nbsp;(&nbsp;&nbsp;&nbsp;5)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5)&nbsp;$00bf&nbsp;(&nbsp;&nbsp;&nbsp;5)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5)&nbsp;$00c9&nbsp;(&nbsp;&nbsp;-3)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)</span></span>
+<span class="tr"><span class="th" id="line48">48</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$00cd&nbsp;(&nbsp;&nbsp;&nbsp;3)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3)&nbsp;$00d3&nbsp;(&nbsp;&nbsp;-3)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)&nbsp;$00d7&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2)</span></span>
+<span class="tr"><span class="th" id="line49">49</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$00dc&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)&nbsp;$0000</span></span>
+<span class="tr"><span class="th" id="line50">50</span><span class="td">;</span></span>
+<span class="tr"><span class="th" id="line51">51</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line52">52</span><span class="td">Array&nbsp;CharCasingChart1&nbsp;--&gt;</span></span>
+<span class="tr"><span class="th" id="line53">53</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$0041&nbsp;(&nbsp;&nbsp;26)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;32)&nbsp;$009e&nbsp;(&nbsp;&nbsp;&nbsp;3)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-3)&nbsp;$00a7&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-3)</span></span>
+<span class="tr"><span class="th" id="line54">54</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$00af&nbsp;(&nbsp;&nbsp;&nbsp;6)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-6)&nbsp;$00ba&nbsp;(&nbsp;&nbsp;&nbsp;5)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-5)&nbsp;$00c4&nbsp;(&nbsp;&nbsp;&nbsp;5)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-5)</span></span>
+<span class="tr"><span class="th" id="line55">55</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$00ca&nbsp;(&nbsp;&nbsp;-3)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)&nbsp;$00d0&nbsp;(&nbsp;&nbsp;&nbsp;3)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-3)&nbsp;$00d4&nbsp;(&nbsp;&nbsp;-3)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)</span></span>
+<span class="tr"><span class="th" id="line56">56</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$00d9&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-2)&nbsp;$00dd&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)&nbsp;$0000</span></span>
+<span class="tr"><span class="th" id="line57">57</span><span class="td">;</span></span>
+<span class="tr"><span class="th" id="line58">58</span><span class="td">#ENDIF;&nbsp;!&nbsp;ZSCII_Tables</span></span>
+<span class="tr"><span class="th" id="line59">59</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Small Unicode Casing Tables.</h2><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line63">63</span><span class="td">#IFDEF&nbsp;Small_Unicode_Tables;</span></span>
+<span class="tr"><span class="th" id="line64">64</span><span class="td">Array&nbsp;CharCasingChart0&nbsp;--&gt;</span></span>
+<span class="tr"><span class="th" id="line65">65</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$0061&nbsp;(&nbsp;&nbsp;26)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-32)&nbsp;$00aa&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$00b5&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$00ba&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)</span></span>
+<span class="tr"><span class="th" id="line66">66</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$00df&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$00e0&nbsp;(&nbsp;&nbsp;23)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-32)&nbsp;$00f8&nbsp;(&nbsp;&nbsp;&nbsp;7)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-32)&nbsp;$00ff&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)</span></span>
+<span class="tr"><span class="th" id="line67">67</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$0000</span></span>
+<span class="tr"><span class="th" id="line68">68</span><span class="td">;</span></span>
+<span class="tr"><span class="th" id="line69">69</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line70">70</span><span class="td">Array&nbsp;CharCasingChart1&nbsp;--&gt;</span></span>
+<span class="tr"><span class="th" id="line71">71</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$0041&nbsp;(&nbsp;&nbsp;26)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;32)&nbsp;$00c0&nbsp;(&nbsp;&nbsp;23)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;32)&nbsp;$00d8&nbsp;(&nbsp;&nbsp;&nbsp;7)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;32)&nbsp;$0000</span></span>
+<span class="tr"><span class="th" id="line72">72</span><span class="td">;</span></span>
+<span class="tr"><span class="th" id="line73">73</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line74">74</span><span class="td">#ENDIF;&nbsp;!&nbsp;Small_Unicode_Tables</span></span>
+<span class="tr"><span class="th" id="line75">75</span><span class="td"></span></span>
+</div><div class='text'>
+<h2>Large Unicode Casing Tables.</h2><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line79">79</span><span class="td">#IFDEF&nbsp;Large_Unicode_Tables;</span></span>
+<span class="tr"><span class="th" id="line80">80</span><span class="td">Array&nbsp;CharCasingChart0&nbsp;--&gt;</span></span>
+<span class="tr"><span class="th" id="line81">81</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$0061&nbsp;(&nbsp;&nbsp;26)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-32)&nbsp;$00aa&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$00b5&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;743)&nbsp;$00ba&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)</span></span>
+<span class="tr"><span class="th" id="line82">82</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$00df&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$00e0&nbsp;(&nbsp;&nbsp;23)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-32)&nbsp;$00f8&nbsp;(&nbsp;&nbsp;&nbsp;7)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-32)&nbsp;$00ff&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;121)</span></span>
+<span class="tr"><span class="th" id="line83">83</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$0101&nbsp;(&nbsp;-47)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)&nbsp;$0131&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;-232)&nbsp;$0133&nbsp;(&nbsp;&nbsp;-5)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)&nbsp;$0138&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)</span></span>
+<span class="tr"><span class="th" id="line84">84</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$013a&nbsp;(&nbsp;-15)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)&nbsp;$0149&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$014b&nbsp;(&nbsp;-45)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)&nbsp;$017a&nbsp;(&nbsp;&nbsp;-5)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)</span></span>
+<span class="tr"><span class="th" id="line85">85</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$017f&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;-300)&nbsp;$0180&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$0183&nbsp;(&nbsp;&nbsp;-3)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)&nbsp;$0188&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)</span></span>
+<span class="tr"><span class="th" id="line86">86</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$018c&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)&nbsp;$018d&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$0192&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)&nbsp;$0195&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;97)</span></span>
+<span class="tr"><span class="th" id="line87">87</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$0199&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)&nbsp;$019a&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(UNIC_NCT)&nbsp;$019e&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;130)&nbsp;$01a1&nbsp;(&nbsp;&nbsp;-5)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)</span></span>
+<span class="tr"><span class="th" id="line88">88</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$01a8&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)&nbsp;$01aa&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(UNIC_NCT)&nbsp;$01ad&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)&nbsp;$01b0&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)</span></span>
+<span class="tr"><span class="th" id="line89">89</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$01b4&nbsp;(&nbsp;&nbsp;-3)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)&nbsp;$01b9&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)&nbsp;$01ba&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$01bd&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)</span></span>
+<span class="tr"><span class="th" id="line90">90</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$01be&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$01bf&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;56)&nbsp;$01c6&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-2)&nbsp;$01c9&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-2)</span></span>
+<span class="tr"><span class="th" id="line91">91</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$01cc&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-2)&nbsp;$01ce&nbsp;(&nbsp;-15)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)&nbsp;$01dd&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-79)&nbsp;$01df&nbsp;(&nbsp;-17)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)</span></span>
+<span class="tr"><span class="th" id="line92">92</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$01f0&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$01f3&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-2)&nbsp;$01f5&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)&nbsp;$01f9&nbsp;(&nbsp;-39)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)</span></span>
+<span class="tr"><span class="th" id="line93">93</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$0221&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$0223&nbsp;(&nbsp;-17)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)&nbsp;$0234&nbsp;(&nbsp;&nbsp;&nbsp;3)&nbsp;(UNIC_NCT)&nbsp;$0250&nbsp;(&nbsp;&nbsp;&nbsp;3)&nbsp;(UNIC_NCT)</span></span>
+<span class="tr"><span class="th" id="line94">94</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$0253&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;-210)&nbsp;$0254&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;-206)&nbsp;$0255&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$0256&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;-205)</span></span>
+<span class="tr"><span class="th" id="line95">95</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$0258&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$0259&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;-202)&nbsp;$025a&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$025b&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;-203)</span></span>
+<span class="tr"><span class="th" id="line96">96</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$025c&nbsp;(&nbsp;&nbsp;&nbsp;4)&nbsp;(UNIC_NCT)&nbsp;$0260&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;-205)&nbsp;$0261&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(UNIC_NCT)&nbsp;$0263&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;-207)</span></span>
+<span class="tr"><span class="th" id="line97">97</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$0264&nbsp;(&nbsp;&nbsp;&nbsp;4)&nbsp;(UNIC_NCT)&nbsp;$0268&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;-209)&nbsp;$0269&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;-211)&nbsp;$026a&nbsp;(&nbsp;&nbsp;&nbsp;5)&nbsp;(UNIC_NCT)</span></span>
+<span class="tr"><span class="th" id="line98">98</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$026f&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;-211)&nbsp;$0270&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(UNIC_NCT)&nbsp;$0272&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;-213)&nbsp;$0273&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(UNIC_NCT)</span></span>
+<span class="tr"><span class="th" id="line99">99</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$0275&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;-214)&nbsp;$0276&nbsp;(&nbsp;&nbsp;10)&nbsp;(UNIC_NCT)&nbsp;$0280&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;-218)&nbsp;$0281&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(UNIC_NCT)</span></span>
+<span class="tr"><span class="th" id="line100">100</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$0283&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;-218)&nbsp;$0284&nbsp;(&nbsp;&nbsp;&nbsp;4)&nbsp;(UNIC_NCT)&nbsp;$0288&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;-218)&nbsp;$0289&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)</span></span>
+<span class="tr"><span class="th" id="line101">101</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$028a&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;-217)&nbsp;$028c&nbsp;(&nbsp;&nbsp;&nbsp;6)&nbsp;(UNIC_NCT)&nbsp;$0292&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;-219)&nbsp;$0293&nbsp;(&nbsp;&nbsp;29)&nbsp;(UNIC_NCT)</span></span>
+<span class="tr"><span class="th" id="line102">102</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$0390&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$03ac&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-38)&nbsp;$03ad&nbsp;(&nbsp;&nbsp;&nbsp;3)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-37)&nbsp;$03b0&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)</span></span>
+<span class="tr"><span class="th" id="line103">103</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$03b1&nbsp;(&nbsp;&nbsp;17)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-32)&nbsp;$03c2&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-31)&nbsp;$03c3&nbsp;(&nbsp;&nbsp;&nbsp;9)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-32)&nbsp;$03cc&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-64)</span></span>
+<span class="tr"><span class="th" id="line104">104</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$03cd&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-63)&nbsp;$03d0&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-62)&nbsp;$03d1&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-57)&nbsp;$03d5&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-47)</span></span>
+<span class="tr"><span class="th" id="line105">105</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$03d6&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-54)&nbsp;$03d7&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$03d9&nbsp;(&nbsp;-23)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)&nbsp;$03f0&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-86)</span></span>
+<span class="tr"><span class="th" id="line106">106</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$03f1&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-80)&nbsp;$03f2&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7)&nbsp;$03f3&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$03f5&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-96)</span></span>
+<span class="tr"><span class="th" id="line107">107</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$03f8&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)&nbsp;$03fb&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)&nbsp;$0430&nbsp;(&nbsp;&nbsp;32)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-32)&nbsp;$0450&nbsp;(&nbsp;&nbsp;16)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-80)</span></span>
+<span class="tr"><span class="th" id="line108">108</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$0461&nbsp;(&nbsp;-33)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)&nbsp;$048b&nbsp;(&nbsp;-53)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)&nbsp;$04c2&nbsp;(&nbsp;-13)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)&nbsp;$04d1&nbsp;(&nbsp;-37)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)</span></span>
+<span class="tr"><span class="th" id="line109">109</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$04f9&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)&nbsp;$0501&nbsp;(&nbsp;-15)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)&nbsp;$0561&nbsp;(&nbsp;&nbsp;38)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-48)&nbsp;$0587&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)</span></span>
+<span class="tr"><span class="th" id="line110">110</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$1d00&nbsp;(&nbsp;&nbsp;44)&nbsp;(UNIC_NCT)&nbsp;$1d62&nbsp;(&nbsp;&nbsp;10)&nbsp;(UNIC_NCT)&nbsp;$1e01&nbsp;(-149)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)&nbsp;$1e96&nbsp;(&nbsp;&nbsp;&nbsp;5)&nbsp;(UNIC_NCT)</span></span>
+<span class="tr"><span class="th" id="line111">111</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$1e9b&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-59)&nbsp;$1ea1&nbsp;(&nbsp;-89)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1)&nbsp;$1f00&nbsp;(&nbsp;&nbsp;&nbsp;8)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8)&nbsp;$1f10&nbsp;(&nbsp;&nbsp;&nbsp;6)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8)</span></span>
+<span class="tr"><span class="th" id="line112">112</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$1f20&nbsp;(&nbsp;&nbsp;&nbsp;8)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8)&nbsp;$1f30&nbsp;(&nbsp;&nbsp;&nbsp;8)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8)&nbsp;$1f40&nbsp;(&nbsp;&nbsp;&nbsp;6)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8)&nbsp;$1f50&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)</span></span>
+<span class="tr"><span class="th" id="line113">113</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$1f51&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8)&nbsp;$1f52&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$1f53&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8)&nbsp;$1f54&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)</span></span>
+<span class="tr"><span class="th" id="line114">114</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$1f55&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8)&nbsp;$1f56&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$1f57&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8)&nbsp;$1f60&nbsp;(&nbsp;&nbsp;&nbsp;8)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8)</span></span>
+<span class="tr"><span class="th" id="line115">115</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$1f70&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;74)&nbsp;$1f72&nbsp;(&nbsp;&nbsp;&nbsp;4)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;86)&nbsp;$1f76&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;100)&nbsp;$1f78&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;128)</span></span>
+<span class="tr"><span class="th" id="line116">116</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$1f7a&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;112)&nbsp;$1f7c&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;126)&nbsp;$1f80&nbsp;(&nbsp;&nbsp;&nbsp;8)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8)&nbsp;$1f90&nbsp;(&nbsp;&nbsp;&nbsp;8)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8)</span></span>
+<span class="tr"><span class="th" id="line117">117</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$1fa0&nbsp;(&nbsp;&nbsp;&nbsp;8)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8)&nbsp;$1fb0&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8)&nbsp;$1fb2&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$1fb3&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9)</span></span>
+<span class="tr"><span class="th" id="line118">118</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$1fb4&nbsp;(&nbsp;&nbsp;-3)&nbsp;(UNIC_NCT)&nbsp;$1fb7&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$1fbe&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;-7205)&nbsp;$1fc2&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)</span></span>
+<span class="tr"><span class="th" id="line119">119</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$1fc3&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9)&nbsp;$1fc4&nbsp;(&nbsp;&nbsp;-3)&nbsp;(UNIC_NCT)&nbsp;$1fc7&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$1fd0&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8)</span></span>
+<span class="tr"><span class="th" id="line120">120</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$1fd2&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(UNIC_NCT)&nbsp;$1fd6&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(UNIC_NCT)&nbsp;$1fe0&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8)&nbsp;$1fe2&nbsp;(&nbsp;&nbsp;&nbsp;3)&nbsp;(UNIC_NCT)</span></span>
+<span class="tr"><span class="th" id="line121">121</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$1fe5&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7)&nbsp;$1fe6&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(UNIC_NCT)&nbsp;$1ff2&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$1ff3&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9)</span></span>
+<span class="tr"><span class="th" id="line122">122</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$1ff4&nbsp;(&nbsp;&nbsp;-3)&nbsp;(UNIC_NCT)&nbsp;$1ff7&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$2071&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$207f&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)</span></span>
+<span class="tr"><span class="th" id="line123">123</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$210a&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$210e&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(UNIC_NCT)&nbsp;$2113&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$212f&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)</span></span>
+<span class="tr"><span class="th" id="line124">124</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$2134&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$2139&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$213d&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$2146&nbsp;(&nbsp;&nbsp;&nbsp;4)&nbsp;(UNIC_NCT)</span></span>
+<span class="tr"><span class="th" id="line125">125</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$fb00&nbsp;(&nbsp;&nbsp;&nbsp;7)&nbsp;(UNIC_NCT)&nbsp;$fb13&nbsp;(&nbsp;&nbsp;&nbsp;5)&nbsp;(UNIC_NCT)&nbsp;$ff41&nbsp;(&nbsp;&nbsp;26)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-32)&nbsp;$0000</span></span>
+<span class="tr"><span class="th" id="line126">126</span><span class="td">;</span></span>
+<span class="tr"><span class="th" id="line127">127</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line128">128</span><span class="td">Array&nbsp;CharCasingChart1&nbsp;--&gt;</span></span>
+<span class="tr"><span class="th" id="line129">129</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$0041&nbsp;(&nbsp;&nbsp;26)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;32)&nbsp;$00c0&nbsp;(&nbsp;&nbsp;23)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;32)&nbsp;$00d8&nbsp;(&nbsp;&nbsp;&nbsp;7)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;32)&nbsp;$0100&nbsp;(&nbsp;-47)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)</span></span>
+<span class="tr"><span class="th" id="line130">130</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$0130&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;-199)&nbsp;$0132&nbsp;(&nbsp;&nbsp;-5)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)&nbsp;$0139&nbsp;(&nbsp;-15)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)&nbsp;$014a&nbsp;(&nbsp;-45)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)</span></span>
+<span class="tr"><span class="th" id="line131">131</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$0178&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;-121)&nbsp;$0179&nbsp;(&nbsp;&nbsp;-5)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)&nbsp;$0181&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;210)&nbsp;$0182&nbsp;(&nbsp;&nbsp;-3)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)</span></span>
+<span class="tr"><span class="th" id="line132">132</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$0186&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;206)&nbsp;$0187&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)&nbsp;$0189&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;205)&nbsp;$018b&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)</span></span>
+<span class="tr"><span class="th" id="line133">133</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$018e&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;79)&nbsp;$018f&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;202)&nbsp;$0190&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;203)&nbsp;$0191&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)</span></span>
+<span class="tr"><span class="th" id="line134">134</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$0193&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;205)&nbsp;$0194&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;207)&nbsp;$0196&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;211)&nbsp;$0197&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;209)</span></span>
+<span class="tr"><span class="th" id="line135">135</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$0198&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)&nbsp;$019c&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;211)&nbsp;$019d&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;213)&nbsp;$019f&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;214)</span></span>
+<span class="tr"><span class="th" id="line136">136</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$01a0&nbsp;(&nbsp;&nbsp;-5)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)&nbsp;$01a6&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;218)&nbsp;$01a7&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)&nbsp;$01a9&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;218)</span></span>
+<span class="tr"><span class="th" id="line137">137</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$01ac&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)&nbsp;$01ae&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;218)&nbsp;$01af&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)&nbsp;$01b1&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;217)</span></span>
+<span class="tr"><span class="th" id="line138">138</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$01b3&nbsp;(&nbsp;&nbsp;-3)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)&nbsp;$01b7&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;219)&nbsp;$01b8&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)&nbsp;$01bc&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)</span></span>
+<span class="tr"><span class="th" id="line139">139</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$01c4&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2)&nbsp;$01c7&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2)&nbsp;$01ca&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2)&nbsp;$01cd&nbsp;(&nbsp;-15)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)</span></span>
+<span class="tr"><span class="th" id="line140">140</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$01de&nbsp;(&nbsp;-17)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)&nbsp;$01f1&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2)&nbsp;$01f4&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)&nbsp;$01f6&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-97)</span></span>
+<span class="tr"><span class="th" id="line141">141</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$01f7&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-56)&nbsp;$01f8&nbsp;(&nbsp;-39)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)&nbsp;$0220&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;-130)&nbsp;$0222&nbsp;(&nbsp;-17)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)</span></span>
+<span class="tr"><span class="th" id="line142">142</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$0386&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;38)&nbsp;$0388&nbsp;(&nbsp;&nbsp;&nbsp;3)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;37)&nbsp;$038c&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;64)&nbsp;$038e&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;63)</span></span>
+<span class="tr"><span class="th" id="line143">143</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$0391&nbsp;(&nbsp;&nbsp;17)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;32)&nbsp;$03a3&nbsp;(&nbsp;&nbsp;&nbsp;9)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;32)&nbsp;$03d2&nbsp;(&nbsp;&nbsp;&nbsp;3)&nbsp;(UNIC_NCT)&nbsp;$03d8&nbsp;(&nbsp;-23)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)</span></span>
+<span class="tr"><span class="th" id="line144">144</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$03f4&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-60)&nbsp;$03f7&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)&nbsp;$03f9&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-7)&nbsp;$03fa&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)</span></span>
+<span class="tr"><span class="th" id="line145">145</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$0400&nbsp;(&nbsp;&nbsp;16)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;80)&nbsp;$0410&nbsp;(&nbsp;&nbsp;32)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;32)&nbsp;$0460&nbsp;(&nbsp;-33)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)&nbsp;$048a&nbsp;(&nbsp;-53)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)</span></span>
+<span class="tr"><span class="th" id="line146">146</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$04c0&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$04c1&nbsp;(&nbsp;-13)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)&nbsp;$04d0&nbsp;(&nbsp;-37)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)&nbsp;$04f8&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)</span></span>
+<span class="tr"><span class="th" id="line147">147</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$0500&nbsp;(&nbsp;-15)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)&nbsp;$0531&nbsp;(&nbsp;&nbsp;38)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;48)&nbsp;$10a0&nbsp;(&nbsp;&nbsp;38)&nbsp;(UNIC_NCT)&nbsp;$1e00&nbsp;(-149)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)</span></span>
+<span class="tr"><span class="th" id="line148">148</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$1ea0&nbsp;(&nbsp;-89)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)&nbsp;$1f08&nbsp;(&nbsp;&nbsp;&nbsp;8)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-8)&nbsp;$1f18&nbsp;(&nbsp;&nbsp;&nbsp;6)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-8)&nbsp;$1f28&nbsp;(&nbsp;&nbsp;&nbsp;8)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-8)</span></span>
+<span class="tr"><span class="th" id="line149">149</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$1f38&nbsp;(&nbsp;&nbsp;&nbsp;8)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-8)&nbsp;$1f48&nbsp;(&nbsp;&nbsp;&nbsp;6)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-8)&nbsp;$1f59&nbsp;(&nbsp;&nbsp;-7)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-8)&nbsp;$1f68&nbsp;(&nbsp;&nbsp;&nbsp;8)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-8)</span></span>
+<span class="tr"><span class="th" id="line150">150</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$1fb8&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-8)&nbsp;$1fba&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-74)&nbsp;$1fc8&nbsp;(&nbsp;&nbsp;&nbsp;4)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-86)&nbsp;$1fd8&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-8)</span></span>
+<span class="tr"><span class="th" id="line151">151</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$1fda&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;-100)&nbsp;$1fe8&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-8)&nbsp;$1fea&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;-112)&nbsp;$1fec&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-7)</span></span>
+<span class="tr"><span class="th" id="line152">152</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$1ff8&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;-128)&nbsp;$1ffa&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;-126)&nbsp;$2102&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$2107&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)</span></span>
+<span class="tr"><span class="th" id="line153">153</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$210b&nbsp;(&nbsp;&nbsp;&nbsp;3)&nbsp;(UNIC_NCT)&nbsp;$2110&nbsp;(&nbsp;&nbsp;&nbsp;3)&nbsp;(UNIC_NCT)&nbsp;$2115&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$2119&nbsp;(&nbsp;&nbsp;&nbsp;5)&nbsp;(UNIC_NCT)</span></span>
+<span class="tr"><span class="th" id="line154">154</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$2124&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$2126&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;-7517)&nbsp;$2128&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$212a&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;-8383)</span></span>
+<span class="tr"><span class="th" id="line155">155</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$212b&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(&nbsp;&nbsp;&nbsp;-8262)&nbsp;$212c&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(UNIC_NCT)&nbsp;$2130&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(UNIC_NCT)&nbsp;$2133&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)</span></span>
+<span class="tr"><span class="th" id="line156">156</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;$213e&nbsp;(&nbsp;&nbsp;&nbsp;2)&nbsp;(UNIC_NCT)&nbsp;$2145&nbsp;(&nbsp;&nbsp;&nbsp;1)&nbsp;(UNIC_NCT)&nbsp;$ff21&nbsp;(&nbsp;&nbsp;26)&nbsp;(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;32)&nbsp;$0000</span></span>
+<span class="tr"><span class="th" id="line157">157</span><span class="td">;</span></span>
+<span class="tr"><span class="th" id="line158">158</span><span class="td"></span></span>
+<span class="tr"><span class="th" id="line159">159</span><span class="td">#ENDIF;&nbsp;!&nbsp;Large_Unicode_Tables</span></span>
+</div><footer><hr><p><em>From I6T lib 6/12N &copy; Graham Nelson and published under the <a href="https://github.com/zedlopez/standard_rules/blob/main/LICENSE.md">Artistic License 2.0</a>. Distributed with <a href="http://inform7.com/">Inform 7 6M62</a>.</em></p></footer></body></html>
