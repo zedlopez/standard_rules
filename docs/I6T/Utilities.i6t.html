@@ -31,13 +31,13 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <h1>I6 Template Layer</h1>
 <div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Index</a> &bull; <a href="./Introduction.html">Introduction</a></div><hr></header>
 <div id="front_matter">
-<h2><a href="./Utilities.i6t">Utilities.i6t</a></h2><h3>Saying Phrases.</h3><p><p></p><p></div><div class="pre">
+<h2><a href="./Utilities.i6t">Utilities.i6t</a></h2><h3 id="#utilities-saying-phrases">Saying Phrases.</h3><p><p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line10">10</span><span class="td">[&nbsp;SayPhraseName&nbsp;closure;</span></span>
 <span class="tr"><span class="th" id="line11">11</span><span class="td">&nbsp;if&nbsp;(closure&nbsp;==&nbsp;0)&nbsp;print&nbsp;&quot;nothing&quot;;</span></span>
 <span class="tr"><span class="th" id="line12">12</span><span class="td">&nbsp;else&nbsp;print&nbsp;(string)&nbsp;closure--&gt;2;</span></span>
 <span class="tr"><span class="th" id="line13">13</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>Kinds.</h3><p><p></p><p></div><div class="pre">
+<h3 id="#utilities-kinds">Kinds.</h3><p><p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line18">18</span><span class="td">[&nbsp;KindAtomic&nbsp;kind;</span></span>
 <span class="tr"><span class="th" id="line19">19</span><span class="td">&nbsp;if&nbsp;((kind&nbsp;&gt;=&nbsp;0)&nbsp;&amp;&amp;&nbsp;(kind&nbsp;&lt;&nbsp;BASE_KIND_HWM))&nbsp;return&nbsp;kind;</span></span>
 <span class="tr"><span class="th" id="line20">20</span><span class="td">&nbsp;return&nbsp;kind--&gt;0;</span></span>
@@ -53,14 +53,14 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line30">30</span><span class="td">&nbsp;return&nbsp;kind--&gt;(2+n);</span></span>
 <span class="tr"><span class="th" id="line31">31</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>DigitToValue.</h3><p><p> This takes a ZSCII or Unicode character code and returns its value as a digit, or returns <em></em> if it isn&#39;t a digit.<p></p><p></div><div class="pre">
+<h3 id="#utilities-digittovalue">DigitToValue.</h3><p><p> This takes a ZSCII or Unicode character code and returns its value as a digit, or returns <em>-1</em> if it isn&#39;t a digit.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line38">38</span><span class="td">[&nbsp;DigitToValue&nbsp;c&nbsp;n;</span></span>
 <span class="tr"><span class="th" id="line39">39</span><span class="td">&nbsp;n&nbsp;=&nbsp;c-&#39;0&#39;;</span></span>
 <span class="tr"><span class="th" id="line40">40</span><span class="td">&nbsp;if&nbsp;((n&lt;0)&nbsp;||&nbsp;(n&gt;9))&nbsp;return&nbsp;-1;</span></span>
 <span class="tr"><span class="th" id="line41">41</span><span class="td">&nbsp;return&nbsp;n;</span></span>
 <span class="tr"><span class="th" id="line42">42</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>GenerateRandomNumber.</h3><p><p> The following uses the virtual machine&#39;s RNG (via the I6 built-in function <span class="fixed">random</span>) to produce a uniformly random integer in the range <em></em> to <em></em> inclusive, where <em></em> and <em></em> are allowed to be either way around; so that a random number between 17 and 4 is the same thing as a random number between 4 and 17, and there is therefore no pair of <em></em> and <em></em> corresponding to an empty range of values.<p></p><p></div><div class="pre">
+<h3 id="#utilities-generaterandomnumber">GenerateRandomNumber.</h3><p><p> The following uses the virtual machine&#39;s RNG (via the I6 built-in function <span class="fixed">random</span>) to produce a uniformly random integer in the range <em>n</em> to <em>m</em> inclusive, where <em>n</em> and <em>m</em> are allowed to be either way around; so that a random number between 17 and 4 is the same thing as a random number between 4 and 17, and there is therefore no pair of <em>n</em> and <em>m</em> corresponding to an empty range of values.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line53">53</span><span class="td">[&nbsp;GenerateRandomNumber&nbsp;n&nbsp;m&nbsp;s;</span></span>
 <span class="tr"><span class="th" id="line54">54</span><span class="td">&nbsp;if&nbsp;(n==m)&nbsp;return&nbsp;n;</span></span>
 <span class="tr"><span class="th" id="line55">55</span><span class="td">&nbsp;if&nbsp;(n&gt;m)&nbsp;{&nbsp;s&nbsp;=&nbsp;n;&nbsp;n&nbsp;=&nbsp;m;&nbsp;m&nbsp;=&nbsp;s;&nbsp;}</span></span>
@@ -70,7 +70,7 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line59">59</span><span class="td">Constant&nbsp;R_DecimalNumber&nbsp;=&nbsp;GenerateRandomNumber;</span></span>
 <span class="tr"><span class="th" id="line60">60</span><span class="td">Constant&nbsp;R_PrintTimeOfDay&nbsp;=&nbsp;GenerateRandomNumber;</span></span>
 </div><div class='text'>
-<h3>GroupChildren.</h3><p><p> The following runs through the child-objects of <span class="fixed">par</span> in the I6 object tree, and moves those having a given <span class="fixed">list_property</span> property value together, to become the eldest children. It preserves the ordering in between those objects, and also in between those not having that property value.<p></p><p> We do this by temporarily moving objects into and out of <span class="fixed">in_obj</span> and <span class="fixed">out_obj</span>, objects which in all other circumstances never have children in the tree.<p></p><p></div><div class="pre">
+<h3 id="#utilities-groupchildren">GroupChildren.</h3><p><p> The following runs through the child-objects of <span class="fixed">par</span> in the I6 object tree, and moves those having a given <span class="fixed">list_property</span> property value together, to become the eldest children. It preserves the ordering in between those objects, and also in between those not having that property value.<p></p><p> We do this by temporarily moving objects into and out of <span class="fixed">in_obj</span> and <span class="fixed">out_obj</span>, objects which in all other circumstances never have children in the tree.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line72">72</span><span class="td">[&nbsp;GroupChildren&nbsp;par&nbsp;value;</span></span>
 <span class="tr"><span class="th" id="line73">73</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;while&nbsp;(child(par)&nbsp;~=&nbsp;0)&nbsp;{</span></span>
 <span class="tr"><span class="th" id="line74">74</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(LT_Compare(child(par).list_together,&nbsp;value)&nbsp;~=&nbsp;0)</span></span>
@@ -83,7 +83,7 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line81">81</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;child(par);</span></span>
 <span class="tr"><span class="th" id="line82">82</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>PrintSpaces.</h3><p><p> Which prints a row of <em></em> spaces, for <em></em>.<p></p><p></div><div class="pre">
+<h3 id="#utilities-printspaces">PrintSpaces.</h3><p><p> Which prints a row of <em>n</em> spaces, for <em>n&gt;= 0</em>.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line88">88</span><span class="td">[&nbsp;PrintSpaces&nbsp;n;</span></span>
 <span class="tr"><span class="th" id="line89">89</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;while&nbsp;(n&nbsp;&gt;&nbsp;0)&nbsp;{</span></span>
 <span class="tr"><span class="th" id="line90">90</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;&quot;&nbsp;&quot;;</span></span>
@@ -91,14 +91,14 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line92">92</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
 <span class="tr"><span class="th" id="line93">93</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>RunRoutines.</h3><p><p> This function may not be very well-named, but the idea is to take a property of a given object and either to print it (and return <span class="fixed">true</span>) if it&#39;s a string, and call it (and pass along its return value) if it&#39;s a routine. If the object does not provide the property, we act on the default value for the property if it has one, and otherwise do nothing (and return <span class="fixed">false</span>).<p></p><p> The I6 pseudo-object <span class="fixed">thedark</span> is used to give the impression that Darkness is a room in its own right, which is not really true. Note that it is not permitted to have properties other than the three named here: all other properties are redirected to the current location&#39;s object.<p></p><p> Properties with numbers under <span class="fixed"><a href="./Definitions.i6t.html#line94">INDIV_PROP_START</a></span> are &quot;common properties&quot;. These come along with a table of default values, so that it is meaningful (in I6, anyway) to read them even when they are not provided (so that the address, returned by the <span class="fixed">.&amp;</span> operator, is zero).<p></p><p></div><div class="pre">
+<h3 id="#utilities-runroutines">RunRoutines.</h3><p><p> This function may not be very well-named, but the idea is to take a property of a given object and either to print it (and return <span class="fixed">true</span>) if it&#39;s a string, and call it (and pass along its return value) if it&#39;s a routine. If the object does not provide the property, we act on the default value for the property if it has one, and otherwise do nothing (and return <span class="fixed">false</span>).<p></p><p> The I6 pseudo-object <span class="fixed">thedark</span> is used to give the impression that Darkness is a room in its own right, which is not really true. Note that it is not permitted to have properties other than the three named here: all other properties are redirected to the current location&#39;s object.<p></p><p> Properties with numbers under <span class="fixed"><a href="./Definitions.i6t.html#line94">INDIV_PROP_START</a></span> are &quot;common properties&quot;. These come along with a table of default values, so that it is meaningful (in I6, anyway) to read them even when they are not provided (so that the address, returned by the <span class="fixed">.&amp;</span> operator, is zero).<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line113">113</span><span class="td">[&nbsp;RunRoutines&nbsp;obj&nbsp;prop;</span></span>
 <span class="tr"><span class="th" id="line114">114</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(obj&nbsp;==&nbsp;thedark)&nbsp;obj&nbsp;=&nbsp;real_location;</span></span>
 <span class="tr"><span class="th" id="line115">115</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;((obj.&amp;prop&nbsp;==&nbsp;0)&nbsp;&amp;&amp;&nbsp;(prop&nbsp;&gt;=&nbsp;INDIV_PROP_START))&nbsp;rfalse;</span></span>
 <span class="tr"><span class="th" id="line116">116</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;obj.prop();</span></span>
 <span class="tr"><span class="th" id="line117">117</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>SwapWorkflags.</h3><p><p> Recall that we have two general-purpose temporary attributes for each object: <span class="fixed">workflag</span> and <span class="fixed">workflag2</span>. The following swaps their values over for every object at once.<p></p><p></div><div class="pre">
+<h3 id="#utilities-swapworkflags">SwapWorkflags.</h3><p><p> Recall that we have two general-purpose temporary attributes for each object: <span class="fixed">workflag</span> and <span class="fixed">workflag2</span>. The following swaps their values over for every object at once.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line125">125</span><span class="td">[&nbsp;SwapWorkflags&nbsp;obj&nbsp;lst;</span></span>
 <span class="tr"><span class="th" id="line126">126</span><span class="td">&nbsp;objectloop&nbsp;(obj&nbsp;ofclass&nbsp;Object)&nbsp;{</span></span>
 <span class="tr"><span class="th" id="line127">127</span><span class="td">&nbsp;&nbsp;lst&nbsp;=&nbsp;false;</span></span>
@@ -110,22 +110,22 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line133">133</span><span class="td">&nbsp;}</span></span>
 <span class="tr"><span class="th" id="line134">134</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>TestUseOption.</h3><p><p> This routine, compiled by NI, returns <span class="fixed">true</span> if the supplied argument is the number of a use option in force for the current run of NI, and <span class="fixed">false</span> otherwise.<p></p><p></div><div class="pre">
+<h3 id="#utilities-testuseoption">TestUseOption.</h3><p><p> This routine, compiled by NI, returns <span class="fixed">true</span> if the supplied argument is thenumber of a use option in force for the current run of NI, and <span class="fixed">false</span><br> otherwise.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line142">142</span><span class="td">{-routine:UseOptions::TestUseOption}</span></span>
 </div><div class='text'>
-<h3>IntegerDivide.</h3><p><p> We can&#39;t simply use I6&#39;s <span class="fixed">/</span> operator, as that translates directly into a virtual machine opcode which crashes on divide by zero.<p></p><p></div><div class="pre">
+<h3 id="#utilities-integerdivide">IntegerDivide.</h3><p><p> We can&#39;t simply use I6&#39;s <span class="fixed">/</span> operator, as that translates directly into a virtual machine opcode which crashes on divide by zero.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line149">149</span><span class="td">[&nbsp;IntegerDivide&nbsp;A&nbsp;B;</span></span>
 <span class="tr"><span class="th" id="line150">150</span><span class="td">&nbsp;if&nbsp;(B&nbsp;==&nbsp;0)&nbsp;{&nbsp;RunTimeProblem(RTP_DIVZERO);&nbsp;rfalse;&nbsp;}</span></span>
 <span class="tr"><span class="th" id="line151">151</span><span class="td">&nbsp;return&nbsp;A/B;</span></span>
 <span class="tr"><span class="th" id="line152">152</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>IntegerRemainder.</h3><p><p> Similarly.<p></p><p></div><div class="pre">
+<h3 id="#utilities-integerremainder">IntegerRemainder.</h3><p><p> Similarly.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line158">158</span><span class="td">[&nbsp;IntegerRemainder&nbsp;A&nbsp;B;</span></span>
 <span class="tr"><span class="th" id="line159">159</span><span class="td">&nbsp;if&nbsp;(B&nbsp;==&nbsp;0)&nbsp;{&nbsp;RunTimeProblem(RTP_DIVZERO);&nbsp;rfalse;&nbsp;}</span></span>
 <span class="tr"><span class="th" id="line160">160</span><span class="td">&nbsp;return&nbsp;A%B;</span></span>
 <span class="tr"><span class="th" id="line161">161</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>UnsignedCompare.</h3><p><p> Comparison of I6 integers is normally signed, that is, treating the word as a twos-complement signed number, so that <span class="fixed"><em></em>x&gt;y<em></em>x=y<em></em>-1<em></em>x&lt;y$.<p></p><p></div><div class="pre">
+<h3 id="#utilities-unsignedcompare">UnsignedCompare.</h3><p><p> Comparison of I6 integers is normally signed, that is, treating the word as a twos-complement signed number, so that <span class="fixed"><em>FFFF</span> is less than <span class="fixed">0</span>, for instance. If we want to construe words as being unsigned integers, or as addresses, we need to compare them with the following routine, which returns 1 if </em>x&gt;y<em>, 0 if </em>x=y<em> and </em>-1<em> if </em>x&lt;y$.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line171">171</span><span class="td">[&nbsp;UnsignedCompare&nbsp;x&nbsp;y&nbsp;u&nbsp;v;</span></span>
 <span class="tr"><span class="th" id="line172">172</span><span class="td">&nbsp;#Ifdef&nbsp;TARGET_GLULX;</span></span>
 <span class="tr"><span class="th" id="line173">173</span><span class="td">&nbsp;@jleu&nbsp;x&nbsp;y&nbsp;?lesseq;</span></span>
@@ -146,14 +146,14 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line188">188</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line189">189</span><span class="td"></span></span>
 </div><div class='text'>
-<h3>SignedCompare.</h3><p><p> This routine is hardly ever needed; it wraps up ordinary comparisons.<p></p><p></div><div class="pre">
+<h3 id="#utilities-signedcompare">SignedCompare.</h3><p><p> This routine is hardly ever needed; it wraps up ordinary comparisons.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line195">195</span><span class="td">[&nbsp;SignedCompare&nbsp;x&nbsp;y;</span></span>
 <span class="tr"><span class="th" id="line196">196</span><span class="td">&nbsp;if&nbsp;(x&nbsp;&gt;&nbsp;y)&nbsp;return&nbsp;1;</span></span>
 <span class="tr"><span class="th" id="line197">197</span><span class="td">&nbsp;if&nbsp;(x&nbsp;==&nbsp;y)&nbsp;return&nbsp;0;</span></span>
 <span class="tr"><span class="th" id="line198">198</span><span class="td">&nbsp;return&nbsp;-1;</span></span>
 <span class="tr"><span class="th" id="line199">199</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>ZRegion.</h3><p><p> I7 contains many relics from I6, but here&#39;s a relic from I5: a routine which used to determine the metaclass of a value, before that concept was given a name. In I6 code, it can be implemented simply using <span class="fixed">metaclass</span>, as the following shows. (The name is from &quot;region of the Z-machine&quot;.)<p></p><p></div><div class="pre">
+<h3 id="#utilities-zregion">ZRegion.</h3><p><p> I7 contains many relics from I6, but here&#39;s a relic from I5: a routine which used to determine the metaclass of a value, before that concept was given a name. In I6 code, it can be implemented simply using <span class="fixed">metaclass</span>, as the following shows. (The name is from &quot;region of the Z-machine&quot;.)<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line208">208</span><span class="td">[&nbsp;ZRegion&nbsp;addr;</span></span>
 <span class="tr"><span class="th" id="line209">209</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;switch&nbsp;(metaclass(addr))&nbsp;{</span></span>
 <span class="tr"><span class="th" id="line210">210</span><span class="td">&nbsp;&nbsp;nothing:&nbsp;return&nbsp;0;</span></span>
@@ -163,7 +163,7 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line214">214</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
 <span class="tr"><span class="th" id="line215">215</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>Memcpy.</h3><p><p> This is equivalent to C&#39;s memcpy function, in good ways and bad.<p></p><p></div><div class="pre">
+<h3 id="#utilities-memcpy">Memcpy.</h3><p><p> This is equivalent to C&#39;s memcpy function, in good ways and bad.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line221">221</span><span class="td">[&nbsp;Memcpy&nbsp;to_addr&nbsp;from_addr&nbsp;size&nbsp;&nbsp;n;</span></span>
 <span class="tr"><span class="th" id="line222">222</span><span class="td">#Ifdef&nbsp;TARGET_ZCODE;</span></span>
 <span class="tr"><span class="th" id="line223">223</span><span class="td">&nbsp;for&nbsp;(n&nbsp;=&nbsp;size/WORDSIZE:&nbsp;(n--)&nbsp;&gt;&nbsp;0:&nbsp;)&nbsp;to_addr--&gt;n&nbsp;=&nbsp;from_addr--&gt;n;</span></span>
@@ -173,7 +173,7 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line227">227</span><span class="td">#Endif;&nbsp;!&nbsp;TARGET_</span></span>
 <span class="tr"><span class="th" id="line228">228</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>Arrcpy.</h3><p><p> This is not quite so efficient, but not terrible.<p></p><p></div><div class="pre">
+<h3 id="#utilities-arrcpy">Arrcpy.</h3><p><p> This is not quite so efficient, but not terrible.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line234">234</span><span class="td">[&nbsp;Arrcpy&nbsp;to_array&nbsp;to_entry_size&nbsp;from_array&nbsp;from_entry_size&nbsp;no_entries&nbsp;&nbsp;n&nbsp;val;</span></span>
 <span class="tr"><span class="th" id="line235">235</span><span class="td">&nbsp;if&nbsp;(to_entry_size&nbsp;==&nbsp;from_entry_size)</span></span>
 <span class="tr"><span class="th" id="line236">236</span><span class="td">&nbsp;&nbsp;Memcpy(to_array,&nbsp;from_array,&nbsp;to_entry_size*no_entries);</span></span>

@@ -31,11 +31,11 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <h1>I6 Template Layer</h1>
 <div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Index</a> &bull; <a href="./Introduction.html">Introduction</a></div><hr></header>
 <div id="front_matter">
-<h2><a href="./Combinations.i6t">Combinations.i6t</a></h2><h3>Block Format.</h3><p><p> A combination is like a list, but simpler; it has a fixed, usually short, size. On the other hand, its entries are not all of the same kind as each other.<p></p><p> The short block for a combination is simply a pointer to the long block. This consists of one word to hold the strong kind ID, and then one word for each entry in the combination. Thus, a triple combination uses 4 words.<p></p><p></div><div class="pre">
+<h2><a href="./Combinations.i6t">Combinations.i6t</a></h2><h3 id="#combinations-block-format">Block Format.</h3><p><p> A combination is like a list, but simpler; it has a fixed, usually short, size. On the other hand, its entries are not all of the same kind as each other.<p></p><p> The short block for a combination is simply a pointer to the long block. This consists of one word to hold the strong kind ID, and then one word for each entry in the combination. Thus, a triple combination uses 4 words.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line17">17</span><span class="td">Constant&nbsp;COMBINATION_KIND_F&nbsp;=&nbsp;0;&nbsp;&nbsp;&nbsp;&nbsp;!&nbsp;Strong&nbsp;kind&nbsp;ID</span></span>
 <span class="tr"><span class="th" id="line18">18</span><span class="td">Constant&nbsp;COMBINATION_ITEM_BASE&nbsp;=&nbsp;1;&nbsp;!&nbsp;List&nbsp;items&nbsp;begin&nbsp;at&nbsp;this&nbsp;entry</span></span>
 </div><div class='text'>
-<h3>KOV Support.</h3><p><p> See the <span class="fixed"><a href="./BlockValues.i6t.html">BlockValues.i6t</a></span> segment for the specification of the following routines.<p></p><p></div><div class="pre">
+<h3 id="#combinations-kov-support">KOV Support.</h3><p><p> See the <span class="fixed"><a href="./BlockValues.i6t.html">BlockValues.i6t</a></span> segment for the specification of the following routines.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line25">25</span><span class="td">[&nbsp;COMBINATION_TY_Support&nbsp;task&nbsp;arg1&nbsp;arg2&nbsp;arg3;</span></span>
 <span class="tr"><span class="th" id="line26">26</span><span class="td">&nbsp;switch(task)&nbsp;{</span></span>
 <span class="tr"><span class="th" id="line27">27</span><span class="td">&nbsp;&nbsp;CREATE_KOVS:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;COMBINATION_TY_Create(arg1,&nbsp;arg2);</span></span>
@@ -55,7 +55,7 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line41">41</span><span class="td">&nbsp;rfalse;</span></span>
 <span class="tr"><span class="th" id="line42">42</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>Creation.</h3><p><p> A combination is like a list, but simpler; it has a fixed, usually short, size. On the other hand, its entries are not all of the same kind as each other.<p></p><p> Combinations are stored as a fixed-sized block of word entries. The first block is the only header information: a pointer to a further structure in memory, describing the kind. The subsequent blocks are the actual records. Thus, a triple <em></em> uses 4 words.<p></p><p></div><div class="pre">
+<h3 id="#combinations-creation">Creation.</h3><p><p> A combination is like a list, but simpler; it has a fixed, usually short, size. On the other hand, its entries are not all of the same kind as each other.<p></p><p> Combinations are stored as a fixed-sized block of word entries. The first block is the only header information: a pointer to a further structure in memory, describing the kind. The subsequent blocks are the actual records. Thus, a triple <em>(x, y, z)</em> uses 4 words.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line55">55</span><span class="td">[&nbsp;COMBINATION_TY_Create&nbsp;kind&nbsp;sb&nbsp;long_block&nbsp;N&nbsp;i&nbsp;bk&nbsp;v;</span></span>
 <span class="tr"><span class="th" id="line56">56</span><span class="td">&nbsp;N&nbsp;=&nbsp;KindBaseArity(kind);</span></span>
 <span class="tr"><span class="th" id="line57">57</span><span class="td">&nbsp;long_block&nbsp;=&nbsp;FlexAllocate(</span></span>
@@ -70,7 +70,7 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line66">66</span><span class="td">&nbsp;return&nbsp;BlkValueCreateSB1(sb,&nbsp;long_block);</span></span>
 <span class="tr"><span class="th" id="line67">67</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>Destruction.</h3><p><p> If the comb items are themselves block-values, they must all be freed before the comb itself can be freed.<p></p><p></div><div class="pre">
+<h3 id="#combinations-destruction">Destruction.</h3><p><p> If the comb items are themselves block-values, they must all be freed before the comb itself can be freed.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line74">74</span><span class="td">[&nbsp;COMBINATION_TY_Destroy&nbsp;comb&nbsp;kind&nbsp;no_items&nbsp;i&nbsp;bk;</span></span>
 <span class="tr"><span class="th" id="line75">75</span><span class="td">&nbsp;kind&nbsp;=&nbsp;BlkValueRead(comb,&nbsp;COMBINATION_KIND_F);</span></span>
 <span class="tr"><span class="th" id="line76">76</span><span class="td">&nbsp;no_items&nbsp;=&nbsp;KindBaseArity(kind);</span></span>
@@ -81,7 +81,7 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line81">81</span><span class="td">&nbsp;}</span></span>
 <span class="tr"><span class="th" id="line82">82</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>Copying.</h3><p><p> Again, if the comb contains block-values then they must be duplicated rather than bitwise copied as pointers.<p></p><p></div><div class="pre">
+<h3 id="#combinations-copying">Copying.</h3><p><p> Again, if the comb contains block-values then they must be duplicated rather than bitwise copied as pointers.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line89">89</span><span class="td">[&nbsp;COMBINATION_TY_CopyKind&nbsp;to&nbsp;from;</span></span>
 <span class="tr"><span class="th" id="line90">90</span><span class="td">&nbsp;BlkValueWrite(to,&nbsp;COMBINATION_KIND_F,&nbsp;BlkValueRead(from,&nbsp;COMBINATION_KIND_F));</span></span>
 <span class="tr"><span class="th" id="line91">91</span><span class="td">];</span></span>
@@ -108,7 +108,7 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line112">112</span><span class="td">&nbsp;}</span></span>
 <span class="tr"><span class="th" id="line113">113</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>Comparison.</h3><p><p> This is a lexicographic comparison and assumes both combinations have the same kind.<p></p><p></div><div class="pre">
+<h3 id="#combinations-comparison">Comparison.</h3><p><p> This is a lexicographic comparison and assumes both combinations have the same kind.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line120">120</span><span class="td">[&nbsp;COMBINATION_TY_Compare&nbsp;left_comb&nbsp;right_comb&nbsp;delta&nbsp;no_items&nbsp;i&nbsp;cf&nbsp;kind&nbsp;bk;</span></span>
 <span class="tr"><span class="th" id="line121">121</span><span class="td">&nbsp;kind&nbsp;=&nbsp;BlkValueRead(left_comb,&nbsp;COMBINATION_KIND_F);</span></span>
 <span class="tr"><span class="th" id="line122">122</span><span class="td">&nbsp;no_items&nbsp;=&nbsp;KindBaseArity(kind);</span></span>
@@ -133,7 +133,7 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line141">141</span><span class="td">&nbsp;rtrue;</span></span>
 <span class="tr"><span class="th" id="line142">142</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>Hashing.</h3><p><p></p><p></div><div class="pre">
+<h3 id="#combinations-hashing">Hashing.</h3><p><p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line147">147</span><span class="td">[&nbsp;COMBINATION_TY_Hash&nbsp;comb&nbsp;&nbsp;kind&nbsp;rv&nbsp;no_items&nbsp;i&nbsp;bk;</span></span>
 <span class="tr"><span class="th" id="line148">148</span><span class="td">&nbsp;rv&nbsp;=&nbsp;0;</span></span>
 <span class="tr"><span class="th" id="line149">149</span><span class="td">&nbsp;kind&nbsp;=&nbsp;BlkValueRead(comb,&nbsp;COMBINATION_KIND_F);</span></span>
@@ -145,7 +145,7 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line155">155</span><span class="td">&nbsp;return&nbsp;rv;</span></span>
 <span class="tr"><span class="th" id="line156">156</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>Printing.</h3><p><p></p><p></div><div class="pre">
+<h3 id="#combinations-printing">Printing.</h3><p><p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line161">161</span><span class="td">[&nbsp;COMBINATION_TY_Say&nbsp;comb&nbsp;format&nbsp;no_items&nbsp;v&nbsp;i&nbsp;kind&nbsp;bk;</span></span>
 <span class="tr"><span class="th" id="line162">162</span><span class="td">&nbsp;if&nbsp;((comb==0)&nbsp;||&nbsp;(BlkValueWeakKind(comb)&nbsp;~=&nbsp;COMBINATION_TY))&nbsp;return;</span></span>
 <span class="tr"><span class="th" id="line163">163</span><span class="td">&nbsp;kind&nbsp;=&nbsp;BlkValueRead(comb,&nbsp;COMBINATION_KIND_F);</span></span>

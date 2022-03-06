@@ -31,7 +31,7 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <h1>I6 Template Layer</h1>
 <div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Index</a> &bull; <a href="./Introduction.html">Introduction</a></div><hr></header>
 <div id="front_matter">
-<h2><a href="./StoredAction.i6t">StoredAction.i6t</a></h2><h3>Block Format.</h3><p><p> The short block of a stored action is simply a pointer to a long block. The long block always has a length of 6 words.<p></p><p> An action which involves a topic &ndash; such as the one produced by the command LOOK UP JIM MCDIVITT IN ENCYCLOPAEDIA &ndash; cannot be tried without the text of that topic (JIM MCDIVITT) being available. That&#39;s no problem if the action is tried in the same turn in which it is generated, because the text will still be in the command buffer. But once we store actions up for future use it becomes an issue. So when we store an action involving a topic, we record the actual text typed at the time when it is stored, and this goes into array entry 5 of the block. Because that in turn is text, and therefore a block value on the heap in its own right, we have to be a little more careful about destroying and copying stored actions than we otherwise would be.<p></p><p> Note that entries 1 and 2 are values whose kind depends on the action in entry 0: but they are never block values, because actions are not allowed to apply to block values. This simplifies matters considerably.<p></p><p></div><div class="pre">
+<h2><a href="./StoredAction.i6t">StoredAction.i6t</a></h2><h3 id="#storedaction-block-format">Block Format.</h3><p><p> The short block of a stored action is simply a pointer to a long block. The long block always has a length of 6 words.<p></p><p> An action which involves a topic &ndash; such as the one produced by the command LOOK UP JIM MCDIVITT IN ENCYCLOPAEDIA &ndash; cannot be tried without the text of that topic (JIM MCDIVITT) being available. That&#39;s no problem if the action is tried in the same turn in which it is generated, because the text will still be in the command buffer. But once we store actions up for future use it becomes an issue. So when we store an action involving a topic, we record the actual text typed at the time when it is stored, and this goes into array entry 5 of the block. Because that in turn is text, and therefore a block value on the heap in its own right, we have to be a little more careful about destroying and copying stored actions than we otherwise would be.<p></p><p> Note that entries 1 and 2 are values whose kind depends on the action in entry 0: but they are never block values, because actions are not allowed to apply to block values. This simplifies matters considerably.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line28">28</span><span class="td">Constant&nbsp;STORA_ACTION_F&nbsp;=&nbsp;0;</span></span>
 <span class="tr"><span class="th" id="line29">29</span><span class="td">Constant&nbsp;STORA_NOUN_F&nbsp;=&nbsp;1;</span></span>
 <span class="tr"><span class="th" id="line30">30</span><span class="td">Constant&nbsp;STORA_SECOND_F&nbsp;=&nbsp;2;</span></span>
@@ -39,7 +39,7 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line32">32</span><span class="td">Constant&nbsp;STORA_REQUEST_F&nbsp;=&nbsp;4;</span></span>
 <span class="tr"><span class="th" id="line33">33</span><span class="td">Constant&nbsp;STORA_COMMAND_TEXT_F&nbsp;=&nbsp;5;</span></span>
 </div><div class='text'>
-<h3>KOV Support.</h3><p><p> See the <span class="fixed"><a href="./BlockValues.i6t.html">BlockValues.i6t</a></span> segment for the specification of the following routines.<p></p><p></div><div class="pre">
+<h3 id="#storedaction-kov-support">KOV Support.</h3><p><p> See the <span class="fixed"><a href="./BlockValues.i6t.html">BlockValues.i6t</a></span> segment for the specification of the following routines.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line40">40</span><span class="td">[&nbsp;STORED_ACTION_TY_Support&nbsp;task&nbsp;arg1&nbsp;arg2&nbsp;arg3;</span></span>
 <span class="tr"><span class="th" id="line41">41</span><span class="td">&nbsp;switch(task)&nbsp;{</span></span>
 <span class="tr"><span class="th" id="line42">42</span><span class="td">&nbsp;&nbsp;CREATE_KOVS:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;STORED_ACTION_TY_Create(arg2);</span></span>
@@ -58,7 +58,7 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line55">55</span><span class="td">&nbsp;rfalse;</span></span>
 <span class="tr"><span class="th" id="line56">56</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>Creation.</h3><p><p> A stored action block has fixed size, so this is a single-block KOV: its data consists of six words, laid out as shown in the following routine. Note that it initialises to the default value for this KOV, an action in which the player waits.<p></p><p></div><div class="pre">
+<h3 id="#storedaction-creation">Creation.</h3><p><p> A stored action block has fixed size, so this is a single-block KOV: its data consists of six words, laid out as shown in the following routine. Note that it initialises to the default value for this KOV, an action in which the player waits.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line65">65</span><span class="td">[&nbsp;STORED_ACTION_TY_Create&nbsp;sb&nbsp;stora;</span></span>
 <span class="tr"><span class="th" id="line66">66</span><span class="td">&nbsp;stora&nbsp;=&nbsp;FlexAllocate(6*WORDSIZE,&nbsp;STORED_ACTION_TY,&nbsp;BLK_FLAG_WORD);</span></span>
 <span class="tr"><span class="th" id="line67">67</span><span class="td">&nbsp;BlkValueWrite(stora,&nbsp;STORA_ACTION_F,&nbsp;##Wait,&nbsp;true);&nbsp;!&nbsp;action</span></span>
@@ -70,7 +70,7 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line73">73</span><span class="td">&nbsp;return&nbsp;BlkValueCreateSB1(sb,&nbsp;stora);</span></span>
 <span class="tr"><span class="th" id="line74">74</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>Setting Up.</h3><p><p> In practice it&#39;s convenient for NI to have a routine which creates a stored action with a given slate of action variables, rather than have to set them all one at a time, so the following is provided as a shorthand form.<p></p><p></div><div class="pre">
+<h3 id="#storedaction-setting-up">Setting Up.</h3><p><p> In practice it&#39;s convenient for NI to have a routine which creates a stored action with a given slate of action variables, rather than have to set them all one at a time, so the following is provided as a shorthand form.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line82">82</span><span class="td">[&nbsp;STORED_ACTION_TY_New&nbsp;a&nbsp;n&nbsp;s&nbsp;ac&nbsp;req&nbsp;&nbsp;stora;</span></span>
 <span class="tr"><span class="th" id="line83">83</span><span class="td">&nbsp;if&nbsp;(stora&nbsp;==&nbsp;0)&nbsp;stora&nbsp;=&nbsp;BlkValueCreate(STORED_ACTION_TY);</span></span>
 <span class="tr"><span class="th" id="line84">84</span><span class="td">&nbsp;BlkValueWrite(stora,&nbsp;STORA_ACTION_F,&nbsp;a);</span></span>
@@ -82,13 +82,13 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line90">90</span><span class="td">&nbsp;return&nbsp;stora;</span></span>
 <span class="tr"><span class="th" id="line91">91</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>Destruction.</h3><p><p> Entries 0 to 4 are forgettable non-block values: only the optional text requires destruction.<p></p><p></div><div class="pre">
+<h3 id="#storedaction-destruction">Destruction.</h3><p><p> Entries 0 to 4 are forgettable non-block values: only the optional text requires destruction.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line98">98</span><span class="td">[&nbsp;STORED_ACTION_TY_Destroy&nbsp;stora&nbsp;toc;</span></span>
 <span class="tr"><span class="th" id="line99">99</span><span class="td">&nbsp;toc&nbsp;=&nbsp;BlkValueRead(stora,&nbsp;STORA_COMMAND_TEXT_F);</span></span>
 <span class="tr"><span class="th" id="line100">100</span><span class="td">&nbsp;if&nbsp;(toc)&nbsp;BlkValueFree(toc);</span></span>
 <span class="tr"><span class="th" id="line101">101</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>Copying.</h3><p><p> The only entry needing attention is, again, entry 5: if this is non-zero in the source, then we need to create a new text block to hold a duplicate copy of the text.<p></p><p></div><div class="pre">
+<h3 id="#storedaction-copying">Copying.</h3><p><p> The only entry needing attention is, again, entry 5: if this is non-zero in the source, then we need to create a new text block to hold a duplicate copy of the text.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line109">109</span><span class="td">[&nbsp;STORED_ACTION_TY_Copy&nbsp;storato&nbsp;storafrom&nbsp;tocfrom&nbsp;tocto;</span></span>
 <span class="tr"><span class="th" id="line110">110</span><span class="td">&nbsp;tocfrom&nbsp;=&nbsp;BlkValueRead(storafrom,&nbsp;STORA_COMMAND_TEXT_F);</span></span>
 <span class="tr"><span class="th" id="line111">111</span><span class="td">&nbsp;if&nbsp;(tocfrom&nbsp;==&nbsp;0)&nbsp;return;</span></span>
@@ -97,7 +97,7 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line114">114</span><span class="td">&nbsp;BlkValueWrite(storato,&nbsp;STORA_COMMAND_TEXT_F,&nbsp;tocto);</span></span>
 <span class="tr"><span class="th" id="line115">115</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>Comparison.</h3><p><p> There is no very convincing ordering on stored actions, but we need to devise a comparison which will exhaustively determine whether two actions are or are not different.<p></p><p></div><div class="pre">
+<h3 id="#storedaction-comparison">Comparison.</h3><p><p> There is no very convincing ordering on stored actions, but we need to devise a comparison which will exhaustively determine whether two actions are or are not different.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line123">123</span><span class="td">[&nbsp;STORED_ACTION_TY_Compare&nbsp;storaleft&nbsp;storaright&nbsp;delta&nbsp;itleft&nbsp;itright;</span></span>
 <span class="tr"><span class="th" id="line124">124</span><span class="td">&nbsp;delta&nbsp;=&nbsp;BlkValueRead(storaleft,&nbsp;STORA_ACTION_F)&nbsp;-&nbsp;BlkValueRead(storaright,&nbsp;STORA_ACTION_F);</span></span>
 <span class="tr"><span class="th" id="line125">125</span><span class="td">&nbsp;if&nbsp;(delta)&nbsp;return&nbsp;delta;</span></span>
@@ -121,7 +121,7 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line143">143</span><span class="td">&nbsp;rtrue;</span></span>
 <span class="tr"><span class="th" id="line144">144</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>Hashing.</h3><p><p></p><p></div><div class="pre">
+<h3 id="#storedaction-hashing">Hashing.</h3><p><p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line149">149</span><span class="td">[&nbsp;STORED_ACTION_TY_Hash&nbsp;stora&nbsp;&nbsp;rv&nbsp;it;</span></span>
 <span class="tr"><span class="th" id="line150">150</span><span class="td">&nbsp;rv&nbsp;=&nbsp;BlkValueRead(stora,&nbsp;STORA_ACTION_F);</span></span>
 <span class="tr"><span class="th" id="line151">151</span><span class="td">&nbsp;rv&nbsp;=&nbsp;rv&nbsp;*&nbsp;33&nbsp;+&nbsp;BlkValueRead(stora,&nbsp;STORA_NOUN_F);</span></span>
@@ -134,7 +134,7 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line158">158</span><span class="td">&nbsp;return&nbsp;rv;</span></span>
 <span class="tr"><span class="th" id="line159">159</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>Printing.</h3><p><p> We share some code here with the routines originally written for the ACTIONS testing command. (The <span class="fixed">DB</span> in <span class="fixed"><a href="./Actions.i6t.html#line790">DB_Action</a></span> stands for &quot;debugging&quot;.) When printing a topic, it prints the relevant words from the player&#39;s command: so if our stored action is one which contains an entry 5, then we have to temporarily adopt this as the player&#39;s command, and restore the old player&#39;s command once printing is done. To do this, we need to save the old player&#39;s command, and we do that by creating a text for the duration.<p></p><p></div><div class="pre">
+<h3 id="#storedaction-printing">Printing.</h3><p><p> We share some code here with the routines originally written for the ACTIONS testing command. (The <span class="fixed">DB</span> in <span class="fixed"><a href="./Actions.i6t.html#line790">DB_Action</a></span> stands for &quot;debugging&quot;.) When printing a topic, it prints the relevant words from the player&#39;s command: so if our stored action is one which contains an entry 5, then we have to temporarily adopt this as the player&#39;s command, and restore the old player&#39;s command once printing is done. To do this, we need to save the old player&#39;s command, and we do that by creating a text for the duration.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line171">171</span><span class="td">[&nbsp;STORED_ACTION_TY_Say&nbsp;stora&nbsp;text_of_command&nbsp;saved_command&nbsp;saved_pn&nbsp;saved_action&nbsp;K1&nbsp;K2&nbsp;at&nbsp;cf&nbsp;cw;</span></span>
 <span class="tr"><span class="th" id="line172">172</span><span class="td">&nbsp;if&nbsp;((stora==0)&nbsp;||&nbsp;(BlkValueWeakKind(stora)&nbsp;~=&nbsp;STORED_ACTION_TY))&nbsp;return;</span></span>
 <span class="tr"><span class="th" id="line173">173</span><span class="td">&nbsp;text_of_command&nbsp;=&nbsp;BlkValueRead(stora,&nbsp;STORA_COMMAND_TEXT_F);</span></span>
@@ -187,7 +187,7 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line220">220</span><span class="td">&nbsp;}</span></span>
 <span class="tr"><span class="th" id="line221">221</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>Involvement.</h3><p><p> That completes the compulsory services required for this KOV to function: from here on, the remaining routines provide definitions of stored action-related phrases in the Standard Rules.<p></p><p> An action &quot;involves&quot; an object if it appears as either the actor or the first or second noun.<p></p><p></div><div class="pre">
+<h3 id="#storedaction-involvement">Involvement.</h3><p><p> That completes the compulsory services required for this KOV to function: from here on, the remaining routines provide definitions of stored action-related phrases in the Standard Rules.<p></p><p> An action &quot;involves&quot; an object if it appears as either the actor or the first or second noun.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line232">232</span><span class="td">[&nbsp;STORED_ACTION_TY_Involves&nbsp;stora&nbsp;item&nbsp;at;</span></span>
 <span class="tr"><span class="th" id="line233">233</span><span class="td">&nbsp;at&nbsp;=&nbsp;FindAction(BlkValueRead(stora,&nbsp;STORA_ACTION_F));</span></span>
 <span class="tr"><span class="th" id="line234">234</span><span class="td">&nbsp;if&nbsp;(at)&nbsp;{</span></span>
@@ -200,7 +200,7 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line241">241</span><span class="td">&nbsp;rfalse;</span></span>
 <span class="tr"><span class="th" id="line242">242</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>Nouns.</h3><p><p> Extracting the noun or second noun from an action is a delicate business because simply returning the values in entries 1 and 2 would not be type-safe; it would fail to be an object if the stored action did not apply to objects. So the following returns <span class="fixed">nothing</span> if requested to produce noun or second noun for such an action.<p></p><p></div><div class="pre">
+<h3 id="#storedaction-nouns">Nouns.</h3><p><p> Extracting the noun or second noun from an action is a delicate business because simply returning the values in entries 1 and 2 would not be type-safe; it would fail to be an object if the stored action did not apply to objects. So the following returns <span class="fixed">nothing</span> if requested to produce noun or second noun for such an action.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line252">252</span><span class="td">[&nbsp;STORED_ACTION_TY_Part&nbsp;stora&nbsp;ind&nbsp;at&nbsp;ado;</span></span>
 <span class="tr"><span class="th" id="line253">253</span><span class="td">&nbsp;if&nbsp;(ind&nbsp;==&nbsp;STORA_NOUN_F&nbsp;or&nbsp;STORA_SECOND_F)&nbsp;{</span></span>
 <span class="tr"><span class="th" id="line254">254</span><span class="td">&nbsp;&nbsp;if&nbsp;(ind&nbsp;==&nbsp;STORA_NOUN_F)&nbsp;ado&nbsp;=&nbsp;AD_NOUN_KOV;&nbsp;else&nbsp;ado&nbsp;=&nbsp;AD_SECOND_KOV;</span></span>
@@ -211,7 +211,7 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line259">259</span><span class="td">&nbsp;return&nbsp;BlkValueRead(stora,&nbsp;ind);</span></span>
 <span class="tr"><span class="th" id="line260">260</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>Pattern Matching.</h3><p><p> In order to apply an action pattern such as &quot;doing something with the kazoo&quot; to a stored action, it needs to be the current action, because the code which compiles conditions like this looks at the <span class="fixed"><a href="./Output.i6t.html#line240">action</a></span>, <span class="fixed"><a href="./Output.i6t.html#line248">noun</a></span>, ..., variables. We don&#39;t want to do anything as disruptive as temporarily starting the stored action and then halting it again, so instead we simply &quot;adopt&quot; it, saving the slate of action variables and setting them from the stored action: almost immediately after &ndash; the moment the condition has been tested &ndash; we &quot;unadopt&quot; it again, restoring the stored values. Since the action pattern cannot itself refer to a stored action, the following code won&#39;t be nested, and we don&#39;t need to worry about stacking up saved copies of the action variables.<p></p><p> <span class="fixed">SAT_Tmp--&gt;0</span> stores the outcome of the condition, and is set in code compiled by NI.<p></p><p></div><div class="pre">
+<h3 id="#storedaction-pattern-matching">Pattern Matching.</h3><p><p> In order to apply an action pattern such as &quot;doing something with the kazoo&quot; to a stored action, it needs to be the current action, because the code which compiles conditions like this looks at the <span class="fixed"><a href="./Output.i6t.html#line240">action</a></span>, <span class="fixed"><a href="./Output.i6t.html#line248">noun</a></span>, ..., variables. We don&#39;t want to do anything as disruptive as temporarily starting the stored action and then halting it again, so instead we simply &quot;adopt&quot; it, saving the slate of action variables and setting them from the stored action: almost immediately after &ndash; the moment the condition has been tested &ndash; we &quot;unadopt&quot; it again, restoring the stored values. Since the action pattern cannot itself refer to a stored action, the following code won&#39;t be nested, and we don&#39;t need to worry about stacking up saved copies of the action variables.<p></p><p> <span class="fixed">SAT_Tmp--&gt;0</span> stores the outcome of the condition, and is set in code compiled by NI.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line278">278</span><span class="td">Array&nbsp;SAT_Tmp--&gt;7;</span></span>
 <span class="tr"><span class="th" id="line279">279</span><span class="td">[&nbsp;STORED_ACTION_TY_Adopt&nbsp;stora&nbsp;at;</span></span>
 <span class="tr"><span class="th" id="line280">280</span><span class="td">&nbsp;SAT_Tmp--&gt;1&nbsp;=&nbsp;action;</span></span>
@@ -248,7 +248,7 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line311">311</span><span class="td">&nbsp;return&nbsp;SAT_Tmp--&gt;0;</span></span>
 <span class="tr"><span class="th" id="line312">312</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>Current Action.</h3><p><p> Although we never cast other values to stored actions, because none of them really imply an action (not even an action name, since that gives no help as to what the nouns might be), there is of course one action almost always present within a story file at run-time, even if it is not a single value as such: the action which is currently running. The following routine translates that into a stored action &ndash; thus allowing us to store it.<p></p><p> This is the place where we look to see if the action applies to a topic as either its noun or second noun, and if it does, we copy the player&#39;s command into a text block-value in entry 5.<p></p><p></div><div class="pre">
+<h3 id="#storedaction-current-action">Current Action.</h3><p><p> Although we never cast other values to stored actions, because none of them really imply an action (not even an action name, since that gives no help as to what the nouns might be), there is of course one action almost always present within a story file at run-time, even if it is not a single value as such: the action which is currently running. The following routine translates that into a stored action &ndash; thus allowing us to store it.<p></p><p> This is the place where we look to see if the action applies to a topic as either its noun or second noun, and if it does, we copy the player&#39;s command into a text block-value in entry 5.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line327">327</span><span class="td">[&nbsp;STORED_ACTION_TY_Current&nbsp;stora&nbsp;at&nbsp;text_of_command;</span></span>
 <span class="tr"><span class="th" id="line328">328</span><span class="td">&nbsp;if&nbsp;((stora==0)&nbsp;||&nbsp;(BlkValueWeakKind(stora)&nbsp;~=&nbsp;STORED_ACTION_TY))&nbsp;return&nbsp;0;</span></span>
 <span class="tr"><span class="th" id="line329">329</span><span class="td">&nbsp;BlkValueWrite(stora,&nbsp;STORA_ACTION_F,&nbsp;action);</span></span>
@@ -279,7 +279,7 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line354">354</span><span class="td">&nbsp;return&nbsp;stora;</span></span>
 <span class="tr"><span class="th" id="line355">355</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3>Trying.</h3><p><p> Finally: having stored an action for perhaps many turns, we now let it happen, either silently or not.<p></p><p></div><div class="pre">
+<h3 id="#storedaction-trying">Trying.</h3><p><p> Finally: having stored an action for perhaps many turns, we now let it happen, either silently or not.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line362">362</span><span class="td">[&nbsp;STORED_ACTION_TY_Try&nbsp;stora&nbsp;ks&nbsp;&nbsp;text_of_command&nbsp;saved_command;</span></span>
 <span class="tr"><span class="th" id="line363">363</span><span class="td">&nbsp;if&nbsp;((stora==0)&nbsp;||&nbsp;(BlkValueWeakKind(stora)&nbsp;~=&nbsp;STORED_ACTION_TY))&nbsp;return;</span></span>
 <span class="tr"><span class="th" id="line364">364</span><span class="td">&nbsp;if&nbsp;(ks)&nbsp;{&nbsp;@push&nbsp;keep_silent;&nbsp;keep_silent=1;&nbsp;}</span></span>
