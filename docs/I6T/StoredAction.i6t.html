@@ -7,22 +7,25 @@ span.th, span.td { display: table-cell; }
 span.td { padding-left: 2rem; }
 span.th { width:4rem; text-align: right; }
 span.tr { display: table-row;     counter-increment: linenum; }
-span.line_no::before {
+.pre-lines { font-family: monospace; margin-left: 3rem; line-height: 1.5rem; }
+/*span.line_no::before {
     content: counter(linenum);
     text-align: right;
     display: block;
     font-family: monospace;
     font-weight: normal;
-}
+}*/
 h1 { margin: 0; }
 .fixed { font-family: monospace }
 .em { font-style: italic; }
 .center { text-align: center; }
-    body { font-family: sans-serif; margin: 1.5rem 0 0 3rem; background-color: #fafaf0; width: 80rem; }
+    body { font-family: sans-serif; margin: 1.5rem 0 3rem 3rem; background-color: #fafaf0; width: 80rem; }
     .pre { font-family: monospace; margin: auto; width: 80rem; }
-#front_matter,.text { width: 50rem; }
+#front_matter,.text { width: 48rem; }
+/* h3 { margin-top: 1.5rem; padding-top: 1.5rem; }*/
 .text { border-bottom: .5px solid black; border-top: .5px solid black; margin-top: 1rem;
-padding-bottom: 1rem; margin-bottom: 2rem; }
+padding-bottom: .5rem; margin-bottom: 1.5rem; margin-top: 1.75rem; padding-top: .25rem;}
+footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; margin-bottom: 0;}
 /*.subtitle { font-weight: bold; font-size: 1.2rem; }*/
     </style>
 </head>
@@ -31,274 +34,274 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <h1>I6 Template Layer</h1>
 <div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Index</a> &bull; <a href="./Introduction.i6t.html">Introduction</a></div><hr></header>
 <div id="front_matter">
-<h2><a href="./StoredAction.i6t">StoredAction.i6t</a></h2><h3 id="#storedaction-block-format">Block Format.</h3><p><p> The short block of a stored action is simply a pointer to a long block. The long block always has a length of 6 words.<p></p><p> An action which involves a topic &ndash; such as the one produced by the command LOOK UP JIM MCDIVITT IN ENCYCLOPAEDIA &ndash; cannot be tried without the text of that topic (JIM MCDIVITT) being available. That&#39;s no problem if the action is tried in the same turn in which it is generated, because the text will still be in the command buffer. But once we store actions up for future use it becomes an issue. So when we store an action involving a topic, we record the actual text typed at the time when it is stored, and this goes into array entry 5 of the block. Because that in turn is text, and therefore a block value on the heap in its own right, we have to be a little more careful about destroying and copying stored actions than we otherwise would be.<p></p><p> Note that entries 1 and 2 are values whose kind depends on the action in entry 0: but they are never block values, because actions are not allowed to apply to block values. This simplifies matters considerably.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line28">28</span><span class="td">Constant&nbsp;STORA_ACTION_F&nbsp;=&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line29">29</span><span class="td">Constant&nbsp;STORA_NOUN_F&nbsp;=&nbsp;1;</span></span>
-<span class="tr"><span class="th" id="line30">30</span><span class="td">Constant&nbsp;STORA_SECOND_F&nbsp;=&nbsp;2;</span></span>
-<span class="tr"><span class="th" id="line31">31</span><span class="td">Constant&nbsp;STORA_ACTOR_F&nbsp;=&nbsp;3;</span></span>
-<span class="tr"><span class="th" id="line32">32</span><span class="td">Constant&nbsp;STORA_REQUEST_F&nbsp;=&nbsp;4;</span></span>
-<span class="tr"><span class="th" id="line33">33</span><span class="td">Constant&nbsp;STORA_COMMAND_TEXT_F&nbsp;=&nbsp;5;</span></span>
+<h2><a href="./StoredAction.i6t.txt">StoredAction.i6t</a></h2><h3 id="#storedaction-block-format">Block Format.</h3><p><p> The short block of a stored action is simply a pointer to a long block. The long block always has a length of 6 words.<p></p><p> An action which involves a topic &ndash; such as the one produced by the command LOOK UP JIM MCDIVITT IN ENCYCLOPAEDIA &ndash; cannot be tried without the text of that topic (JIM MCDIVITT) being available. That&#39;s no problem if the action is tried in the same turn in which it is generated, because the text will still be in the command buffer. But once we store actions up for future use it becomes an issue. So when we store an action involving a topic, we record the actual text typed at the time when it is stored, and this goes into array entry 5 of the block. Because that in turn is text, and therefore a block value on the heap in its own right, we have to be a little more careful about destroying and copying stored actions than we otherwise would be.<p></p><p> Note that entries 1 and 2 are values whose kind depends on the action in entry 0: but they are never block values, because actions are not allowed to apply to block values. This simplifies matters considerably.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line28">28</span><span class="td">Constant STORA_ACTION_F = 0;</span></span>
+<span class="tr"><span class="th" id="line29">29</span><span class="td">Constant STORA_NOUN_F = 1;</span></span>
+<span class="tr"><span class="th" id="line30">30</span><span class="td">Constant STORA_SECOND_F = 2;</span></span>
+<span class="tr"><span class="th" id="line31">31</span><span class="td">Constant STORA_ACTOR_F = 3;</span></span>
+<span class="tr"><span class="th" id="line32">32</span><span class="td">Constant STORA_REQUEST_F = 4;</span></span>
+<span class="tr"><span class="th" id="line33">33</span><span class="td">Constant STORA_COMMAND_TEXT_F = 5;</span></span>
 </div><div class='text'>
 <h3 id="#storedaction-kov-support">KOV Support.</h3><p><p> See the <a href="./BlockValues.i6t.html">BlockValues.i6t</a> segment for the specification of the following routines.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line40">40</span><span class="td">[&nbsp;STORED_ACTION_TY_Support&nbsp;task&nbsp;arg1&nbsp;arg2&nbsp;arg3;</span></span>
-<span class="tr"><span class="th" id="line41">41</span><span class="td">&nbsp;switch(task)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line42">42</span><span class="td">&nbsp;&nbsp;CREATE_KOVS:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;STORED_ACTION_TY_Create(arg2);</span></span>
-<span class="tr"><span class="th" id="line43">43</span><span class="td">&nbsp;&nbsp;DESTROY_KOVS:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;STORED_ACTION_TY_Destroy(arg1);</span></span>
-<span class="tr"><span class="th" id="line44">44</span><span class="td">&nbsp;&nbsp;MAKEMUTABLE_KOVS:&nbsp;return&nbsp;1;</span></span>
-<span class="tr"><span class="th" id="line45">45</span><span class="td">&nbsp;&nbsp;COPYQUICK_KOVS:&nbsp;&nbsp;&nbsp;rtrue;</span></span>
-<span class="tr"><span class="th" id="line46">46</span><span class="td">&nbsp;&nbsp;COPYSB_KOVS:&nbsp;&nbsp;&nbsp;BlkValueCopySB1(arg1,&nbsp;arg2);</span></span>
-<span class="tr"><span class="th" id="line47">47</span><span class="td">&nbsp;&nbsp;KINDDATA_KOVS:&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line48">48</span><span class="td">&nbsp;&nbsp;EXTENT_KOVS:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;6;</span></span>
-<span class="tr"><span class="th" id="line49">49</span><span class="td">&nbsp;&nbsp;COPY_KOVS:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;STORED_ACTION_TY_Copy(arg1,&nbsp;arg2);</span></span>
-<span class="tr"><span class="th" id="line50">50</span><span class="td">&nbsp;&nbsp;COMPARE_KOVS:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;STORED_ACTION_TY_Compare(arg1,&nbsp;arg2);</span></span>
-<span class="tr"><span class="th" id="line51">51</span><span class="td">&nbsp;&nbsp;HASH_KOVS:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;STORED_ACTION_TY_Hash(arg1);</span></span>
-<span class="tr"><span class="th" id="line52">52</span><span class="td">&nbsp;&nbsp;DEBUG_KOVS:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;&quot;&nbsp;=&nbsp;&quot;,&nbsp;(STORED_ACTION_TY_Say)&nbsp;arg1;</span></span>
-<span class="tr"><span class="th" id="line53">53</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line54">54</span><span class="td">&nbsp;!&nbsp;We&nbsp;choose&nbsp;not&nbsp;to&nbsp;respond&nbsp;to:&nbsp;CAST_KOVS,&nbsp;COPYKIND_KOVS,&nbsp;READ_FILE_KOVS,&nbsp;WRITE_FILE_KOVS</span></span>
-<span class="tr"><span class="th" id="line55">55</span><span class="td">&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line40">40</span><span class="td">[ STORED_ACTION_TY_Support task arg1 arg2 arg3;</span></span>
+<span class="tr"><span class="th" id="line41">41</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    switch(task) {</span></span>
+<span class="tr"><span class="th" id="line42">42</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        CREATE_KOVS:      return STORED_ACTION_TY_Create(arg2);</span></span>
+<span class="tr"><span class="th" id="line43">43</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        DESTROY_KOVS:     STORED_ACTION_TY_Destroy(arg1);</span></span>
+<span class="tr"><span class="th" id="line44">44</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        MAKEMUTABLE_KOVS: return 1;</span></span>
+<span class="tr"><span class="th" id="line45">45</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        COPYQUICK_KOVS:   rtrue;</span></span>
+<span class="tr"><span class="th" id="line46">46</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        COPYSB_KOVS:      BlkValueCopySB1(arg1, arg2);</span></span>
+<span class="tr"><span class="th" id="line47">47</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        KINDDATA_KOVS:    return 0;</span></span>
+<span class="tr"><span class="th" id="line48">48</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        EXTENT_KOVS:      return 6;</span></span>
+<span class="tr"><span class="th" id="line49">49</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        COPY_KOVS:        STORED_ACTION_TY_Copy(arg1, arg2);</span></span>
+<span class="tr"><span class="th" id="line50">50</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        COMPARE_KOVS:     return STORED_ACTION_TY_Compare(arg1, arg2);</span></span>
+<span class="tr"><span class="th" id="line51">51</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        HASH_KOVS:        return STORED_ACTION_TY_Hash(arg1);</span></span>
+<span class="tr"><span class="th" id="line52">52</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        DEBUG_KOVS:       print &quot; = &quot;, (STORED_ACTION_TY_Say) arg1;</span></span>
+<span class="tr"><span class="th" id="line53">53</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line54">54</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! We choose not to respond to: CAST_KOVS, COPYKIND_KOVS, READ_FILE_KOVS, WRITE_FILE_KOVS</span></span>
+<span class="tr"><span class="th" id="line55">55</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rfalse;</span></span>
 <span class="tr"><span class="th" id="line56">56</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#storedaction-creation">Creation.</h3><p><p> A stored action block has fixed size, so this is a single-block KOV: its data consists of six words, laid out as shown in the following routine. Note that it initialises to the default value for this KOV, an action in which the player waits.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line65">65</span><span class="td">[&nbsp;STORED_ACTION_TY_Create&nbsp;sb&nbsp;stora;</span></span>
-<span class="tr"><span class="th" id="line66">66</span><span class="td">&nbsp;stora&nbsp;=&nbsp;FlexAllocate(6*WORDSIZE,&nbsp;STORED_ACTION_TY,&nbsp;BLK_FLAG_WORD);</span></span>
-<span class="tr"><span class="th" id="line67">67</span><span class="td">&nbsp;BlkValueWrite(stora,&nbsp;STORA_ACTION_F,&nbsp;##Wait,&nbsp;true);&nbsp;!&nbsp;action</span></span>
-<span class="tr"><span class="th" id="line68">68</span><span class="td">&nbsp;BlkValueWrite(stora,&nbsp;STORA_NOUN_F,&nbsp;0,&nbsp;true);&nbsp;!&nbsp;noun</span></span>
-<span class="tr"><span class="th" id="line69">69</span><span class="td">&nbsp;BlkValueWrite(stora,&nbsp;STORA_SECOND_F,&nbsp;0,&nbsp;true);&nbsp;!&nbsp;second</span></span>
-<span class="tr"><span class="th" id="line70">70</span><span class="td">&nbsp;BlkValueWrite(stora,&nbsp;STORA_ACTOR_F,&nbsp;player,&nbsp;true);&nbsp;!&nbsp;actor</span></span>
-<span class="tr"><span class="th" id="line71">71</span><span class="td">&nbsp;BlkValueWrite(stora,&nbsp;STORA_REQUEST_F,&nbsp;false,&nbsp;true);&nbsp;!&nbsp;whether&nbsp;a&nbsp;request</span></span>
-<span class="tr"><span class="th" id="line72">72</span><span class="td">&nbsp;BlkValueWrite(stora,&nbsp;STORA_COMMAND_TEXT_F,&nbsp;0,&nbsp;true);&nbsp;!&nbsp;text&nbsp;of&nbsp;command&nbsp;if&nbsp;necessary,&nbsp;0&nbsp;if&nbsp;not</span></span>
-<span class="tr"><span class="th" id="line73">73</span><span class="td">&nbsp;return&nbsp;BlkValueCreateSB1(sb,&nbsp;stora);</span></span>
+<span class="tr"><span class="th" id="line65">65</span><span class="td">[ STORED_ACTION_TY_Create sb stora;</span></span>
+<span class="tr"><span class="th" id="line66">66</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    stora = FlexAllocate(6*WORDSIZE, STORED_ACTION_TY, BLK_FLAG_WORD);</span></span>
+<span class="tr"><span class="th" id="line67">67</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    BlkValueWrite(stora, STORA_ACTION_F, ##Wait, true); ! action</span></span>
+<span class="tr"><span class="th" id="line68">68</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    BlkValueWrite(stora, STORA_NOUN_F, 0, true); ! noun</span></span>
+<span class="tr"><span class="th" id="line69">69</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    BlkValueWrite(stora, STORA_SECOND_F, 0, true); ! second</span></span>
+<span class="tr"><span class="th" id="line70">70</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    BlkValueWrite(stora, STORA_ACTOR_F, player, true); ! actor</span></span>
+<span class="tr"><span class="th" id="line71">71</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    BlkValueWrite(stora, STORA_REQUEST_F, false, true); ! whether a request</span></span>
+<span class="tr"><span class="th" id="line72">72</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    BlkValueWrite(stora, STORA_COMMAND_TEXT_F, 0, true); ! text of command if necessary, 0 if not</span></span>
+<span class="tr"><span class="th" id="line73">73</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return BlkValueCreateSB1(sb, stora);</span></span>
 <span class="tr"><span class="th" id="line74">74</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#storedaction-setting-up">Setting Up.</h3><p><p> In practice it&#39;s convenient for NI to have a routine which creates a stored action with a given slate of action variables, rather than have to set them all one at a time, so the following is provided as a shorthand form.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line82">82</span><span class="td">[&nbsp;STORED_ACTION_TY_New&nbsp;a&nbsp;n&nbsp;s&nbsp;ac&nbsp;req&nbsp;&nbsp;stora;</span></span>
-<span class="tr"><span class="th" id="line83">83</span><span class="td">&nbsp;if&nbsp;(stora&nbsp;==&nbsp;0)&nbsp;stora&nbsp;=&nbsp;BlkValueCreate(STORED_ACTION_TY);</span></span>
-<span class="tr"><span class="th" id="line84">84</span><span class="td">&nbsp;BlkValueWrite(stora,&nbsp;STORA_ACTION_F,&nbsp;a);</span></span>
-<span class="tr"><span class="th" id="line85">85</span><span class="td">&nbsp;BlkValueWrite(stora,&nbsp;STORA_NOUN_F,&nbsp;n);</span></span>
-<span class="tr"><span class="th" id="line86">86</span><span class="td">&nbsp;BlkValueWrite(stora,&nbsp;STORA_SECOND_F,&nbsp;s);</span></span>
-<span class="tr"><span class="th" id="line87">87</span><span class="td">&nbsp;BlkValueWrite(stora,&nbsp;STORA_ACTOR_F,&nbsp;ac);</span></span>
-<span class="tr"><span class="th" id="line88">88</span><span class="td">&nbsp;BlkValueWrite(stora,&nbsp;STORA_REQUEST_F,&nbsp;req);</span></span>
-<span class="tr"><span class="th" id="line89">89</span><span class="td">&nbsp;BlkValueWrite(stora,&nbsp;STORA_COMMAND_TEXT_F,&nbsp;0);</span></span>
-<span class="tr"><span class="th" id="line90">90</span><span class="td">&nbsp;return&nbsp;stora;</span></span>
+<span class="tr"><span class="th" id="line82">82</span><span class="td">[ STORED_ACTION_TY_New a n s ac req  stora;</span></span>
+<span class="tr"><span class="th" id="line83">83</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (stora == 0) stora = BlkValueCreate(STORED_ACTION_TY);</span></span>
+<span class="tr"><span class="th" id="line84">84</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    BlkValueWrite(stora, STORA_ACTION_F, a);</span></span>
+<span class="tr"><span class="th" id="line85">85</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    BlkValueWrite(stora, STORA_NOUN_F, n);</span></span>
+<span class="tr"><span class="th" id="line86">86</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    BlkValueWrite(stora, STORA_SECOND_F, s);</span></span>
+<span class="tr"><span class="th" id="line87">87</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    BlkValueWrite(stora, STORA_ACTOR_F, ac);</span></span>
+<span class="tr"><span class="th" id="line88">88</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    BlkValueWrite(stora, STORA_REQUEST_F, req);</span></span>
+<span class="tr"><span class="th" id="line89">89</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    BlkValueWrite(stora, STORA_COMMAND_TEXT_F, 0);</span></span>
+<span class="tr"><span class="th" id="line90">90</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return stora;</span></span>
 <span class="tr"><span class="th" id="line91">91</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#storedaction-destruction">Destruction.</h3><p><p> Entries 0 to 4 are forgettable non-block values: only the optional text requires destruction.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line98">98</span><span class="td">[&nbsp;STORED_ACTION_TY_Destroy&nbsp;stora&nbsp;toc;</span></span>
-<span class="tr"><span class="th" id="line99">99</span><span class="td">&nbsp;toc&nbsp;=&nbsp;BlkValueRead(stora,&nbsp;STORA_COMMAND_TEXT_F);</span></span>
-<span class="tr"><span class="th" id="line100">100</span><span class="td">&nbsp;if&nbsp;(toc)&nbsp;BlkValueFree(toc);</span></span>
+<span class="tr"><span class="th" id="line98">98</span><span class="td">[ STORED_ACTION_TY_Destroy stora toc;</span></span>
+<span class="tr"><span class="th" id="line99">99</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    toc = BlkValueRead(stora, STORA_COMMAND_TEXT_F);</span></span>
+<span class="tr"><span class="th" id="line100">100</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (toc) BlkValueFree(toc);</span></span>
 <span class="tr"><span class="th" id="line101">101</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#storedaction-copying">Copying.</h3><p><p> The only entry needing attention is, again, entry 5: if this is non-zero in the source, then we need to create a new text block to hold a duplicate copy of the text.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line109">109</span><span class="td">[&nbsp;STORED_ACTION_TY_Copy&nbsp;storato&nbsp;storafrom&nbsp;tocfrom&nbsp;tocto;</span></span>
-<span class="tr"><span class="th" id="line110">110</span><span class="td">&nbsp;tocfrom&nbsp;=&nbsp;BlkValueRead(storafrom,&nbsp;STORA_COMMAND_TEXT_F);</span></span>
-<span class="tr"><span class="th" id="line111">111</span><span class="td">&nbsp;if&nbsp;(tocfrom&nbsp;==&nbsp;0)&nbsp;return;</span></span>
-<span class="tr"><span class="th" id="line112">112</span><span class="td">&nbsp;tocto&nbsp;=&nbsp;BlkValueCreate(TEXT_TY);</span></span>
-<span class="tr"><span class="th" id="line113">113</span><span class="td">&nbsp;BlkValueCopy(tocto,&nbsp;tocfrom);</span></span>
-<span class="tr"><span class="th" id="line114">114</span><span class="td">&nbsp;BlkValueWrite(storato,&nbsp;STORA_COMMAND_TEXT_F,&nbsp;tocto);</span></span>
+<span class="tr"><span class="th" id="line109">109</span><span class="td">[ STORED_ACTION_TY_Copy storato storafrom tocfrom tocto;</span></span>
+<span class="tr"><span class="th" id="line110">110</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    tocfrom = BlkValueRead(storafrom, STORA_COMMAND_TEXT_F);</span></span>
+<span class="tr"><span class="th" id="line111">111</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (tocfrom == 0) return;</span></span>
+<span class="tr"><span class="th" id="line112">112</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    tocto = BlkValueCreate(TEXT_TY);</span></span>
+<span class="tr"><span class="th" id="line113">113</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    BlkValueCopy(tocto, tocfrom);</span></span>
+<span class="tr"><span class="th" id="line114">114</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    BlkValueWrite(storato, STORA_COMMAND_TEXT_F, tocto);</span></span>
 <span class="tr"><span class="th" id="line115">115</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#storedaction-comparison">Comparison.</h3><p><p> There is no very convincing ordering on stored actions, but we need to devise a comparison which will exhaustively determine whether two actions are or are not different.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line123">123</span><span class="td">[&nbsp;STORED_ACTION_TY_Compare&nbsp;storaleft&nbsp;storaright&nbsp;delta&nbsp;itleft&nbsp;itright;</span></span>
-<span class="tr"><span class="th" id="line124">124</span><span class="td">&nbsp;delta&nbsp;=&nbsp;BlkValueRead(storaleft,&nbsp;STORA_ACTION_F)&nbsp;-&nbsp;BlkValueRead(storaright,&nbsp;STORA_ACTION_F);</span></span>
-<span class="tr"><span class="th" id="line125">125</span><span class="td">&nbsp;if&nbsp;(delta)&nbsp;return&nbsp;delta;</span></span>
-<span class="tr"><span class="th" id="line126">126</span><span class="td">&nbsp;delta&nbsp;=&nbsp;BlkValueRead(storaleft,&nbsp;STORA_NOUN_F)&nbsp;-&nbsp;BlkValueRead(storaright,&nbsp;STORA_NOUN_F);</span></span>
-<span class="tr"><span class="th" id="line127">127</span><span class="td">&nbsp;if&nbsp;(delta)&nbsp;return&nbsp;delta;</span></span>
-<span class="tr"><span class="th" id="line128">128</span><span class="td">&nbsp;delta&nbsp;=&nbsp;BlkValueRead(storaleft,&nbsp;STORA_SECOND_F)&nbsp;-&nbsp;BlkValueRead(storaright,&nbsp;STORA_SECOND_F);</span></span>
-<span class="tr"><span class="th" id="line129">129</span><span class="td">&nbsp;if&nbsp;(delta)&nbsp;return&nbsp;delta;</span></span>
-<span class="tr"><span class="th" id="line130">130</span><span class="td">&nbsp;delta&nbsp;=&nbsp;BlkValueRead(storaleft,&nbsp;STORA_ACTOR_F)&nbsp;-&nbsp;BlkValueRead(storaright,&nbsp;STORA_ACTOR_F);</span></span>
-<span class="tr"><span class="th" id="line131">131</span><span class="td">&nbsp;if&nbsp;(delta)&nbsp;return&nbsp;delta;</span></span>
-<span class="tr"><span class="th" id="line132">132</span><span class="td">&nbsp;delta&nbsp;=&nbsp;BlkValueRead(storaleft,&nbsp;STORA_REQUEST_F)&nbsp;-&nbsp;BlkValueRead(storaright,&nbsp;STORA_REQUEST_F);</span></span>
-<span class="tr"><span class="th" id="line133">133</span><span class="td">&nbsp;if&nbsp;(delta)&nbsp;return&nbsp;delta;</span></span>
-<span class="tr"><span class="th" id="line134">134</span><span class="td">&nbsp;itleft&nbsp;=&nbsp;BlkValueRead(storaleft,&nbsp;STORA_COMMAND_TEXT_F);</span></span>
-<span class="tr"><span class="th" id="line135">135</span><span class="td">&nbsp;itright&nbsp;=&nbsp;BlkValueRead(storaright,&nbsp;STORA_COMMAND_TEXT_F);</span></span>
-<span class="tr"><span class="th" id="line136">136</span><span class="td">&nbsp;if&nbsp;((itleft&nbsp;~=&nbsp;0)&nbsp;&amp;&amp;&nbsp;(itright&nbsp;~=&nbsp;0))</span></span>
-<span class="tr"><span class="th" id="line137">137</span><span class="td">&nbsp;&nbsp;return&nbsp;TEXT_TY_Support(COMPARE_KOVS,&nbsp;itleft,&nbsp;itright);</span></span>
-<span class="tr"><span class="th" id="line138">138</span><span class="td">&nbsp;return&nbsp;itleft&nbsp;-&nbsp;itright;</span></span>
+<span class="tr"><span class="th" id="line123">123</span><span class="td">[ STORED_ACTION_TY_Compare storaleft storaright delta itleft itright;</span></span>
+<span class="tr"><span class="th" id="line124">124</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    delta = BlkValueRead(storaleft, STORA_ACTION_F) - BlkValueRead(storaright, STORA_ACTION_F);</span></span>
+<span class="tr"><span class="th" id="line125">125</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (delta) return delta;</span></span>
+<span class="tr"><span class="th" id="line126">126</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    delta = BlkValueRead(storaleft, STORA_NOUN_F) - BlkValueRead(storaright, STORA_NOUN_F);</span></span>
+<span class="tr"><span class="th" id="line127">127</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (delta) return delta;</span></span>
+<span class="tr"><span class="th" id="line128">128</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    delta = BlkValueRead(storaleft, STORA_SECOND_F) - BlkValueRead(storaright, STORA_SECOND_F);</span></span>
+<span class="tr"><span class="th" id="line129">129</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (delta) return delta;</span></span>
+<span class="tr"><span class="th" id="line130">130</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    delta = BlkValueRead(storaleft, STORA_ACTOR_F) - BlkValueRead(storaright, STORA_ACTOR_F);</span></span>
+<span class="tr"><span class="th" id="line131">131</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (delta) return delta;</span></span>
+<span class="tr"><span class="th" id="line132">132</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    delta = BlkValueRead(storaleft, STORA_REQUEST_F) - BlkValueRead(storaright, STORA_REQUEST_F);</span></span>
+<span class="tr"><span class="th" id="line133">133</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (delta) return delta;</span></span>
+<span class="tr"><span class="th" id="line134">134</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    itleft = BlkValueRead(storaleft, STORA_COMMAND_TEXT_F);</span></span>
+<span class="tr"><span class="th" id="line135">135</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    itright = BlkValueRead(storaright, STORA_COMMAND_TEXT_F);</span></span>
+<span class="tr"><span class="th" id="line136">136</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if ((itleft ~= 0) &amp;&amp; (itright ~= 0))</span></span>
+<span class="tr"><span class="th" id="line137">137</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        return TEXT_TY_Support(COMPARE_KOVS, itleft, itright);</span></span>
+<span class="tr"><span class="th" id="line138">138</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return itleft - itright;</span></span>
 <span class="tr"><span class="th" id="line139">139</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line140">140</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line141">141</span><span class="td">[&nbsp;STORED_ACTION_TY_Distinguish&nbsp;stora1&nbsp;stora2;</span></span>
-<span class="tr"><span class="th" id="line142">142</span><span class="td">&nbsp;if&nbsp;(STORED_ACTION_TY_Compare(stora1,&nbsp;stora2)&nbsp;==&nbsp;0)&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line143">143</span><span class="td">&nbsp;rtrue;</span></span>
+<span class="tr"><span class="th" id="line141">141</span><span class="td">[ STORED_ACTION_TY_Distinguish stora1 stora2;</span></span>
+<span class="tr"><span class="th" id="line142">142</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (STORED_ACTION_TY_Compare(stora1, stora2) == 0) rfalse;</span></span>
+<span class="tr"><span class="th" id="line143">143</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rtrue;</span></span>
 <span class="tr"><span class="th" id="line144">144</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#storedaction-hashing">Hashing.</h3><p><p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line149">149</span><span class="td">[&nbsp;STORED_ACTION_TY_Hash&nbsp;stora&nbsp;&nbsp;rv&nbsp;it;</span></span>
-<span class="tr"><span class="th" id="line150">150</span><span class="td">&nbsp;rv&nbsp;=&nbsp;BlkValueRead(stora,&nbsp;STORA_ACTION_F);</span></span>
-<span class="tr"><span class="th" id="line151">151</span><span class="td">&nbsp;rv&nbsp;=&nbsp;rv&nbsp;*&nbsp;33&nbsp;+&nbsp;BlkValueRead(stora,&nbsp;STORA_NOUN_F);</span></span>
-<span class="tr"><span class="th" id="line152">152</span><span class="td">&nbsp;rv&nbsp;=&nbsp;rv&nbsp;*&nbsp;33&nbsp;+&nbsp;BlkValueRead(stora,&nbsp;STORA_SECOND_F);</span></span>
-<span class="tr"><span class="th" id="line153">153</span><span class="td">&nbsp;rv&nbsp;=&nbsp;rv&nbsp;*&nbsp;33&nbsp;+&nbsp;BlkValueRead(stora,&nbsp;STORA_ACTOR_F);</span></span>
-<span class="tr"><span class="th" id="line154">154</span><span class="td">&nbsp;rv&nbsp;=&nbsp;rv&nbsp;*&nbsp;33&nbsp;+&nbsp;BlkValueRead(stora,&nbsp;STORA_REQUEST_F);</span></span>
-<span class="tr"><span class="th" id="line155">155</span><span class="td">&nbsp;it&nbsp;=&nbsp;BlkValueRead(stora,&nbsp;STORA_COMMAND_TEXT_F);</span></span>
-<span class="tr"><span class="th" id="line156">156</span><span class="td">&nbsp;if&nbsp;(it&nbsp;~=&nbsp;0)</span></span>
-<span class="tr"><span class="th" id="line157">157</span><span class="td">&nbsp;&nbsp;rv&nbsp;=&nbsp;rv&nbsp;*&nbsp;33&nbsp;+&nbsp;TEXT_TY_Support(HASH_KOVS,&nbsp;it);</span></span>
-<span class="tr"><span class="th" id="line158">158</span><span class="td">&nbsp;return&nbsp;rv;</span></span>
+<span class="tr"><span class="th" id="line149">149</span><span class="td">[ STORED_ACTION_TY_Hash stora  rv it;</span></span>
+<span class="tr"><span class="th" id="line150">150</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rv = BlkValueRead(stora, STORA_ACTION_F);</span></span>
+<span class="tr"><span class="th" id="line151">151</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rv = rv * 33 + BlkValueRead(stora, STORA_NOUN_F);</span></span>
+<span class="tr"><span class="th" id="line152">152</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rv = rv * 33 + BlkValueRead(stora, STORA_SECOND_F);</span></span>
+<span class="tr"><span class="th" id="line153">153</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rv = rv * 33 + BlkValueRead(stora, STORA_ACTOR_F);</span></span>
+<span class="tr"><span class="th" id="line154">154</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rv = rv * 33 + BlkValueRead(stora, STORA_REQUEST_F);</span></span>
+<span class="tr"><span class="th" id="line155">155</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    it = BlkValueRead(stora, STORA_COMMAND_TEXT_F);</span></span>
+<span class="tr"><span class="th" id="line156">156</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (it ~= 0)</span></span>
+<span class="tr"><span class="th" id="line157">157</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        rv = rv * 33 + TEXT_TY_Support(HASH_KOVS, it);</span></span>
+<span class="tr"><span class="th" id="line158">158</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return rv;</span></span>
 <span class="tr"><span class="th" id="line159">159</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#storedaction-printing">Printing.</h3><p><p> We share some code here with the routines originally written for the ACTIONS testing command. (The <span class="fixed">DB</span> in <span class="fixed"><a href="./Actions.i6t.html#line790">DB_Action</a></span> stands for &quot;debugging&quot;.) When printing a topic, it prints the relevant words from the player&#39;s command: so if our stored action is one which contains an entry 5, then we have to temporarily adopt this as the player&#39;s command, and restore the old player&#39;s command once printing is done. To do this, we need to save the old player&#39;s command, and we do that by creating a text for the duration.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line171">171</span><span class="td">[&nbsp;STORED_ACTION_TY_Say&nbsp;stora&nbsp;text_of_command&nbsp;saved_command&nbsp;saved_pn&nbsp;saved_action&nbsp;K1&nbsp;K2&nbsp;at&nbsp;cf&nbsp;cw;</span></span>
-<span class="tr"><span class="th" id="line172">172</span><span class="td">&nbsp;if&nbsp;((stora==0)&nbsp;||&nbsp;(BlkValueWeakKind(stora)&nbsp;~=&nbsp;STORED_ACTION_TY))&nbsp;return;</span></span>
-<span class="tr"><span class="th" id="line173">173</span><span class="td">&nbsp;text_of_command&nbsp;=&nbsp;BlkValueRead(stora,&nbsp;STORA_COMMAND_TEXT_F);</span></span>
-<span class="tr"><span class="th" id="line174">174</span><span class="td">&nbsp;if&nbsp;(text_of_command)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line175">175</span><span class="td">&nbsp;&nbsp;saved_command&nbsp;=&nbsp;BlkValueCreate(TEXT_TY);</span></span>
-<span class="tr"><span class="th" id="line176">176</span><span class="td">&nbsp;&nbsp;BlkValueCast(saved_command,&nbsp;SNIPPET_TY,&nbsp;players_command);</span></span>
-<span class="tr"><span class="th" id="line177">177</span><span class="td">&nbsp;&nbsp;SetPlayersCommand(text_of_command);</span></span>
-<span class="tr"><span class="th" id="line178">178</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line179">179</span><span class="td">&nbsp;saved_pn&nbsp;=&nbsp;parsed_number;&nbsp;saved_action&nbsp;=&nbsp;action;</span></span>
-<span class="tr"><span class="th" id="line180">180</span><span class="td">&nbsp;action&nbsp;=&nbsp;BlkValueRead(stora,&nbsp;STORA_ACTION_F);</span></span>
-<span class="tr"><span class="th" id="line181">181</span><span class="td">&nbsp;cf&nbsp;=&nbsp;consult_from;&nbsp;cw&nbsp;=&nbsp;consult_words;</span></span>
-<span class="tr"><span class="th" id="line182">182</span><span class="td">&nbsp;at&nbsp;=&nbsp;FindAction(-1);</span></span>
-<span class="tr"><span class="th" id="line183">183</span><span class="td">&nbsp;K1&nbsp;=&nbsp;ActionData--&gt;(at+AD_NOUN_KOV);</span></span>
-<span class="tr"><span class="th" id="line184">184</span><span class="td">&nbsp;K2&nbsp;=&nbsp;ActionData--&gt;(at+AD_SECOND_KOV);</span></span>
-<span class="tr"><span class="th" id="line185">185</span><span class="td">&nbsp;if&nbsp;(K1&nbsp;~=&nbsp;OBJECT_TY)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line186">186</span><span class="td">&nbsp;&nbsp;parsed_number&nbsp;=&nbsp;BlkValueRead(stora,&nbsp;STORA_NOUN_F);</span></span>
-<span class="tr"><span class="th" id="line187">187</span><span class="td">&nbsp;&nbsp;if&nbsp;((K1&nbsp;==&nbsp;UNDERSTANDING_TY)&nbsp;&amp;&amp;&nbsp;(text_of_command&nbsp;==&nbsp;0))&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line188">188</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(saved_command&nbsp;==&nbsp;0)&nbsp;saved_command&nbsp;=&nbsp;BlkValueCreate(TEXT_TY);</span></span>
-<span class="tr"><span class="th" id="line189">189</span><span class="td">&nbsp;&nbsp;&nbsp;BlkValueCast(saved_command,&nbsp;SNIPPET_TY,&nbsp;players_command);</span></span>
-<span class="tr"><span class="th" id="line190">190</span><span class="td">&nbsp;&nbsp;&nbsp;text_of_command&nbsp;=&nbsp;BlkValueCreate(TEXT_TY);</span></span>
-<span class="tr"><span class="th" id="line191">191</span><span class="td">&nbsp;&nbsp;&nbsp;BlkValueCopy(text_of_command,&nbsp;parsed_number);</span></span>
-<span class="tr"><span class="th" id="line192">192</span><span class="td">&nbsp;&nbsp;&nbsp;SetPlayersCommand(text_of_command);</span></span>
-<span class="tr"><span class="th" id="line193">193</span><span class="td">&nbsp;&nbsp;&nbsp;parsed_number&nbsp;=&nbsp;players_command;</span></span>
-<span class="tr"><span class="th" id="line194">194</span><span class="td">&nbsp;&nbsp;&nbsp;consult_from&nbsp;=&nbsp;parsed_number/100;&nbsp;consult_words&nbsp;=&nbsp;parsed_number%100;</span></span>
-<span class="tr"><span class="th" id="line195">195</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line196">196</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line197">197</span><span class="td">&nbsp;if&nbsp;(K2&nbsp;~=&nbsp;OBJECT_TY)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line198">198</span><span class="td">&nbsp;&nbsp;parsed_number&nbsp;=&nbsp;BlkValueRead(stora,&nbsp;STORA_SECOND_F);</span></span>
-<span class="tr"><span class="th" id="line199">199</span><span class="td">&nbsp;&nbsp;if&nbsp;((K2&nbsp;==&nbsp;UNDERSTANDING_TY)&nbsp;&amp;&amp;&nbsp;(text_of_command&nbsp;==&nbsp;0))&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line200">200</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(saved_command&nbsp;==&nbsp;0)&nbsp;saved_command&nbsp;=&nbsp;BlkValueCreate(TEXT_TY);</span></span>
-<span class="tr"><span class="th" id="line201">201</span><span class="td">&nbsp;&nbsp;&nbsp;BlkValueCast(saved_command,&nbsp;SNIPPET_TY,&nbsp;players_command);</span></span>
-<span class="tr"><span class="th" id="line202">202</span><span class="td">&nbsp;&nbsp;&nbsp;text_of_command&nbsp;=&nbsp;BlkValueCreate(TEXT_TY);</span></span>
-<span class="tr"><span class="th" id="line203">203</span><span class="td">&nbsp;&nbsp;&nbsp;BlkValueCopy(text_of_command,&nbsp;parsed_number);</span></span>
-<span class="tr"><span class="th" id="line204">204</span><span class="td">&nbsp;&nbsp;&nbsp;SetPlayersCommand(text_of_command);</span></span>
-<span class="tr"><span class="th" id="line205">205</span><span class="td">&nbsp;&nbsp;&nbsp;parsed_number&nbsp;=&nbsp;players_command;</span></span>
-<span class="tr"><span class="th" id="line206">206</span><span class="td">&nbsp;&nbsp;&nbsp;consult_from&nbsp;=&nbsp;parsed_number/100;&nbsp;consult_words&nbsp;=&nbsp;parsed_number%100;</span></span>
-<span class="tr"><span class="th" id="line207">207</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line208">208</span><span class="td">&nbsp;}&nbsp;</span></span>
-<span class="tr"><span class="th" id="line209">209</span><span class="td">&nbsp;DB_Action(</span></span>
-<span class="tr"><span class="th" id="line210">210</span><span class="td">&nbsp;&nbsp;BlkValueRead(stora,&nbsp;STORA_ACTOR_F),</span></span>
-<span class="tr"><span class="th" id="line211">211</span><span class="td">&nbsp;&nbsp;BlkValueRead(stora,&nbsp;STORA_REQUEST_F),</span></span>
-<span class="tr"><span class="th" id="line212">212</span><span class="td">&nbsp;&nbsp;BlkValueRead(stora,&nbsp;STORA_ACTION_F),</span></span>
-<span class="tr"><span class="th" id="line213">213</span><span class="td">&nbsp;&nbsp;BlkValueRead(stora,&nbsp;STORA_NOUN_F),</span></span>
-<span class="tr"><span class="th" id="line214">214</span><span class="td">&nbsp;&nbsp;BlkValueRead(stora,&nbsp;STORA_SECOND_F),&nbsp;true);</span></span>
-<span class="tr"><span class="th" id="line215">215</span><span class="td">&nbsp;parsed_number&nbsp;=&nbsp;saved_pn;&nbsp;action&nbsp;=&nbsp;saved_action;</span></span>
-<span class="tr"><span class="th" id="line216">216</span><span class="td">&nbsp;consult_from&nbsp;=&nbsp;cf;&nbsp;consult_words&nbsp;=&nbsp;cw;</span></span>
-<span class="tr"><span class="th" id="line217">217</span><span class="td">&nbsp;if&nbsp;(text_of_command)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line218">218</span><span class="td">&nbsp;&nbsp;SetPlayersCommand(saved_command);</span></span>
-<span class="tr"><span class="th" id="line219">219</span><span class="td">&nbsp;&nbsp;BlkValueFree(saved_command);</span></span>
-<span class="tr"><span class="th" id="line220">220</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line171">171</span><span class="td">[ STORED_ACTION_TY_Say stora text_of_command saved_command saved_pn saved_action K1 K2 at cf cw;</span></span>
+<span class="tr"><span class="th" id="line172">172</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if ((stora==0) || (BlkValueWeakKind(stora) ~= STORED_ACTION_TY)) return;</span></span>
+<span class="tr"><span class="th" id="line173">173</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    text_of_command = BlkValueRead(stora, STORA_COMMAND_TEXT_F);</span></span>
+<span class="tr"><span class="th" id="line174">174</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (text_of_command) {</span></span>
+<span class="tr"><span class="th" id="line175">175</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        saved_command = BlkValueCreate(TEXT_TY);</span></span>
+<span class="tr"><span class="th" id="line176">176</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        BlkValueCast(saved_command, SNIPPET_TY, players_command);</span></span>
+<span class="tr"><span class="th" id="line177">177</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        SetPlayersCommand(text_of_command);</span></span>
+<span class="tr"><span class="th" id="line178">178</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line179">179</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    saved_pn = parsed_number; saved_action = action;</span></span>
+<span class="tr"><span class="th" id="line180">180</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    action = BlkValueRead(stora, STORA_ACTION_F);</span></span>
+<span class="tr"><span class="th" id="line181">181</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    cf = consult_from; cw = consult_words;</span></span>
+<span class="tr"><span class="th" id="line182">182</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    at = FindAction(-1);</span></span>
+<span class="tr"><span class="th" id="line183">183</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    K1 = ActionData--&gt;(at+AD_NOUN_KOV);</span></span>
+<span class="tr"><span class="th" id="line184">184</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    K2 = ActionData--&gt;(at+AD_SECOND_KOV);</span></span>
+<span class="tr"><span class="th" id="line185">185</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (K1 ~= OBJECT_TY) {</span></span>
+<span class="tr"><span class="th" id="line186">186</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        parsed_number = BlkValueRead(stora, STORA_NOUN_F);</span></span>
+<span class="tr"><span class="th" id="line187">187</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if ((K1 == UNDERSTANDING_TY) &amp;&amp; (text_of_command == 0)) {</span></span>
+<span class="tr"><span class="th" id="line188">188</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (saved_command == 0) saved_command = BlkValueCreate(TEXT_TY);</span></span>
+<span class="tr"><span class="th" id="line189">189</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            BlkValueCast(saved_command, SNIPPET_TY, players_command);</span></span>
+<span class="tr"><span class="th" id="line190">190</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            text_of_command = BlkValueCreate(TEXT_TY);</span></span>
+<span class="tr"><span class="th" id="line191">191</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            BlkValueCopy(text_of_command, parsed_number);</span></span>
+<span class="tr"><span class="th" id="line192">192</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            SetPlayersCommand(text_of_command);</span></span>
+<span class="tr"><span class="th" id="line193">193</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            parsed_number = players_command;</span></span>
+<span class="tr"><span class="th" id="line194">194</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            consult_from = parsed_number/100; consult_words = parsed_number%100;</span></span>
+<span class="tr"><span class="th" id="line195">195</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
+<span class="tr"><span class="th" id="line196">196</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line197">197</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (K2 ~= OBJECT_TY) {</span></span>
+<span class="tr"><span class="th" id="line198">198</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        parsed_number = BlkValueRead(stora, STORA_SECOND_F);</span></span>
+<span class="tr"><span class="th" id="line199">199</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if ((K2 == UNDERSTANDING_TY) &amp;&amp; (text_of_command == 0)) {</span></span>
+<span class="tr"><span class="th" id="line200">200</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (saved_command == 0) saved_command = BlkValueCreate(TEXT_TY);</span></span>
+<span class="tr"><span class="th" id="line201">201</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            BlkValueCast(saved_command, SNIPPET_TY, players_command);</span></span>
+<span class="tr"><span class="th" id="line202">202</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            text_of_command = BlkValueCreate(TEXT_TY);</span></span>
+<span class="tr"><span class="th" id="line203">203</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            BlkValueCopy(text_of_command, parsed_number);</span></span>
+<span class="tr"><span class="th" id="line204">204</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            SetPlayersCommand(text_of_command);</span></span>
+<span class="tr"><span class="th" id="line205">205</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            parsed_number = players_command;</span></span>
+<span class="tr"><span class="th" id="line206">206</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            consult_from = parsed_number/100; consult_words = parsed_number%100;</span></span>
+<span class="tr"><span class="th" id="line207">207</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
+<span class="tr"><span class="th" id="line208">208</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }    </span></span>
+<span class="tr"><span class="th" id="line209">209</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    DB_Action(</span></span>
+<span class="tr"><span class="th" id="line210">210</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        BlkValueRead(stora, STORA_ACTOR_F),</span></span>
+<span class="tr"><span class="th" id="line211">211</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        BlkValueRead(stora, STORA_REQUEST_F),</span></span>
+<span class="tr"><span class="th" id="line212">212</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        BlkValueRead(stora, STORA_ACTION_F),</span></span>
+<span class="tr"><span class="th" id="line213">213</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        BlkValueRead(stora, STORA_NOUN_F),</span></span>
+<span class="tr"><span class="th" id="line214">214</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        BlkValueRead(stora, STORA_SECOND_F), true);</span></span>
+<span class="tr"><span class="th" id="line215">215</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    parsed_number = saved_pn; action = saved_action;</span></span>
+<span class="tr"><span class="th" id="line216">216</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    consult_from = cf; consult_words = cw;</span></span>
+<span class="tr"><span class="th" id="line217">217</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (text_of_command) {</span></span>
+<span class="tr"><span class="th" id="line218">218</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        SetPlayersCommand(saved_command);</span></span>
+<span class="tr"><span class="th" id="line219">219</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        BlkValueFree(saved_command);</span></span>
+<span class="tr"><span class="th" id="line220">220</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
 <span class="tr"><span class="th" id="line221">221</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#storedaction-involvement">Involvement.</h3><p><p> That completes the compulsory services required for this KOV to function: from here on, the remaining routines provide definitions of stored action-related phrases in the Standard Rules.<p></p><p> An action &quot;involves&quot; an object if it appears as either the actor or the first or second noun.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line232">232</span><span class="td">[&nbsp;STORED_ACTION_TY_Involves&nbsp;stora&nbsp;item&nbsp;at;</span></span>
-<span class="tr"><span class="th" id="line233">233</span><span class="td">&nbsp;at&nbsp;=&nbsp;FindAction(BlkValueRead(stora,&nbsp;STORA_ACTION_F));</span></span>
-<span class="tr"><span class="th" id="line234">234</span><span class="td">&nbsp;if&nbsp;(at)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line235">235</span><span class="td">&nbsp;&nbsp;if&nbsp;((ActionData--&gt;(at+AD_NOUN_KOV)&nbsp;==&nbsp;OBJECT_TY)&nbsp;&amp;&amp;</span></span>
-<span class="tr"><span class="th" id="line236">236</span><span class="td">&nbsp;&nbsp;&nbsp;(BlkValueRead(stora,&nbsp;STORA_NOUN_F)&nbsp;==&nbsp;item))&nbsp;rtrue;</span></span>
-<span class="tr"><span class="th" id="line237">237</span><span class="td">&nbsp;&nbsp;if&nbsp;((ActionData--&gt;(at+AD_SECOND_KOV)&nbsp;==&nbsp;OBJECT_TY)&nbsp;&amp;&amp;</span></span>
-<span class="tr"><span class="th" id="line238">238</span><span class="td">&nbsp;&nbsp;&nbsp;(BlkValueRead(stora,&nbsp;STORA_SECOND_F)&nbsp;==&nbsp;item))&nbsp;rtrue;</span></span>
-<span class="tr"><span class="th" id="line239">239</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line240">240</span><span class="td">&nbsp;if&nbsp;(BlkValueRead(stora,&nbsp;STORA_ACTOR_F)&nbsp;==&nbsp;item)&nbsp;rtrue;</span></span>
-<span class="tr"><span class="th" id="line241">241</span><span class="td">&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line232">232</span><span class="td">[ STORED_ACTION_TY_Involves stora item at;</span></span>
+<span class="tr"><span class="th" id="line233">233</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    at = FindAction(BlkValueRead(stora, STORA_ACTION_F));</span></span>
+<span class="tr"><span class="th" id="line234">234</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (at) {</span></span>
+<span class="tr"><span class="th" id="line235">235</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if ((ActionData--&gt;(at+AD_NOUN_KOV) == OBJECT_TY) &amp;&amp;</span></span>
+<span class="tr"><span class="th" id="line236">236</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            (BlkValueRead(stora, STORA_NOUN_F) == item)) rtrue;</span></span>
+<span class="tr"><span class="th" id="line237">237</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if ((ActionData--&gt;(at+AD_SECOND_KOV) == OBJECT_TY) &amp;&amp;</span></span>
+<span class="tr"><span class="th" id="line238">238</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            (BlkValueRead(stora, STORA_SECOND_F) == item)) rtrue;</span></span>
+<span class="tr"><span class="th" id="line239">239</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line240">240</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (BlkValueRead(stora, STORA_ACTOR_F) == item) rtrue;</span></span>
+<span class="tr"><span class="th" id="line241">241</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rfalse;</span></span>
 <span class="tr"><span class="th" id="line242">242</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#storedaction-nouns">Nouns.</h3><p><p> Extracting the noun or second noun from an action is a delicate business because simply returning the values in entries 1 and 2 would not be type-safe; it would fail to be an object if the stored action did not apply to objects. So the following returns <span class="fixed">nothing</span> if requested to produce noun or second noun for such an action.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line252">252</span><span class="td">[&nbsp;STORED_ACTION_TY_Part&nbsp;stora&nbsp;ind&nbsp;at&nbsp;ado;</span></span>
-<span class="tr"><span class="th" id="line253">253</span><span class="td">&nbsp;if&nbsp;(ind&nbsp;==&nbsp;STORA_NOUN_F&nbsp;or&nbsp;STORA_SECOND_F)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line254">254</span><span class="td">&nbsp;&nbsp;if&nbsp;(ind&nbsp;==&nbsp;STORA_NOUN_F)&nbsp;ado&nbsp;=&nbsp;AD_NOUN_KOV;&nbsp;else&nbsp;ado&nbsp;=&nbsp;AD_SECOND_KOV;</span></span>
-<span class="tr"><span class="th" id="line255">255</span><span class="td">&nbsp;&nbsp;at&nbsp;=&nbsp;FindAction(BlkValueRead(stora,&nbsp;STORA_ACTION_F));</span></span>
-<span class="tr"><span class="th" id="line256">256</span><span class="td">&nbsp;&nbsp;if&nbsp;((at)&nbsp;&amp;&amp;&nbsp;(ActionData--&gt;(at+ado)&nbsp;==&nbsp;OBJECT_TY))&nbsp;return&nbsp;BlkValueRead(stora,&nbsp;ind);</span></span>
-<span class="tr"><span class="th" id="line257">257</span><span class="td">&nbsp;&nbsp;return&nbsp;nothing;</span></span>
-<span class="tr"><span class="th" id="line258">258</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line259">259</span><span class="td">&nbsp;return&nbsp;BlkValueRead(stora,&nbsp;ind);</span></span>
+<span class="tr"><span class="th" id="line252">252</span><span class="td">[ STORED_ACTION_TY_Part stora ind at ado;</span></span>
+<span class="tr"><span class="th" id="line253">253</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (ind == STORA_NOUN_F or STORA_SECOND_F) {</span></span>
+<span class="tr"><span class="th" id="line254">254</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (ind == STORA_NOUN_F) ado = AD_NOUN_KOV; else ado = AD_SECOND_KOV;</span></span>
+<span class="tr"><span class="th" id="line255">255</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        at = FindAction(BlkValueRead(stora, STORA_ACTION_F));</span></span>
+<span class="tr"><span class="th" id="line256">256</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if ((at) &amp;&amp; (ActionData--&gt;(at+ado) == OBJECT_TY)) return BlkValueRead(stora, ind);</span></span>
+<span class="tr"><span class="th" id="line257">257</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        return nothing;</span></span>
+<span class="tr"><span class="th" id="line258">258</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line259">259</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return BlkValueRead(stora, ind);</span></span>
 <span class="tr"><span class="th" id="line260">260</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#storedaction-pattern-matching">Pattern Matching.</h3><p><p> In order to apply an action pattern such as &quot;doing something with the kazoo&quot; to a stored action, it needs to be the current action, because the code which compiles conditions like this looks at the <span class="fixed"><a href="./Output.i6t.html#line240">action</a></span>, <span class="fixed"><a href="./Output.i6t.html#line248">noun</a></span>, ..., variables. We don&#39;t want to do anything as disruptive as temporarily starting the stored action and then halting it again, so instead we simply &quot;adopt&quot; it, saving the slate of action variables and setting them from the stored action: almost immediately after &ndash; the moment the condition has been tested &ndash; we &quot;unadopt&quot; it again, restoring the stored values. Since the action pattern cannot itself refer to a stored action, the following code won&#39;t be nested, and we don&#39;t need to worry about stacking up saved copies of the action variables.<p></p><p> <span class="fixed">SAT_Tmp--&gt;0</span> stores the outcome of the condition, and is set in code compiled by NI.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line278">278</span><span class="td">Array&nbsp;SAT_Tmp--&gt;7;</span></span>
-<span class="tr"><span class="th" id="line279">279</span><span class="td">[&nbsp;STORED_ACTION_TY_Adopt&nbsp;stora&nbsp;at;</span></span>
-<span class="tr"><span class="th" id="line280">280</span><span class="td">&nbsp;SAT_Tmp--&gt;1&nbsp;=&nbsp;action;</span></span>
-<span class="tr"><span class="th" id="line281">281</span><span class="td">&nbsp;SAT_Tmp--&gt;2&nbsp;=&nbsp;noun;</span></span>
-<span class="tr"><span class="th" id="line282">282</span><span class="td">&nbsp;SAT_Tmp--&gt;3&nbsp;=&nbsp;second;</span></span>
-<span class="tr"><span class="th" id="line283">283</span><span class="td">&nbsp;SAT_Tmp--&gt;4&nbsp;=&nbsp;actor;</span></span>
-<span class="tr"><span class="th" id="line284">284</span><span class="td">&nbsp;SAT_Tmp--&gt;5&nbsp;=&nbsp;act_requester;</span></span>
-<span class="tr"><span class="th" id="line285">285</span><span class="td">&nbsp;SAT_Tmp--&gt;6&nbsp;=&nbsp;parsed_number;</span></span>
-<span class="tr"><span class="th" id="line286">286</span><span class="td">&nbsp;action&nbsp;=&nbsp;BlkValueRead(stora,&nbsp;STORA_ACTION_F);</span></span>
-<span class="tr"><span class="th" id="line287">287</span><span class="td">&nbsp;at&nbsp;=&nbsp;FindAction(-1);</span></span>
-<span class="tr"><span class="th" id="line288">288</span><span class="td">&nbsp;if&nbsp;(ActionData--&gt;(at+AD_NOUN_KOV)&nbsp;==&nbsp;OBJECT_TY)</span></span>
-<span class="tr"><span class="th" id="line289">289</span><span class="td">&nbsp;&nbsp;noun&nbsp;=&nbsp;BlkValueRead(stora,&nbsp;STORA_NOUN_F);</span></span>
-<span class="tr"><span class="th" id="line290">290</span><span class="td">&nbsp;else&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line291">291</span><span class="td">&nbsp;&nbsp;parsed_number&nbsp;=&nbsp;BlkValueRead(stora,&nbsp;STORA_NOUN_F);</span></span>
-<span class="tr"><span class="th" id="line292">292</span><span class="td">&nbsp;&nbsp;noun&nbsp;=&nbsp;nothing;</span></span>
-<span class="tr"><span class="th" id="line293">293</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line294">294</span><span class="td">&nbsp;if&nbsp;(ActionData--&gt;(at+AD_SECOND_KOV)&nbsp;==&nbsp;OBJECT_TY)</span></span>
-<span class="tr"><span class="th" id="line295">295</span><span class="td">&nbsp;&nbsp;second&nbsp;=&nbsp;BlkValueRead(stora,&nbsp;STORA_SECOND_F);</span></span>
-<span class="tr"><span class="th" id="line296">296</span><span class="td">&nbsp;else&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line297">297</span><span class="td">&nbsp;&nbsp;parsed_number&nbsp;=&nbsp;BlkValueRead(stora,&nbsp;STORA_SECOND_F);</span></span>
-<span class="tr"><span class="th" id="line298">298</span><span class="td">&nbsp;&nbsp;second&nbsp;=&nbsp;nothing;</span></span>
-<span class="tr"><span class="th" id="line299">299</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line300">300</span><span class="td">&nbsp;actor&nbsp;=&nbsp;BlkValueRead(stora,&nbsp;STORA_ACTOR_F);</span></span>
-<span class="tr"><span class="th" id="line301">301</span><span class="td">&nbsp;if&nbsp;(BlkValueRead(stora,&nbsp;STORA_REQUEST_F))&nbsp;act_requester&nbsp;=&nbsp;player;&nbsp;else&nbsp;act_requester&nbsp;=&nbsp;nothing;</span></span>
+<span class="tr"><span class="th" id="line278">278</span><span class="td">Array SAT_Tmp--&gt;7;</span></span>
+<span class="tr"><span class="th" id="line279">279</span><span class="td">[ STORED_ACTION_TY_Adopt stora at;</span></span>
+<span class="tr"><span class="th" id="line280">280</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    SAT_Tmp--&gt;1 = action;</span></span>
+<span class="tr"><span class="th" id="line281">281</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    SAT_Tmp--&gt;2 = noun;</span></span>
+<span class="tr"><span class="th" id="line282">282</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    SAT_Tmp--&gt;3 = second;</span></span>
+<span class="tr"><span class="th" id="line283">283</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    SAT_Tmp--&gt;4 = actor;</span></span>
+<span class="tr"><span class="th" id="line284">284</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    SAT_Tmp--&gt;5 = act_requester;</span></span>
+<span class="tr"><span class="th" id="line285">285</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    SAT_Tmp--&gt;6 = parsed_number;</span></span>
+<span class="tr"><span class="th" id="line286">286</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    action = BlkValueRead(stora, STORA_ACTION_F);</span></span>
+<span class="tr"><span class="th" id="line287">287</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    at = FindAction(-1);</span></span>
+<span class="tr"><span class="th" id="line288">288</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (ActionData--&gt;(at+AD_NOUN_KOV) == OBJECT_TY)</span></span>
+<span class="tr"><span class="th" id="line289">289</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        noun = BlkValueRead(stora, STORA_NOUN_F);</span></span>
+<span class="tr"><span class="th" id="line290">290</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    else {</span></span>
+<span class="tr"><span class="th" id="line291">291</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        parsed_number = BlkValueRead(stora, STORA_NOUN_F);</span></span>
+<span class="tr"><span class="th" id="line292">292</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        noun = nothing;</span></span>
+<span class="tr"><span class="th" id="line293">293</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line294">294</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (ActionData--&gt;(at+AD_SECOND_KOV) == OBJECT_TY)</span></span>
+<span class="tr"><span class="th" id="line295">295</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        second = BlkValueRead(stora, STORA_SECOND_F);</span></span>
+<span class="tr"><span class="th" id="line296">296</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    else {</span></span>
+<span class="tr"><span class="th" id="line297">297</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        parsed_number = BlkValueRead(stora, STORA_SECOND_F);</span></span>
+<span class="tr"><span class="th" id="line298">298</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        second = nothing;</span></span>
+<span class="tr"><span class="th" id="line299">299</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line300">300</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    actor = BlkValueRead(stora, STORA_ACTOR_F);</span></span>
+<span class="tr"><span class="th" id="line301">301</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (BlkValueRead(stora, STORA_REQUEST_F)) act_requester = player; else act_requester = nothing;</span></span>
 <span class="tr"><span class="th" id="line302">302</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line303">303</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line304">304</span><span class="td">[&nbsp;STORED_ACTION_TY_Unadopt;</span></span>
-<span class="tr"><span class="th" id="line305">305</span><span class="td">&nbsp;action&nbsp;=&nbsp;SAT_Tmp--&gt;1;</span></span>
-<span class="tr"><span class="th" id="line306">306</span><span class="td">&nbsp;noun&nbsp;=&nbsp;SAT_Tmp--&gt;2;</span></span>
-<span class="tr"><span class="th" id="line307">307</span><span class="td">&nbsp;second&nbsp;=&nbsp;SAT_Tmp--&gt;3;&nbsp;</span></span>
-<span class="tr"><span class="th" id="line308">308</span><span class="td">&nbsp;actor&nbsp;=&nbsp;SAT_Tmp--&gt;4;&nbsp;</span></span>
-<span class="tr"><span class="th" id="line309">309</span><span class="td">&nbsp;act_requester&nbsp;=&nbsp;SAT_Tmp--&gt;5;</span></span>
-<span class="tr"><span class="th" id="line310">310</span><span class="td">&nbsp;parsed_number&nbsp;=&nbsp;SAT_Tmp--&gt;6;</span></span>
-<span class="tr"><span class="th" id="line311">311</span><span class="td">&nbsp;return&nbsp;SAT_Tmp--&gt;0;</span></span>
+<span class="tr"><span class="th" id="line304">304</span><span class="td">[ STORED_ACTION_TY_Unadopt;</span></span>
+<span class="tr"><span class="th" id="line305">305</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    action = SAT_Tmp--&gt;1;</span></span>
+<span class="tr"><span class="th" id="line306">306</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    noun = SAT_Tmp--&gt;2;</span></span>
+<span class="tr"><span class="th" id="line307">307</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    second = SAT_Tmp--&gt;3;    </span></span>
+<span class="tr"><span class="th" id="line308">308</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    actor = SAT_Tmp--&gt;4;    </span></span>
+<span class="tr"><span class="th" id="line309">309</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    act_requester = SAT_Tmp--&gt;5;</span></span>
+<span class="tr"><span class="th" id="line310">310</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    parsed_number = SAT_Tmp--&gt;6;</span></span>
+<span class="tr"><span class="th" id="line311">311</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return SAT_Tmp--&gt;0;</span></span>
 <span class="tr"><span class="th" id="line312">312</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#storedaction-current-action">Current Action.</h3><p><p> Although we never cast other values to stored actions, because none of them really imply an action (not even an action name, since that gives no help as to what the nouns might be), there is of course one action almost always present within a story file at run-time, even if it is not a single value as such: the action which is currently running. The following routine translates that into a stored action &ndash; thus allowing us to store it.<p></p><p> This is the place where we look to see if the action applies to a topic as either its noun or second noun, and if it does, we copy the player&#39;s command into a text block-value in entry 5.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line327">327</span><span class="td">[&nbsp;STORED_ACTION_TY_Current&nbsp;stora&nbsp;at&nbsp;text_of_command;</span></span>
-<span class="tr"><span class="th" id="line328">328</span><span class="td">&nbsp;if&nbsp;((stora==0)&nbsp;||&nbsp;(BlkValueWeakKind(stora)&nbsp;~=&nbsp;STORED_ACTION_TY))&nbsp;return&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line329">329</span><span class="td">&nbsp;BlkValueWrite(stora,&nbsp;STORA_ACTION_F,&nbsp;action);</span></span>
-<span class="tr"><span class="th" id="line330">330</span><span class="td">&nbsp;at&nbsp;=&nbsp;FindAction(-1);</span></span>
+<span class="tr"><span class="th" id="line327">327</span><span class="td">[ STORED_ACTION_TY_Current stora at text_of_command;</span></span>
+<span class="tr"><span class="th" id="line328">328</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if ((stora==0) || (BlkValueWeakKind(stora) ~= STORED_ACTION_TY)) return 0;</span></span>
+<span class="tr"><span class="th" id="line329">329</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    BlkValueWrite(stora, STORA_ACTION_F, action);</span></span>
+<span class="tr"><span class="th" id="line330">330</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    at = FindAction(-1);</span></span>
 <span class="tr"><span class="th" id="line331">331</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line332">332</span><span class="td">&nbsp;if&nbsp;(ActionData--&gt;(at+AD_NOUN_KOV)&nbsp;==&nbsp;OBJECT_TY)</span></span>
-<span class="tr"><span class="th" id="line333">333</span><span class="td">&nbsp;&nbsp;BlkValueWrite(stora,&nbsp;STORA_NOUN_F,&nbsp;noun);</span></span>
-<span class="tr"><span class="th" id="line334">334</span><span class="td">&nbsp;else</span></span>
-<span class="tr"><span class="th" id="line335">335</span><span class="td">&nbsp;&nbsp;BlkValueWrite(stora,&nbsp;STORA_NOUN_F,&nbsp;parsed_number);</span></span>
-<span class="tr"><span class="th" id="line336">336</span><span class="td">&nbsp;if&nbsp;(ActionData--&gt;(at+AD_SECOND_KOV)&nbsp;==&nbsp;OBJECT_TY)</span></span>
-<span class="tr"><span class="th" id="line337">337</span><span class="td">&nbsp;&nbsp;BlkValueWrite(stora,&nbsp;STORA_SECOND_F,&nbsp;second);</span></span>
-<span class="tr"><span class="th" id="line338">338</span><span class="td">&nbsp;else</span></span>
-<span class="tr"><span class="th" id="line339">339</span><span class="td">&nbsp;&nbsp;BlkValueWrite(stora,&nbsp;STORA_SECOND_F,&nbsp;parsed_number);</span></span>
-<span class="tr"><span class="th" id="line340">340</span><span class="td">&nbsp;BlkValueWrite(stora,&nbsp;STORA_ACTOR_F,&nbsp;actor);</span></span>
-<span class="tr"><span class="th" id="line341">341</span><span class="td">&nbsp;if&nbsp;(act_requester)&nbsp;BlkValueWrite(stora,&nbsp;STORA_REQUEST_F,&nbsp;true);</span></span>
-<span class="tr"><span class="th" id="line342">342</span><span class="td">&nbsp;else&nbsp;BlkValueWrite(stora,&nbsp;STORA_REQUEST_F,&nbsp;false);</span></span>
+<span class="tr"><span class="th" id="line332">332</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (ActionData--&gt;(at+AD_NOUN_KOV) == OBJECT_TY)</span></span>
+<span class="tr"><span class="th" id="line333">333</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        BlkValueWrite(stora, STORA_NOUN_F, noun);</span></span>
+<span class="tr"><span class="th" id="line334">334</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    else</span></span>
+<span class="tr"><span class="th" id="line335">335</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        BlkValueWrite(stora, STORA_NOUN_F, parsed_number);</span></span>
+<span class="tr"><span class="th" id="line336">336</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (ActionData--&gt;(at+AD_SECOND_KOV) == OBJECT_TY)</span></span>
+<span class="tr"><span class="th" id="line337">337</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        BlkValueWrite(stora, STORA_SECOND_F, second);</span></span>
+<span class="tr"><span class="th" id="line338">338</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    else</span></span>
+<span class="tr"><span class="th" id="line339">339</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        BlkValueWrite(stora, STORA_SECOND_F, parsed_number);</span></span>
+<span class="tr"><span class="th" id="line340">340</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    BlkValueWrite(stora, STORA_ACTOR_F, actor);</span></span>
+<span class="tr"><span class="th" id="line341">341</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (act_requester) BlkValueWrite(stora, STORA_REQUEST_F, true);</span></span>
+<span class="tr"><span class="th" id="line342">342</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    else BlkValueWrite(stora, STORA_REQUEST_F, false);</span></span>
 <span class="tr"><span class="th" id="line343">343</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line344">344</span><span class="td">&nbsp;if&nbsp;((at)&nbsp;&amp;&amp;&nbsp;((ActionData--&gt;(at+AD_NOUN_KOV)&nbsp;==&nbsp;UNDERSTANDING_TY)&nbsp;||</span></span>
-<span class="tr"><span class="th" id="line345">345</span><span class="td">&nbsp;&nbsp;&nbsp;(ActionData--&gt;(at+AD_SECOND_KOV)&nbsp;==&nbsp;UNDERSTANDING_TY)))&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line346">346</span><span class="td">&nbsp;&nbsp;text_of_command&nbsp;=&nbsp;BlkValueRead(stora,&nbsp;STORA_COMMAND_TEXT_F);</span></span>
-<span class="tr"><span class="th" id="line347">347</span><span class="td">&nbsp;&nbsp;if&nbsp;(text_of_command&nbsp;==&nbsp;0)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line348">348</span><span class="td">&nbsp;&nbsp;&nbsp;text_of_command&nbsp;=&nbsp;BlkValueCreate(TEXT_TY);</span></span>
-<span class="tr"><span class="th" id="line349">349</span><span class="td">&nbsp;&nbsp;&nbsp;BlkValueWrite(stora,&nbsp;STORA_COMMAND_TEXT_F,&nbsp;text_of_command);</span></span>
-<span class="tr"><span class="th" id="line350">350</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line351">351</span><span class="td">&nbsp;&nbsp;BlkValueCast(text_of_command,&nbsp;SNIPPET_TY,&nbsp;players_command);</span></span>
-<span class="tr"><span class="th" id="line352">352</span><span class="td">&nbsp;}&nbsp;else&nbsp;BlkValueWrite(stora,&nbsp;STORA_COMMAND_TEXT_F,&nbsp;0);</span></span>
+<span class="tr"><span class="th" id="line344">344</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if ((at) &amp;&amp; ((ActionData--&gt;(at+AD_NOUN_KOV) == UNDERSTANDING_TY) ||</span></span>
+<span class="tr"><span class="th" id="line345">345</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            (ActionData--&gt;(at+AD_SECOND_KOV) == UNDERSTANDING_TY))) {</span></span>
+<span class="tr"><span class="th" id="line346">346</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        text_of_command = BlkValueRead(stora, STORA_COMMAND_TEXT_F);</span></span>
+<span class="tr"><span class="th" id="line347">347</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (text_of_command == 0) {</span></span>
+<span class="tr"><span class="th" id="line348">348</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            text_of_command = BlkValueCreate(TEXT_TY);</span></span>
+<span class="tr"><span class="th" id="line349">349</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            BlkValueWrite(stora, STORA_COMMAND_TEXT_F, text_of_command);</span></span>
+<span class="tr"><span class="th" id="line350">350</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
+<span class="tr"><span class="th" id="line351">351</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        BlkValueCast(text_of_command, SNIPPET_TY, players_command);</span></span>
+<span class="tr"><span class="th" id="line352">352</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    } else BlkValueWrite(stora, STORA_COMMAND_TEXT_F, 0);</span></span>
 <span class="tr"><span class="th" id="line353">353</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line354">354</span><span class="td">&nbsp;return&nbsp;stora;</span></span>
+<span class="tr"><span class="th" id="line354">354</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return stora;</span></span>
 <span class="tr"><span class="th" id="line355">355</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#storedaction-trying">Trying.</h3><p><p> Finally: having stored an action for perhaps many turns, we now let it happen, either silently or not.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line362">362</span><span class="td">[&nbsp;STORED_ACTION_TY_Try&nbsp;stora&nbsp;ks&nbsp;&nbsp;text_of_command&nbsp;saved_command;</span></span>
-<span class="tr"><span class="th" id="line363">363</span><span class="td">&nbsp;if&nbsp;((stora==0)&nbsp;||&nbsp;(BlkValueWeakKind(stora)&nbsp;~=&nbsp;STORED_ACTION_TY))&nbsp;return;</span></span>
-<span class="tr"><span class="th" id="line364">364</span><span class="td">&nbsp;if&nbsp;(ks)&nbsp;{&nbsp;@push&nbsp;keep_silent;&nbsp;keep_silent=1;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line365">365</span><span class="td">&nbsp;text_of_command&nbsp;=&nbsp;BlkValueRead(stora,&nbsp;STORA_COMMAND_TEXT_F);</span></span>
-<span class="tr"><span class="th" id="line366">366</span><span class="td">&nbsp;if&nbsp;(text_of_command)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line367">367</span><span class="td">&nbsp;&nbsp;saved_command&nbsp;=&nbsp;BlkValueCreate(TEXT_TY);</span></span>
-<span class="tr"><span class="th" id="line368">368</span><span class="td">&nbsp;&nbsp;BlkValueCast(saved_command,&nbsp;SNIPPET_TY,&nbsp;players_command);</span></span>
-<span class="tr"><span class="th" id="line369">369</span><span class="td">&nbsp;&nbsp;SetPlayersCommand(text_of_command);</span></span>
-<span class="tr"><span class="th" id="line370">370</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line371">371</span><span class="td">&nbsp;TryAction(</span></span>
-<span class="tr"><span class="th" id="line372">372</span><span class="td">&nbsp;&nbsp;BlkValueRead(stora,&nbsp;STORA_REQUEST_F),</span></span>
-<span class="tr"><span class="th" id="line373">373</span><span class="td">&nbsp;&nbsp;BlkValueRead(stora,&nbsp;STORA_ACTOR_F),</span></span>
-<span class="tr"><span class="th" id="line374">374</span><span class="td">&nbsp;&nbsp;BlkValueRead(stora,&nbsp;STORA_ACTION_F),</span></span>
-<span class="tr"><span class="th" id="line375">375</span><span class="td">&nbsp;&nbsp;BlkValueRead(stora,&nbsp;STORA_NOUN_F),</span></span>
-<span class="tr"><span class="th" id="line376">376</span><span class="td">&nbsp;&nbsp;BlkValueRead(stora,&nbsp;STORA_SECOND_F));</span></span>
-<span class="tr"><span class="th" id="line377">377</span><span class="td">&nbsp;if&nbsp;(text_of_command)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line378">378</span><span class="td">&nbsp;&nbsp;SetPlayersCommand(saved_command);</span></span>
-<span class="tr"><span class="th" id="line379">379</span><span class="td">&nbsp;&nbsp;BlkValueFree(saved_command);</span></span>
-<span class="tr"><span class="th" id="line380">380</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line381">381</span><span class="td">&nbsp;if&nbsp;(ks)&nbsp;{&nbsp;@pull&nbsp;keep_silent;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line362">362</span><span class="td">[ STORED_ACTION_TY_Try stora ks  text_of_command saved_command;</span></span>
+<span class="tr"><span class="th" id="line363">363</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if ((stora==0) || (BlkValueWeakKind(stora) ~= STORED_ACTION_TY)) return;</span></span>
+<span class="tr"><span class="th" id="line364">364</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (ks) { @push keep_silent; keep_silent=1; }</span></span>
+<span class="tr"><span class="th" id="line365">365</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    text_of_command = BlkValueRead(stora, STORA_COMMAND_TEXT_F);</span></span>
+<span class="tr"><span class="th" id="line366">366</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (text_of_command) {</span></span>
+<span class="tr"><span class="th" id="line367">367</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        saved_command = BlkValueCreate(TEXT_TY);</span></span>
+<span class="tr"><span class="th" id="line368">368</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        BlkValueCast(saved_command, SNIPPET_TY, players_command);</span></span>
+<span class="tr"><span class="th" id="line369">369</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        SetPlayersCommand(text_of_command);</span></span>
+<span class="tr"><span class="th" id="line370">370</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line371">371</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    TryAction(</span></span>
+<span class="tr"><span class="th" id="line372">372</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        BlkValueRead(stora, STORA_REQUEST_F),</span></span>
+<span class="tr"><span class="th" id="line373">373</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        BlkValueRead(stora, STORA_ACTOR_F),</span></span>
+<span class="tr"><span class="th" id="line374">374</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        BlkValueRead(stora, STORA_ACTION_F),</span></span>
+<span class="tr"><span class="th" id="line375">375</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        BlkValueRead(stora, STORA_NOUN_F),</span></span>
+<span class="tr"><span class="th" id="line376">376</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        BlkValueRead(stora, STORA_SECOND_F));</span></span>
+<span class="tr"><span class="th" id="line377">377</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (text_of_command) {</span></span>
+<span class="tr"><span class="th" id="line378">378</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        SetPlayersCommand(saved_command);</span></span>
+<span class="tr"><span class="th" id="line379">379</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        BlkValueFree(saved_command);</span></span>
+<span class="tr"><span class="th" id="line380">380</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line381">381</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (ks) { @pull keep_silent; }</span></span>
 <span class="tr"><span class="th" id="line382">382</span><span class="td">];</span></span>
-</div><footer><hr><p><em>From I6T lib 6/12N &copy; Graham Nelson and published under the <a href="https://github.com/zedlopez/standard_rules/blob/main/LICENSE.md">Artistic License 2.0</a>. Distributed with <a href="http://inform7.com/">Inform 7 6M62</a>.</em></p></footer></body></html>
+</div><footer><p><em>From I6T lib 6/12N &copy; Graham Nelson and published under the <a href="https://github.com/zedlopez/standard_rules/blob/main/LICENSE.md">Artistic License 2.0</a>. Distributed with <a href="http://inform7.com/">Inform 7 6M62</a>.</em></p></footer></body></html>

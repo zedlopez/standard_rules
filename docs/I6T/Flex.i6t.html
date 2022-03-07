@@ -7,22 +7,25 @@ span.th, span.td { display: table-cell; }
 span.td { padding-left: 2rem; }
 span.th { width:4rem; text-align: right; }
 span.tr { display: table-row;     counter-increment: linenum; }
-span.line_no::before {
+.pre-lines { font-family: monospace; margin-left: 3rem; line-height: 1.5rem; }
+/*span.line_no::before {
     content: counter(linenum);
     text-align: right;
     display: block;
     font-family: monospace;
     font-weight: normal;
-}
+}*/
 h1 { margin: 0; }
 .fixed { font-family: monospace }
 .em { font-style: italic; }
 .center { text-align: center; }
-    body { font-family: sans-serif; margin: 1.5rem 0 0 3rem; background-color: #fafaf0; width: 80rem; }
+    body { font-family: sans-serif; margin: 1.5rem 0 3rem 3rem; background-color: #fafaf0; width: 80rem; }
     .pre { font-family: monospace; margin: auto; width: 80rem; }
-#front_matter,.text { width: 50rem; }
+#front_matter,.text { width: 48rem; }
+/* h3 { margin-top: 1.5rem; padding-top: 1.5rem; }*/
 .text { border-bottom: .5px solid black; border-top: .5px solid black; margin-top: 1rem;
-padding-bottom: 1rem; margin-bottom: 2rem; }
+padding-bottom: .5rem; margin-bottom: 1.5rem; margin-top: 1.75rem; padding-top: .25rem;}
+footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; margin-bottom: 0;}
 /*.subtitle { font-weight: bold; font-size: 1.2rem; }*/
     </style>
 </head>
@@ -31,389 +34,389 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <h1>I6 Template Layer</h1>
 <div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Index</a> &bull; <a href="./Introduction.i6t.html">Introduction</a></div><hr></header>
 <div id="front_matter">
-<h2><a href="./Flex.i6t">Flex.i6t</a></h2><h3 id="#flex-blocks">Blocks.</h3><p><p> The purpose of the Flex routines is to manage flexible-sized &quot;blocks&quot; of memory for any general-purpose use. The main customer for this service is the system for creating texts, lists, stored actions, and so on, which are collectively called &quot;block values&quot; because they store their data in blocks allocated by Flex. But in this section, we&#39;re just managing arrays of memory, and don&#39;t need to know what it&#39;s for.<p></p><p> A &quot;block&quot; is a continuous range of <em>2^n</em> bytes of memory, where <em>n&gt;= 3</em> for a 16-bit VM (i.e., for the Z-machine) and <em>n&gt;= 4</em> for a 32-bit VM (i.e., on Glulx). Internally, a block is divided into a header followed by a data section.<p></p><p> The header size depends on the word size and the kind of block (see below). It always begins with a byte specifying <em>n</em>, the binary logarithm of its size, except that if the top bit is set then we know this isn&#39;t a flex-allocated block, which turns out to be convenient. Thus the largest block representable is <em>2^{127}</em> bytes long, but somehow I think we can live with that. The second byte contains a bitmap of (at present) four flags, whose meanings will be explained below. The second <strong> word</strong> of the block, which might be at byte offset 2 or 4 from the start of the block depending on the word-size of the VM, is a number specifying the kind of value (if any) which the block contains data of.<p></p><p> The header also contains a weak kind ID and a reference count, but the Flex routines do nothing with either of these except to initialise them; they&#39;re provided for the benefit of the <span class="fixed">BlockValue</span> system.<p></p><p>The data section of a block begins at the byte offset <span class="fixed"><a href="./Flex.i6t.html#line54">BLK_DATA_OFFSET</a></span><br> from the address of the block: but see below for how multiple-blocks behave differently.<p></p><p> These definitions must not be altered without making matching changes to the compiler.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line44">44</span><span class="td">Constant&nbsp;BLK_HEADER_N&nbsp;=&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line45">45</span><span class="td">Constant&nbsp;BLK_HEADER_FLAGS&nbsp;=&nbsp;1;</span></span>
-<span class="tr"><span class="th" id="line46">46</span><span class="td">Constant&nbsp;BLK_FLAG_MULTIPLE&nbsp;=&nbsp;$$00000001;</span></span>
-<span class="tr"><span class="th" id="line47">47</span><span class="td">Constant&nbsp;BLK_FLAG_16_BIT&nbsp;&nbsp;&nbsp;=&nbsp;$$00000010;</span></span>
-<span class="tr"><span class="th" id="line48">48</span><span class="td">Constant&nbsp;BLK_FLAG_WORD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;$$00000100;</span></span>
-<span class="tr"><span class="th" id="line49">49</span><span class="td">Constant&nbsp;BLK_FLAG_RESIDENT&nbsp;=&nbsp;$$00001000;</span></span>
-<span class="tr"><span class="th" id="line50">50</span><span class="td">Constant&nbsp;BLK_FLAG_TRUNCMULT&nbsp;=&nbsp;$$00010000;</span></span>
-<span class="tr"><span class="th" id="line51">51</span><span class="td">Constant&nbsp;BLK_HEADER_KOV&nbsp;=&nbsp;1;</span></span>
-<span class="tr"><span class="th" id="line52">52</span><span class="td">Constant&nbsp;BLK_HEADER_RCOUNT&nbsp;=&nbsp;2;</span></span>
+<h2><a href="./Flex.i6t.txt">Flex.i6t</a></h2><h3 id="#flex-blocks">Blocks.</h3><p><p> The purpose of the Flex routines is to manage flexible-sized &quot;blocks&quot; of memory for any general-purpose use. The main customer for this service is the system for creating texts, lists, stored actions, and so on, which are collectively called &quot;block values&quot; because they store their data in blocks allocated by Flex. But in this section, we&#39;re just managing arrays of memory, and don&#39;t need to know what it&#39;s for.<p></p><p> A &quot;block&quot; is a continuous range of <em>2<sup>n</sup></em> bytes of memory, where <em>n &ge; 3</em> for a 16-bit VM (i.e., for the Z-machine) and <em>n &ge; 4</em> for a 32-bit VM (i.e., on Glulx). Internally, a block is divided into a header followed by a data section.<p></p><p> The header size depends on the word size and the kind of block (see below). It always begins with a byte specifying <em>n</em>, the binary logarithm of its size, except that if the top bit is set then we know this isn&#39;t a flex-allocated block, which turns out to be convenient. Thus the largest block representable is <em>2<sup>127</sup></em> bytes long, but somehow I think we can live with that. The second byte contains a bitmap of (at present) four flags, whose meanings will be explained below. The second <strong> word</strong> of the block, which might be at byte offset 2 or 4 from the start of the block depending on the word-size of the VM, is a number specifying the kind of value (if any) which the block contains data of.<p></p><p> The header also contains a weak kind ID and a reference count, but the Flex routines do nothing with either of these except to initialise them; they&#39;re provided for the benefit of the <span class="fixed">BlockValue</span> system.<p></p><p> The data section of a block begins at the byte offset <span class="fixed"><a href="./Flex.i6t.html#line54">BLK_DATA_OFFSET</a></span> from the address of the block: but see below for how multiple-blocks behave differently.<p></p><p> These definitions must not be altered without making matching changes to the compiler.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line44">44</span><span class="td">Constant BLK_HEADER_N = 0;</span></span>
+<span class="tr"><span class="th" id="line45">45</span><span class="td">Constant BLK_HEADER_FLAGS = 1;</span></span>
+<span class="tr"><span class="th" id="line46">46</span><span class="td">Constant BLK_FLAG_MULTIPLE = $$00000001;</span></span>
+<span class="tr"><span class="th" id="line47">47</span><span class="td">Constant BLK_FLAG_16_BIT   = $$00000010;</span></span>
+<span class="tr"><span class="th" id="line48">48</span><span class="td">Constant BLK_FLAG_WORD     = $$00000100;</span></span>
+<span class="tr"><span class="th" id="line49">49</span><span class="td">Constant BLK_FLAG_RESIDENT = $$00001000;</span></span>
+<span class="tr"><span class="th" id="line50">50</span><span class="td">Constant BLK_FLAG_TRUNCMULT = $$00010000;</span></span>
+<span class="tr"><span class="th" id="line51">51</span><span class="td">Constant BLK_HEADER_KOV = 1;</span></span>
+<span class="tr"><span class="th" id="line52">52</span><span class="td">Constant BLK_HEADER_RCOUNT = 2;</span></span>
 <span class="tr"><span class="th" id="line53">53</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line54">54</span><span class="td">Constant&nbsp;BLK_DATA_OFFSET&nbsp;=&nbsp;3*WORDSIZE;</span></span>
+<span class="tr"><span class="th" id="line54">54</span><span class="td">Constant BLK_DATA_OFFSET = 3*WORDSIZE;</span></span>
 </div><div class='text'>
-<h3 id="#flex-multiple-blocks">Multiple Blocks.</h3><p><p> Some of the data we want to store will be fixed in size, but some of it will need to expand or contract. The latter can change unpredictably in size and might at any point overflow their current storage, so they&#39;re stored in a doubly linked list of blocks. The pointer to such a flexible-length array is by definition the pointer to the block heading this linked list. For instance, the data in a text<p></p><p>	<span class="fixed">&quot;But now I worship a celestiall Sunne&quot;</span><br><p></p><p> might be stored in a list of blocks like so:<p></p><p>	<span class="fixed">NULL &lt; &ndash; BN: &quot;But now I wor&quot; &lt;--&gt; BN2: &quot;ship a celestiall Sunne&quot; --&gt; NULL</span><br><p></p><p> Note that the unique pointer to <span class="fixed">BN2</span> is the one in the header of the <span class="fixed">BN</span> block. When we need to grow such a text, we add additional blocks; if the text should shrink, blocks at the end can at our discretion be deallocated. If the entire text should be deallocated, then all of the blocks used for it are deallocated, starting at the back and working towards the front.<p></p><p> A multiple-block is one whose flags byte contains the <span class="fixed"><a href="./Flex.i6t.html#line46">BLK_FLAG_MULTIPLE</a></span>. This information is redundant since it could in principle be deduced from the kind of value stored in the block, which is recorded in the<span class="fixed">--&gt;BLK_HEADER_KOV</span> word, but that would be too slow. <span class="fixed"><a href="./Flex.i6t.html#line46">BLK_FLAG_MULTIPLE</a></span><br> can never change for a currently allocated block, just as it can never change its KOV.<p></p><p> A multiple-block header is longer than that of an ordinary block, because it contains two extra words: <span class="fixed">--&gt;BLK_NEXT</span> is the next block in thedoubly-linked list of blocks representing the current value, or <span class="fixed"><a href="./Definitions.i6t.html#line71">NULL</a></span><br> if this is the end; <span class="fixed">--&gt;BLK_PREV</span> is the previous block, or <span class="fixed"><a href="./Definitions.i6t.html#line71">NULL</a></span> if this is the beginning. The need to fit these two extra words in means that the data section is deferred, and so for a multiple-block data begins at the byte offset <span class="fixed"><a href="./Flex.i6t.html#line93">BLK_DATA_MULTI_OFFSET</a></span> rather than <span class="fixed"><a href="./Flex.i6t.html#line54">BLK_DATA_OFFSET</a></span>.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line93">93</span><span class="td">Constant&nbsp;BLK_DATA_MULTI_OFFSET&nbsp;=&nbsp;BLK_DATA_OFFSET&nbsp;+&nbsp;2*WORDSIZE;</span></span>
-<span class="tr"><span class="th" id="line94">94</span><span class="td">Constant&nbsp;BLK_NEXT&nbsp;3;</span></span>
-<span class="tr"><span class="th" id="line95">95</span><span class="td">Constant&nbsp;BLK_PREV&nbsp;4;</span></span>
+<h3 id="#flex-multiple-blocks">Multiple Blocks.</h3><p><p> Some of the data we want to store will be fixed in size, but some of it will need to expand or contract. The latter can change unpredictably in size and might at any point overflow their current storage, so they&#39;re stored in a doubly linked list of blocks. The pointer to such a flexible-length array is by definition the pointer to the block heading this linked list. For instance, the data in a text<p></p><p><div class="pre-lines">&quot;But now I worship a celestiall Sunne&quot;</div><p></p><p> might be stored in a list of blocks like so:<p></p><p><div class="pre-lines">NULL &lt; &ndash; BN: &quot;But now I wor&quot; &lt;--&gt; BN2: &quot;ship a celestiall Sunne&quot; --&gt; NULL</div><p></p><p> Note that the unique pointer to <span class="fixed">BN2</span> is the one in the header of the <span class="fixed">BN</span> block. When we need to grow such a text, we add additional blocks; if the text should shrink, blocks at the end can at our discretion be deallocated. If the entire text should be deallocated, then all of the blocks used for it are deallocated, starting at the back and working towards the front.<p></p><p> A multiple-block is one whose flags byte contains the <span class="fixed"><a href="./Flex.i6t.html#line46">BLK_FLAG_MULTIPLE</a></span>. This information is redundant since it could in principle be deduced from the kind of value stored in the block, which is recorded in the <span class="fixed">--&gt;BLK_HEADER_KOV</span> word, but that would be too slow. <span class="fixed"><a href="./Flex.i6t.html#line46">BLK_FLAG_MULTIPLE</a></span> can never change for a currently allocated block, just as it can never change its KOV.<p></p><p> A multiple-block header is longer than that of an ordinary block, because it contains two extra words: <span class="fixed">--&gt;BLK_NEXT</span> is the next block in the doubly-linked list of blocks representing the current value, or <span class="fixed"><a href="./Definitions.i6t.html#line71">NULL</a></span> if this is the end; <span class="fixed">--&gt;BLK_PREV</span> is the previous block, or <span class="fixed"><a href="./Definitions.i6t.html#line71">NULL</a></span> if this is the beginning. The need to fit these two extra words in means that the data section is deferred, and so for a multiple-block data begins at the byte offset <span class="fixed"><a href="./Flex.i6t.html#line93">BLK_DATA_MULTI_OFFSET</a></span> rather than <span class="fixed"><a href="./Flex.i6t.html#line54">BLK_DATA_OFFSET</a></span>.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line93">93</span><span class="td">Constant BLK_DATA_MULTI_OFFSET = BLK_DATA_OFFSET + 2*WORDSIZE;</span></span>
+<span class="tr"><span class="th" id="line94">94</span><span class="td">Constant BLK_NEXT 3;</span></span>
+<span class="tr"><span class="th" id="line95">95</span><span class="td">Constant BLK_PREV 4;</span></span>
 <span class="tr"><span class="th" id="line96">96</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line97">97</span><span class="td">!&nbsp;Constant&nbsp;BLKVALUE_TRACE&nbsp;=&nbsp;1;&nbsp;!&nbsp;Uncomment&nbsp;this&nbsp;for&nbsp;debugging&nbsp;purposes</span></span>
+<span class="tr"><span class="th" id="line97">97</span><span class="td">! Constant BLKVALUE_TRACE = 1; ! Uncomment this for debugging purposes</span></span>
 </div><div class='text'>
-<h3 id="#flex-the-heap">The Heap.</h3><p><p> Properly speaking, a &quot;heap&quot; is a specific kind of structure often used for managing uneven-sized or unpredictably changing data. We use &quot;heap&quot; here in the looser sense of being an amorphous-sized collection of blocks of memory, some free, others allocated; our actual representation of free space on the heap is not a heap structure in computer science terms. (Though this segment could easily be rewritten to make it so, or to adopt any other scheme which might be faster.) The heap begins as a contiguous region of memory, but it need not remain so: on Glulx we use dynamic memory allocation to extend it.<p></p><p> For I7 purposes we don&#39;t need a way to represent allocated memory, onlythe free memory. A block is free if and only if it has <span class="fixed">--&gt;BLK_HEADER_KOV</span><br> equal to 0, which is never a valid kind of value, and also has the multiple flag set. We do that because we construct the whole collection of free blocks, at any given time, as a single, multiple-block &quot;value&quot;: a doubly linked list joined by the <span class="fixed">--&gt;BLK_NEXT</span> and <span class="fixed">&lt; &ndash; BLK_PREV</span>.<p></p><p> A single block, at the bottom of memory and never moving, never allocated to anyone, is preserved in order to be the head of this linked list of free blocks. This is a 16-byte (i.e., <em>n=4</em>) block, which we format when the heap is initialised in <span class="fixed"><a href="./Flex.i6t.html#line155">HeapInitialise()</a></span>. Thus the heap is full if and only if the <span class="fixed">--&gt;BLK_NEXT</span> of the head-free-block is <span class="fixed"><a href="./Definitions.i6t.html#line71">NULL</a></span>.<p></p><p> So far we have described a somewhat lax regime. After many allocations and deallocations one could imagine the list of free blocks becoming a very long list of individually small blocks, which would both make it difficult to allocate large blocks, and also slow to look through the list. To ameliorate matters, we maintain the following invariants:<p></p><p> (a) In the free blocks list, <span class="fixed">B--&gt;BLK_NEXT</span> is always an address after <span class="fixed">B</span>; (b) For any contiguous run of free space blocks in memory (excluding the head-free-block), taking up a total of <em>T</em> bytes, the last block in the run has size <em>2^n</em> where <em>n</em> is the largest integer such that <em>2^n&lt;= T</em>.<p></p><p> For instance, there can never be two consecutive free blocks of size 128: they would form a &quot;run&quot; in the sense of rule (b) of size <em>T = 256</em>, and when <em>T</em> is a power of two the run must contain a single block. In general, it&#39;s easy to prove that the number of blocks in the run is exactly the number of 1s when <em>T</em> is written out as a binary number, and that the blocks are ordered in memory from small to large (the reverse of the direction of reading, i.e., rightmost 1 digit first). Maintaining (b) is a matter of being careful to fragment blocks only from the front when smaller blocks are needed, and to rejoin from the back when blocks are freed and added to the free space object.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line145">145</span><span class="td">Array&nbsp;Flex_Heap&nbsp;-&gt;&nbsp;MEMORY_HEAP_SIZE&nbsp;+&nbsp;16;&nbsp;!&nbsp;Plus&nbsp;16&nbsp;to&nbsp;allow&nbsp;room&nbsp;for&nbsp;head-free-block</span></span>
+<h3 id="#flex-the-heap">The Heap.</h3><p><p> Properly speaking, a &quot;heap&quot; is a specific kind of structure often used for managing uneven-sized or unpredictably changing data. We use &quot;heap&quot; here in the looser sense of being an amorphous-sized collection of blocks of memory, some free, others allocated; our actual representation of free space on the heap is not a heap structure in computer science terms. (Though this segment could easily be rewritten to make it so, or to adopt any other scheme which might be faster.) The heap begins as a contiguous region of memory, but it need not remain so: on Glulx we use dynamic memory allocation to extend it.<p></p><p> For I7 purposes we don&#39;t need a way to represent allocated memory, only the free memory. A block is free if and only if it has <span class="fixed">--&gt;BLK_HEADER_KOV</span> equal to 0, which is never a valid kind of value, and also has the multiple flag set. We do that because we construct the whole collection of free blocks, at any given time, as a single, multiple-block &quot;value&quot;: a doubly linked list joined by the <span class="fixed">--&gt;BLK_NEXT</span> and <span class="fixed">&lt; &ndash; BLK_PREV</span>.<p></p><p> A single block, at the bottom of memory and never moving, never allocated to anyone, is preserved in order to be the head of this linked list of free blocks. This is a 16-byte (i.e., <em>n=4</em>) block, which we format when the heap is initialised in <span class="fixed"><a href="./Flex.i6t.html#line155">HeapInitialise()</a></span>. Thus the heap is full if and only if the <span class="fixed">--&gt;BLK_NEXT</span> of the head-free-block is <span class="fixed"><a href="./Definitions.i6t.html#line71">NULL</a></span>.<p></p><p> So far we have described a somewhat lax regime. After many allocations and deallocations one could imagine the list of free blocks becoming a very long list of individually small blocks, which would both make it difficult to allocate large blocks, and also slow to look through the list. To ameliorate matters, we maintain the following invariants:<p></p><p> (a) In the free blocks list, <span class="fixed">B--&gt;BLK_NEXT</span> is always an address after <span class="fixed">B</span>; (b) For any contiguous run of free space blocks in memory (excluding the head-free-block), taking up a total of <em>T</em> bytes, the last block in the run has size <em>2<sup>n</sup></em> where <em>n</em> is the largest integer such that <em>2<sup>n</sup> &le; T</em>.<p></p><p> For instance, there can never be two consecutive free blocks of size 128: they would form a &quot;run&quot; in the sense of rule (b) of size <em>T = 256</em>, and when <em>T</em> is a power of two the run must contain a single block. In general, it&#39;s easy to prove that the number of blocks in the run is exactly the number of 1s when <em>T</em> is written out as a binary number, and that the blocks are ordered in memory from small to large (the reverse of the direction of reading, i.e., rightmost 1 digit first). Maintaining (b) is a matter of being careful to fragment blocks only from the front when smaller blocks are needed, and to rejoin from the back when blocks are freed and added to the free space object.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line145">145</span><span class="td">Array Flex_Heap -&gt; MEMORY_HEAP_SIZE + 16; ! Plus 16 to allow room for head-free-block</span></span>
 </div><div class='text'>
-<h3 id="#flex-initialisation">Initialisation.</h3><p><p> To recap: the constant <span class="fixed">MEMORY_HEAP_SIZE</span> has been predefined by the NI compiler, and is always itself a power of 2, say <em>2^n</em>. We therefore have <em>2^n + 2^4</em> bytes available to us, and we format these as a free space list of two blocks: the <em>2^4</em>-sized &quot;head-free-block&quot; described above followed by a <em>2^n</em>-sized block exactly containing the whole of the rest of the heap.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line155">155</span><span class="td">[&nbsp;HeapInitialise&nbsp;n&nbsp;bsize&nbsp;blk2;</span></span>
-<span class="tr"><span class="th" id="line156">156</span><span class="td">&nbsp;blk2&nbsp;=&nbsp;Flex_Heap&nbsp;+&nbsp;16;</span></span>
-<span class="tr"><span class="th" id="line157">157</span><span class="td">&nbsp;Flex_Heap-&gt;BLK_HEADER_N&nbsp;=&nbsp;4;</span></span>
-<span class="tr"><span class="th" id="line158">158</span><span class="td">&nbsp;Flex_Heap--&gt;BLK_HEADER_KOV&nbsp;=&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line159">159</span><span class="td">&nbsp;Flex_Heap--&gt;BLK_HEADER_RCOUNT&nbsp;=&nbsp;MAX_POSITIVE_NUMBER;</span></span>
-<span class="tr"><span class="th" id="line160">160</span><span class="td">&nbsp;Flex_Heap-&gt;BLK_HEADER_FLAGS&nbsp;=&nbsp;BLK_FLAG_MULTIPLE;</span></span>
-<span class="tr"><span class="th" id="line161">161</span><span class="td">&nbsp;Flex_Heap--&gt;BLK_NEXT&nbsp;=&nbsp;blk2;</span></span>
-<span class="tr"><span class="th" id="line162">162</span><span class="td">&nbsp;Flex_Heap--&gt;BLK_PREV&nbsp;=&nbsp;NULL;</span></span>
-<span class="tr"><span class="th" id="line163">163</span><span class="td">&nbsp;for&nbsp;(bsize=1:&nbsp;bsize&nbsp;&lt;&nbsp;MEMORY_HEAP_SIZE:&nbsp;bsize=bsize*2)&nbsp;n++;</span></span>
-<span class="tr"><span class="th" id="line164">164</span><span class="td">&nbsp;blk2-&gt;BLK_HEADER_N&nbsp;=&nbsp;n;</span></span>
-<span class="tr"><span class="th" id="line165">165</span><span class="td">&nbsp;blk2--&gt;BLK_HEADER_KOV&nbsp;=&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line166">166</span><span class="td">&nbsp;blk2--&gt;BLK_HEADER_RCOUNT&nbsp;=&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line167">167</span><span class="td">&nbsp;blk2-&gt;BLK_HEADER_FLAGS&nbsp;=&nbsp;BLK_FLAG_MULTIPLE;</span></span>
-<span class="tr"><span class="th" id="line168">168</span><span class="td">&nbsp;blk2--&gt;BLK_NEXT&nbsp;=&nbsp;NULL;</span></span>
-<span class="tr"><span class="th" id="line169">169</span><span class="td">&nbsp;blk2--&gt;BLK_PREV&nbsp;=&nbsp;Flex_Heap;</span></span>
+<h3 id="#flex-initialisation">Initialisation.</h3><p><p> To recap: the constant <span class="fixed">MEMORY_HEAP_SIZE</span> has been predefined by the NI compiler, and is always itself a power of 2, say <em>2<sup>n</sup></em>. We therefore have <em>2<sup>n</sup> + 2<sup>4</sup></em> bytes available to us, and we format these as a free space list of two blocks: the <em>2<sup>4</sup></em>-sized &quot;head-free-block&quot; described above followed by a <em>2<sup>n</sup></em>-sized block exactly containing the whole of the rest of the heap.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line155">155</span><span class="td">[ HeapInitialise n bsize blk2;</span></span>
+<span class="tr"><span class="th" id="line156">156</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    blk2 = Flex_Heap + 16;</span></span>
+<span class="tr"><span class="th" id="line157">157</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    Flex_Heap-&gt;BLK_HEADER_N = 4;</span></span>
+<span class="tr"><span class="th" id="line158">158</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    Flex_Heap--&gt;BLK_HEADER_KOV = 0;</span></span>
+<span class="tr"><span class="th" id="line159">159</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    Flex_Heap--&gt;BLK_HEADER_RCOUNT = MAX_POSITIVE_NUMBER;</span></span>
+<span class="tr"><span class="th" id="line160">160</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    Flex_Heap-&gt;BLK_HEADER_FLAGS = BLK_FLAG_MULTIPLE;</span></span>
+<span class="tr"><span class="th" id="line161">161</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    Flex_Heap--&gt;BLK_NEXT = blk2;</span></span>
+<span class="tr"><span class="th" id="line162">162</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    Flex_Heap--&gt;BLK_PREV = NULL;</span></span>
+<span class="tr"><span class="th" id="line163">163</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (bsize=1: bsize &lt; MEMORY_HEAP_SIZE: bsize=bsize*2) n++;</span></span>
+<span class="tr"><span class="th" id="line164">164</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    blk2-&gt;BLK_HEADER_N = n;</span></span>
+<span class="tr"><span class="th" id="line165">165</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    blk2--&gt;BLK_HEADER_KOV = 0;</span></span>
+<span class="tr"><span class="th" id="line166">166</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    blk2--&gt;BLK_HEADER_RCOUNT = 0;</span></span>
+<span class="tr"><span class="th" id="line167">167</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    blk2-&gt;BLK_HEADER_FLAGS = BLK_FLAG_MULTIPLE;</span></span>
+<span class="tr"><span class="th" id="line168">168</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    blk2--&gt;BLK_NEXT = NULL;</span></span>
+<span class="tr"><span class="th" id="line169">169</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    blk2--&gt;BLK_PREV = Flex_Heap;</span></span>
 <span class="tr"><span class="th" id="line170">170</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#flex-net-free-space">Net Free Space.</h3><p><p> &quot;Net&quot; in the sense of &quot;after deductions for the headers&quot;: this is the actual number of free bytes left on the heap which could be used for data. Note that it is used to predict whether it is possible to fit something further in: so there are two answers, depending on whether the something is multiple-block data (with a larger header and therefore less room for data) or single-block data (smaller header, more room).<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line181">181</span><span class="td">[&nbsp;HeapNetFreeSpace&nbsp;multiple&nbsp;txb&nbsp;asize;</span></span>
-<span class="tr"><span class="th" id="line182">182</span><span class="td">&nbsp;for&nbsp;(txb=Flex_Heap--&gt;BLK_NEXT:&nbsp;txb~=NULL:&nbsp;txb=txb--&gt;BLK_NEXT)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line183">183</span><span class="td">&nbsp;&nbsp;asize&nbsp;=&nbsp;asize&nbsp;+&nbsp;FlexSize(txb);</span></span>
-<span class="tr"><span class="th" id="line184">184</span><span class="td">&nbsp;&nbsp;if&nbsp;(multiple)&nbsp;asize&nbsp;=&nbsp;asize&nbsp;-&nbsp;BLK_DATA_MULTI_OFFSET;</span></span>
-<span class="tr"><span class="th" id="line185">185</span><span class="td">&nbsp;&nbsp;else&nbsp;asize&nbsp;=&nbsp;asize&nbsp;-&nbsp;BLK_DATA_OFFSET;</span></span>
-<span class="tr"><span class="th" id="line186">186</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line187">187</span><span class="td">&nbsp;return&nbsp;asize;</span></span>
+<span class="tr"><span class="th" id="line181">181</span><span class="td">[ HeapNetFreeSpace multiple txb asize;</span></span>
+<span class="tr"><span class="th" id="line182">182</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (txb=Flex_Heap--&gt;BLK_NEXT: txb~=NULL: txb=txb--&gt;BLK_NEXT) {</span></span>
+<span class="tr"><span class="th" id="line183">183</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        asize = asize + FlexSize(txb);</span></span>
+<span class="tr"><span class="th" id="line184">184</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (multiple) asize = asize - BLK_DATA_MULTI_OFFSET;</span></span>
+<span class="tr"><span class="th" id="line185">185</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        else asize = asize - BLK_DATA_OFFSET;</span></span>
+<span class="tr"><span class="th" id="line186">186</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line187">187</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return asize;</span></span>
 <span class="tr"><span class="th" id="line188">188</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#flex-make-space">Make Space.</h3><p><p> The following routine determines if there is enough free space to accommodate another <span class="fixed">size</span> bytes of data, given that it has to be multiple-block data if the <span class="fixed">multiple</span> flag is set. If the answer turns out to be &quot;no&quot;, we see if the host virtual machine is able to allocate more for us: if it is, then we ask for <em>2^m</em> further bytes, where <em>2^m</em> is at least <span class="fixed">size</span> plus the worst-case header storage requirement (16 bytes), and in addition is large enough to make it worth while allocating. We don&#39;t want to bother the VM by asking for trivial amounts of memory.<p></p><p> This looks to be more memory than is needed, since after all we&#39;ve asked for enough that the new data can fit entirely into the new block allocated, and we might have been able to squeeze some of it into the existing free space. But it ensures that heap invariant (b) above is preserved, and besides, running out of memory tends to be something you don&#39;t do only once.<p></p><p> (The code below is a refinement on the original, suggested by Jesse McGrew, which handles non-multiple blocks better.)<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line210">210</span><span class="td">Constant&nbsp;SMALLEST_BLK_WORTH_ALLOCATING&nbsp;=&nbsp;12;&nbsp;!&nbsp;i.e.&nbsp;2^12&nbsp;=&nbsp;4096&nbsp;bytes</span></span>
+<h3 id="#flex-make-space">Make Space.</h3><p><p> The following routine determines if there is enough free space to accommodate another <span class="fixed">size</span> bytes of data, given that it has to be multiple-block data if the <span class="fixed">multiple</span> flag is set. If the answer turns out to be &quot;no&quot;, we see if the host virtual machine is able to allocate more for us: if it is, then we ask for <em>2<sup>m</sup></em> further bytes, where <em>2<sup>m</sup></em> is at least <span class="fixed">size</span> plus the worst-case header storage requirement (16 bytes), and in addition is large enough to make it worth while allocating. We don&#39;t want to bother the VM by asking for trivial amounts of memory.<p></p><p> This looks to be more memory than is needed, since after all we&#39;ve asked for enough that the new data can fit entirely into the new block allocated, and we might have been able to squeeze some of it into the existing free space. But it ensures that heap invariant (b) above is preserved, and besides, running out of memory tends to be something you don&#39;t do only once.<p></p><p> (The code below is a refinement on the original, suggested by Jesse McGrew, which handles non-multiple blocks better.)<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line210">210</span><span class="td">Constant SMALLEST_BLK_WORTH_ALLOCATING = 12; ! i.e. 2^12 = 4096 bytes</span></span>
 <span class="tr"><span class="th" id="line211">211</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line212">212</span><span class="td">[&nbsp;HeapMakeSpace&nbsp;size&nbsp;multiple&nbsp;&nbsp;newblocksize&nbsp;newblock&nbsp;B&nbsp;n;</span></span>
-<span class="tr"><span class="th" id="line213">213</span><span class="td">&nbsp;for&nbsp;(::)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line214">214</span><span class="td">&nbsp;&nbsp;if&nbsp;(multiple)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line215">215</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(HeapNetFreeSpace(multiple)&nbsp;&gt;=&nbsp;size)&nbsp;rtrue;</span></span>
-<span class="tr"><span class="th" id="line216">216</span><span class="td">&nbsp;&nbsp;}&nbsp;else&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line217">217</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(HeapLargestFreeBlock(0)&nbsp;&gt;=&nbsp;size)&nbsp;rtrue;</span></span>
-<span class="tr"><span class="th" id="line218">218</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line219">219</span><span class="td">&nbsp;&nbsp;newblocksize&nbsp;=&nbsp;1;</span></span>
-<span class="tr"><span class="th" id="line220">220</span><span class="td">&nbsp;&nbsp;for&nbsp;(n=0:&nbsp;(n&lt;SMALLEST_BLK_WORTH_ALLOCATING)&nbsp;||&nbsp;(newblocksize&lt;size):&nbsp;n++)</span></span>
-<span class="tr"><span class="th" id="line221">221</span><span class="td">&nbsp;&nbsp;&nbsp;newblocksize&nbsp;=&nbsp;newblocksize*2;</span></span>
-<span class="tr"><span class="th" id="line222">222</span><span class="td">&nbsp;&nbsp;while&nbsp;(newblocksize&nbsp;&lt;&nbsp;size+16)&nbsp;newblocksize&nbsp;=&nbsp;newblocksize*2;</span></span>
-<span class="tr"><span class="th" id="line223">223</span><span class="td">&nbsp;&nbsp;newblock&nbsp;=&nbsp;VM_AllocateMemory(newblocksize);</span></span>
-<span class="tr"><span class="th" id="line224">224</span><span class="td">&nbsp;&nbsp;if&nbsp;(newblock&nbsp;==&nbsp;0)&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line225">225</span><span class="td">&nbsp;&nbsp;newblock-&gt;BLK_HEADER_N&nbsp;=&nbsp;n;</span></span>
-<span class="tr"><span class="th" id="line226">226</span><span class="td">&nbsp;&nbsp;newblock--&gt;BLK_HEADER_KOV&nbsp;=&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line227">227</span><span class="td">&nbsp;&nbsp;newblock--&gt;BLK_HEADER_RCOUNT&nbsp;=&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line228">228</span><span class="td">&nbsp;&nbsp;newblock-&gt;BLK_HEADER_FLAGS&nbsp;=&nbsp;BLK_FLAG_MULTIPLE;</span></span>
-<span class="tr"><span class="th" id="line229">229</span><span class="td">&nbsp;&nbsp;newblock--&gt;BLK_NEXT&nbsp;=&nbsp;NULL;</span></span>
-<span class="tr"><span class="th" id="line230">230</span><span class="td">&nbsp;&nbsp;newblock--&gt;BLK_PREV&nbsp;=&nbsp;NULL;</span></span>
-<span class="tr"><span class="th" id="line231">231</span><span class="td">&nbsp;&nbsp;for&nbsp;(B&nbsp;=&nbsp;Flex_Heap--&gt;BLK_NEXT:B&nbsp;~=&nbsp;NULL:B&nbsp;=&nbsp;B--&gt;BLK_NEXT)</span></span>
-<span class="tr"><span class="th" id="line232">232</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(B--&gt;BLK_NEXT&nbsp;==&nbsp;NULL)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line233">233</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;B--&gt;BLK_NEXT&nbsp;=&nbsp;newblock;</span></span>
-<span class="tr"><span class="th" id="line234">234</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;newblock--&gt;BLK_PREV&nbsp;=&nbsp;B;</span></span>
-<span class="tr"><span class="th" id="line235">235</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;jump&nbsp;<a href="./Flex.i6t.html#line239">Linked</a>;</span></span>
-<span class="tr"><span class="th" id="line236">236</span><span class="td">&nbsp;&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line237">237</span><span class="td">&nbsp;&nbsp;Flex_Heap--&gt;BLK_NEXT&nbsp;=&nbsp;newblock;</span></span>
-<span class="tr"><span class="th" id="line238">238</span><span class="td">&nbsp;&nbsp;newblock--&gt;BLK_PREV&nbsp;=&nbsp;Flex_Heap;</span></span>
-<span class="tr"><span class="th" id="line239">239</span><span class="td">&nbsp;&nbsp;.Linked;&nbsp;;</span></span>
-<span class="tr"><span class="th" id="line240">240</span><span class="td">&nbsp;&nbsp;#ifdef&nbsp;BLKVALUE_TRACE;</span></span>
-<span class="tr"><span class="th" id="line241">241</span><span class="td">&nbsp;&nbsp;print&nbsp;&quot;Increasing&nbsp;heap&nbsp;to&nbsp;free&nbsp;space&nbsp;map:&nbsp;&quot;;&nbsp;FlexDebugDecomposition(Flex_Heap,&nbsp;0);</span></span>
-<span class="tr"><span class="th" id="line242">242</span><span class="td">&nbsp;&nbsp;#endif;</span></span>
-<span class="tr"><span class="th" id="line243">243</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line244">244</span><span class="td">&nbsp;rtrue;</span></span>
+<span class="tr"><span class="th" id="line212">212</span><span class="td">[ HeapMakeSpace size multiple  newblocksize newblock B n;</span></span>
+<span class="tr"><span class="th" id="line213">213</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (::) {</span></span>
+<span class="tr"><span class="th" id="line214">214</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (multiple) {</span></span>
+<span class="tr"><span class="th" id="line215">215</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (HeapNetFreeSpace(multiple) &gt;= size) rtrue;</span></span>
+<span class="tr"><span class="th" id="line216">216</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        } else {</span></span>
+<span class="tr"><span class="th" id="line217">217</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (HeapLargestFreeBlock(0) &gt;= size) rtrue;</span></span>
+<span class="tr"><span class="th" id="line218">218</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
+<span class="tr"><span class="th" id="line219">219</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        newblocksize = 1;</span></span>
+<span class="tr"><span class="th" id="line220">220</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        for (n=0: (n&lt;SMALLEST_BLK_WORTH_ALLOCATING) || (newblocksize&lt;size): n++)</span></span>
+<span class="tr"><span class="th" id="line221">221</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            newblocksize = newblocksize*2;</span></span>
+<span class="tr"><span class="th" id="line222">222</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        while (newblocksize &lt; size+16) newblocksize = newblocksize*2;</span></span>
+<span class="tr"><span class="th" id="line223">223</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        newblock = VM_AllocateMemory(newblocksize);</span></span>
+<span class="tr"><span class="th" id="line224">224</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (newblock == 0) rfalse;</span></span>
+<span class="tr"><span class="th" id="line225">225</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        newblock-&gt;BLK_HEADER_N = n;</span></span>
+<span class="tr"><span class="th" id="line226">226</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        newblock--&gt;BLK_HEADER_KOV = 0;</span></span>
+<span class="tr"><span class="th" id="line227">227</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        newblock--&gt;BLK_HEADER_RCOUNT = 0;</span></span>
+<span class="tr"><span class="th" id="line228">228</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        newblock-&gt;BLK_HEADER_FLAGS = BLK_FLAG_MULTIPLE;</span></span>
+<span class="tr"><span class="th" id="line229">229</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        newblock--&gt;BLK_NEXT = NULL;</span></span>
+<span class="tr"><span class="th" id="line230">230</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        newblock--&gt;BLK_PREV = NULL;</span></span>
+<span class="tr"><span class="th" id="line231">231</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        for (B = Flex_Heap--&gt;BLK_NEXT:B ~= NULL:B = B--&gt;BLK_NEXT)</span></span>
+<span class="tr"><span class="th" id="line232">232</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (B--&gt;BLK_NEXT == NULL) {</span></span>
+<span class="tr"><span class="th" id="line233">233</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                B--&gt;BLK_NEXT = newblock;</span></span>
+<span class="tr"><span class="th" id="line234">234</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                newblock--&gt;BLK_PREV = B;</span></span>
+<span class="tr"><span class="th" id="line235">235</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                jump <a href="./Flex.i6t.html#line239">Linked</a>;</span></span>
+<span class="tr"><span class="th" id="line236">236</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            }</span></span>
+<span class="tr"><span class="th" id="line237">237</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        Flex_Heap--&gt;BLK_NEXT = newblock;</span></span>
+<span class="tr"><span class="th" id="line238">238</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        newblock--&gt;BLK_PREV = Flex_Heap;</span></span>
+<span class="tr"><span class="th" id="line239">239</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        .Linked; ;</span></span>
+<span class="tr"><span class="th" id="line240">240</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        #ifdef BLKVALUE_TRACE;</span></span>
+<span class="tr"><span class="th" id="line241">241</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        print &quot;Increasing heap to free space map: &quot;; FlexDebugDecomposition(Flex_Heap, 0);</span></span>
+<span class="tr"><span class="th" id="line242">242</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        #endif;</span></span>
+<span class="tr"><span class="th" id="line243">243</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line244">244</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rtrue;</span></span>
 <span class="tr"><span class="th" id="line245">245</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line246">246</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line247">247</span><span class="td">[&nbsp;HeapLargestFreeBlock&nbsp;multiple&nbsp;txb&nbsp;asize&nbsp;best;</span></span>
-<span class="tr"><span class="th" id="line248">248</span><span class="td">&nbsp;best&nbsp;=&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line249">249</span><span class="td">&nbsp;for&nbsp;(txb=Flex_Heap--&gt;BLK_NEXT:&nbsp;txb~=NULL:&nbsp;txb=txb--&gt;BLK_NEXT)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line250">250</span><span class="td">&nbsp;&nbsp;asize&nbsp;=&nbsp;FlexSize(txb);</span></span>
-<span class="tr"><span class="th" id="line251">251</span><span class="td">&nbsp;&nbsp;if&nbsp;(multiple)&nbsp;asize&nbsp;=&nbsp;asize&nbsp;-&nbsp;BLK_DATA_MULTI_OFFSET;</span></span>
-<span class="tr"><span class="th" id="line252">252</span><span class="td">&nbsp;&nbsp;else&nbsp;asize&nbsp;=&nbsp;asize&nbsp;-&nbsp;BLK_DATA_OFFSET;</span></span>
-<span class="tr"><span class="th" id="line253">253</span><span class="td">&nbsp;&nbsp;if&nbsp;(asize&nbsp;&gt;&nbsp;best)&nbsp;best&nbsp;=&nbsp;asize;</span></span>
-<span class="tr"><span class="th" id="line254">254</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line255">255</span><span class="td">&nbsp;return&nbsp;best;</span></span>
+<span class="tr"><span class="th" id="line247">247</span><span class="td">[ HeapLargestFreeBlock multiple txb asize best;</span></span>
+<span class="tr"><span class="th" id="line248">248</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    best = 0;</span></span>
+<span class="tr"><span class="th" id="line249">249</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (txb=Flex_Heap--&gt;BLK_NEXT: txb~=NULL: txb=txb--&gt;BLK_NEXT) {</span></span>
+<span class="tr"><span class="th" id="line250">250</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        asize = FlexSize(txb);</span></span>
+<span class="tr"><span class="th" id="line251">251</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (multiple) asize = asize - BLK_DATA_MULTI_OFFSET;</span></span>
+<span class="tr"><span class="th" id="line252">252</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        else asize = asize - BLK_DATA_OFFSET;</span></span>
+<span class="tr"><span class="th" id="line253">253</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (asize &gt; best) best = asize;</span></span>
+<span class="tr"><span class="th" id="line254">254</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line255">255</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return best;</span></span>
 <span class="tr"><span class="th" id="line256">256</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line257">257</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line258">258</span><span class="td">[&nbsp;HeapDebug&nbsp;full;</span></span>
-<span class="tr"><span class="th" id="line259">259</span><span class="td">&nbsp;if&nbsp;(full)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line260">260</span><span class="td">&nbsp;&nbsp;print&nbsp;&quot;Managing&nbsp;a&nbsp;heap&nbsp;of&nbsp;initially&nbsp;&quot;,&nbsp;MEMORY_HEAP_SIZE+16,&nbsp;&quot;&nbsp;bytes.^&quot;;</span></span>
-<span class="tr"><span class="th" id="line261">261</span><span class="td">&nbsp;&nbsp;print&nbsp;HeapNetFreeSpace(false),&nbsp;&quot;&nbsp;bytes&nbsp;currently&nbsp;free.^&quot;;</span></span>
-<span class="tr"><span class="th" id="line262">262</span><span class="td">&nbsp;&nbsp;print&nbsp;&quot;Free&nbsp;space&nbsp;decomposition:&nbsp;&quot;;&nbsp;FlexDebugDecomposition(Flex_Heap);</span></span>
-<span class="tr"><span class="th" id="line263">263</span><span class="td">&nbsp;&nbsp;print&nbsp;&quot;Free&nbsp;space&nbsp;map:&nbsp;&quot;;&nbsp;FlexDebug(Flex_Heap);</span></span>
-<span class="tr"><span class="th" id="line264">264</span><span class="td">&nbsp;}&nbsp;else&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line265">265</span><span class="td">&nbsp;&nbsp;print&nbsp;HeapNetFreeSpace(false),&nbsp;&quot;&nbsp;of&nbsp;&quot;,&nbsp;MEMORY_HEAP_SIZE+16,&nbsp;&quot;&nbsp;bytes&nbsp;free.^&quot;;</span></span>
-<span class="tr"><span class="th" id="line266">266</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line258">258</span><span class="td">[ HeapDebug full;</span></span>
+<span class="tr"><span class="th" id="line259">259</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (full) {</span></span>
+<span class="tr"><span class="th" id="line260">260</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        print &quot;Managing a heap of initially &quot;, MEMORY_HEAP_SIZE+16, &quot; bytes.^&quot;;</span></span>
+<span class="tr"><span class="th" id="line261">261</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        print HeapNetFreeSpace(false), &quot; bytes currently free.^&quot;;</span></span>
+<span class="tr"><span class="th" id="line262">262</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        print &quot;Free space decomposition: &quot;; FlexDebugDecomposition(Flex_Heap);</span></span>
+<span class="tr"><span class="th" id="line263">263</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        print &quot;Free space map: &quot;; FlexDebug(Flex_Heap);</span></span>
+<span class="tr"><span class="th" id="line264">264</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    } else {</span></span>
+<span class="tr"><span class="th" id="line265">265</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        print HeapNetFreeSpace(false), &quot; of &quot;, MEMORY_HEAP_SIZE+16, &quot; bytes free.^&quot;;</span></span>
+<span class="tr"><span class="th" id="line266">266</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
 <span class="tr"><span class="th" id="line267">267</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#flex-block-allocation">Block Allocation.</h3><p><p> Now for the Flex routines. Those with names ending in <span class="fixed">Internal</span> are private and should only be called by other Flex routines. Even the public ones must be used with care, or memory leaks or crashes will occur.<p></p><p>The routine <span class="fixed"><a href="./Flex.i6t.html#line297">FlexAllocate(N, K, F)</a></span> allocates a block with room for <span class="fixed">size</span><br> net bytes of data, which will have kind of value <span class="fixed">K</span> and with flags <span class="fixed">F</span>. If the flags include <span class="fixed"><a href="./Flex.i6t.html#line46">BLK_FLAG_MULTIPLE</a></span>, this may be either a list of blocks or a single block. It returns either the address of the block or else throws run-time problem message and returns 0.<p></p><p> If it does succeed and return a nonzero address, then the caller must be able to guarantee that <span class="fixed"><a href="./Flex.i6t.html#line492">FlexFree</a></span> will later be called, exactly once, on this address. In other words, <span class="fixed"><a href="./Flex.i6t.html#line297">FlexAllocate</a></span> and <span class="fixed"><a href="./Flex.i6t.html#line492">FlexFree</a></span> behave somewhat like C&#39;s <span class="fixed">malloc</span> and <span class="fixed">free</span> routines, with all the advantages and hazards that implies.<p></p><p> In allocation, we try to find a block which is as close as possible to the right size, and we may have to subdivide blocks: see case II below. For instance, if a block of size <em>2^n</em> is available and we only need a block of size <em>2^k</em> where <em>k&lt;n</em> then we break it up in memory as a sequence of blocks of size <em>2^k, 2^k, 2^{k+1}, 2^{k+2}, ..., 2^{n-1}</em>: note that the sum of these sizes is the <em>2^n</em> we started with. We then use the first block of size <em>2^k</em>. To continue the comparison with binary arithmetic, this is like a subtraction with repeated carries: <p class="center"><em> 10000000<sub>2</sub>  - 00001000<sub>2</sub>  = 01111000<sub>2</sub>  </em></p><p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line297">297</span><span class="td">[&nbsp;FlexAllocate&nbsp;size&nbsp;kov&nbsp;flags</span></span>
-<span class="tr"><span class="th" id="line298">298</span><span class="td">&nbsp;dsize&nbsp;n&nbsp;m&nbsp;free_block&nbsp;min_m&nbsp;max_m&nbsp;smallest_oversized_block&nbsp;secondhalf&nbsp;i&nbsp;hsize&nbsp;head&nbsp;tail;</span></span>
-<span class="tr"><span class="th" id="line299">299</span><span class="td">&nbsp;</span></span>
-<span class="tr"><span class="th" id="line300">300</span><span class="td">&nbsp;if&nbsp;(HeapMakeSpace(size,&nbsp;flags&nbsp;&amp;&nbsp;BLK_FLAG_MULTIPLE)&nbsp;==&nbsp;false)&nbsp;FlexError(&quot;ran&nbsp;out&quot;);</span></span>
+<h3 id="#flex-block-allocation">Block Allocation.</h3><p><p> Now for the Flex routines. Those with names ending in <span class="fixed">Internal</span> are private and should only be called by other Flex routines. Even the public ones must be used with care, or memory leaks or crashes will occur.<p></p><p> The routine <span class="fixed"><a href="./Flex.i6t.html#line297">FlexAllocate(N, K, F)</a></span> allocates a block with room for <span class="fixed">size</span> net bytes of data, which will have kind of value <span class="fixed">K</span> and with flags <span class="fixed">F</span>. If the flags include <span class="fixed"><a href="./Flex.i6t.html#line46">BLK_FLAG_MULTIPLE</a></span>, this may be either a list of blocks or a single block. It returns either the address of the block or else throws run-time problem message and returns 0.<p></p><p> If it does succeed and return a nonzero address, then the caller must be able to guarantee that <span class="fixed"><a href="./Flex.i6t.html#line492">FlexFree</a></span> will later be called, exactly once, on this address. In other words, <span class="fixed"><a href="./Flex.i6t.html#line297">FlexAllocate</a></span> and <span class="fixed"><a href="./Flex.i6t.html#line492">FlexFree</a></span> behave somewhat like C&#39;s <span class="fixed">malloc</span> and <span class="fixed">free</span> routines, with all the advantages and hazards that implies.<p></p><p> In allocation, we try to find a block which is as close as possible to the right size, and we may have to subdivide blocks: see case II below. For instance, if a block of size <em>2<sup>n</sup></em> is available and we only need a block of size <em>2<sup>k</sup></em> where <em>k&lt;n</em> then we break it up in memory as a sequence of blocks of size <em>2<sup>k,</sup> 2<sup>k,</sup> 2<sup>k+1</sup>, 2<sup>k+2</sup>, ..., 2<sup>n-1</sup></em>: note that the sum of these sizes is the <em>2<sup>n</sup></em> we started with. We then use the first block of size <em>2<sup>k</sup></em>. To continue the comparison with binary arithmetic, this is like a subtraction with repeated carries: <p class="center"><em> 10000000<sub>2</sub> - 00001000<sub>2</sub> = 01111000<sub>2</sub> </em></p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line297">297</span><span class="td">[ FlexAllocate size kov flags</span></span>
+<span class="tr"><span class="th" id="line298">298</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    dsize n m free_block min_m max_m smallest_oversized_block secondhalf i hsize head tail;</span></span>
+<span class="tr"><span class="th" id="line299">299</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    </span></span>
+<span class="tr"><span class="th" id="line300">300</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (HeapMakeSpace(size, flags &amp; BLK_FLAG_MULTIPLE) == false) FlexError(&quot;ran out&quot;);</span></span>
 <span class="tr"><span class="th" id="line301">301</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line302">302</span><span class="td">&nbsp;!&nbsp;Calculate&nbsp;the&nbsp;header&nbsp;size&nbsp;for&nbsp;a&nbsp;block&nbsp;of&nbsp;this&nbsp;KOV</span></span>
-<span class="tr"><span class="th" id="line303">303</span><span class="td">&nbsp;if&nbsp;(flags&nbsp;&amp;&nbsp;BLK_FLAG_MULTIPLE)&nbsp;hsize&nbsp;=&nbsp;BLK_DATA_MULTI_OFFSET;</span></span>
-<span class="tr"><span class="th" id="line304">304</span><span class="td">&nbsp;else&nbsp;hsize&nbsp;=&nbsp;BLK_DATA_OFFSET;</span></span>
-<span class="tr"><span class="th" id="line305">305</span><span class="td">&nbsp;!&nbsp;Calculate&nbsp;the&nbsp;data&nbsp;size</span></span>
-<span class="tr"><span class="th" id="line306">306</span><span class="td">&nbsp;n=0;&nbsp;for&nbsp;(dsize=1:&nbsp;((dsize&nbsp;&lt;&nbsp;hsize+size)&nbsp;||&nbsp;(n&lt;3+(WORDSIZE/2))):&nbsp;dsize=dsize*2)&nbsp;n++;</span></span>
+<span class="tr"><span class="th" id="line302">302</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Calculate the header size for a block of this KOV</span></span>
+<span class="tr"><span class="th" id="line303">303</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (flags &amp; BLK_FLAG_MULTIPLE) hsize = BLK_DATA_MULTI_OFFSET;</span></span>
+<span class="tr"><span class="th" id="line304">304</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    else hsize = BLK_DATA_OFFSET;</span></span>
+<span class="tr"><span class="th" id="line305">305</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Calculate the data size</span></span>
+<span class="tr"><span class="th" id="line306">306</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    n=0; for (dsize=1: ((dsize &lt; hsize+size) || (n&lt;3+(WORDSIZE/2))): dsize=dsize*2) n++;</span></span>
 <span class="tr"><span class="th" id="line307">307</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line308">308</span><span class="td">&nbsp;!&nbsp;Seek&nbsp;a&nbsp;free&nbsp;block&nbsp;closest&nbsp;to&nbsp;the&nbsp;correct&nbsp;size,&nbsp;but&nbsp;starting&nbsp;from&nbsp;the</span></span>
-<span class="tr"><span class="th" id="line309">309</span><span class="td">&nbsp;!&nbsp;block&nbsp;after&nbsp;the&nbsp;fixed&nbsp;head-free-block,&nbsp;which&nbsp;we&nbsp;can&#39;t&nbsp;touch</span></span>
-<span class="tr"><span class="th" id="line310">310</span><span class="td">&nbsp;min_m&nbsp;=&nbsp;10000;&nbsp;max_m&nbsp;=&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line311">311</span><span class="td">&nbsp;for&nbsp;(free_block&nbsp;=&nbsp;Flex_Heap--&gt;BLK_NEXT:</span></span>
-<span class="tr"><span class="th" id="line312">312</span><span class="td">&nbsp;&nbsp;free_block&nbsp;~=&nbsp;NULL:</span></span>
-<span class="tr"><span class="th" id="line313">313</span><span class="td">&nbsp;&nbsp;free_block&nbsp;=&nbsp;free_block--&gt;BLK_NEXT)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line314">314</span><span class="td">&nbsp;&nbsp;m&nbsp;=&nbsp;free_block-&gt;BLK_HEADER_N;</span></span>
-<span class="tr"><span class="th" id="line315">315</span><span class="td">&nbsp;&nbsp;!&nbsp;Current&nbsp;block&nbsp;the&nbsp;ideal&nbsp;size</span></span>
-<span class="tr"><span class="th" id="line316">316</span><span class="td">&nbsp;&nbsp;if&nbsp;(m&nbsp;==&nbsp;n)&nbsp;jump&nbsp;<a href="./Flex.i6t.html#line375">CorrectSizeFound</a>;</span></span>
-<span class="tr"><span class="th" id="line317">317</span><span class="td">&nbsp;&nbsp;!&nbsp;Current&nbsp;block&nbsp;too&nbsp;large:&nbsp;find&nbsp;the&nbsp;smallest&nbsp;which&nbsp;is&nbsp;larger&nbsp;than&nbsp;needed</span></span>
-<span class="tr"><span class="th" id="line318">318</span><span class="td">&nbsp;&nbsp;if&nbsp;(m&nbsp;&gt;&nbsp;n)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line319">319</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(min_m&nbsp;&gt;&nbsp;m)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line320">320</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;min_m&nbsp;=&nbsp;m;</span></span>
-<span class="tr"><span class="th" id="line321">321</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;smallest_oversized_block&nbsp;=&nbsp;free_block;</span></span>
-<span class="tr"><span class="th" id="line322">322</span><span class="td">&nbsp;&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line323">323</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line324">324</span><span class="td">&nbsp;&nbsp;!&nbsp;Current&nbsp;block&nbsp;too&nbsp;small:&nbsp;find&nbsp;the&nbsp;largest&nbsp;which&nbsp;is&nbsp;smaller&nbsp;than&nbsp;needed</span></span>
-<span class="tr"><span class="th" id="line325">325</span><span class="td">&nbsp;&nbsp;if&nbsp;(m&nbsp;&lt;&nbsp;n)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line326">326</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(max_m&nbsp;&lt;&nbsp;m)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line327">327</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;max_m&nbsp;=&nbsp;m;</span></span>
-<span class="tr"><span class="th" id="line328">328</span><span class="td">&nbsp;&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line329">329</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line330">330</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line308">308</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Seek a free block closest to the correct size, but starting from the</span></span>
+<span class="tr"><span class="th" id="line309">309</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! block after the fixed head-free-block, which we can&#39;t touch</span></span>
+<span class="tr"><span class="th" id="line310">310</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    min_m = 10000; max_m = 0;</span></span>
+<span class="tr"><span class="th" id="line311">311</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (free_block = Flex_Heap--&gt;BLK_NEXT:</span></span>
+<span class="tr"><span class="th" id="line312">312</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        free_block ~= NULL:</span></span>
+<span class="tr"><span class="th" id="line313">313</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        free_block = free_block--&gt;BLK_NEXT) {</span></span>
+<span class="tr"><span class="th" id="line314">314</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        m = free_block-&gt;BLK_HEADER_N;</span></span>
+<span class="tr"><span class="th" id="line315">315</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! Current block the ideal size</span></span>
+<span class="tr"><span class="th" id="line316">316</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (m == n) jump <a href="./Flex.i6t.html#line375">CorrectSizeFound</a>;</span></span>
+<span class="tr"><span class="th" id="line317">317</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! Current block too large: find the smallest which is larger than needed</span></span>
+<span class="tr"><span class="th" id="line318">318</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (m &gt; n) {</span></span>
+<span class="tr"><span class="th" id="line319">319</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (min_m &gt; m) {</span></span>
+<span class="tr"><span class="th" id="line320">320</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                min_m = m;</span></span>
+<span class="tr"><span class="th" id="line321">321</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                smallest_oversized_block = free_block;</span></span>
+<span class="tr"><span class="th" id="line322">322</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            }</span></span>
+<span class="tr"><span class="th" id="line323">323</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
+<span class="tr"><span class="th" id="line324">324</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! Current block too small: find the largest which is smaller than needed</span></span>
+<span class="tr"><span class="th" id="line325">325</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (m &lt; n) {</span></span>
+<span class="tr"><span class="th" id="line326">326</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (max_m &lt; m) {</span></span>
+<span class="tr"><span class="th" id="line327">327</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                max_m = m;</span></span>
+<span class="tr"><span class="th" id="line328">328</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            }</span></span>
+<span class="tr"><span class="th" id="line329">329</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
+<span class="tr"><span class="th" id="line330">330</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
 <span class="tr"><span class="th" id="line331">331</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line332">332</span><span class="td">&nbsp;if&nbsp;(min_m&nbsp;==&nbsp;10000)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line333">333</span><span class="td">&nbsp;&nbsp;!&nbsp;Case&nbsp;I:&nbsp;No&nbsp;block&nbsp;is&nbsp;large&nbsp;enough&nbsp;to&nbsp;hold&nbsp;the&nbsp;entire&nbsp;size</span></span>
-<span class="tr"><span class="th" id="line334">334</span><span class="td">&nbsp;&nbsp;if&nbsp;(flags&nbsp;&amp;&nbsp;BLK_FLAG_MULTIPLE&nbsp;==&nbsp;0)&nbsp;FlexError(&quot;too&nbsp;fragmented&quot;);</span></span>
-<span class="tr"><span class="th" id="line335">335</span><span class="td">&nbsp;&nbsp;!&nbsp;Set&nbsp;dsize&nbsp;to&nbsp;the&nbsp;size&nbsp;in&nbsp;bytes&nbsp;if&nbsp;the&nbsp;largest&nbsp;block&nbsp;available</span></span>
-<span class="tr"><span class="th" id="line336">336</span><span class="td">&nbsp;&nbsp;for&nbsp;(dsize=1:&nbsp;max_m&nbsp;&gt;&nbsp;0:&nbsp;dsize=dsize*2)&nbsp;max_m--;</span></span>
-<span class="tr"><span class="th" id="line337">337</span><span class="td">&nbsp;&nbsp;!&nbsp;Split&nbsp;as&nbsp;a&nbsp;head&nbsp;(dsize-hsize),&nbsp;which&nbsp;we&nbsp;can&nbsp;be&nbsp;sure&nbsp;fits&nbsp;into&nbsp;one&nbsp;block,</span></span>
-<span class="tr"><span class="th" id="line338">338</span><span class="td">&nbsp;&nbsp;!&nbsp;plus&nbsp;a&nbsp;tail&nbsp;(size-(dsize-hsize),&nbsp;which&nbsp;might&nbsp;be&nbsp;a&nbsp;list&nbsp;of&nbsp;blocks</span></span>
-<span class="tr"><span class="th" id="line339">339</span><span class="td">&nbsp;&nbsp;head&nbsp;=&nbsp;FlexAllocate(dsize-hsize,&nbsp;kov,&nbsp;flags);</span></span>
-<span class="tr"><span class="th" id="line340">340</span><span class="td">&nbsp;&nbsp;if&nbsp;(head&nbsp;==&nbsp;0)&nbsp;FlexError(&quot;for&nbsp;head&nbsp;block&nbsp;not&nbsp;available&quot;);</span></span>
-<span class="tr"><span class="th" id="line341">341</span><span class="td">&nbsp;&nbsp;tail&nbsp;=&nbsp;FlexAllocate(size-(dsize-hsize),&nbsp;kov,&nbsp;flags);</span></span>
-<span class="tr"><span class="th" id="line342">342</span><span class="td">&nbsp;&nbsp;if&nbsp;(tail&nbsp;==&nbsp;0)&nbsp;FlexError(&quot;for&nbsp;tail&nbsp;block&nbsp;not&nbsp;available&quot;);</span></span>
-<span class="tr"><span class="th" id="line343">343</span><span class="td">&nbsp;&nbsp;head--&gt;BLK_NEXT&nbsp;=&nbsp;tail;</span></span>
-<span class="tr"><span class="th" id="line344">344</span><span class="td">&nbsp;&nbsp;tail--&gt;BLK_PREV&nbsp;=&nbsp;head;</span></span>
-<span class="tr"><span class="th" id="line345">345</span><span class="td">&nbsp;&nbsp;return&nbsp;head;</span></span>
-<span class="tr"><span class="th" id="line346">346</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line332">332</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (min_m == 10000) {</span></span>
+<span class="tr"><span class="th" id="line333">333</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! Case I: No block is large enough to hold the entire size</span></span>
+<span class="tr"><span class="th" id="line334">334</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (flags &amp; BLK_FLAG_MULTIPLE == 0) FlexError(&quot;too fragmented&quot;);</span></span>
+<span class="tr"><span class="th" id="line335">335</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! Set dsize to the size in bytes if the largest block available</span></span>
+<span class="tr"><span class="th" id="line336">336</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        for (dsize=1: max_m &gt; 0: dsize=dsize*2) max_m--;</span></span>
+<span class="tr"><span class="th" id="line337">337</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! Split as a head (dsize-hsize), which we can be sure fits into one block,</span></span>
+<span class="tr"><span class="th" id="line338">338</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! plus a tail (size-(dsize-hsize), which might be a list of blocks</span></span>
+<span class="tr"><span class="th" id="line339">339</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        head = FlexAllocate(dsize-hsize, kov, flags);</span></span>
+<span class="tr"><span class="th" id="line340">340</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (head == 0) FlexError(&quot;for head block not available&quot;);</span></span>
+<span class="tr"><span class="th" id="line341">341</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        tail = FlexAllocate(size-(dsize-hsize), kov, flags);</span></span>
+<span class="tr"><span class="th" id="line342">342</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (tail == 0) FlexError(&quot;for tail block not available&quot;);</span></span>
+<span class="tr"><span class="th" id="line343">343</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        head--&gt;BLK_NEXT = tail;</span></span>
+<span class="tr"><span class="th" id="line344">344</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        tail--&gt;BLK_PREV = head;</span></span>
+<span class="tr"><span class="th" id="line345">345</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        return head;</span></span>
+<span class="tr"><span class="th" id="line346">346</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
 <span class="tr"><span class="th" id="line347">347</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line348">348</span><span class="td">&nbsp;!&nbsp;Case&nbsp;II:&nbsp;No&nbsp;block&nbsp;is&nbsp;the&nbsp;right&nbsp;size,&nbsp;but&nbsp;some&nbsp;exist&nbsp;which&nbsp;are&nbsp;too&nbsp;big</span></span>
-<span class="tr"><span class="th" id="line349">349</span><span class="td">&nbsp;!&nbsp;Set&nbsp;dsize&nbsp;to&nbsp;the&nbsp;size&nbsp;in&nbsp;bytes&nbsp;of&nbsp;the&nbsp;smallest&nbsp;oversized&nbsp;block</span></span>
-<span class="tr"><span class="th" id="line350">350</span><span class="td">&nbsp;for&nbsp;(dsize=1,m=1:&nbsp;m&lt;=min_m:&nbsp;dsize=dsize*2)&nbsp;m++;</span></span>
-<span class="tr"><span class="th" id="line351">351</span><span class="td">&nbsp;free_block&nbsp;=&nbsp;smallest_oversized_block;</span></span>
-<span class="tr"><span class="th" id="line352">352</span><span class="td">&nbsp;while&nbsp;(min_m&nbsp;&gt;&nbsp;n)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line353">353</span><span class="td">&nbsp;&nbsp;!&nbsp;Repeatedly&nbsp;halve&nbsp;free_block&nbsp;at&nbsp;the&nbsp;front&nbsp;until&nbsp;the&nbsp;two&nbsp;smallest</span></span>
-<span class="tr"><span class="th" id="line354">354</span><span class="td">&nbsp;&nbsp;!&nbsp;fragments&nbsp;left&nbsp;are&nbsp;the&nbsp;correct&nbsp;size:&nbsp;then&nbsp;take&nbsp;the&nbsp;frontmost</span></span>
-<span class="tr"><span class="th" id="line355">355</span><span class="td">&nbsp;&nbsp;dsize&nbsp;=&nbsp;dsize/2;</span></span>
-<span class="tr"><span class="th" id="line356">356</span><span class="td">&nbsp;&nbsp;!&nbsp;print&nbsp;&quot;Halving&nbsp;size&nbsp;to&nbsp;&quot;,&nbsp;dsize,&nbsp;&quot;^&quot;;</span></span>
-<span class="tr"><span class="th" id="line357">357</span><span class="td">&nbsp;&nbsp;secondhalf&nbsp;=&nbsp;free_block&nbsp;+&nbsp;dsize;</span></span>
-<span class="tr"><span class="th" id="line358">358</span><span class="td">&nbsp;&nbsp;secondhalf--&gt;BLK_NEXT&nbsp;=&nbsp;free_block--&gt;BLK_NEXT;</span></span>
-<span class="tr"><span class="th" id="line359">359</span><span class="td">&nbsp;&nbsp;if&nbsp;(secondhalf--&gt;BLK_NEXT&nbsp;~=&nbsp;NULL)</span></span>
-<span class="tr"><span class="th" id="line360">360</span><span class="td">&nbsp;&nbsp;&nbsp;(secondhalf--&gt;BLK_NEXT)--&gt;BLK_PREV&nbsp;=&nbsp;secondhalf;</span></span>
-<span class="tr"><span class="th" id="line361">361</span><span class="td">&nbsp;&nbsp;secondhalf--&gt;BLK_PREV&nbsp;=&nbsp;free_block;</span></span>
-<span class="tr"><span class="th" id="line362">362</span><span class="td">&nbsp;&nbsp;free_block--&gt;BLK_NEXT&nbsp;=&nbsp;secondhalf;</span></span>
-<span class="tr"><span class="th" id="line363">363</span><span class="td">&nbsp;&nbsp;free_block-&gt;BLK_HEADER_N&nbsp;=&nbsp;(free_block-&gt;BLK_HEADER_N)&nbsp;-&nbsp;1;</span></span>
-<span class="tr"><span class="th" id="line364">364</span><span class="td">&nbsp;&nbsp;secondhalf-&gt;BLK_HEADER_N&nbsp;=&nbsp;free_block-&gt;BLK_HEADER_N;</span></span>
-<span class="tr"><span class="th" id="line365">365</span><span class="td">&nbsp;&nbsp;secondhalf--&gt;BLK_HEADER_KOV&nbsp;=&nbsp;free_block--&gt;BLK_HEADER_KOV;</span></span>
-<span class="tr"><span class="th" id="line366">366</span><span class="td">&nbsp;&nbsp;secondhalf--&gt;BLK_HEADER_RCOUNT&nbsp;=&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line367">367</span><span class="td">&nbsp;&nbsp;secondhalf-&gt;BLK_HEADER_FLAGS&nbsp;=&nbsp;free_block-&gt;BLK_HEADER_FLAGS;</span></span>
-<span class="tr"><span class="th" id="line368">368</span><span class="td">&nbsp;&nbsp;min_m--;</span></span>
-<span class="tr"><span class="th" id="line369">369</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line370">370</span><span class="td">&nbsp;</span></span>
-<span class="tr"><span class="th" id="line371">371</span><span class="td">&nbsp;!&nbsp;Once&nbsp;that&nbsp;is&nbsp;done,&nbsp;free_block&nbsp;points&nbsp;to&nbsp;a&nbsp;block&nbsp;which&nbsp;is&nbsp;exactly&nbsp;the</span></span>
-<span class="tr"><span class="th" id="line372">372</span><span class="td">&nbsp;!&nbsp;right&nbsp;size,&nbsp;so&nbsp;we&nbsp;can&nbsp;fall&nbsp;into...</span></span>
-<span class="tr"><span class="th" id="line373">373</span><span class="td">&nbsp;</span></span>
-<span class="tr"><span class="th" id="line374">374</span><span class="td">&nbsp;!&nbsp;Case&nbsp;III:&nbsp;There&nbsp;is&nbsp;a&nbsp;free&nbsp;block&nbsp;which&nbsp;has&nbsp;the&nbsp;correct&nbsp;size.</span></span>
-<span class="tr"><span class="th" id="line375">375</span><span class="td">&nbsp;.CorrectSizeFound;</span></span>
-<span class="tr"><span class="th" id="line376">376</span><span class="td">&nbsp;!&nbsp;Delete&nbsp;the&nbsp;free&nbsp;block&nbsp;from&nbsp;the&nbsp;double&nbsp;linked&nbsp;list&nbsp;of&nbsp;free&nbsp;blocks:&nbsp;note</span></span>
-<span class="tr"><span class="th" id="line377">377</span><span class="td">&nbsp;!&nbsp;that&nbsp;it&nbsp;cannot&nbsp;be&nbsp;the&nbsp;head&nbsp;of&nbsp;this&nbsp;list,&nbsp;which&nbsp;is&nbsp;fixed</span></span>
-<span class="tr"><span class="th" id="line378">378</span><span class="td">&nbsp;if&nbsp;(free_block--&gt;BLK_NEXT&nbsp;==&nbsp;NULL)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line379">379</span><span class="td">&nbsp;&nbsp;!&nbsp;We&nbsp;remove&nbsp;final&nbsp;block,&nbsp;so&nbsp;previous&nbsp;is&nbsp;now&nbsp;final</span></span>
-<span class="tr"><span class="th" id="line380">380</span><span class="td">&nbsp;&nbsp;(free_block--&gt;BLK_PREV)--&gt;BLK_NEXT&nbsp;=&nbsp;NULL;</span></span>
-<span class="tr"><span class="th" id="line381">381</span><span class="td">&nbsp;}&nbsp;else&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line382">382</span><span class="td">&nbsp;&nbsp;!&nbsp;We&nbsp;remove&nbsp;a&nbsp;middle&nbsp;block,&nbsp;so&nbsp;join&nbsp;previous&nbsp;to&nbsp;next</span></span>
-<span class="tr"><span class="th" id="line383">383</span><span class="td">&nbsp;&nbsp;(free_block--&gt;BLK_PREV)--&gt;BLK_NEXT&nbsp;=&nbsp;free_block--&gt;BLK_NEXT;</span></span>
-<span class="tr"><span class="th" id="line384">384</span><span class="td">&nbsp;&nbsp;(free_block--&gt;BLK_NEXT)--&gt;BLK_PREV&nbsp;=&nbsp;free_block--&gt;BLK_PREV;</span></span>
-<span class="tr"><span class="th" id="line385">385</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line386">386</span><span class="td">&nbsp;free_block--&gt;BLK_HEADER_KOV&nbsp;=&nbsp;KindAtomic(kov);</span></span>
-<span class="tr"><span class="th" id="line387">387</span><span class="td">&nbsp;free_block--&gt;BLK_HEADER_RCOUNT&nbsp;=&nbsp;1;</span></span>
-<span class="tr"><span class="th" id="line388">388</span><span class="td">&nbsp;free_block-&gt;BLK_HEADER_FLAGS&nbsp;=&nbsp;flags;</span></span>
-<span class="tr"><span class="th" id="line389">389</span><span class="td">&nbsp;if&nbsp;(flags&nbsp;&amp;&nbsp;BLK_FLAG_MULTIPLE)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line390">390</span><span class="td">&nbsp;&nbsp;free_block--&gt;BLK_NEXT&nbsp;=&nbsp;NULL;</span></span>
-<span class="tr"><span class="th" id="line391">391</span><span class="td">&nbsp;&nbsp;free_block--&gt;BLK_PREV&nbsp;=&nbsp;NULL;</span></span>
-<span class="tr"><span class="th" id="line392">392</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line393">393</span><span class="td">&nbsp;</span></span>
-<span class="tr"><span class="th" id="line394">394</span><span class="td">&nbsp;!&nbsp;Zero&nbsp;out&nbsp;the&nbsp;data&nbsp;bytes&nbsp;in&nbsp;the&nbsp;memory&nbsp;allocated</span></span>
-<span class="tr"><span class="th" id="line395">395</span><span class="td">&nbsp;for&nbsp;(i=hsize:i&lt;dsize:i++)&nbsp;free_block-&gt;i=0;</span></span>
-<span class="tr"><span class="th" id="line396">396</span><span class="td">&nbsp;return&nbsp;free_block;</span></span>
+<span class="tr"><span class="th" id="line348">348</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Case II: No block is the right size, but some exist which are too big</span></span>
+<span class="tr"><span class="th" id="line349">349</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Set dsize to the size in bytes of the smallest oversized block</span></span>
+<span class="tr"><span class="th" id="line350">350</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (dsize=1,m=1: m&lt;=min_m: dsize=dsize*2) m++;</span></span>
+<span class="tr"><span class="th" id="line351">351</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    free_block = smallest_oversized_block;</span></span>
+<span class="tr"><span class="th" id="line352">352</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    while (min_m &gt; n) {</span></span>
+<span class="tr"><span class="th" id="line353">353</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! Repeatedly halve free_block at the front until the two smallest</span></span>
+<span class="tr"><span class="th" id="line354">354</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! fragments left are the correct size: then take the frontmost</span></span>
+<span class="tr"><span class="th" id="line355">355</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        dsize = dsize/2;</span></span>
+<span class="tr"><span class="th" id="line356">356</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! print &quot;Halving size to &quot;, dsize, &quot;^&quot;;</span></span>
+<span class="tr"><span class="th" id="line357">357</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        secondhalf = free_block + dsize;</span></span>
+<span class="tr"><span class="th" id="line358">358</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        secondhalf--&gt;BLK_NEXT = free_block--&gt;BLK_NEXT;</span></span>
+<span class="tr"><span class="th" id="line359">359</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (secondhalf--&gt;BLK_NEXT ~= NULL)</span></span>
+<span class="tr"><span class="th" id="line360">360</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            (secondhalf--&gt;BLK_NEXT)--&gt;BLK_PREV = secondhalf;</span></span>
+<span class="tr"><span class="th" id="line361">361</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        secondhalf--&gt;BLK_PREV = free_block;</span></span>
+<span class="tr"><span class="th" id="line362">362</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        free_block--&gt;BLK_NEXT = secondhalf;</span></span>
+<span class="tr"><span class="th" id="line363">363</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        free_block-&gt;BLK_HEADER_N = (free_block-&gt;BLK_HEADER_N) - 1;</span></span>
+<span class="tr"><span class="th" id="line364">364</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        secondhalf-&gt;BLK_HEADER_N = free_block-&gt;BLK_HEADER_N;</span></span>
+<span class="tr"><span class="th" id="line365">365</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        secondhalf--&gt;BLK_HEADER_KOV = free_block--&gt;BLK_HEADER_KOV;</span></span>
+<span class="tr"><span class="th" id="line366">366</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        secondhalf--&gt;BLK_HEADER_RCOUNT = 0;</span></span>
+<span class="tr"><span class="th" id="line367">367</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        secondhalf-&gt;BLK_HEADER_FLAGS = free_block-&gt;BLK_HEADER_FLAGS;</span></span>
+<span class="tr"><span class="th" id="line368">368</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        min_m--;</span></span>
+<span class="tr"><span class="th" id="line369">369</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line370">370</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    </span></span>
+<span class="tr"><span class="th" id="line371">371</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Once that is done, free_block points to a block which is exactly the</span></span>
+<span class="tr"><span class="th" id="line372">372</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! right size, so we can fall into...</span></span>
+<span class="tr"><span class="th" id="line373">373</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    </span></span>
+<span class="tr"><span class="th" id="line374">374</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Case III: There is a free block which has the correct size.</span></span>
+<span class="tr"><span class="th" id="line375">375</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    .CorrectSizeFound;</span></span>
+<span class="tr"><span class="th" id="line376">376</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Delete the free block from the double linked list of free blocks: note</span></span>
+<span class="tr"><span class="th" id="line377">377</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! that it cannot be the head of this list, which is fixed</span></span>
+<span class="tr"><span class="th" id="line378">378</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (free_block--&gt;BLK_NEXT == NULL) {</span></span>
+<span class="tr"><span class="th" id="line379">379</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! We remove final block, so previous is now final</span></span>
+<span class="tr"><span class="th" id="line380">380</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        (free_block--&gt;BLK_PREV)--&gt;BLK_NEXT = NULL;</span></span>
+<span class="tr"><span class="th" id="line381">381</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    } else {</span></span>
+<span class="tr"><span class="th" id="line382">382</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! We remove a middle block, so join previous to next</span></span>
+<span class="tr"><span class="th" id="line383">383</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        (free_block--&gt;BLK_PREV)--&gt;BLK_NEXT = free_block--&gt;BLK_NEXT;</span></span>
+<span class="tr"><span class="th" id="line384">384</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        (free_block--&gt;BLK_NEXT)--&gt;BLK_PREV = free_block--&gt;BLK_PREV;</span></span>
+<span class="tr"><span class="th" id="line385">385</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line386">386</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    free_block--&gt;BLK_HEADER_KOV = KindAtomic(kov);</span></span>
+<span class="tr"><span class="th" id="line387">387</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    free_block--&gt;BLK_HEADER_RCOUNT = 1;</span></span>
+<span class="tr"><span class="th" id="line388">388</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    free_block-&gt;BLK_HEADER_FLAGS = flags;</span></span>
+<span class="tr"><span class="th" id="line389">389</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (flags &amp; BLK_FLAG_MULTIPLE) {</span></span>
+<span class="tr"><span class="th" id="line390">390</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        free_block--&gt;BLK_NEXT = NULL;</span></span>
+<span class="tr"><span class="th" id="line391">391</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        free_block--&gt;BLK_PREV = NULL;</span></span>
+<span class="tr"><span class="th" id="line392">392</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line393">393</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    </span></span>
+<span class="tr"><span class="th" id="line394">394</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Zero out the data bytes in the memory allocated</span></span>
+<span class="tr"><span class="th" id="line395">395</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (i=hsize:i&lt;dsize:i++) free_block-&gt;i=0;</span></span>
+<span class="tr"><span class="th" id="line396">396</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return free_block;</span></span>
 <span class="tr"><span class="th" id="line397">397</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#flex-errors">Errors.</h3><p><p> In the event that <span class="fixed"><a href="./Flex.i6t.html#line297">FlexAllocate</a></span> returns 0, the caller may not be able to survive, so the following is provided as a standardised way to halt the virtual machine.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line405">405</span><span class="td">[&nbsp;FlexError&nbsp;reason;</span></span>
-<span class="tr"><span class="th" id="line406">406</span><span class="td">&nbsp;print&nbsp;&quot;***&nbsp;Memory&nbsp;&quot;,&nbsp;(string)&nbsp;reason,&nbsp;&quot;&nbsp;***^&quot;;</span></span>
-<span class="tr"><span class="th" id="line407">407</span><span class="td">&nbsp;RunTimeProblem(RTP_HEAPERROR);</span></span>
-<span class="tr"><span class="th" id="line408">408</span><span class="td">&nbsp;@quit;</span></span>
+<span class="tr"><span class="th" id="line405">405</span><span class="td">[ FlexError reason;</span></span>
+<span class="tr"><span class="th" id="line406">406</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    print &quot;*** Memory &quot;, (string) reason, &quot; ***^&quot;;</span></span>
+<span class="tr"><span class="th" id="line407">407</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    RunTimeProblem(RTP_HEAPERROR);</span></span>
+<span class="tr"><span class="th" id="line408">408</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @quit;</span></span>
 <span class="tr"><span class="th" id="line409">409</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#flex-merging">Merging.</h3><p><p> Given a free block <span class="fixed">block</span>, find the maximal contiguous run of free blocks which contains it, and then call <span class="fixed"><a href="./Flex.i6t.html#line443">FlexRecutInternal</a></span> to recut it to conform to invariant (b) above.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line417">417</span><span class="td">[&nbsp;FlexMergeInternal&nbsp;block&nbsp;first&nbsp;last&nbsp;pv&nbsp;nx;</span></span>
-<span class="tr"><span class="th" id="line418">418</span><span class="td">&nbsp;first&nbsp;=&nbsp;block;&nbsp;last&nbsp;=&nbsp;block;</span></span>
-<span class="tr"><span class="th" id="line419">419</span><span class="td">&nbsp;while&nbsp;(last--&gt;BLK_NEXT&nbsp;==&nbsp;last+FlexSize(last))</span></span>
-<span class="tr"><span class="th" id="line420">420</span><span class="td">&nbsp;&nbsp;last&nbsp;=&nbsp;last--&gt;BLK_NEXT;</span></span>
-<span class="tr"><span class="th" id="line421">421</span><span class="td">&nbsp;while&nbsp;((first--&gt;BLK_PREV&nbsp;+&nbsp;FlexSize(first--&gt;BLK_PREV)&nbsp;==&nbsp;first)&nbsp;&amp;&amp;</span></span>
-<span class="tr"><span class="th" id="line422">422</span><span class="td">&nbsp;&nbsp;(first--&gt;BLK_PREV&nbsp;~=&nbsp;Flex_Heap))</span></span>
-<span class="tr"><span class="th" id="line423">423</span><span class="td">&nbsp;&nbsp;first&nbsp;=&nbsp;first--&gt;BLK_PREV;</span></span>
-<span class="tr"><span class="th" id="line424">424</span><span class="td">&nbsp;pv&nbsp;=&nbsp;first--&gt;BLK_PREV;</span></span>
-<span class="tr"><span class="th" id="line425">425</span><span class="td">&nbsp;nx&nbsp;=&nbsp;last--&gt;BLK_NEXT;</span></span>
-<span class="tr"><span class="th" id="line426">426</span><span class="td">&nbsp;#ifdef&nbsp;BLKVALUE_TRACE;</span></span>
-<span class="tr"><span class="th" id="line427">427</span><span class="td">&nbsp;print&nbsp;&quot;Merging:&nbsp;&quot;;&nbsp;FlexDebugDecomposition(pv--&gt;BLK_NEXT,&nbsp;nx);&nbsp;print&nbsp;&quot;^&quot;;</span></span>
-<span class="tr"><span class="th" id="line428">428</span><span class="td">&nbsp;#endif;</span></span>
-<span class="tr"><span class="th" id="line429">429</span><span class="td">&nbsp;if&nbsp;(FlexRecutInternal(first,&nbsp;last))&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line430">430</span><span class="td">&nbsp;&nbsp;#ifdef&nbsp;BLKVALUE_TRACE;</span></span>
-<span class="tr"><span class="th" id="line431">431</span><span class="td">&nbsp;&nbsp;print&nbsp;&quot;&nbsp;--&gt;&nbsp;&quot;;&nbsp;FlexDebugDecomposition(pv--&gt;BLK_NEXT,&nbsp;nx);&nbsp;print&nbsp;&quot;^&quot;;</span></span>
-<span class="tr"><span class="th" id="line432">432</span><span class="td">&nbsp;&nbsp;#endif;</span></span>
-<span class="tr"><span class="th" id="line433">433</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line417">417</span><span class="td">[ FlexMergeInternal block first last pv nx;</span></span>
+<span class="tr"><span class="th" id="line418">418</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    first = block; last = block;</span></span>
+<span class="tr"><span class="th" id="line419">419</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    while (last--&gt;BLK_NEXT == last+FlexSize(last))</span></span>
+<span class="tr"><span class="th" id="line420">420</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        last = last--&gt;BLK_NEXT;</span></span>
+<span class="tr"><span class="th" id="line421">421</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    while ((first--&gt;BLK_PREV + FlexSize(first--&gt;BLK_PREV) == first) &amp;&amp;</span></span>
+<span class="tr"><span class="th" id="line422">422</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        (first--&gt;BLK_PREV ~= Flex_Heap))</span></span>
+<span class="tr"><span class="th" id="line423">423</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        first = first--&gt;BLK_PREV;</span></span>
+<span class="tr"><span class="th" id="line424">424</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    pv = first--&gt;BLK_PREV;</span></span>
+<span class="tr"><span class="th" id="line425">425</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    nx = last--&gt;BLK_NEXT;</span></span>
+<span class="tr"><span class="th" id="line426">426</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #ifdef BLKVALUE_TRACE;</span></span>
+<span class="tr"><span class="th" id="line427">427</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    print &quot;Merging: &quot;; FlexDebugDecomposition(pv--&gt;BLK_NEXT, nx); print &quot;^&quot;;</span></span>
+<span class="tr"><span class="th" id="line428">428</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #endif;</span></span>
+<span class="tr"><span class="th" id="line429">429</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (FlexRecutInternal(first, last)) {</span></span>
+<span class="tr"><span class="th" id="line430">430</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        #ifdef BLKVALUE_TRACE;</span></span>
+<span class="tr"><span class="th" id="line431">431</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        print &quot; --&gt; &quot;; FlexDebugDecomposition(pv--&gt;BLK_NEXT, nx); print &quot;^&quot;;</span></span>
+<span class="tr"><span class="th" id="line432">432</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        #endif;</span></span>
+<span class="tr"><span class="th" id="line433">433</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
 <span class="tr"><span class="th" id="line434">434</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#flex-recutting">Recutting.</h3><p><p> Given a segment of the free block list, containing blocks known to be contiguous in memory, we recut into a sequence of blocks satisfying invariant (b): we repeatedly cut the largest <em>2^m</em>-sized chunk off the back end until it is all used up.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line443">443</span><span class="td">[&nbsp;FlexRecutInternal&nbsp;first&nbsp;last&nbsp;tsize&nbsp;backsize&nbsp;mfrom&nbsp;mto&nbsp;bnext&nbsp;backend&nbsp;n&nbsp;dsize&nbsp;fine_so_far;</span></span>
-<span class="tr"><span class="th" id="line444">444</span><span class="td">&nbsp;if&nbsp;(first&nbsp;==&nbsp;last)&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line445">445</span><span class="td">&nbsp;mfrom&nbsp;=&nbsp;first;&nbsp;mto&nbsp;=&nbsp;last&nbsp;+&nbsp;FlexSize(last);</span></span>
-<span class="tr"><span class="th" id="line446">446</span><span class="td">&nbsp;bnext&nbsp;=&nbsp;last--&gt;BLK_NEXT;</span></span>
-<span class="tr"><span class="th" id="line447">447</span><span class="td">&nbsp;fine_so_far&nbsp;=&nbsp;true;</span></span>
-<span class="tr"><span class="th" id="line448">448</span><span class="td">&nbsp;for&nbsp;(:mto&gt;mfrom:&nbsp;mto&nbsp;=&nbsp;mto&nbsp;-&nbsp;backsize)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line449">449</span><span class="td">&nbsp;&nbsp;for&nbsp;(n=0,&nbsp;backsize=1:&nbsp;backsize*2&nbsp;&lt;=&nbsp;mto-mfrom:&nbsp;n++)&nbsp;backsize=backsize*2;</span></span>
-<span class="tr"><span class="th" id="line450">450</span><span class="td">&nbsp;&nbsp;if&nbsp;((fine_so_far)&nbsp;&amp;&amp;&nbsp;(backsize&nbsp;==&nbsp;FlexSize(last)))&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line451">451</span><span class="td">&nbsp;&nbsp;&nbsp;bnext&nbsp;=&nbsp;last;&nbsp;last&nbsp;=&nbsp;last--&gt;BLK_PREV;</span></span>
-<span class="tr"><span class="th" id="line452">452</span><span class="td">&nbsp;&nbsp;&nbsp;bnext--&gt;BLK_PREV&nbsp;=&nbsp;last;</span></span>
-<span class="tr"><span class="th" id="line453">453</span><span class="td">&nbsp;&nbsp;&nbsp;last--&gt;BLK_NEXT&nbsp;=&nbsp;bnext;</span></span>
-<span class="tr"><span class="th" id="line454">454</span><span class="td">&nbsp;&nbsp;&nbsp;continue;</span></span>
-<span class="tr"><span class="th" id="line455">455</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line456">456</span><span class="td">&nbsp;&nbsp;fine_so_far&nbsp;=&nbsp;false;&nbsp;!&nbsp;From&nbsp;this&nbsp;point,&nbsp;&quot;last&quot;&nbsp;is&nbsp;meaningless</span></span>
-<span class="tr"><span class="th" id="line457">457</span><span class="td">&nbsp;&nbsp;backend&nbsp;=&nbsp;mto&nbsp;-&nbsp;backsize;</span></span>
-<span class="tr"><span class="th" id="line458">458</span><span class="td">&nbsp;&nbsp;backend-&gt;BLK_HEADER_N&nbsp;=&nbsp;n;</span></span>
-<span class="tr"><span class="th" id="line459">459</span><span class="td">&nbsp;&nbsp;backend--&gt;BLK_HEADER_KOV&nbsp;=&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line460">460</span><span class="td">&nbsp;&nbsp;backend--&gt;BLK_HEADER_RCOUNT&nbsp;=&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line461">461</span><span class="td">&nbsp;&nbsp;backend-&gt;BLK_HEADER_FLAGS&nbsp;=&nbsp;BLK_FLAG_MULTIPLE;</span></span>
-<span class="tr"><span class="th" id="line462">462</span><span class="td">&nbsp;&nbsp;backend--&gt;BLK_NEXT&nbsp;=&nbsp;bnext;</span></span>
-<span class="tr"><span class="th" id="line463">463</span><span class="td">&nbsp;&nbsp;if&nbsp;(bnext&nbsp;~=&nbsp;NULL)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line464">464</span><span class="td">&nbsp;&nbsp;&nbsp;bnext--&gt;BLK_PREV&nbsp;=&nbsp;backend;</span></span>
-<span class="tr"><span class="th" id="line465">465</span><span class="td">&nbsp;&nbsp;&nbsp;bnext&nbsp;=&nbsp;backend;</span></span>
-<span class="tr"><span class="th" id="line466">466</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line467">467</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line468">468</span><span class="td">&nbsp;if&nbsp;(fine_so_far)&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line469">469</span><span class="td">&nbsp;rtrue;</span></span>
+<h3 id="#flex-recutting">Recutting.</h3><p><p> Given a segment of the free block list, containing blocks known to be contiguous in memory, we recut into a sequence of blocks satisfying invariant (b): we repeatedly cut the largest <em>2<sup>m</sup></em>-sized chunk off the back end until it is all used up.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line443">443</span><span class="td">[ FlexRecutInternal first last tsize backsize mfrom mto bnext backend n dsize fine_so_far;</span></span>
+<span class="tr"><span class="th" id="line444">444</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (first == last) rfalse;</span></span>
+<span class="tr"><span class="th" id="line445">445</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    mfrom = first; mto = last + FlexSize(last);</span></span>
+<span class="tr"><span class="th" id="line446">446</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    bnext = last--&gt;BLK_NEXT;</span></span>
+<span class="tr"><span class="th" id="line447">447</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    fine_so_far = true;</span></span>
+<span class="tr"><span class="th" id="line448">448</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (:mto&gt;mfrom: mto = mto - backsize) {</span></span>
+<span class="tr"><span class="th" id="line449">449</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        for (n=0, backsize=1: backsize*2 &lt;= mto-mfrom: n++) backsize=backsize*2;</span></span>
+<span class="tr"><span class="th" id="line450">450</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if ((fine_so_far) &amp;&amp; (backsize == FlexSize(last))) {</span></span>
+<span class="tr"><span class="th" id="line451">451</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            bnext = last; last = last--&gt;BLK_PREV;</span></span>
+<span class="tr"><span class="th" id="line452">452</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            bnext--&gt;BLK_PREV = last;</span></span>
+<span class="tr"><span class="th" id="line453">453</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            last--&gt;BLK_NEXT = bnext;</span></span>
+<span class="tr"><span class="th" id="line454">454</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            continue;</span></span>
+<span class="tr"><span class="th" id="line455">455</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
+<span class="tr"><span class="th" id="line456">456</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        fine_so_far = false; ! From this point, &quot;last&quot; is meaningless</span></span>
+<span class="tr"><span class="th" id="line457">457</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        backend = mto - backsize;</span></span>
+<span class="tr"><span class="th" id="line458">458</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        backend-&gt;BLK_HEADER_N = n;</span></span>
+<span class="tr"><span class="th" id="line459">459</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        backend--&gt;BLK_HEADER_KOV = 0;</span></span>
+<span class="tr"><span class="th" id="line460">460</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        backend--&gt;BLK_HEADER_RCOUNT = 0;</span></span>
+<span class="tr"><span class="th" id="line461">461</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        backend-&gt;BLK_HEADER_FLAGS = BLK_FLAG_MULTIPLE;</span></span>
+<span class="tr"><span class="th" id="line462">462</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        backend--&gt;BLK_NEXT = bnext;</span></span>
+<span class="tr"><span class="th" id="line463">463</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (bnext ~= NULL) {</span></span>
+<span class="tr"><span class="th" id="line464">464</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            bnext--&gt;BLK_PREV = backend;</span></span>
+<span class="tr"><span class="th" id="line465">465</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            bnext = backend;</span></span>
+<span class="tr"><span class="th" id="line466">466</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
+<span class="tr"><span class="th" id="line467">467</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line468">468</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (fine_so_far) rfalse;</span></span>
+<span class="tr"><span class="th" id="line469">469</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rtrue;</span></span>
 <span class="tr"><span class="th" id="line470">470</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#flex-deallocation">Deallocation.</h3><p><p> As noted above, <span class="fixed"><a href="./Flex.i6t.html#line492">FlexFree</a></span> must be called exactly once on each nonzero pointer returned by <span class="fixed"><a href="./Flex.i6t.html#line297">FlexAllocate</a></span>.<p></p><p> There are two complications: first, when we free a multiple block we need to free all of the blocks in the list, starting from the back end and working forwards to the front &ndash; this is the job of <span class="fixed"><a href="./Flex.i6t.html#line492">FlexFree</a></span>. Second, when any given block is freed it has to be put into the free block list at the correct position to preserve invariant (a): it might either come after all of the currently free blocks in memory, and have to be added to the end of the list, or in between two, and have to be inserted mid-list, but it can&#39;t be before all of them because the head-free-block is kept lowest in memory of all possible blocks. (Note that Glulx can&#39;t allocate memory dynamically which undercuts the ordinary array space created by I6: I6 arrays fill up memory from the bottom.)<p></p><p> Certain blocks <strong> outside</strong> the heap are marked as &quot;resident&quot; in memory, that is, are indestructible. This enables Inform to compile constant values.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line492">492</span><span class="td">[&nbsp;FlexFree&nbsp;block&nbsp;fromtxb&nbsp;ptxb;</span></span>
-<span class="tr"><span class="th" id="line493">493</span><span class="td">&nbsp;if&nbsp;(block&nbsp;==&nbsp;0)&nbsp;return;</span></span>
-<span class="tr"><span class="th" id="line494">494</span><span class="td">&nbsp;if&nbsp;((block-&gt;BLK_HEADER_FLAGS)&nbsp;&amp;&nbsp;BLK_FLAG_RESIDENT)&nbsp;return;</span></span>
-<span class="tr"><span class="th" id="line495">495</span><span class="td">&nbsp;if&nbsp;((block-&gt;BLK_HEADER_N)&nbsp;&amp;&nbsp;$80)&nbsp;return;&nbsp;!&nbsp;not&nbsp;a&nbsp;flexible&nbsp;block&nbsp;at&nbsp;all</span></span>
-<span class="tr"><span class="th" id="line496">496</span><span class="td">&nbsp;if&nbsp;((block-&gt;BLK_HEADER_FLAGS)&nbsp;&amp;&nbsp;BLK_FLAG_MULTIPLE)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line497">497</span><span class="td">&nbsp;&nbsp;if&nbsp;(block--&gt;BLK_PREV&nbsp;~=&nbsp;NULL)&nbsp;(block--&gt;BLK_PREV)--&gt;BLK_NEXT&nbsp;=&nbsp;NULL;</span></span>
-<span class="tr"><span class="th" id="line498">498</span><span class="td">&nbsp;&nbsp;fromtxb&nbsp;=&nbsp;block;</span></span>
-<span class="tr"><span class="th" id="line499">499</span><span class="td">&nbsp;&nbsp;for&nbsp;(:(block--&gt;BLK_NEXT)~=NULL:block&nbsp;=&nbsp;block--&gt;BLK_NEXT)&nbsp;;</span></span>
-<span class="tr"><span class="th" id="line500">500</span><span class="td">&nbsp;&nbsp;while&nbsp;(block&nbsp;~=&nbsp;fromtxb)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line501">501</span><span class="td">&nbsp;&nbsp;&nbsp;ptxb&nbsp;=&nbsp;block--&gt;BLK_PREV;&nbsp;FlexFreeSingleBlockInternal(block);&nbsp;block&nbsp;=&nbsp;ptxb;</span></span>
-<span class="tr"><span class="th" id="line502">502</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line503">503</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line504">504</span><span class="td">&nbsp;FlexFreeSingleBlockInternal(block);</span></span>
+<span class="tr"><span class="th" id="line492">492</span><span class="td">[ FlexFree block fromtxb ptxb;</span></span>
+<span class="tr"><span class="th" id="line493">493</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (block == 0) return;</span></span>
+<span class="tr"><span class="th" id="line494">494</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if ((block-&gt;BLK_HEADER_FLAGS) &amp; BLK_FLAG_RESIDENT) return;</span></span>
+<span class="tr"><span class="th" id="line495">495</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if ((block-&gt;BLK_HEADER_N) &amp; $80) return; ! not a flexible block at all</span></span>
+<span class="tr"><span class="th" id="line496">496</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if ((block-&gt;BLK_HEADER_FLAGS) &amp; BLK_FLAG_MULTIPLE) {</span></span>
+<span class="tr"><span class="th" id="line497">497</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (block--&gt;BLK_PREV ~= NULL) (block--&gt;BLK_PREV)--&gt;BLK_NEXT = NULL;</span></span>
+<span class="tr"><span class="th" id="line498">498</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        fromtxb = block;</span></span>
+<span class="tr"><span class="th" id="line499">499</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        for (:(block--&gt;BLK_NEXT)~=NULL:block = block--&gt;BLK_NEXT) ;</span></span>
+<span class="tr"><span class="th" id="line500">500</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        while (block ~= fromtxb) {</span></span>
+<span class="tr"><span class="th" id="line501">501</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            ptxb = block--&gt;BLK_PREV; FlexFreeSingleBlockInternal(block); block = ptxb;</span></span>
+<span class="tr"><span class="th" id="line502">502</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
+<span class="tr"><span class="th" id="line503">503</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line504">504</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    FlexFreeSingleBlockInternal(block);</span></span>
 <span class="tr"><span class="th" id="line505">505</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line506">506</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line507">507</span><span class="td">[&nbsp;FlexFreeSingleBlockInternal&nbsp;block&nbsp;free&nbsp;nx;</span></span>
-<span class="tr"><span class="th" id="line508">508</span><span class="td">&nbsp;block--&gt;BLK_HEADER_KOV&nbsp;=&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line509">509</span><span class="td">&nbsp;block--&gt;BLK_HEADER_RCOUNT&nbsp;=&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line510">510</span><span class="td">&nbsp;block-&gt;BLK_HEADER_FLAGS&nbsp;=&nbsp;BLK_FLAG_MULTIPLE;</span></span>
-<span class="tr"><span class="th" id="line511">511</span><span class="td">&nbsp;for&nbsp;(free&nbsp;=&nbsp;Flex_Heap:free&nbsp;~=&nbsp;NULL:free&nbsp;=&nbsp;free--&gt;BLK_NEXT)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line512">512</span><span class="td">&nbsp;&nbsp;nx&nbsp;=&nbsp;free--&gt;BLK_NEXT;</span></span>
-<span class="tr"><span class="th" id="line513">513</span><span class="td">&nbsp;&nbsp;if&nbsp;(nx&nbsp;==&nbsp;NULL)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line514">514</span><span class="td">&nbsp;&nbsp;&nbsp;free--&gt;BLK_NEXT&nbsp;=&nbsp;block;</span></span>
-<span class="tr"><span class="th" id="line515">515</span><span class="td">&nbsp;&nbsp;&nbsp;block--&gt;BLK_PREV&nbsp;=&nbsp;free;</span></span>
-<span class="tr"><span class="th" id="line516">516</span><span class="td">&nbsp;&nbsp;&nbsp;block--&gt;BLK_NEXT&nbsp;=&nbsp;NULL;</span></span>
-<span class="tr"><span class="th" id="line517">517</span><span class="td">&nbsp;&nbsp;&nbsp;FlexMergeInternal(block);</span></span>
-<span class="tr"><span class="th" id="line518">518</span><span class="td">&nbsp;&nbsp;&nbsp;return;</span></span>
-<span class="tr"><span class="th" id="line519">519</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line520">520</span><span class="td">&nbsp;&nbsp;if&nbsp;(UnsignedCompare(nx,&nbsp;block)&nbsp;==&nbsp;1)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line521">521</span><span class="td">&nbsp;&nbsp;&nbsp;free--&gt;BLK_NEXT&nbsp;=&nbsp;block;</span></span>
-<span class="tr"><span class="th" id="line522">522</span><span class="td">&nbsp;&nbsp;&nbsp;block--&gt;BLK_PREV&nbsp;=&nbsp;free;</span></span>
-<span class="tr"><span class="th" id="line523">523</span><span class="td">&nbsp;&nbsp;&nbsp;block--&gt;BLK_NEXT&nbsp;=&nbsp;nx;</span></span>
-<span class="tr"><span class="th" id="line524">524</span><span class="td">&nbsp;&nbsp;&nbsp;nx--&gt;BLK_PREV&nbsp;=&nbsp;block;</span></span>
-<span class="tr"><span class="th" id="line525">525</span><span class="td">&nbsp;&nbsp;&nbsp;FlexMergeInternal(block);</span></span>
-<span class="tr"><span class="th" id="line526">526</span><span class="td">&nbsp;&nbsp;&nbsp;return;</span></span>
-<span class="tr"><span class="th" id="line527">527</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line528">528</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line507">507</span><span class="td">[ FlexFreeSingleBlockInternal block free nx;</span></span>
+<span class="tr"><span class="th" id="line508">508</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    block--&gt;BLK_HEADER_KOV = 0;</span></span>
+<span class="tr"><span class="th" id="line509">509</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    block--&gt;BLK_HEADER_RCOUNT = 0;</span></span>
+<span class="tr"><span class="th" id="line510">510</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    block-&gt;BLK_HEADER_FLAGS = BLK_FLAG_MULTIPLE;</span></span>
+<span class="tr"><span class="th" id="line511">511</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (free = Flex_Heap:free ~= NULL:free = free--&gt;BLK_NEXT) {</span></span>
+<span class="tr"><span class="th" id="line512">512</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        nx = free--&gt;BLK_NEXT;</span></span>
+<span class="tr"><span class="th" id="line513">513</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (nx == NULL) {</span></span>
+<span class="tr"><span class="th" id="line514">514</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            free--&gt;BLK_NEXT = block;</span></span>
+<span class="tr"><span class="th" id="line515">515</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            block--&gt;BLK_PREV = free;</span></span>
+<span class="tr"><span class="th" id="line516">516</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            block--&gt;BLK_NEXT = NULL;</span></span>
+<span class="tr"><span class="th" id="line517">517</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            FlexMergeInternal(block);</span></span>
+<span class="tr"><span class="th" id="line518">518</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            return;</span></span>
+<span class="tr"><span class="th" id="line519">519</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
+<span class="tr"><span class="th" id="line520">520</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (UnsignedCompare(nx, block) == 1) {</span></span>
+<span class="tr"><span class="th" id="line521">521</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            free--&gt;BLK_NEXT = block;</span></span>
+<span class="tr"><span class="th" id="line522">522</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            block--&gt;BLK_PREV = free;</span></span>
+<span class="tr"><span class="th" id="line523">523</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            block--&gt;BLK_NEXT = nx;</span></span>
+<span class="tr"><span class="th" id="line524">524</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            nx--&gt;BLK_PREV = block;</span></span>
+<span class="tr"><span class="th" id="line525">525</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            FlexMergeInternal(block);</span></span>
+<span class="tr"><span class="th" id="line526">526</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            return;</span></span>
+<span class="tr"><span class="th" id="line527">527</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
+<span class="tr"><span class="th" id="line528">528</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
 <span class="tr"><span class="th" id="line529">529</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#flex-resizing">Resizing.</h3><p><p> A block which has been allocated, but not yet freed, can sometimes have its data capacity changed by <span class="fixed"><a href="./Flex.i6t.html#line545">FlexResize</a></span>.<p></p><p> When the data being stored stretches or shrinks, we will sometimes need to change the size of the block(s) containing the data &ndash; though not always: we might sometimes need to resize a 1052-byte text to a 1204-byte text and find that we are sitting in a 2048-byte block in any case. We either shed blocks from the end of the chain, or add new blocks at the end, that being the simplest thing to do. Sometimes it might mean preserving a not very efficient block division, but it minimises the churn of blocks being allocated and freed, which is probably good.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line545">545</span><span class="td">[&nbsp;FlexResize&nbsp;block&nbsp;req&nbsp;newsize&nbsp;dsize&nbsp;newblk&nbsp;kov&nbsp;n&nbsp;i&nbsp;otxb&nbsp;flags;</span></span>
-<span class="tr"><span class="th" id="line546">546</span><span class="td">&nbsp;if&nbsp;(block&nbsp;==&nbsp;0)&nbsp;FlexError(&quot;failed&nbsp;resizing&nbsp;null&nbsp;block&quot;);</span></span>
-<span class="tr"><span class="th" id="line547">547</span><span class="td">&nbsp;kov&nbsp;=&nbsp;block--&gt;BLK_HEADER_KOV;</span></span>
-<span class="tr"><span class="th" id="line548">548</span><span class="td">&nbsp;flags&nbsp;=&nbsp;block-&gt;BLK_HEADER_FLAGS;</span></span>
-<span class="tr"><span class="th" id="line549">549</span><span class="td">&nbsp;if&nbsp;(flags&nbsp;&amp;&nbsp;BLK_FLAG_MULTIPLE&nbsp;==&nbsp;0)&nbsp;FlexError(&quot;failed&nbsp;resizing&nbsp;inextensible&nbsp;block&quot;);</span></span>
-<span class="tr"><span class="th" id="line550">550</span><span class="td">&nbsp;otxb&nbsp;=&nbsp;block;</span></span>
-<span class="tr"><span class="th" id="line551">551</span><span class="td">&nbsp;newsize&nbsp;=&nbsp;req;</span></span>
-<span class="tr"><span class="th" id="line552">552</span><span class="td">&nbsp;for&nbsp;(::&nbsp;block&nbsp;=&nbsp;block--&gt;BLK_NEXT)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line553">553</span><span class="td">&nbsp;&nbsp;n&nbsp;=&nbsp;block-&gt;BLK_HEADER_N;</span></span>
-<span class="tr"><span class="th" id="line554">554</span><span class="td">&nbsp;&nbsp;for&nbsp;(dsize=1:&nbsp;n&gt;0:&nbsp;n--)&nbsp;dsize&nbsp;=&nbsp;dsize*2;</span></span>
-<span class="tr"><span class="th" id="line555">555</span><span class="td">&nbsp;&nbsp;i&nbsp;=&nbsp;dsize&nbsp;-&nbsp;BLK_DATA_MULTI_OFFSET;</span></span>
-<span class="tr"><span class="th" id="line556">556</span><span class="td">&nbsp;&nbsp;newsize&nbsp;=&nbsp;newsize&nbsp;-&nbsp;i;</span></span>
-<span class="tr"><span class="th" id="line557">557</span><span class="td">&nbsp;&nbsp;if&nbsp;(newsize&nbsp;&gt;&nbsp;0)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line558">558</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(block--&gt;BLK_NEXT&nbsp;~=&nbsp;NULL)&nbsp;continue;</span></span>
-<span class="tr"><span class="th" id="line559">559</span><span class="td">&nbsp;&nbsp;&nbsp;newblk&nbsp;=&nbsp;FlexAllocate(newsize,&nbsp;kov,&nbsp;flags);</span></span>
-<span class="tr"><span class="th" id="line560">560</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(newblk&nbsp;==&nbsp;0)&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line561">561</span><span class="td">&nbsp;&nbsp;&nbsp;block--&gt;BLK_NEXT&nbsp;=&nbsp;newblk;</span></span>
-<span class="tr"><span class="th" id="line562">562</span><span class="td">&nbsp;&nbsp;&nbsp;newblk--&gt;BLK_PREV&nbsp;=&nbsp;block;</span></span>
-<span class="tr"><span class="th" id="line563">563</span><span class="td">&nbsp;&nbsp;&nbsp;return;</span></span>
-<span class="tr"><span class="th" id="line564">564</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line565">565</span><span class="td">&nbsp;&nbsp;if&nbsp;(block--&gt;BLK_NEXT&nbsp;~=&nbsp;NULL)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line566">566</span><span class="td">&nbsp;&nbsp;&nbsp;FlexFree(block--&gt;BLK_NEXT);</span></span>
-<span class="tr"><span class="th" id="line567">567</span><span class="td">&nbsp;&nbsp;&nbsp;block--&gt;BLK_NEXT&nbsp;=&nbsp;NULL;</span></span>
-<span class="tr"><span class="th" id="line568">568</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line569">569</span><span class="td">&nbsp;&nbsp;return;</span></span>
-<span class="tr"><span class="th" id="line570">570</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line545">545</span><span class="td">[ FlexResize block req newsize dsize newblk kov n i otxb flags;</span></span>
+<span class="tr"><span class="th" id="line546">546</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (block == 0) FlexError(&quot;failed resizing null block&quot;);</span></span>
+<span class="tr"><span class="th" id="line547">547</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    kov = block--&gt;BLK_HEADER_KOV;</span></span>
+<span class="tr"><span class="th" id="line548">548</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    flags = block-&gt;BLK_HEADER_FLAGS;</span></span>
+<span class="tr"><span class="th" id="line549">549</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (flags &amp; BLK_FLAG_MULTIPLE == 0) FlexError(&quot;failed resizing inextensible block&quot;);</span></span>
+<span class="tr"><span class="th" id="line550">550</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    otxb = block;</span></span>
+<span class="tr"><span class="th" id="line551">551</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    newsize = req;</span></span>
+<span class="tr"><span class="th" id="line552">552</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (:: block = block--&gt;BLK_NEXT) {</span></span>
+<span class="tr"><span class="th" id="line553">553</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        n = block-&gt;BLK_HEADER_N;</span></span>
+<span class="tr"><span class="th" id="line554">554</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        for (dsize=1: n&gt;0: n--) dsize = dsize*2;</span></span>
+<span class="tr"><span class="th" id="line555">555</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        i = dsize - BLK_DATA_MULTI_OFFSET;</span></span>
+<span class="tr"><span class="th" id="line556">556</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        newsize = newsize - i;</span></span>
+<span class="tr"><span class="th" id="line557">557</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (newsize &gt; 0) {</span></span>
+<span class="tr"><span class="th" id="line558">558</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (block--&gt;BLK_NEXT ~= NULL) continue;</span></span>
+<span class="tr"><span class="th" id="line559">559</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            newblk = FlexAllocate(newsize, kov, flags);</span></span>
+<span class="tr"><span class="th" id="line560">560</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (newblk == 0) rfalse;</span></span>
+<span class="tr"><span class="th" id="line561">561</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            block--&gt;BLK_NEXT = newblk;</span></span>
+<span class="tr"><span class="th" id="line562">562</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            newblk--&gt;BLK_PREV = block;</span></span>
+<span class="tr"><span class="th" id="line563">563</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            return;</span></span>
+<span class="tr"><span class="th" id="line564">564</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
+<span class="tr"><span class="th" id="line565">565</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (block--&gt;BLK_NEXT ~= NULL) {</span></span>
+<span class="tr"><span class="th" id="line566">566</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            FlexFree(block--&gt;BLK_NEXT);</span></span>
+<span class="tr"><span class="th" id="line567">567</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            block--&gt;BLK_NEXT = NULL;</span></span>
+<span class="tr"><span class="th" id="line568">568</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
+<span class="tr"><span class="th" id="line569">569</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        return;</span></span>
+<span class="tr"><span class="th" id="line570">570</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
 <span class="tr"><span class="th" id="line571">571</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#flex-block-size">Block Size.</h3><p><p> These two routines are provided for the use of the <span class="fixed">BlockValue</span> routines only.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line578">578</span><span class="td">[&nbsp;FlexSize&nbsp;txb&nbsp;bsize&nbsp;n;&nbsp;!&nbsp;Size&nbsp;of&nbsp;an&nbsp;individual&nbsp;block,&nbsp;including&nbsp;header</span></span>
-<span class="tr"><span class="th" id="line579">579</span><span class="td">&nbsp;if&nbsp;(txb&nbsp;==&nbsp;0)&nbsp;return&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line580">580</span><span class="td">&nbsp;for&nbsp;(bsize=1:&nbsp;n&lt;txb-&gt;BLK_HEADER_N:&nbsp;bsize=bsize*2)&nbsp;n++;</span></span>
-<span class="tr"><span class="th" id="line581">581</span><span class="td">&nbsp;return&nbsp;bsize;</span></span>
+<span class="tr"><span class="th" id="line578">578</span><span class="td">[ FlexSize txb bsize n; ! Size of an individual block, including header</span></span>
+<span class="tr"><span class="th" id="line579">579</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (txb == 0) return 0;</span></span>
+<span class="tr"><span class="th" id="line580">580</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (bsize=1: n&lt;txb-&gt;BLK_HEADER_N: bsize=bsize*2) n++;</span></span>
+<span class="tr"><span class="th" id="line581">581</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return bsize;</span></span>
 <span class="tr"><span class="th" id="line582">582</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line583">583</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line584">584</span><span class="td">[&nbsp;FlexTotalSize&nbsp;txb&nbsp;size_in_bytes;&nbsp;!&nbsp;Combined&nbsp;size&nbsp;of&nbsp;multiple-blocks&nbsp;for&nbsp;a&nbsp;value</span></span>
-<span class="tr"><span class="th" id="line585">585</span><span class="td">&nbsp;if&nbsp;(txb&nbsp;==&nbsp;0)&nbsp;return&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line586">586</span><span class="td">&nbsp;if&nbsp;((txb-&gt;BLK_HEADER_FLAGS)&nbsp;&amp;&nbsp;BLK_FLAG_MULTIPLE&nbsp;==&nbsp;0)</span></span>
-<span class="tr"><span class="th" id="line587">587</span><span class="td">&nbsp;&nbsp;return&nbsp;FlexSize(txb)&nbsp;-&nbsp;BLK_DATA_OFFSET;</span></span>
-<span class="tr"><span class="th" id="line588">588</span><span class="td">&nbsp;for&nbsp;(:txb~=NULL:txb=txb--&gt;BLK_NEXT)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line589">589</span><span class="td">&nbsp;&nbsp;size_in_bytes&nbsp;=&nbsp;size_in_bytes&nbsp;+&nbsp;FlexSize(txb)&nbsp;-&nbsp;BLK_DATA_MULTI_OFFSET;</span></span>
-<span class="tr"><span class="th" id="line590">590</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line591">591</span><span class="td">&nbsp;return&nbsp;size_in_bytes;</span></span>
+<span class="tr"><span class="th" id="line584">584</span><span class="td">[ FlexTotalSize txb size_in_bytes; ! Combined size of multiple-blocks for a value</span></span>
+<span class="tr"><span class="th" id="line585">585</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (txb == 0) return 0;</span></span>
+<span class="tr"><span class="th" id="line586">586</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if ((txb-&gt;BLK_HEADER_FLAGS) &amp; BLK_FLAG_MULTIPLE == 0)</span></span>
+<span class="tr"><span class="th" id="line587">587</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        return FlexSize(txb) - BLK_DATA_OFFSET;</span></span>
+<span class="tr"><span class="th" id="line588">588</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (:txb~=NULL:txb=txb--&gt;BLK_NEXT) {</span></span>
+<span class="tr"><span class="th" id="line589">589</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        size_in_bytes = size_in_bytes + FlexSize(txb) - BLK_DATA_MULTI_OFFSET;</span></span>
+<span class="tr"><span class="th" id="line590">590</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line591">591</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return size_in_bytes;</span></span>
 <span class="tr"><span class="th" id="line592">592</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#flex-debugging-routines">Debugging Routines.</h3><p><p> These two routines are purely for testing the above code.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line598">598</span><span class="td">[&nbsp;FlexDebug&nbsp;txb&nbsp;n&nbsp;k&nbsp;i&nbsp;bsize&nbsp;tot&nbsp;dtot&nbsp;kov;</span></span>
-<span class="tr"><span class="th" id="line599">599</span><span class="td">&nbsp;if&nbsp;(txb&nbsp;==&nbsp;0)&nbsp;&quot;Block&nbsp;never&nbsp;created.&quot;;</span></span>
-<span class="tr"><span class="th" id="line600">600</span><span class="td">&nbsp;kov&nbsp;=&nbsp;txb--&gt;BLK_HEADER_KOV;</span></span>
-<span class="tr"><span class="th" id="line601">601</span><span class="td">&nbsp;print&nbsp;&quot;Block&nbsp;&quot;,&nbsp;txb,&nbsp;&quot;&nbsp;(kov&nbsp;&quot;,&nbsp;kov,&nbsp;&quot;):&nbsp;&quot;;</span></span>
-<span class="tr"><span class="th" id="line602">602</span><span class="td">&nbsp;for&nbsp;(:txb~=NULL:txb&nbsp;=&nbsp;txb--&gt;BLK_NEXT)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line603">603</span><span class="td">&nbsp;&nbsp;if&nbsp;(k++&nbsp;==&nbsp;100)&nbsp;&quot;&nbsp;...&nbsp;and&nbsp;so&nbsp;on.&quot;;</span></span>
-<span class="tr"><span class="th" id="line604">604</span><span class="td">&nbsp;&nbsp;if&nbsp;(txb--&gt;BLK_HEADER_KOV&nbsp;~=&nbsp;kov)</span></span>
-<span class="tr"><span class="th" id="line605">605</span><span class="td">&nbsp;&nbsp;&nbsp;print&nbsp;&quot;*Wrong&nbsp;kov=&quot;,&nbsp;txb--&gt;BLK_HEADER_KOV,&nbsp;&quot;*&nbsp;&quot;;</span></span>
-<span class="tr"><span class="th" id="line606">606</span><span class="td">&nbsp;&nbsp;n&nbsp;=&nbsp;txb-&gt;BLK_HEADER_N;</span></span>
-<span class="tr"><span class="th" id="line607">607</span><span class="td">&nbsp;&nbsp;for&nbsp;(bsize=1:n&gt;0:n--)&nbsp;bsize=bsize*2;</span></span>
-<span class="tr"><span class="th" id="line608">608</span><span class="td">&nbsp;&nbsp;i&nbsp;=&nbsp;bsize&nbsp;-&nbsp;BLK_DATA_OFFSET;</span></span>
-<span class="tr"><span class="th" id="line609">609</span><span class="td">&nbsp;&nbsp;dtot&nbsp;=&nbsp;dtot+i;</span></span>
-<span class="tr"><span class="th" id="line610">610</span><span class="td">&nbsp;&nbsp;tot&nbsp;=&nbsp;tot+bsize;</span></span>
-<span class="tr"><span class="th" id="line611">611</span><span class="td">&nbsp;&nbsp;print&nbsp;txb,&nbsp;&quot;(&quot;,&nbsp;bsize,&nbsp;&quot;)&nbsp;&gt;&nbsp;&quot;;</span></span>
-<span class="tr"><span class="th" id="line612">612</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line613">613</span><span class="td">&nbsp;print&nbsp;dtot,&nbsp;&quot;&nbsp;data&nbsp;in&nbsp;&quot;,&nbsp;tot,&nbsp;&quot;&nbsp;bytes^&quot;;</span></span>
+<span class="tr"><span class="th" id="line598">598</span><span class="td">[ FlexDebug txb n k i bsize tot dtot kov;</span></span>
+<span class="tr"><span class="th" id="line599">599</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (txb == 0) &quot;Block never created.&quot;;</span></span>
+<span class="tr"><span class="th" id="line600">600</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    kov = txb--&gt;BLK_HEADER_KOV;</span></span>
+<span class="tr"><span class="th" id="line601">601</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    print &quot;Block &quot;, txb, &quot; (kov &quot;, kov, &quot;): &quot;;</span></span>
+<span class="tr"><span class="th" id="line602">602</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (:txb~=NULL:txb = txb--&gt;BLK_NEXT) {</span></span>
+<span class="tr"><span class="th" id="line603">603</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (k++ == 100) &quot; ... and so on.&quot;;</span></span>
+<span class="tr"><span class="th" id="line604">604</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (txb--&gt;BLK_HEADER_KOV ~= kov)</span></span>
+<span class="tr"><span class="th" id="line605">605</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            print &quot;*Wrong kov=&quot;, txb--&gt;BLK_HEADER_KOV, &quot;* &quot;;</span></span>
+<span class="tr"><span class="th" id="line606">606</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        n = txb-&gt;BLK_HEADER_N;</span></span>
+<span class="tr"><span class="th" id="line607">607</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        for (bsize=1:n&gt;0:n--) bsize=bsize*2;</span></span>
+<span class="tr"><span class="th" id="line608">608</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        i = bsize - BLK_DATA_OFFSET;</span></span>
+<span class="tr"><span class="th" id="line609">609</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        dtot = dtot+i;</span></span>
+<span class="tr"><span class="th" id="line610">610</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        tot = tot+bsize;</span></span>
+<span class="tr"><span class="th" id="line611">611</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        print txb, &quot;(&quot;, bsize, &quot;) &gt; &quot;;</span></span>
+<span class="tr"><span class="th" id="line612">612</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line613">613</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    print dtot, &quot; data in &quot;, tot, &quot; bytes^&quot;;</span></span>
 <span class="tr"><span class="th" id="line614">614</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line615">615</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line616">616</span><span class="td">[&nbsp;FlexDebugDecomposition&nbsp;from&nbsp;to&nbsp;txb&nbsp;pf;</span></span>
-<span class="tr"><span class="th" id="line617">617</span><span class="td">&nbsp;if&nbsp;(to==0)&nbsp;to&nbsp;=&nbsp;NULL;</span></span>
-<span class="tr"><span class="th" id="line618">618</span><span class="td">&nbsp;for&nbsp;(txb=from:(txb~=to)&nbsp;&amp;&amp;&nbsp;(txb~=NULL):txb=txb--&gt;BLK_NEXT)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line619">619</span><span class="td">&nbsp;&nbsp;if&nbsp;(pf)&nbsp;print&nbsp;&quot;+&quot;;</span></span>
-<span class="tr"><span class="th" id="line620">620</span><span class="td">&nbsp;&nbsp;print&nbsp;FlexSize(txb);</span></span>
-<span class="tr"><span class="th" id="line621">621</span><span class="td">&nbsp;&nbsp;pf&nbsp;=&nbsp;true;</span></span>
-<span class="tr"><span class="th" id="line622">622</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line623">623</span><span class="td">&nbsp;print&nbsp;&quot;^&quot;;</span></span>
+<span class="tr"><span class="th" id="line616">616</span><span class="td">[ FlexDebugDecomposition from to txb pf;</span></span>
+<span class="tr"><span class="th" id="line617">617</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (to==0) to = NULL;</span></span>
+<span class="tr"><span class="th" id="line618">618</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (txb=from:(txb~=to) &amp;&amp; (txb~=NULL):txb=txb--&gt;BLK_NEXT) {</span></span>
+<span class="tr"><span class="th" id="line619">619</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (pf) print &quot;+&quot;;</span></span>
+<span class="tr"><span class="th" id="line620">620</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        print FlexSize(txb);</span></span>
+<span class="tr"><span class="th" id="line621">621</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        pf = true;</span></span>
+<span class="tr"><span class="th" id="line622">622</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line623">623</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    print &quot;^&quot;;</span></span>
 <span class="tr"><span class="th" id="line624">624</span><span class="td">];</span></span>
-</div><footer><hr><p><em>From I6T lib 6/12N &copy; Graham Nelson and published under the <a href="https://github.com/zedlopez/standard_rules/blob/main/LICENSE.md">Artistic License 2.0</a>. Distributed with <a href="http://inform7.com/">Inform 7 6M62</a>.</em></p></footer></body></html>
+</div><footer><p><em>From I6T lib 6/12N &copy; Graham Nelson and published under the <a href="https://github.com/zedlopez/standard_rules/blob/main/LICENSE.md">Artistic License 2.0</a>. Distributed with <a href="http://inform7.com/">Inform 7 6M62</a>.</em></p></footer></body></html>

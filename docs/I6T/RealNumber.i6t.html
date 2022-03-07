@@ -7,22 +7,25 @@ span.th, span.td { display: table-cell; }
 span.td { padding-left: 2rem; }
 span.th { width:4rem; text-align: right; }
 span.tr { display: table-row;     counter-increment: linenum; }
-span.line_no::before {
+.pre-lines { font-family: monospace; margin-left: 3rem; line-height: 1.5rem; }
+/*span.line_no::before {
     content: counter(linenum);
     text-align: right;
     display: block;
     font-family: monospace;
     font-weight: normal;
-}
+}*/
 h1 { margin: 0; }
 .fixed { font-family: monospace }
 .em { font-style: italic; }
 .center { text-align: center; }
-    body { font-family: sans-serif; margin: 1.5rem 0 0 3rem; background-color: #fafaf0; width: 80rem; }
+    body { font-family: sans-serif; margin: 1.5rem 0 3rem 3rem; background-color: #fafaf0; width: 80rem; }
     .pre { font-family: monospace; margin: auto; width: 80rem; }
-#front_matter,.text { width: 50rem; }
+#front_matter,.text { width: 48rem; }
+/* h3 { margin-top: 1.5rem; padding-top: 1.5rem; }*/
 .text { border-bottom: .5px solid black; border-top: .5px solid black; margin-top: 1rem;
-padding-bottom: 1rem; margin-bottom: 2rem; }
+padding-bottom: .5rem; margin-bottom: 1.5rem; margin-top: 1.75rem; padding-top: .25rem;}
+footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; margin-bottom: 0;}
 /*.subtitle { font-weight: bold; font-size: 1.2rem; }*/
     </style>
 </head>
@@ -31,626 +34,626 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <h1>I6 Template Layer</h1>
 <div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Index</a> &bull; <a href="./Introduction.i6t.html">Introduction</a></div><hr></header>
 <div id="front_matter">
-<h2><a href="./RealNumber.i6t">RealNumber.i6t</a></h2><h3 id="#realnumber-printing-reals">Printing reals.</h3><p><p> Most of the code in this section is by Andrew Plotkin, and derives from test cases used to check the floating-point extensions to Glulx.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line12">12</span><span class="td">#Ifdef&nbsp;TARGET_GLULX;</span></span>
+<h2><a href="./RealNumber.i6t.txt">RealNumber.i6t</a></h2><h3 id="#realnumber-printing-reals">Printing reals.</h3><p><p> Most of the code in this section is by Andrew Plotkin, and derives from test cases used to check the floating-point extensions to Glulx.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line12">12</span><span class="td">#Ifdef TARGET_GLULX;</span></span>
 <span class="tr"><span class="th" id="line13">13</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line14">14</span><span class="td">[&nbsp;REAL_NUMBER_TY_Say&nbsp;fp;</span></span>
-<span class="tr"><span class="th" id="line15">15</span><span class="td">&nbsp;print&nbsp;(Float)&nbsp;fp;</span></span>
+<span class="tr"><span class="th" id="line14">14</span><span class="td">[ REAL_NUMBER_TY_Say fp;</span></span>
+<span class="tr"><span class="th" id="line15">15</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    print (Float) fp;</span></span>
 <span class="tr"><span class="th" id="line16">16</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line17">17</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line18">18</span><span class="td">[&nbsp;REAL_NUMBER_TY_Compare&nbsp;r1&nbsp;r2;</span></span>
-<span class="tr"><span class="th" id="line19">19</span><span class="td">&nbsp;@jflt&nbsp;r1&nbsp;r2&nbsp;?less;</span></span>
-<span class="tr"><span class="th" id="line20">20</span><span class="td">&nbsp;@jfeq&nbsp;r1&nbsp;r2&nbsp;0&nbsp;?same;</span></span>
-<span class="tr"><span class="th" id="line21">21</span><span class="td">&nbsp;return&nbsp;1;</span></span>
-<span class="tr"><span class="th" id="line22">22</span><span class="td">&nbsp;.same;&nbsp;return&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line23">23</span><span class="td">&nbsp;.less;&nbsp;return&nbsp;-1;</span></span>
+<span class="tr"><span class="th" id="line18">18</span><span class="td">[ REAL_NUMBER_TY_Compare r1 r2;</span></span>
+<span class="tr"><span class="th" id="line19">19</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @jflt r1 r2 ?less;</span></span>
+<span class="tr"><span class="th" id="line20">20</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @jfeq r1 r2 0 ?same;</span></span>
+<span class="tr"><span class="th" id="line21">21</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return 1;</span></span>
+<span class="tr"><span class="th" id="line22">22</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    .same; return 0;</span></span>
+<span class="tr"><span class="th" id="line23">23</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    .less; return -1;</span></span>
 <span class="tr"><span class="th" id="line24">24</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line25">25</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line26">26</span><span class="td">[&nbsp;NUMBER_TY_to_REAL_NUMBER_TY&nbsp;int&nbsp;real;&nbsp;@numtof&nbsp;int&nbsp;real;&nbsp;return&nbsp;real;&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line27">27</span><span class="td">[&nbsp;REAL_NUMBER_TY_to_NUMBER_TY&nbsp;real&nbsp;int;&nbsp;@ftonumn&nbsp;real&nbsp;int;&nbsp;return&nbsp;int;&nbsp;];</span></span>
+<span class="tr"><span class="th" id="line26">26</span><span class="td">[ NUMBER_TY_to_REAL_NUMBER_TY int real; @numtof int real; return real; ];</span></span>
+<span class="tr"><span class="th" id="line27">27</span><span class="td">[ REAL_NUMBER_TY_to_NUMBER_TY real int; @ftonumn real int; return int; ];</span></span>
 <span class="tr"><span class="th" id="line28">28</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line29">29</span><span class="td">[&nbsp;REAL_NUMBER_TY_Sin&nbsp;in&nbsp;out;&nbsp;@sin&nbsp;in&nbsp;out;&nbsp;return&nbsp;out;&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line30">30</span><span class="td">[&nbsp;REAL_NUMBER_TY_Cos&nbsp;in&nbsp;out;&nbsp;@cos&nbsp;in&nbsp;out;&nbsp;return&nbsp;out;&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line31">31</span><span class="td">[&nbsp;REAL_NUMBER_TY_Tan&nbsp;in&nbsp;out;&nbsp;@tan&nbsp;in&nbsp;out;&nbsp;return&nbsp;out;&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line32">32</span><span class="td">[&nbsp;REAL_NUMBER_TY_Arcsin&nbsp;in&nbsp;out;&nbsp;@asin&nbsp;in&nbsp;out;&nbsp;return&nbsp;out;&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line33">33</span><span class="td">[&nbsp;REAL_NUMBER_TY_Arccos&nbsp;in&nbsp;out;&nbsp;@acos&nbsp;in&nbsp;out;&nbsp;return&nbsp;out;&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line34">34</span><span class="td">[&nbsp;REAL_NUMBER_TY_Arctan&nbsp;in&nbsp;out;&nbsp;@atan&nbsp;in&nbsp;out;&nbsp;return&nbsp;out;&nbsp;];</span></span>
+<span class="tr"><span class="th" id="line29">29</span><span class="td">[ REAL_NUMBER_TY_Sin in out; @sin in out; return out; ];</span></span>
+<span class="tr"><span class="th" id="line30">30</span><span class="td">[ REAL_NUMBER_TY_Cos in out; @cos in out; return out; ];</span></span>
+<span class="tr"><span class="th" id="line31">31</span><span class="td">[ REAL_NUMBER_TY_Tan in out; @tan in out; return out; ];</span></span>
+<span class="tr"><span class="th" id="line32">32</span><span class="td">[ REAL_NUMBER_TY_Arcsin in out; @asin in out; return out; ];</span></span>
+<span class="tr"><span class="th" id="line33">33</span><span class="td">[ REAL_NUMBER_TY_Arccos in out; @acos in out; return out; ];</span></span>
+<span class="tr"><span class="th" id="line34">34</span><span class="td">[ REAL_NUMBER_TY_Arctan in out; @atan in out; return out; ];</span></span>
 <span class="tr"><span class="th" id="line35">35</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line36">36</span><span class="td">[&nbsp;REAL_NUMBER_TY_Sinh&nbsp;in&nbsp;tmp&nbsp;out;</span></span>
-<span class="tr"><span class="th" id="line37">37</span><span class="td">&nbsp;@exp&nbsp;in&nbsp;tmp;</span></span>
-<span class="tr"><span class="th" id="line38">38</span><span class="td">&nbsp;@fsub&nbsp;M_0&nbsp;in&nbsp;in;</span></span>
-<span class="tr"><span class="th" id="line39">39</span><span class="td">&nbsp;@exp&nbsp;in&nbsp;out;</span></span>
-<span class="tr"><span class="th" id="line40">40</span><span class="td">&nbsp;@fadd&nbsp;tmp&nbsp;out&nbsp;out;</span></span>
-<span class="tr"><span class="th" id="line41">41</span><span class="td">&nbsp;@fmul&nbsp;out&nbsp;M_HALF&nbsp;out;</span></span>
-<span class="tr"><span class="th" id="line42">42</span><span class="td">&nbsp;return&nbsp;out;</span></span>
+<span class="tr"><span class="th" id="line36">36</span><span class="td">[ REAL_NUMBER_TY_Sinh in tmp out;</span></span>
+<span class="tr"><span class="th" id="line37">37</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @exp in tmp;</span></span>
+<span class="tr"><span class="th" id="line38">38</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @fsub M_0 in in;</span></span>
+<span class="tr"><span class="th" id="line39">39</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @exp in out;</span></span>
+<span class="tr"><span class="th" id="line40">40</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @fadd tmp out out;</span></span>
+<span class="tr"><span class="th" id="line41">41</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @fmul out M_HALF out;</span></span>
+<span class="tr"><span class="th" id="line42">42</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return out;</span></span>
 <span class="tr"><span class="th" id="line43">43</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line44">44</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line45">45</span><span class="td">[&nbsp;REAL_NUMBER_TY_Cosh&nbsp;in&nbsp;tmp&nbsp;out;</span></span>
-<span class="tr"><span class="th" id="line46">46</span><span class="td">&nbsp;@exp&nbsp;in&nbsp;tmp;</span></span>
-<span class="tr"><span class="th" id="line47">47</span><span class="td">&nbsp;@fsub&nbsp;M_0&nbsp;in&nbsp;in;</span></span>
-<span class="tr"><span class="th" id="line48">48</span><span class="td">&nbsp;@exp&nbsp;in&nbsp;out;</span></span>
-<span class="tr"><span class="th" id="line49">49</span><span class="td">&nbsp;@fsub&nbsp;tmp&nbsp;out&nbsp;out;</span></span>
-<span class="tr"><span class="th" id="line50">50</span><span class="td">&nbsp;@fmul&nbsp;out&nbsp;M_HALF&nbsp;out;</span></span>
-<span class="tr"><span class="th" id="line51">51</span><span class="td">&nbsp;return&nbsp;out;</span></span>
+<span class="tr"><span class="th" id="line45">45</span><span class="td">[ REAL_NUMBER_TY_Cosh in tmp out;</span></span>
+<span class="tr"><span class="th" id="line46">46</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @exp in tmp;</span></span>
+<span class="tr"><span class="th" id="line47">47</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @fsub M_0 in in;</span></span>
+<span class="tr"><span class="th" id="line48">48</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @exp in out;</span></span>
+<span class="tr"><span class="th" id="line49">49</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @fsub tmp out out;</span></span>
+<span class="tr"><span class="th" id="line50">50</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @fmul out M_HALF out;</span></span>
+<span class="tr"><span class="th" id="line51">51</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return out;</span></span>
 <span class="tr"><span class="th" id="line52">52</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line53">53</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line54">54</span><span class="td">[&nbsp;REAL_NUMBER_TY_Tanh&nbsp;in&nbsp;tmp&nbsp;out;</span></span>
-<span class="tr"><span class="th" id="line55">55</span><span class="td">&nbsp;tmp&nbsp;=&nbsp;REAL_NUMBER_TY_Sinh(in);</span></span>
-<span class="tr"><span class="th" id="line56">56</span><span class="td">&nbsp;in&nbsp;=&nbsp;REAL_NUMBER_TY_Cosh(in);</span></span>
-<span class="tr"><span class="th" id="line57">57</span><span class="td">&nbsp;@fdiv&nbsp;tmp&nbsp;in&nbsp;out;</span></span>
-<span class="tr"><span class="th" id="line58">58</span><span class="td">&nbsp;return&nbsp;out;</span></span>
+<span class="tr"><span class="th" id="line54">54</span><span class="td">[ REAL_NUMBER_TY_Tanh in tmp out;</span></span>
+<span class="tr"><span class="th" id="line55">55</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    tmp = REAL_NUMBER_TY_Sinh(in);</span></span>
+<span class="tr"><span class="th" id="line56">56</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    in = REAL_NUMBER_TY_Cosh(in);</span></span>
+<span class="tr"><span class="th" id="line57">57</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @fdiv tmp in out;</span></span>
+<span class="tr"><span class="th" id="line58">58</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return out;</span></span>
 <span class="tr"><span class="th" id="line59">59</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line60">60</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line61">61</span><span class="td">[&nbsp;REAL_NUMBER_TY_Reciprocal&nbsp;in&nbsp;out;&nbsp;@fdiv&nbsp;M_1&nbsp;in&nbsp;out;&nbsp;return&nbsp;out;&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line62">62</span><span class="td">[&nbsp;REAL_NUMBER_TY_Negate&nbsp;in&nbsp;out;&nbsp;@fsub&nbsp;M_0&nbsp;in&nbsp;out;&nbsp;return&nbsp;out;&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line63">63</span><span class="td">[&nbsp;REAL_NUMBER_TY_Plus&nbsp;x&nbsp;y&nbsp;out;&nbsp;@fadd&nbsp;x&nbsp;y&nbsp;out;&nbsp;return&nbsp;out;&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line64">64</span><span class="td">[&nbsp;REAL_NUMBER_TY_Minus&nbsp;x&nbsp;y&nbsp;out;&nbsp;@fsub&nbsp;x&nbsp;y&nbsp;out;&nbsp;return&nbsp;out;&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line65">65</span><span class="td">[&nbsp;REAL_NUMBER_TY_Times&nbsp;x&nbsp;y&nbsp;out;&nbsp;@fmul&nbsp;x&nbsp;y&nbsp;out;&nbsp;return&nbsp;out;&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line66">66</span><span class="td">[&nbsp;REAL_NUMBER_TY_Divide&nbsp;x&nbsp;y&nbsp;out;&nbsp;@fdiv&nbsp;x&nbsp;y&nbsp;out;&nbsp;return&nbsp;out;&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line67">67</span><span class="td">[&nbsp;REAL_NUMBER_TY_Remainder&nbsp;x&nbsp;y&nbsp;r&nbsp;q;&nbsp;@fmod&nbsp;x&nbsp;y&nbsp;r&nbsp;q;&nbsp;return&nbsp;r;&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line68">68</span><span class="td">[&nbsp;REAL_NUMBER_TY_Approximate&nbsp;x&nbsp;y&nbsp;quotient&nbsp;out;</span></span>
-<span class="tr"><span class="th" id="line69">69</span><span class="td">&nbsp;@fdiv&nbsp;x&nbsp;y&nbsp;quotient;</span></span>
-<span class="tr"><span class="th" id="line70">70</span><span class="td">&nbsp;@fadd&nbsp;quotient&nbsp;M_HALF&nbsp;quotient;</span></span>
-<span class="tr"><span class="th" id="line71">71</span><span class="td">&nbsp;@floor&nbsp;quotient&nbsp;quotient;</span></span>
-<span class="tr"><span class="th" id="line72">72</span><span class="td">&nbsp;@fmul&nbsp;quotient&nbsp;y&nbsp;out;</span></span>
-<span class="tr"><span class="th" id="line73">73</span><span class="td">&nbsp;return&nbsp;out;</span></span>
+<span class="tr"><span class="th" id="line61">61</span><span class="td">[ REAL_NUMBER_TY_Reciprocal in out; @fdiv M_1 in out; return out; ];</span></span>
+<span class="tr"><span class="th" id="line62">62</span><span class="td">[ REAL_NUMBER_TY_Negate in out; @fsub M_0 in out; return out; ];</span></span>
+<span class="tr"><span class="th" id="line63">63</span><span class="td">[ REAL_NUMBER_TY_Plus x y out; @fadd x y out; return out; ];</span></span>
+<span class="tr"><span class="th" id="line64">64</span><span class="td">[ REAL_NUMBER_TY_Minus x y out; @fsub x y out; return out; ];</span></span>
+<span class="tr"><span class="th" id="line65">65</span><span class="td">[ REAL_NUMBER_TY_Times x y out; @fmul x y out; return out; ];</span></span>
+<span class="tr"><span class="th" id="line66">66</span><span class="td">[ REAL_NUMBER_TY_Divide x y out; @fdiv x y out; return out; ];</span></span>
+<span class="tr"><span class="th" id="line67">67</span><span class="td">[ REAL_NUMBER_TY_Remainder x y r q; @fmod x y r q; return r; ];</span></span>
+<span class="tr"><span class="th" id="line68">68</span><span class="td">[ REAL_NUMBER_TY_Approximate x y quotient out;</span></span>
+<span class="tr"><span class="th" id="line69">69</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @fdiv x y quotient;</span></span>
+<span class="tr"><span class="th" id="line70">70</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @fadd quotient M_HALF quotient;</span></span>
+<span class="tr"><span class="th" id="line71">71</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @floor quotient quotient;</span></span>
+<span class="tr"><span class="th" id="line72">72</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @fmul quotient y out;</span></span>
+<span class="tr"><span class="th" id="line73">73</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return out;</span></span>
 <span class="tr"><span class="th" id="line74">74</span><span class="td">];</span></span>
-<span class="tr"><span class="th" id="line75">75</span><span class="td">[&nbsp;REAL_NUMBER_TY_Root&nbsp;x&nbsp;out;&nbsp;@sqrt&nbsp;x&nbsp;out;&nbsp;return&nbsp;out;&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line76">76</span><span class="td">[&nbsp;REAL_NUMBER_TY_Cube_Root&nbsp;x&nbsp;out;&nbsp;@pow&nbsp;x&nbsp;M_THIRD&nbsp;out;&nbsp;return&nbsp;out;&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line77">77</span><span class="td">[&nbsp;REAL_NUMBER_TY_Pow&nbsp;x&nbsp;y&nbsp;out;&nbsp;@pow&nbsp;x&nbsp;y&nbsp;out;&nbsp;return&nbsp;out;&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line78">78</span><span class="td">[&nbsp;REAL_NUMBER_TY_Exp&nbsp;x&nbsp;out;&nbsp;@exp&nbsp;x&nbsp;out;&nbsp;return&nbsp;out;&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line79">79</span><span class="td">[&nbsp;REAL_NUMBER_TY_Log&nbsp;x&nbsp;out;&nbsp;@log&nbsp;x&nbsp;out;&nbsp;return&nbsp;out;&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line80">80</span><span class="td">[&nbsp;REAL_NUMBER_TY_BLog&nbsp;x&nbsp;n&nbsp;d&nbsp;out;</span></span>
-<span class="tr"><span class="th" id="line81">81</span><span class="td">&nbsp;@log&nbsp;x&nbsp;out;</span></span>
-<span class="tr"><span class="th" id="line82">82</span><span class="td">&nbsp;if&nbsp;(n&nbsp;==&nbsp;10)&nbsp;d&nbsp;=&nbsp;M_LOG10;</span></span>
-<span class="tr"><span class="th" id="line83">83</span><span class="td">&nbsp;else&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line84">84</span><span class="td">&nbsp;&nbsp;@numtof&nbsp;n&nbsp;d;</span></span>
-<span class="tr"><span class="th" id="line85">85</span><span class="td">&nbsp;&nbsp;@log&nbsp;d&nbsp;d;</span></span>
-<span class="tr"><span class="th" id="line86">86</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line87">87</span><span class="td">&nbsp;@fdiv&nbsp;out&nbsp;d&nbsp;out;</span></span>
-<span class="tr"><span class="th" id="line88">88</span><span class="td">&nbsp;return&nbsp;out;</span></span>
+<span class="tr"><span class="th" id="line75">75</span><span class="td">[ REAL_NUMBER_TY_Root x out; @sqrt x out; return out; ];</span></span>
+<span class="tr"><span class="th" id="line76">76</span><span class="td">[ REAL_NUMBER_TY_Cube_Root x out; @pow x M_THIRD out; return out; ];</span></span>
+<span class="tr"><span class="th" id="line77">77</span><span class="td">[ REAL_NUMBER_TY_Pow x y out; @pow x y out; return out; ];</span></span>
+<span class="tr"><span class="th" id="line78">78</span><span class="td">[ REAL_NUMBER_TY_Exp x out; @exp x out; return out; ];</span></span>
+<span class="tr"><span class="th" id="line79">79</span><span class="td">[ REAL_NUMBER_TY_Log x out; @log x out; return out; ];</span></span>
+<span class="tr"><span class="th" id="line80">80</span><span class="td">[ REAL_NUMBER_TY_BLog x n d out;</span></span>
+<span class="tr"><span class="th" id="line81">81</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @log x out;</span></span>
+<span class="tr"><span class="th" id="line82">82</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (n == 10) d = M_LOG10;</span></span>
+<span class="tr"><span class="th" id="line83">83</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    else {</span></span>
+<span class="tr"><span class="th" id="line84">84</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @numtof n d;</span></span>
+<span class="tr"><span class="th" id="line85">85</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @log d d;</span></span>
+<span class="tr"><span class="th" id="line86">86</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line87">87</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @fdiv out d out;</span></span>
+<span class="tr"><span class="th" id="line88">88</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return out;</span></span>
 <span class="tr"><span class="th" id="line89">89</span><span class="td">];</span></span>
-<span class="tr"><span class="th" id="line90">90</span><span class="td">[&nbsp;REAL_NUMBER_TY_Floor&nbsp;x&nbsp;out;&nbsp;@floor&nbsp;x&nbsp;out;&nbsp;return&nbsp;out;&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line91">91</span><span class="td">[&nbsp;REAL_NUMBER_TY_Ceiling&nbsp;x&nbsp;out;&nbsp;@ceil&nbsp;x&nbsp;out;&nbsp;return&nbsp;out;&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line92">92</span><span class="td">[&nbsp;REAL_NUMBER_TY_Abs&nbsp;x;&nbsp;return&nbsp;x&nbsp;&amp;&nbsp;$7fffffff;&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line93">93</span><span class="td">[&nbsp;REAL_NUMBER_TY_Nan&nbsp;x;&nbsp;@jisnan&nbsp;x&nbsp;?Nan;&nbsp;rfalse;&nbsp;.Nan;&nbsp;rtrue;&nbsp;];</span></span>
+<span class="tr"><span class="th" id="line90">90</span><span class="td">[ REAL_NUMBER_TY_Floor x out; @floor x out; return out; ];</span></span>
+<span class="tr"><span class="th" id="line91">91</span><span class="td">[ REAL_NUMBER_TY_Ceiling x out; @ceil x out; return out; ];</span></span>
+<span class="tr"><span class="th" id="line92">92</span><span class="td">[ REAL_NUMBER_TY_Abs x; return x &amp; $7fffffff; ];</span></span>
+<span class="tr"><span class="th" id="line93">93</span><span class="td">[ REAL_NUMBER_TY_Nan x; @jisnan x ?Nan; rfalse; .Nan; rtrue; ];</span></span>
 <span class="tr"><span class="th" id="line94">94</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line95">95</span><span class="td">Constant&nbsp;M_0&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;$0;</span></span>
-<span class="tr"><span class="th" id="line96">96</span><span class="td">Constant&nbsp;M_1&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;$3F800000;</span></span>
-<span class="tr"><span class="th" id="line97">97</span><span class="td">Constant&nbsp;M_HALF&nbsp;=&nbsp;$3F000000;&nbsp;!&nbsp;1/3</span></span>
-<span class="tr"><span class="th" id="line98">98</span><span class="td">Constant&nbsp;M_THIRD&nbsp;=&nbsp;$3EAAAAAB;&nbsp;!&nbsp;1/3</span></span>
-<span class="tr"><span class="th" id="line99">99</span><span class="td">Constant&nbsp;M_LOG10&nbsp;=&nbsp;$40135D8E;&nbsp;!&nbsp;log(10)</span></span>
-<span class="tr"><span class="th" id="line100">100</span><span class="td">Constant&nbsp;M_N1&nbsp;&nbsp;&nbsp;=&nbsp;$BF800000;&nbsp;!&nbsp;-1</span></span>
-<span class="tr"><span class="th" id="line101">101</span><span class="td">Constant&nbsp;M_PI&nbsp;&nbsp;&nbsp;=&nbsp;$40490FDB;</span></span>
-<span class="tr"><span class="th" id="line102">102</span><span class="td">Constant&nbsp;M_NPI&nbsp;&nbsp;=&nbsp;$C0490FDB;</span></span>
-<span class="tr"><span class="th" id="line103">103</span><span class="td">Constant&nbsp;M_2PI&nbsp;&nbsp;=&nbsp;$40C90FDB;&nbsp;!&nbsp;2*pi</span></span>
-<span class="tr"><span class="th" id="line104">104</span><span class="td">Constant&nbsp;M_PI2&nbsp;&nbsp;=&nbsp;$3FC90FDB;&nbsp;!&nbsp;pi/2</span></span>
-<span class="tr"><span class="th" id="line105">105</span><span class="td">Constant&nbsp;M_NPI2&nbsp;=&nbsp;$BFC90FDB;&nbsp;</span></span>
-<span class="tr"><span class="th" id="line106">106</span><span class="td">Constant&nbsp;M_E&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;$402DF854;</span></span>
-<span class="tr"><span class="th" id="line107">107</span><span class="td">Constant&nbsp;M_E2&nbsp;&nbsp;&nbsp;=&nbsp;$40EC7326;&nbsp;!&nbsp;e^2</span></span>
-<span class="tr"><span class="th" id="line108">108</span><span class="td">Constant&nbsp;M_N0&nbsp;&nbsp;&nbsp;=&nbsp;$80000000;&nbsp;!&nbsp;negative&nbsp;zero</span></span>
-<span class="tr"><span class="th" id="line109">109</span><span class="td">Constant&nbsp;M_INF&nbsp;&nbsp;=&nbsp;$7F800000;&nbsp;!&nbsp;infinity</span></span>
-<span class="tr"><span class="th" id="line110">110</span><span class="td">Constant&nbsp;M_NINF&nbsp;=&nbsp;$FF800000;&nbsp;!&nbsp;negative&nbsp;infinity</span></span>
-<span class="tr"><span class="th" id="line111">111</span><span class="td">Constant&nbsp;M_NAN&nbsp;&nbsp;=&nbsp;$7F800001;&nbsp;!&nbsp;one&nbsp;of&nbsp;many&nbsp;NaN&nbsp;values</span></span>
-<span class="tr"><span class="th" id="line112">112</span><span class="td">Constant&nbsp;M_NNAN&nbsp;=&nbsp;$FF800001;&nbsp;!&nbsp;another,&nbsp;with&nbsp;a&nbsp;sign&nbsp;bit</span></span>
+<span class="tr"><span class="th" id="line95">95</span><span class="td">Constant M_0    = $0;</span></span>
+<span class="tr"><span class="th" id="line96">96</span><span class="td">Constant M_1    = $3F800000;</span></span>
+<span class="tr"><span class="th" id="line97">97</span><span class="td">Constant M_HALF = $3F000000; ! 1/3</span></span>
+<span class="tr"><span class="th" id="line98">98</span><span class="td">Constant M_THIRD = $3EAAAAAB; ! 1/3</span></span>
+<span class="tr"><span class="th" id="line99">99</span><span class="td">Constant M_LOG10 = $40135D8E; ! log(10)</span></span>
+<span class="tr"><span class="th" id="line100">100</span><span class="td">Constant M_N1   = $BF800000; ! -1</span></span>
+<span class="tr"><span class="th" id="line101">101</span><span class="td">Constant M_PI   = $40490FDB;</span></span>
+<span class="tr"><span class="th" id="line102">102</span><span class="td">Constant M_NPI  = $C0490FDB;</span></span>
+<span class="tr"><span class="th" id="line103">103</span><span class="td">Constant M_2PI  = $40C90FDB; ! 2*pi</span></span>
+<span class="tr"><span class="th" id="line104">104</span><span class="td">Constant M_PI2  = $3FC90FDB; ! pi/2</span></span>
+<span class="tr"><span class="th" id="line105">105</span><span class="td">Constant M_NPI2 = $BFC90FDB; </span></span>
+<span class="tr"><span class="th" id="line106">106</span><span class="td">Constant M_E    = $402DF854;</span></span>
+<span class="tr"><span class="th" id="line107">107</span><span class="td">Constant M_E2   = $40EC7326; ! e^2</span></span>
+<span class="tr"><span class="th" id="line108">108</span><span class="td">Constant M_N0   = $80000000; ! negative zero</span></span>
+<span class="tr"><span class="th" id="line109">109</span><span class="td">Constant M_INF  = $7F800000; ! infinity</span></span>
+<span class="tr"><span class="th" id="line110">110</span><span class="td">Constant M_NINF = $FF800000; ! negative infinity</span></span>
+<span class="tr"><span class="th" id="line111">111</span><span class="td">Constant M_NAN  = $7F800001; ! one of many NaN values</span></span>
+<span class="tr"><span class="th" id="line112">112</span><span class="td">Constant M_NNAN = $FF800001; ! another, with a sign bit</span></span>
 <span class="tr"><span class="th" id="line113">113</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line114">114</span><span class="td">!&nbsp;Floating-point&nbsp;parsing&nbsp;routines.</span></span>
+<span class="tr"><span class="th" id="line114">114</span><span class="td">! Floating-point parsing routines.</span></span>
 <span class="tr"><span class="th" id="line115">115</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line116">116</span><span class="td">!&nbsp;Parse&nbsp;a&nbsp;float&nbsp;from&nbsp;a&nbsp;text&nbsp;buffer.&nbsp;Returns&nbsp;a&nbsp;float&nbsp;value,&nbsp;or&nbsp;FLOAT_NAN&nbsp;if</span></span>
-<span class="tr"><span class="th" id="line117">117</span><span class="td">!&nbsp;no&nbsp;value&nbsp;was&nbsp;understood.</span></span>
+<span class="tr"><span class="th" id="line116">116</span><span class="td">! Parse a float from a text buffer. Returns a float value, or FLOAT_NAN if</span></span>
+<span class="tr"><span class="th" id="line117">117</span><span class="td">! no value was understood.</span></span>
 <span class="tr"><span class="th" id="line118">118</span><span class="td">!</span></span>
-<span class="tr"><span class="th" id="line119">119</span><span class="td">!&nbsp;The&nbsp;recognized&nbsp;format,&nbsp;if&nbsp;you&#39;ll&nbsp;pardon&nbsp;a&nbsp;slightly&nbsp;bastardized&nbsp;regexp</span></span>
-<span class="tr"><span class="th" id="line120">120</span><span class="td">!&nbsp;syntax,&nbsp;is&nbsp;&quot;S?D*(PD*)?(ES?D+)?&quot;&nbsp;where&nbsp;S&nbsp;is&nbsp;a&nbsp;sign&nbsp;character&nbsp;&quot;+&quot;&nbsp;or&nbsp;&quot;-&quot;,</span></span>
-<span class="tr"><span class="th" id="line121">121</span><span class="td">!&nbsp;D&nbsp;is&nbsp;a&nbsp;decimal&nbsp;digit&nbsp;&quot;0&quot;&nbsp;to&nbsp;&quot;9&quot;,&nbsp;P&nbsp;is&nbsp;a&nbsp;decimal&nbsp;point&nbsp;&quot;.&quot;,</span></span>
-<span class="tr"><span class="th" id="line122">122</span><span class="td">!&nbsp;and&nbsp;E&nbsp;is&nbsp;the&nbsp;exponential&nbsp;modifier&nbsp;&quot;E&quot;&nbsp;or&nbsp;&quot;e&quot;.</span></span>
+<span class="tr"><span class="th" id="line119">119</span><span class="td">! The recognized format, if you&#39;ll pardon a slightly bastardized regexp</span></span>
+<span class="tr"><span class="th" id="line120">120</span><span class="td">! syntax, is &quot;S?D*(PD*)?(ES?D+)?&quot; where S is a sign character &quot;+&quot; or &quot;-&quot;,</span></span>
+<span class="tr"><span class="th" id="line121">121</span><span class="td">! D is a decimal digit &quot;0&quot; to &quot;9&quot;, P is a decimal point &quot;.&quot;,</span></span>
+<span class="tr"><span class="th" id="line122">122</span><span class="td">! and E is the exponential modifier &quot;E&quot; or &quot;e&quot;.</span></span>
 <span class="tr"><span class="th" id="line123">123</span><span class="td">!</span></span>
-<span class="tr"><span class="th" id="line124">124</span><span class="td">!&nbsp;For&nbsp;flexibility,&nbsp;the&nbsp;string&nbsp;&quot;M10^&quot;&nbsp;is&nbsp;also&nbsp;accepted&nbsp;for&nbsp;E,&nbsp;where&nbsp;M&nbsp;is</span></span>
-<span class="tr"><span class="th" id="line125">125</span><span class="td">!&nbsp;&quot;X&quot;,&nbsp;&quot;x&quot;,&nbsp;&quot;*&quot;,&nbsp;or&nbsp;the&nbsp;multiplication&nbsp;sign&nbsp;@{D7}.&nbsp;Optional&nbsp;spaces&nbsp;are</span></span>
-<span class="tr"><span class="th" id="line126">126</span><span class="td">!&nbsp;allowed&nbsp;before&nbsp;and&nbsp;after&nbsp;the&nbsp;M&nbsp;sign.&nbsp;(But&nbsp;only&nbsp;for&nbsp;the&nbsp;&quot;10^&quot;&nbsp;form&nbsp;of</span></span>
-<span class="tr"><span class="th" id="line127">127</span><span class="td">!&nbsp;the&nbsp;exponent,&nbsp;not&nbsp;the&nbsp;&quot;e&quot;&nbsp;form.)</span></span>
+<span class="tr"><span class="th" id="line124">124</span><span class="td">! For flexibility, the string &quot;M10^&quot; is also accepted for E, where M is</span></span>
+<span class="tr"><span class="th" id="line125">125</span><span class="td">! &quot;X&quot;, &quot;x&quot;, &quot;*&quot;, or the multiplication sign @{D7}. Optional spaces are</span></span>
+<span class="tr"><span class="th" id="line126">126</span><span class="td">! allowed before and after the M sign. (But only for the &quot;10^&quot; form of</span></span>
+<span class="tr"><span class="th" id="line127">127</span><span class="td">! the exponent, not the &quot;e&quot; form.)</span></span>
 <span class="tr"><span class="th" id="line128">128</span><span class="td">!</span></span>
-<span class="tr"><span class="th" id="line129">129</span><span class="td">!&nbsp;This&nbsp;routine&nbsp;does&nbsp;not&nbsp;try&nbsp;to&nbsp;recognize&nbsp;special&nbsp;names&nbsp;for&nbsp;infinity&nbsp;or&nbsp;NaN,</span></span>
-<span class="tr"><span class="th" id="line130">130</span><span class="td">!&nbsp;but&nbsp;it&nbsp;can&nbsp;return&nbsp;FLOAT_INFINITY&nbsp;or&nbsp;FLOAT_NINFINITY&nbsp;if&nbsp;the&nbsp;exponent&nbsp;is&nbsp;too</span></span>
-<span class="tr"><span class="th" id="line131">131</span><span class="td">!&nbsp;large.</span></span>
+<span class="tr"><span class="th" id="line129">129</span><span class="td">! This routine does not try to recognize special names for infinity or NaN,</span></span>
+<span class="tr"><span class="th" id="line130">130</span><span class="td">! but it can return FLOAT_INFINITY or FLOAT_NINFINITY if the exponent is too</span></span>
+<span class="tr"><span class="th" id="line131">131</span><span class="td">! large.</span></span>
 <span class="tr"><span class="th" id="line132">132</span><span class="td">!</span></span>
-<span class="tr"><span class="th" id="line133">133</span><span class="td">!&nbsp;This&nbsp;routine&nbsp;relies&nbsp;on&nbsp;floating-point&nbsp;math.&nbsp;Therefore,&nbsp;the&nbsp;same&nbsp;string</span></span>
-<span class="tr"><span class="th" id="line134">134</span><span class="td">!&nbsp;may&nbsp;parse&nbsp;to&nbsp;slightly&nbsp;different&nbsp;float&nbsp;values&nbsp;on&nbsp;different&nbsp;interpreters!</span></span>
-<span class="tr"><span class="th" id="line135">135</span><span class="td">!&nbsp;Be&nbsp;warned.</span></span>
+<span class="tr"><span class="th" id="line133">133</span><span class="td">! This routine relies on floating-point math. Therefore, the same string</span></span>
+<span class="tr"><span class="th" id="line134">134</span><span class="td">! may parse to slightly different float values on different interpreters!</span></span>
+<span class="tr"><span class="th" id="line135">135</span><span class="td">! Be warned.</span></span>
 <span class="tr"><span class="th" id="line136">136</span><span class="td">!</span></span>
-<span class="tr"><span class="th" id="line137">137</span><span class="td">!&nbsp;If&nbsp;useall&nbsp;is&nbsp;true,&nbsp;this&nbsp;insists&nbsp;on&nbsp;using&nbsp;all&nbsp;len&nbsp;characters&nbsp;from&nbsp;the&nbsp;buffer.</span></span>
-<span class="tr"><span class="th" id="line138">138</span><span class="td">!&nbsp;(It&nbsp;returns&nbsp;FLOAT_NAN&nbsp;if&nbsp;any&nbsp;unrecognized&nbsp;characters&nbsp;are&nbsp;left&nbsp;over.)</span></span>
-<span class="tr"><span class="th" id="line139">139</span><span class="td">!&nbsp;Contrariwise,&nbsp;if&nbsp;useall&nbsp;is&nbsp;false,&nbsp;unused&nbsp;characters&nbsp;at&nbsp;the&nbsp;end&nbsp;of&nbsp;the&nbsp;buffer</span></span>
-<span class="tr"><span class="th" id="line140">140</span><span class="td">!&nbsp;are&nbsp;fine.&nbsp;(But&nbsp;not&nbsp;at&nbsp;the&nbsp;beginning;&nbsp;the&nbsp;float&nbsp;must&nbsp;start&nbsp;at&nbsp;the&nbsp;beginning</span></span>
-<span class="tr"><span class="th" id="line141">141</span><span class="td">!&nbsp;of&nbsp;the&nbsp;buffer.)</span></span>
-<span class="tr"><span class="th" id="line142">142</span><span class="td">!&nbsp;</span></span>
-<span class="tr"><span class="th" id="line143">143</span><span class="td">[&nbsp;FloatParse&nbsp;buf&nbsp;len&nbsp;useall</span></span>
-<span class="tr"><span class="th" id="line144">144</span><span class="td">&nbsp;res&nbsp;ix&nbsp;val&nbsp;ch&nbsp;ten&nbsp;negative&nbsp;intpart&nbsp;fracpart&nbsp;fracdiv</span></span>
-<span class="tr"><span class="th" id="line145">145</span><span class="td">&nbsp;expon&nbsp;expnegative&nbsp;count;</span></span>
-<span class="tr"><span class="th" id="line146">146</span><span class="td">&nbsp;</span></span>
-<span class="tr"><span class="th" id="line147">147</span><span class="td">!&nbsp;print&nbsp;&quot;FloatParse&nbsp;&lt;&quot;;</span></span>
-<span class="tr"><span class="th" id="line148">148</span><span class="td">!&nbsp;for&nbsp;(ix=0:&nbsp;ix&lt;len:&nbsp;ix++)&nbsp;print&nbsp;(char)&nbsp;buf-&gt;ix;</span></span>
-<span class="tr"><span class="th" id="line149">149</span><span class="td">!&nbsp;print&nbsp;&quot;&gt;^&quot;;</span></span>
+<span class="tr"><span class="th" id="line137">137</span><span class="td">! If useall is true, this insists on using all len characters from the buffer.</span></span>
+<span class="tr"><span class="th" id="line138">138</span><span class="td">! (It returns FLOAT_NAN if any unrecognized characters are left over.)</span></span>
+<span class="tr"><span class="th" id="line139">139</span><span class="td">! Contrariwise, if useall is false, unused characters at the end of the buffer</span></span>
+<span class="tr"><span class="th" id="line140">140</span><span class="td">! are fine. (But not at the beginning; the float must start at the beginning</span></span>
+<span class="tr"><span class="th" id="line141">141</span><span class="td">! of the buffer.)</span></span>
+<span class="tr"><span class="th" id="line142">142</span><span class="td">! </span></span>
+<span class="tr"><span class="th" id="line143">143</span><span class="td">[ FloatParse buf len useall</span></span>
+<span class="tr"><span class="th" id="line144">144</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    res ix val ch ten negative intpart fracpart fracdiv</span></span>
+<span class="tr"><span class="th" id="line145">145</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    expon expnegative count;</span></span>
+<span class="tr"><span class="th" id="line146">146</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    </span></span>
+<span class="tr"><span class="th" id="line147">147</span><span class="td">!    print &quot;FloatParse &lt;&quot;;</span></span>
+<span class="tr"><span class="th" id="line148">148</span><span class="td">!    for (ix=0: ix&lt;len: ix++) print (char) buf-&gt;ix;</span></span>
+<span class="tr"><span class="th" id="line149">149</span><span class="td">!    print &quot;&gt;^&quot;;</span></span>
 <span class="tr"><span class="th" id="line150">150</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line151">151</span><span class="td">&nbsp;if&nbsp;(len&nbsp;==&nbsp;0)</span></span>
-<span class="tr"><span class="th" id="line152">152</span><span class="td">&nbsp;&nbsp;return&nbsp;FLOAT_NAN;</span></span>
-<span class="tr"><span class="th" id="line153">153</span><span class="td">&nbsp;&nbsp;</span></span>
-<span class="tr"><span class="th" id="line154">154</span><span class="td">&nbsp;ix&nbsp;=&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line155">155</span><span class="td">&nbsp;negative&nbsp;=&nbsp;false;</span></span>
-<span class="tr"><span class="th" id="line156">156</span><span class="td">&nbsp;intpart&nbsp;=&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line157">157</span><span class="td">&nbsp;fracpart&nbsp;=&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line158">158</span><span class="td">&nbsp;@numtof&nbsp;10&nbsp;ten;</span></span>
+<span class="tr"><span class="th" id="line151">151</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (len == 0)</span></span>
+<span class="tr"><span class="th" id="line152">152</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        return FLOAT_NAN;</span></span>
+<span class="tr"><span class="th" id="line153">153</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        </span></span>
+<span class="tr"><span class="th" id="line154">154</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ix = 0;</span></span>
+<span class="tr"><span class="th" id="line155">155</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    negative = false;</span></span>
+<span class="tr"><span class="th" id="line156">156</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    intpart = 0;</span></span>
+<span class="tr"><span class="th" id="line157">157</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    fracpart = 0;</span></span>
+<span class="tr"><span class="th" id="line158">158</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @numtof 10 ten;</span></span>
 <span class="tr"><span class="th" id="line159">159</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line160">160</span><span class="td">&nbsp;!&nbsp;Sign&nbsp;character&nbsp;(optional)</span></span>
-<span class="tr"><span class="th" id="line161">161</span><span class="td">&nbsp;ch&nbsp;=&nbsp;buf-&gt;ix;</span></span>
-<span class="tr"><span class="th" id="line162">162</span><span class="td">&nbsp;if&nbsp;(ch&nbsp;==&nbsp;&#39;-&#39;)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line163">163</span><span class="td">&nbsp;&nbsp;negative&nbsp;=&nbsp;true;</span></span>
-<span class="tr"><span class="th" id="line164">164</span><span class="td">&nbsp;&nbsp;ix++;</span></span>
-<span class="tr"><span class="th" id="line165">165</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line166">166</span><span class="td">&nbsp;else&nbsp;if&nbsp;(ch&nbsp;==&nbsp;&#39;+&#39;)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line167">167</span><span class="td">&nbsp;&nbsp;ix++;</span></span>
-<span class="tr"><span class="th" id="line168">168</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line160">160</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Sign character (optional)</span></span>
+<span class="tr"><span class="th" id="line161">161</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ch = buf-&gt;ix;</span></span>
+<span class="tr"><span class="th" id="line162">162</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (ch == &#39;-&#39;) {</span></span>
+<span class="tr"><span class="th" id="line163">163</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        negative = true;</span></span>
+<span class="tr"><span class="th" id="line164">164</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ix++;</span></span>
+<span class="tr"><span class="th" id="line165">165</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line166">166</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    else if (ch == &#39;+&#39;) {</span></span>
+<span class="tr"><span class="th" id="line167">167</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ix++;</span></span>
+<span class="tr"><span class="th" id="line168">168</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
 <span class="tr"><span class="th" id="line169">169</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line170">170</span><span class="td">&nbsp;!&nbsp;Some&nbsp;digits&nbsp;(optional)</span></span>
-<span class="tr"><span class="th" id="line171">171</span><span class="td">&nbsp;for&nbsp;(count=0&nbsp;:&nbsp;ix&lt;len&nbsp;:&nbsp;ix++,&nbsp;count++)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line172">172</span><span class="td">&nbsp;&nbsp;ch&nbsp;=&nbsp;buf-&gt;ix;</span></span>
-<span class="tr"><span class="th" id="line173">173</span><span class="td">&nbsp;&nbsp;if&nbsp;(ch&nbsp;&lt;&nbsp;&#39;0&#39;&nbsp;||&nbsp;ch&nbsp;&gt;&nbsp;&#39;9&#39;)</span></span>
-<span class="tr"><span class="th" id="line174">174</span><span class="td">&nbsp;&nbsp;&nbsp;break;</span></span>
-<span class="tr"><span class="th" id="line175">175</span><span class="td">&nbsp;&nbsp;val&nbsp;=&nbsp;(ch&nbsp;-&nbsp;&#39;0&#39;);</span></span>
-<span class="tr"><span class="th" id="line176">176</span><span class="td">&nbsp;&nbsp;@numtof&nbsp;val&nbsp;val;</span></span>
-<span class="tr"><span class="th" id="line177">177</span><span class="td">&nbsp;&nbsp;@fmul&nbsp;intpart&nbsp;ten&nbsp;intpart;</span></span>
-<span class="tr"><span class="th" id="line178">178</span><span class="td">&nbsp;&nbsp;@fadd&nbsp;intpart&nbsp;val&nbsp;intpart;</span></span>
-<span class="tr"><span class="th" id="line179">179</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line170">170</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Some digits (optional)</span></span>
+<span class="tr"><span class="th" id="line171">171</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (count=0 : ix&lt;len : ix++, count++) {</span></span>
+<span class="tr"><span class="th" id="line172">172</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ch = buf-&gt;ix;</span></span>
+<span class="tr"><span class="th" id="line173">173</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (ch &lt; &#39;0&#39; || ch &gt; &#39;9&#39;)</span></span>
+<span class="tr"><span class="th" id="line174">174</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            break;</span></span>
+<span class="tr"><span class="th" id="line175">175</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        val = (ch - &#39;0&#39;);</span></span>
+<span class="tr"><span class="th" id="line176">176</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @numtof val val;</span></span>
+<span class="tr"><span class="th" id="line177">177</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @fmul intpart ten intpart;</span></span>
+<span class="tr"><span class="th" id="line178">178</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @fadd intpart val intpart;</span></span>
+<span class="tr"><span class="th" id="line179">179</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
 <span class="tr"><span class="th" id="line180">180</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line181">181</span><span class="td">&nbsp;!&nbsp;Decimal&nbsp;point&nbsp;and&nbsp;more&nbsp;digits&nbsp;(optional)</span></span>
-<span class="tr"><span class="th" id="line182">182</span><span class="td">&nbsp;if&nbsp;(ix&lt;len&nbsp;&amp;&amp;&nbsp;buf-&gt;ix&nbsp;==&nbsp;&#39;.&#39;)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line183">183</span><span class="td">&nbsp;&nbsp;ix++;</span></span>
-<span class="tr"><span class="th" id="line184">184</span><span class="td">&nbsp;&nbsp;@numtof&nbsp;1&nbsp;fracdiv;</span></span>
-<span class="tr"><span class="th" id="line185">185</span><span class="td">&nbsp;&nbsp;for&nbsp;(&nbsp;:&nbsp;ix&lt;len&nbsp;:&nbsp;ix++,&nbsp;count++)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line186">186</span><span class="td">&nbsp;&nbsp;&nbsp;ch&nbsp;=&nbsp;buf-&gt;ix;</span></span>
-<span class="tr"><span class="th" id="line187">187</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(ch&nbsp;&lt;&nbsp;&#39;0&#39;&nbsp;||&nbsp;ch&nbsp;&gt;&nbsp;&#39;9&#39;)</span></span>
-<span class="tr"><span class="th" id="line188">188</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;break;</span></span>
-<span class="tr"><span class="th" id="line189">189</span><span class="td">&nbsp;&nbsp;&nbsp;val&nbsp;=&nbsp;(ch&nbsp;-&nbsp;&#39;0&#39;);</span></span>
-<span class="tr"><span class="th" id="line190">190</span><span class="td">&nbsp;&nbsp;&nbsp;@numtof&nbsp;val&nbsp;val;</span></span>
-<span class="tr"><span class="th" id="line191">191</span><span class="td">&nbsp;&nbsp;&nbsp;@fmul&nbsp;fracpart&nbsp;ten&nbsp;fracpart;</span></span>
-<span class="tr"><span class="th" id="line192">192</span><span class="td">&nbsp;&nbsp;&nbsp;@fadd&nbsp;fracpart&nbsp;val&nbsp;fracpart;</span></span>
-<span class="tr"><span class="th" id="line193">193</span><span class="td">&nbsp;&nbsp;&nbsp;@fmul&nbsp;fracdiv&nbsp;ten&nbsp;fracdiv;</span></span>
-<span class="tr"><span class="th" id="line194">194</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line195">195</span><span class="td">&nbsp;&nbsp;@fdiv&nbsp;fracpart&nbsp;fracdiv&nbsp;fracpart;</span></span>
-<span class="tr"><span class="th" id="line196">196</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line181">181</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Decimal point and more digits (optional)</span></span>
+<span class="tr"><span class="th" id="line182">182</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (ix&lt;len &amp;&amp; buf-&gt;ix == &#39;.&#39;) {</span></span>
+<span class="tr"><span class="th" id="line183">183</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ix++;</span></span>
+<span class="tr"><span class="th" id="line184">184</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @numtof 1 fracdiv;</span></span>
+<span class="tr"><span class="th" id="line185">185</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        for ( : ix&lt;len : ix++, count++) {</span></span>
+<span class="tr"><span class="th" id="line186">186</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            ch = buf-&gt;ix;</span></span>
+<span class="tr"><span class="th" id="line187">187</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (ch &lt; &#39;0&#39; || ch &gt; &#39;9&#39;)</span></span>
+<span class="tr"><span class="th" id="line188">188</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                break;</span></span>
+<span class="tr"><span class="th" id="line189">189</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            val = (ch - &#39;0&#39;);</span></span>
+<span class="tr"><span class="th" id="line190">190</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            @numtof    val val;</span></span>
+<span class="tr"><span class="th" id="line191">191</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            @fmul fracpart ten fracpart;</span></span>
+<span class="tr"><span class="th" id="line192">192</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            @fadd fracpart val fracpart;</span></span>
+<span class="tr"><span class="th" id="line193">193</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            @fmul fracdiv ten fracdiv;</span></span>
+<span class="tr"><span class="th" id="line194">194</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
+<span class="tr"><span class="th" id="line195">195</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @fdiv fracpart fracdiv fracpart;</span></span>
+<span class="tr"><span class="th" id="line196">196</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
 <span class="tr"><span class="th" id="line197">197</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line198">198</span><span class="td">&nbsp;!&nbsp;If&nbsp;there&nbsp;are&nbsp;no&nbsp;digits&nbsp;before&nbsp;*or*&nbsp;after&nbsp;the&nbsp;decimal&nbsp;point,&nbsp;fail.</span></span>
-<span class="tr"><span class="th" id="line199">199</span><span class="td">&nbsp;if&nbsp;(count&nbsp;==&nbsp;0)</span></span>
-<span class="tr"><span class="th" id="line200">200</span><span class="td">&nbsp;&nbsp;return&nbsp;FLOAT_NAN;</span></span>
+<span class="tr"><span class="th" id="line198">198</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! If there are no digits before *or* after the decimal point, fail.</span></span>
+<span class="tr"><span class="th" id="line199">199</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (count == 0)</span></span>
+<span class="tr"><span class="th" id="line200">200</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        return FLOAT_NAN;</span></span>
 <span class="tr"><span class="th" id="line201">201</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line202">202</span><span class="td">&nbsp;!&nbsp;Combine&nbsp;the&nbsp;integer&nbsp;and&nbsp;fractional&nbsp;parts.</span></span>
-<span class="tr"><span class="th" id="line203">203</span><span class="td">&nbsp;@fadd&nbsp;intpart&nbsp;fracpart&nbsp;res;</span></span>
+<span class="tr"><span class="th" id="line202">202</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Combine the integer and fractional parts.</span></span>
+<span class="tr"><span class="th" id="line203">203</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @fadd intpart fracpart res;</span></span>
 <span class="tr"><span class="th" id="line204">204</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line205">205</span><span class="td">&nbsp;!&nbsp;Exponent&nbsp;(optional)</span></span>
-<span class="tr"><span class="th" id="line206">206</span><span class="td">&nbsp;if&nbsp;(ix&lt;len&nbsp;&amp;&amp;&nbsp;buf-&gt;ix&nbsp;==&nbsp;&#39;e&#39;&nbsp;or&nbsp;&#39;E&#39;&nbsp;or&nbsp;&#39;&nbsp;&#39;&nbsp;or&nbsp;&#39;*&#39;&nbsp;or&nbsp;&#39;x&#39;&nbsp;or&nbsp;&#39;X&#39;&nbsp;or&nbsp;$D7)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line207">207</span><span class="td">&nbsp;&nbsp;if&nbsp;(buf-&gt;ix&nbsp;==&nbsp;&#39;e&#39;&nbsp;or&nbsp;&#39;E&#39;)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line208">208</span><span class="td">&nbsp;&nbsp;&nbsp;!&nbsp;no&nbsp;spaces,&nbsp;just&nbsp;the&nbsp;&#39;e&#39;</span></span>
-<span class="tr"><span class="th" id="line209">209</span><span class="td">&nbsp;&nbsp;&nbsp;ix++;</span></span>
-<span class="tr"><span class="th" id="line210">210</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(ix&nbsp;==&nbsp;len)</span></span>
-<span class="tr"><span class="th" id="line211">211</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;FLOAT_NAN;</span></span>
-<span class="tr"><span class="th" id="line212">212</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line213">213</span><span class="td">&nbsp;&nbsp;else&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line214">214</span><span class="td">&nbsp;&nbsp;&nbsp;!&nbsp;any&nbsp;number&nbsp;of&nbsp;spaces,&nbsp;&quot;*&quot;,&nbsp;any&nbsp;number&nbsp;of&nbsp;spaces&nbsp;more,&nbsp;&quot;10^&quot;</span></span>
-<span class="tr"><span class="th" id="line215">215</span><span class="td">&nbsp;&nbsp;&nbsp;while&nbsp;(ix&nbsp;&lt;&nbsp;len&nbsp;&amp;&amp;&nbsp;buf-&gt;ix&nbsp;==&nbsp;&#39;&nbsp;&#39;)</span></span>
-<span class="tr"><span class="th" id="line216">216</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;ix++;</span></span>
-<span class="tr"><span class="th" id="line217">217</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(ix&nbsp;==&nbsp;len)</span></span>
-<span class="tr"><span class="th" id="line218">218</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;FLOAT_NAN;</span></span>
-<span class="tr"><span class="th" id="line219">219</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(buf-&gt;ix&nbsp;~=&nbsp;&#39;*&#39;&nbsp;or&nbsp;&#39;x&#39;&nbsp;or&nbsp;&#39;X&#39;&nbsp;or&nbsp;$D7)</span></span>
-<span class="tr"><span class="th" id="line220">220</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;FLOAT_NAN;</span></span>
-<span class="tr"><span class="th" id="line221">221</span><span class="td">&nbsp;&nbsp;&nbsp;ix++;</span></span>
-<span class="tr"><span class="th" id="line222">222</span><span class="td">&nbsp;&nbsp;&nbsp;while&nbsp;(ix&nbsp;&lt;&nbsp;len&nbsp;&amp;&amp;&nbsp;buf-&gt;ix&nbsp;==&nbsp;&#39;&nbsp;&#39;)</span></span>
-<span class="tr"><span class="th" id="line223">223</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;ix++;</span></span>
-<span class="tr"><span class="th" id="line224">224</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(ix&nbsp;==&nbsp;len)</span></span>
-<span class="tr"><span class="th" id="line225">225</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;FLOAT_NAN;</span></span>
-<span class="tr"><span class="th" id="line226">226</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(buf-&gt;ix&nbsp;~=&nbsp;&#39;1&#39;)</span></span>
-<span class="tr"><span class="th" id="line227">227</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;FLOAT_NAN;</span></span>
-<span class="tr"><span class="th" id="line228">228</span><span class="td">&nbsp;&nbsp;&nbsp;ix++;</span></span>
-<span class="tr"><span class="th" id="line229">229</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(buf-&gt;ix&nbsp;~=&nbsp;&#39;0&#39;)</span></span>
-<span class="tr"><span class="th" id="line230">230</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;FLOAT_NAN;</span></span>
-<span class="tr"><span class="th" id="line231">231</span><span class="td">&nbsp;&nbsp;&nbsp;ix++;</span></span>
-<span class="tr"><span class="th" id="line232">232</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(buf-&gt;ix&nbsp;~=&nbsp;$5E)</span></span>
-<span class="tr"><span class="th" id="line233">233</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;FLOAT_NAN;</span></span>
-<span class="tr"><span class="th" id="line234">234</span><span class="td">&nbsp;&nbsp;&nbsp;ix++;</span></span>
-<span class="tr"><span class="th" id="line235">235</span><span class="td">&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line205">205</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Exponent (optional)</span></span>
+<span class="tr"><span class="th" id="line206">206</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (ix&lt;len &amp;&amp; buf-&gt;ix == &#39;e&#39; or &#39;E&#39; or &#39; &#39; or &#39;*&#39; or &#39;x&#39; or &#39;X&#39; or $D7) {</span></span>
+<span class="tr"><span class="th" id="line207">207</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (buf-&gt;ix == &#39;e&#39; or &#39;E&#39;) {</span></span>
+<span class="tr"><span class="th" id="line208">208</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            ! no spaces, just the &#39;e&#39;</span></span>
+<span class="tr"><span class="th" id="line209">209</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            ix++;</span></span>
+<span class="tr"><span class="th" id="line210">210</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (ix == len)</span></span>
+<span class="tr"><span class="th" id="line211">211</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                return FLOAT_NAN;</span></span>
+<span class="tr"><span class="th" id="line212">212</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
+<span class="tr"><span class="th" id="line213">213</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        else {</span></span>
+<span class="tr"><span class="th" id="line214">214</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            ! any number of spaces, &quot;*&quot;, any number of spaces more, &quot;10^&quot;</span></span>
+<span class="tr"><span class="th" id="line215">215</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            while (ix &lt; len &amp;&amp; buf-&gt;ix == &#39; &#39;)</span></span>
+<span class="tr"><span class="th" id="line216">216</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                ix++;</span></span>
+<span class="tr"><span class="th" id="line217">217</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (ix == len)</span></span>
+<span class="tr"><span class="th" id="line218">218</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                return FLOAT_NAN;</span></span>
+<span class="tr"><span class="th" id="line219">219</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (buf-&gt;ix ~= &#39;*&#39; or &#39;x&#39; or &#39;X&#39; or $D7)</span></span>
+<span class="tr"><span class="th" id="line220">220</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                return FLOAT_NAN;</span></span>
+<span class="tr"><span class="th" id="line221">221</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            ix++;</span></span>
+<span class="tr"><span class="th" id="line222">222</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            while (ix &lt; len &amp;&amp; buf-&gt;ix == &#39; &#39;)</span></span>
+<span class="tr"><span class="th" id="line223">223</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                ix++;</span></span>
+<span class="tr"><span class="th" id="line224">224</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (ix == len)</span></span>
+<span class="tr"><span class="th" id="line225">225</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                return FLOAT_NAN;</span></span>
+<span class="tr"><span class="th" id="line226">226</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (buf-&gt;ix ~= &#39;1&#39;)</span></span>
+<span class="tr"><span class="th" id="line227">227</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                return FLOAT_NAN;</span></span>
+<span class="tr"><span class="th" id="line228">228</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            ix++;</span></span>
+<span class="tr"><span class="th" id="line229">229</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (buf-&gt;ix ~= &#39;0&#39;)</span></span>
+<span class="tr"><span class="th" id="line230">230</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                return FLOAT_NAN;</span></span>
+<span class="tr"><span class="th" id="line231">231</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            ix++;</span></span>
+<span class="tr"><span class="th" id="line232">232</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (buf-&gt;ix ~= $5E)</span></span>
+<span class="tr"><span class="th" id="line233">233</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                return FLOAT_NAN;</span></span>
+<span class="tr"><span class="th" id="line234">234</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            ix++;</span></span>
+<span class="tr"><span class="th" id="line235">235</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
 <span class="tr"><span class="th" id="line236">236</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line237">237</span><span class="td">&nbsp;&nbsp;!&nbsp;Sign&nbsp;character&nbsp;(optional)</span></span>
-<span class="tr"><span class="th" id="line238">238</span><span class="td">&nbsp;&nbsp;expnegative&nbsp;=&nbsp;false;</span></span>
-<span class="tr"><span class="th" id="line239">239</span><span class="td">&nbsp;&nbsp;ch&nbsp;=&nbsp;buf-&gt;ix;</span></span>
-<span class="tr"><span class="th" id="line240">240</span><span class="td">&nbsp;&nbsp;if&nbsp;(ch&nbsp;==&nbsp;&#39;-&#39;)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line241">241</span><span class="td">&nbsp;&nbsp;&nbsp;expnegative&nbsp;=&nbsp;true;</span></span>
-<span class="tr"><span class="th" id="line242">242</span><span class="td">&nbsp;&nbsp;&nbsp;ix++;</span></span>
-<span class="tr"><span class="th" id="line243">243</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line244">244</span><span class="td">&nbsp;&nbsp;else&nbsp;if&nbsp;(ch&nbsp;==&nbsp;&#39;+&#39;)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line245">245</span><span class="td">&nbsp;&nbsp;&nbsp;ix++;</span></span>
-<span class="tr"><span class="th" id="line246">246</span><span class="td">&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line237">237</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! Sign character (optional)</span></span>
+<span class="tr"><span class="th" id="line238">238</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        expnegative = false;</span></span>
+<span class="tr"><span class="th" id="line239">239</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ch = buf-&gt;ix;</span></span>
+<span class="tr"><span class="th" id="line240">240</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (ch == &#39;-&#39;) {</span></span>
+<span class="tr"><span class="th" id="line241">241</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            expnegative = true;</span></span>
+<span class="tr"><span class="th" id="line242">242</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            ix++;</span></span>
+<span class="tr"><span class="th" id="line243">243</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
+<span class="tr"><span class="th" id="line244">244</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        else if (ch == &#39;+&#39;) {</span></span>
+<span class="tr"><span class="th" id="line245">245</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            ix++;</span></span>
+<span class="tr"><span class="th" id="line246">246</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
 <span class="tr"><span class="th" id="line247">247</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line248">248</span><span class="td">&nbsp;&nbsp;expon&nbsp;=&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line249">249</span><span class="td">&nbsp;&nbsp;!&nbsp;Some&nbsp;digits&nbsp;(mandatory)</span></span>
-<span class="tr"><span class="th" id="line250">250</span><span class="td">&nbsp;&nbsp;for&nbsp;(count=0&nbsp;:&nbsp;ix&lt;len&nbsp;:&nbsp;ix++,&nbsp;count++)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line251">251</span><span class="td">&nbsp;&nbsp;&nbsp;ch&nbsp;=&nbsp;buf-&gt;ix;</span></span>
-<span class="tr"><span class="th" id="line252">252</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(ch&nbsp;&lt;&nbsp;&#39;0&#39;&nbsp;||&nbsp;ch&nbsp;&gt;&nbsp;&#39;9&#39;)</span></span>
-<span class="tr"><span class="th" id="line253">253</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;break;</span></span>
-<span class="tr"><span class="th" id="line254">254</span><span class="td">&nbsp;&nbsp;&nbsp;expon&nbsp;=&nbsp;10*expon&nbsp;+&nbsp;(ch&nbsp;-&nbsp;&#39;0&#39;);</span></span>
-<span class="tr"><span class="th" id="line255">255</span><span class="td">&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line248">248</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        expon = 0;</span></span>
+<span class="tr"><span class="th" id="line249">249</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! Some digits (mandatory)</span></span>
+<span class="tr"><span class="th" id="line250">250</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        for (count=0 : ix&lt;len : ix++, count++) {</span></span>
+<span class="tr"><span class="th" id="line251">251</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            ch = buf-&gt;ix;</span></span>
+<span class="tr"><span class="th" id="line252">252</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (ch &lt; &#39;0&#39; || ch &gt; &#39;9&#39;)</span></span>
+<span class="tr"><span class="th" id="line253">253</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                break;</span></span>
+<span class="tr"><span class="th" id="line254">254</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            expon = 10*expon + (ch - &#39;0&#39;);</span></span>
+<span class="tr"><span class="th" id="line255">255</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
 <span class="tr"><span class="th" id="line256">256</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line257">257</span><span class="td">&nbsp;&nbsp;if&nbsp;(count&nbsp;==&nbsp;0)</span></span>
-<span class="tr"><span class="th" id="line258">258</span><span class="td">&nbsp;&nbsp;&nbsp;return&nbsp;FLOAT_NAN;</span></span>
+<span class="tr"><span class="th" id="line257">257</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (count == 0)</span></span>
+<span class="tr"><span class="th" id="line258">258</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            return FLOAT_NAN;</span></span>
 <span class="tr"><span class="th" id="line259">259</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line260">260</span><span class="td">&nbsp;&nbsp;if&nbsp;(expnegative)</span></span>
-<span class="tr"><span class="th" id="line261">261</span><span class="td">&nbsp;&nbsp;&nbsp;expon&nbsp;=&nbsp;-expon;</span></span>
+<span class="tr"><span class="th" id="line260">260</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (expnegative)</span></span>
+<span class="tr"><span class="th" id="line261">261</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            expon = -expon;</span></span>
 <span class="tr"><span class="th" id="line262">262</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line263">263</span><span class="td">&nbsp;&nbsp;if&nbsp;(expon)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line264">264</span><span class="td">&nbsp;&nbsp;&nbsp;@numtof&nbsp;expon&nbsp;expon;</span></span>
-<span class="tr"><span class="th" id="line265">265</span><span class="td">&nbsp;&nbsp;&nbsp;@pow&nbsp;ten&nbsp;expon&nbsp;val;</span></span>
-<span class="tr"><span class="th" id="line266">266</span><span class="td">&nbsp;&nbsp;&nbsp;@fmul&nbsp;res&nbsp;val&nbsp;res;</span></span>
-<span class="tr"><span class="th" id="line267">267</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line268">268</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line263">263</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (expon) {</span></span>
+<span class="tr"><span class="th" id="line264">264</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            @numtof expon expon;</span></span>
+<span class="tr"><span class="th" id="line265">265</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            @pow ten expon val;</span></span>
+<span class="tr"><span class="th" id="line266">266</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            @fmul res val res;</span></span>
+<span class="tr"><span class="th" id="line267">267</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
+<span class="tr"><span class="th" id="line268">268</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
 <span class="tr"><span class="th" id="line269">269</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line270">270</span><span class="td">&nbsp;if&nbsp;(negative)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line271">271</span><span class="td">&nbsp;&nbsp;!&nbsp;set&nbsp;the&nbsp;value&#39;s&nbsp;sign&nbsp;bit</span></span>
-<span class="tr"><span class="th" id="line272">272</span><span class="td">&nbsp;&nbsp;res&nbsp;=&nbsp;$80000000&nbsp;|&nbsp;res;</span></span>
-<span class="tr"><span class="th" id="line273">273</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line270">270</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (negative) {</span></span>
+<span class="tr"><span class="th" id="line271">271</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! set the value&#39;s sign bit</span></span>
+<span class="tr"><span class="th" id="line272">272</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        res = $80000000 | res;</span></span>
+<span class="tr"><span class="th" id="line273">273</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
 <span class="tr"><span class="th" id="line274">274</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line275">275</span><span class="td">&nbsp;if&nbsp;(useall&nbsp;&amp;&amp;&nbsp;ix&nbsp;~=&nbsp;len)</span></span>
-<span class="tr"><span class="th" id="line276">276</span><span class="td">&nbsp;&nbsp;return&nbsp;FLOAT_NAN;</span></span>
-<span class="tr"><span class="th" id="line277">277</span><span class="td">&nbsp;return&nbsp;res;</span></span>
+<span class="tr"><span class="th" id="line275">275</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (useall &amp;&amp; ix ~= len)</span></span>
+<span class="tr"><span class="th" id="line276">276</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        return FLOAT_NAN;</span></span>
+<span class="tr"><span class="th" id="line277">277</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return res;</span></span>
 <span class="tr"><span class="th" id="line278">278</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line279">279</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line280">280</span><span class="td">!&nbsp;An&nbsp;I6&nbsp;grammar&nbsp;routine&nbsp;(GPR)&nbsp;for&nbsp;floats.&nbsp;On&nbsp;success,&nbsp;this&nbsp;returns</span></span>
-<span class="tr"><span class="th" id="line281">281</span><span class="td">!&nbsp;GPR_NUMBER&nbsp;and&nbsp;stores&nbsp;a&nbsp;value&nbsp;in&nbsp;the&nbsp;global&nbsp;parsed_number.</span></span>
+<span class="tr"><span class="th" id="line280">280</span><span class="td">! An I6 grammar routine (GPR) for floats. On success, this returns</span></span>
+<span class="tr"><span class="th" id="line281">281</span><span class="td">! GPR_NUMBER and stores a value in the global parsed_number.</span></span>
 <span class="tr"><span class="th" id="line282">282</span><span class="td">!</span></span>
-<span class="tr"><span class="th" id="line283">283</span><span class="td">!&nbsp;This&nbsp;is&nbsp;quite&nbsp;a&nbsp;nuisance,&nbsp;actually,&nbsp;because&nbsp;&quot;.&quot;&nbsp;is&nbsp;a&nbsp;word&nbsp;separator.</span></span>
-<span class="tr"><span class="th" id="line284">284</span><span class="td">!&nbsp;Also,&nbsp;we&nbsp;want&nbsp;to&nbsp;accept&nbsp;command&nbsp;sequences&nbsp;like&nbsp;&quot;type&nbsp;4.&nbsp;look&quot;!&nbsp;So&nbsp;we</span></span>
-<span class="tr"><span class="th" id="line285">285</span><span class="td">!&nbsp;need&nbsp;to&nbsp;collect&nbsp;a&nbsp;set&nbsp;of&nbsp;words&nbsp;made&nbsp;up&nbsp;of&nbsp;digits,&nbsp;signs,&nbsp;periods,&nbsp;and</span></span>
-<span class="tr"><span class="th" id="line286">286</span><span class="td">!&nbsp;the&nbsp;letter&nbsp;&quot;e&quot;,&nbsp;but&nbsp;without&nbsp;any&nbsp;intervening&nbsp;whitespace,&nbsp;and&nbsp;excluding</span></span>
-<span class="tr"><span class="th" id="line287">287</span><span class="td">!&nbsp;a&nbsp;trailing&nbsp;period.</span></span>
+<span class="tr"><span class="th" id="line283">283</span><span class="td">! This is quite a nuisance, actually, because &quot;.&quot; is a word separator.</span></span>
+<span class="tr"><span class="th" id="line284">284</span><span class="td">! Also, we want to accept command sequences like &quot;type 4. look&quot;! So we</span></span>
+<span class="tr"><span class="th" id="line285">285</span><span class="td">! need to collect a set of words made up of digits, signs, periods, and</span></span>
+<span class="tr"><span class="th" id="line286">286</span><span class="td">! the letter &quot;e&quot;, but without any intervening whitespace, and excluding</span></span>
+<span class="tr"><span class="th" id="line287">287</span><span class="td">! a trailing period.</span></span>
 <span class="tr"><span class="th" id="line288">288</span><span class="td">!</span></span>
-<span class="tr"><span class="th" id="line289">289</span><span class="td">!&nbsp;(This&nbsp;will&nbsp;fail&nbsp;to&nbsp;correctly&nbsp;parse&nbsp;&quot;type&nbsp;4.e&quot;,&nbsp;but&nbsp;I&nbsp;think&nbsp;that&nbsp;is&nbsp;a</span></span>
-<span class="tr"><span class="th" id="line290">290</span><span class="td">!&nbsp;small&nbsp;flaw.&nbsp;A&nbsp;player&nbsp;would&nbsp;more&nbsp;likely&nbsp;try&nbsp;&quot;type&nbsp;4.&nbsp;e&quot;&nbsp;or,&nbsp;really,</span></span>
-<span class="tr"><span class="th" id="line291">291</span><span class="td">!&nbsp;not&nbsp;concatenate&nbsp;commands&nbsp;at&nbsp;all.&nbsp;It&nbsp;will&nbsp;also&nbsp;parse&nbsp;&quot;type&nbsp;4.&nbsp;on&nbsp;keyboard&quot;</span></span>
-<span class="tr"><span class="th" id="line292">292</span><span class="td">!&nbsp;as&nbsp;two&nbsp;commands,&nbsp;even&nbsp;though&nbsp;&quot;4.&quot;&nbsp;is&nbsp;a&nbsp;legitimate&nbsp;float&nbsp;literal.</span></span>
-<span class="tr"><span class="th" id="line293">293</span><span class="td">!&nbsp;Contrariwise,&nbsp;&quot;type&nbsp;4.&nbsp;x&nbsp;me&quot;&nbsp;will&nbsp;be&nbsp;taken&nbsp;as&nbsp;one&nbsp;command.&nbsp;(Because&nbsp;the&nbsp;&quot;x&quot;</span></span>
-<span class="tr"><span class="th" id="line294">294</span><span class="td">!&nbsp;*could*&nbsp;be&nbsp;a&nbsp;continuation&nbsp;of&nbsp;the&nbsp;float,&nbsp;and&nbsp;I&nbsp;don&#39;t&nbsp;back&nbsp;up&nbsp;when&nbsp;it&nbsp;turns</span></span>
-<span class="tr"><span class="th" id="line295">295</span><span class="td">!&nbsp;out&nbsp;not&nbsp;to&nbsp;be.)&nbsp;I&nbsp;don&#39;t&nbsp;plan&nbsp;to&nbsp;worry&nbsp;about&nbsp;these&nbsp;cases.)</span></span>
+<span class="tr"><span class="th" id="line289">289</span><span class="td">! (This will fail to correctly parse &quot;type 4.e&quot;, but I think that is a</span></span>
+<span class="tr"><span class="th" id="line290">290</span><span class="td">! small flaw. A player would more likely try &quot;type 4. e&quot; or, really,</span></span>
+<span class="tr"><span class="th" id="line291">291</span><span class="td">! not concatenate commands at all. It will also parse &quot;type 4. on keyboard&quot;</span></span>
+<span class="tr"><span class="th" id="line292">292</span><span class="td">! as two commands, even though &quot;4.&quot; is a legitimate float literal.</span></span>
+<span class="tr"><span class="th" id="line293">293</span><span class="td">! Contrariwise, &quot;type 4. x me&quot; will be taken as one command. (Because the &quot;x&quot;</span></span>
+<span class="tr"><span class="th" id="line294">294</span><span class="td">! *could* be a continuation of the float, and I don&#39;t back up when it turns</span></span>
+<span class="tr"><span class="th" id="line295">295</span><span class="td">! out not to be.) I don&#39;t plan to worry about these cases.)</span></span>
 <span class="tr"><span class="th" id="line296">296</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line297">297</span><span class="td">[&nbsp;FLOAT_TOKEN&nbsp;buf&nbsp;bufend&nbsp;ix&nbsp;ch&nbsp;firstwd&nbsp;newstart&nbsp;newlen&nbsp;lastchar&nbsp;lastwasdot;</span></span>
-<span class="tr"><span class="th" id="line298">298</span><span class="td">&nbsp;if&nbsp;(wn&nbsp;&gt;&nbsp;num_words)</span></span>
-<span class="tr"><span class="th" id="line299">299</span><span class="td">&nbsp;&nbsp;return&nbsp;GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line297">297</span><span class="td">[ FLOAT_TOKEN buf bufend ix ch firstwd newstart newlen lastchar lastwasdot;</span></span>
+<span class="tr"><span class="th" id="line298">298</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (wn &gt; num_words)</span></span>
+<span class="tr"><span class="th" id="line299">299</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        return GPR_FAIL;</span></span>
 <span class="tr"><span class="th" id="line300">300</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line301">301</span><span class="td">&nbsp;!&nbsp;We&#39;re&nbsp;going&nbsp;to&nbsp;collect&nbsp;a&nbsp;set&nbsp;of&nbsp;words.&nbsp;Start&nbsp;with&nbsp;zero&nbsp;words.</span></span>
-<span class="tr"><span class="th" id="line302">302</span><span class="td">&nbsp;firstwd&nbsp;=&nbsp;wn;</span></span>
-<span class="tr"><span class="th" id="line303">303</span><span class="td">&nbsp;buf&nbsp;=&nbsp;WordAddress(wn);</span></span>
-<span class="tr"><span class="th" id="line304">304</span><span class="td">&nbsp;bufend&nbsp;=&nbsp;buf;</span></span>
-<span class="tr"><span class="th" id="line305">305</span><span class="td">&nbsp;lastchar&nbsp;=&nbsp;0;</span></span>
+<span class="tr"><span class="th" id="line301">301</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! We&#39;re going to collect a set of words. Start with zero words.</span></span>
+<span class="tr"><span class="th" id="line302">302</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    firstwd = wn;</span></span>
+<span class="tr"><span class="th" id="line303">303</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    buf = WordAddress(wn);</span></span>
+<span class="tr"><span class="th" id="line304">304</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    bufend = buf;</span></span>
+<span class="tr"><span class="th" id="line305">305</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    lastchar = 0;</span></span>
 <span class="tr"><span class="th" id="line306">306</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line307">307</span><span class="td">&nbsp;while&nbsp;(wn&nbsp;&lt;=&nbsp;num_words)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line308">308</span><span class="td">&nbsp;&nbsp;newstart&nbsp;=&nbsp;WordAddress(wn);</span></span>
-<span class="tr"><span class="th" id="line309">309</span><span class="td">&nbsp;&nbsp;if&nbsp;(newstart&nbsp;~=&nbsp;bufend)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line310">310</span><span class="td">&nbsp;&nbsp;&nbsp;!&nbsp;There&#39;s&nbsp;whitespace&nbsp;between&nbsp;the&nbsp;previous&nbsp;word&nbsp;and&nbsp;this&nbsp;one.</span></span>
-<span class="tr"><span class="th" id="line311">311</span><span class="td">&nbsp;&nbsp;&nbsp;!&nbsp;Whitespace&nbsp;is&nbsp;okay&nbsp;around&nbsp;an&nbsp;asterisk...</span></span>
-<span class="tr"><span class="th" id="line312">312</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;((lastchar&nbsp;~=&nbsp;&#39;*&#39;&nbsp;or&nbsp;&#39;x&#39;&nbsp;or&nbsp;&#39;X&#39;&nbsp;or&nbsp;$D7)</span></span>
-<span class="tr"><span class="th" id="line313">313</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&amp;&amp;&nbsp;(newstart-&gt;0&nbsp;~=&nbsp;&#39;*&#39;&nbsp;or&nbsp;&#39;x&#39;&nbsp;or&nbsp;&#39;X&#39;&nbsp;or&nbsp;$D7))&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line314">314</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;!&nbsp;But&nbsp;around&nbsp;any&nbsp;other&nbsp;character,&nbsp;it&#39;s&nbsp;not.</span></span>
-<span class="tr"><span class="th" id="line315">315</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;!&nbsp;Don&#39;t&nbsp;include&nbsp;the&nbsp;new&nbsp;word.</span></span>
-<span class="tr"><span class="th" id="line316">316</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;break;</span></span>
-<span class="tr"><span class="th" id="line317">317</span><span class="td">&nbsp;&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line318">318</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line319">319</span><span class="td">&nbsp;&nbsp;newlen&nbsp;=&nbsp;WordLength(wn);</span></span>
-<span class="tr"><span class="th" id="line320">320</span><span class="td">&nbsp;&nbsp;for&nbsp;(ix=0&nbsp;:&nbsp;ix&lt;newlen&nbsp;:&nbsp;ix++)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line321">321</span><span class="td">&nbsp;&nbsp;&nbsp;ch&nbsp;=&nbsp;newstart-&gt;ix;</span></span>
-<span class="tr"><span class="th" id="line322">322</span><span class="td">&nbsp;&nbsp;&nbsp;if&nbsp;(~~((ch&nbsp;&gt;=&nbsp;&#39;0&#39;&nbsp;&amp;&amp;&nbsp;ch&nbsp;&lt;=&nbsp;&#39;9&#39;)</span></span>
-<span class="tr"><span class="th" id="line323">323</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;||&nbsp;(ch&nbsp;==&nbsp;&#39;-&#39;&nbsp;or&nbsp;&#39;+&#39;&nbsp;or&nbsp;&#39;E&#39;&nbsp;or&nbsp;&#39;e&#39;&nbsp;or&nbsp;&#39;.&#39;&nbsp;or&nbsp;&#39;x&#39;&nbsp;or&nbsp;&#39;X&#39;&nbsp;or&nbsp;&#39;*&#39;&nbsp;or&nbsp;$D7&nbsp;or&nbsp;$5E)))</span></span>
-<span class="tr"><span class="th" id="line324">324</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;break;</span></span>
-<span class="tr"><span class="th" id="line325">325</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line326">326</span><span class="td">&nbsp;&nbsp;if&nbsp;(ix&nbsp;&lt;&nbsp;newlen)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line327">327</span><span class="td">&nbsp;&nbsp;&nbsp;!&nbsp;This&nbsp;word&nbsp;contains&nbsp;an&nbsp;invalid&nbsp;character.</span></span>
-<span class="tr"><span class="th" id="line328">328</span><span class="td">&nbsp;&nbsp;&nbsp;!&nbsp;Don&#39;t&nbsp;include&nbsp;the&nbsp;new&nbsp;word.</span></span>
-<span class="tr"><span class="th" id="line329">329</span><span class="td">&nbsp;&nbsp;&nbsp;break;</span></span>
-<span class="tr"><span class="th" id="line330">330</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line331">331</span><span class="td">&nbsp;&nbsp;!&nbsp;Okay,&nbsp;include&nbsp;it.</span></span>
-<span class="tr"><span class="th" id="line332">332</span><span class="td">&nbsp;&nbsp;bufend&nbsp;=&nbsp;newstart&nbsp;+&nbsp;newlen;</span></span>
-<span class="tr"><span class="th" id="line333">333</span><span class="td">&nbsp;&nbsp;wn++;</span></span>
-<span class="tr"><span class="th" id="line334">334</span><span class="td">&nbsp;&nbsp;lastchar&nbsp;=&nbsp;(bufend-1)-&gt;0;</span></span>
-<span class="tr"><span class="th" id="line335">335</span><span class="td">&nbsp;&nbsp;lastwasdot&nbsp;=&nbsp;(newlen&nbsp;==&nbsp;1&nbsp;&amp;&amp;&nbsp;lastchar&nbsp;==&nbsp;&#39;.&#39;);</span></span>
-<span class="tr"><span class="th" id="line336">336</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line307">307</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    while (wn &lt;= num_words) {</span></span>
+<span class="tr"><span class="th" id="line308">308</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        newstart = WordAddress(wn);</span></span>
+<span class="tr"><span class="th" id="line309">309</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (newstart ~= bufend) {</span></span>
+<span class="tr"><span class="th" id="line310">310</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            ! There&#39;s whitespace between the previous word and this one.</span></span>
+<span class="tr"><span class="th" id="line311">311</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            ! Whitespace is okay around an asterisk...</span></span>
+<span class="tr"><span class="th" id="line312">312</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if ((lastchar ~= &#39;*&#39; or &#39;x&#39; or &#39;X&#39; or $D7)</span></span>
+<span class="tr"><span class="th" id="line313">313</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                &amp;&amp; (newstart-&gt;0 ~= &#39;*&#39; or &#39;x&#39; or &#39;X&#39; or $D7)) {</span></span>
+<span class="tr"><span class="th" id="line314">314</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                ! But around any other character, it&#39;s not.</span></span>
+<span class="tr"><span class="th" id="line315">315</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                ! Don&#39;t include the new word.</span></span>
+<span class="tr"><span class="th" id="line316">316</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                break;</span></span>
+<span class="tr"><span class="th" id="line317">317</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            }</span></span>
+<span class="tr"><span class="th" id="line318">318</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
+<span class="tr"><span class="th" id="line319">319</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        newlen = WordLength(wn);</span></span>
+<span class="tr"><span class="th" id="line320">320</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        for (ix=0 : ix&lt;newlen : ix++) {</span></span>
+<span class="tr"><span class="th" id="line321">321</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            ch = newstart-&gt;ix;</span></span>
+<span class="tr"><span class="th" id="line322">322</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (~~((ch &gt;= &#39;0&#39; &amp;&amp; ch &lt;= &#39;9&#39;)</span></span>
+<span class="tr"><span class="th" id="line323">323</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                || (ch == &#39;-&#39; or &#39;+&#39; or &#39;E&#39; or &#39;e&#39; or &#39;.&#39; or &#39;x&#39; or &#39;X&#39; or &#39;*&#39; or $D7 or $5E)))</span></span>
+<span class="tr"><span class="th" id="line324">324</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                break;</span></span>
+<span class="tr"><span class="th" id="line325">325</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
+<span class="tr"><span class="th" id="line326">326</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (ix &lt; newlen) {</span></span>
+<span class="tr"><span class="th" id="line327">327</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            ! This word contains an invalid character.</span></span>
+<span class="tr"><span class="th" id="line328">328</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            ! Don&#39;t include the new word.</span></span>
+<span class="tr"><span class="th" id="line329">329</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            break;</span></span>
+<span class="tr"><span class="th" id="line330">330</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
+<span class="tr"><span class="th" id="line331">331</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! Okay, include it.</span></span>
+<span class="tr"><span class="th" id="line332">332</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        bufend = newstart + newlen;</span></span>
+<span class="tr"><span class="th" id="line333">333</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        wn++;</span></span>
+<span class="tr"><span class="th" id="line334">334</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        lastchar = (bufend-1)-&gt;0;</span></span>
+<span class="tr"><span class="th" id="line335">335</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        lastwasdot = (newlen == 1 &amp;&amp; lastchar == &#39;.&#39;);</span></span>
+<span class="tr"><span class="th" id="line336">336</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
 <span class="tr"><span class="th" id="line337">337</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line338">338</span><span class="td">&nbsp;if&nbsp;(wn&nbsp;&gt;&nbsp;firstwd&nbsp;&amp;&amp;&nbsp;lastwasdot)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line339">339</span><span class="td">&nbsp;&nbsp;!&nbsp;Exclude&nbsp;a&nbsp;trailing&nbsp;period.</span></span>
-<span class="tr"><span class="th" id="line340">340</span><span class="td">&nbsp;&nbsp;wn--;</span></span>
-<span class="tr"><span class="th" id="line341">341</span><span class="td">&nbsp;&nbsp;bufend--;</span></span>
-<span class="tr"><span class="th" id="line342">342</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line338">338</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (wn &gt; firstwd &amp;&amp; lastwasdot) {</span></span>
+<span class="tr"><span class="th" id="line339">339</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! Exclude a trailing period.</span></span>
+<span class="tr"><span class="th" id="line340">340</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        wn--;</span></span>
+<span class="tr"><span class="th" id="line341">341</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        bufend--;</span></span>
+<span class="tr"><span class="th" id="line342">342</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
 <span class="tr"><span class="th" id="line343">343</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line344">344</span><span class="td">&nbsp;if&nbsp;(wn&nbsp;==&nbsp;firstwd)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line345">345</span><span class="td">&nbsp;&nbsp;!&nbsp;No&nbsp;words&nbsp;accepted.</span></span>
-<span class="tr"><span class="th" id="line346">346</span><span class="td">&nbsp;&nbsp;return&nbsp;GPR_FAIL;</span></span>
-<span class="tr"><span class="th" id="line347">347</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line344">344</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (wn == firstwd) {</span></span>
+<span class="tr"><span class="th" id="line345">345</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! No words accepted.</span></span>
+<span class="tr"><span class="th" id="line346">346</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        return GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line347">347</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
 <span class="tr"><span class="th" id="line348">348</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line349">349</span><span class="td">&nbsp;parsed_number&nbsp;=&nbsp;FloatParse(buf,&nbsp;bufend-buf,&nbsp;true);</span></span>
-<span class="tr"><span class="th" id="line350">350</span><span class="td">&nbsp;if&nbsp;(parsed_number&nbsp;==&nbsp;FLOAT_NAN)</span></span>
-<span class="tr"><span class="th" id="line351">351</span><span class="td">&nbsp;&nbsp;return&nbsp;GPR_FAIL;</span></span>
-<span class="tr"><span class="th" id="line352">352</span><span class="td">&nbsp;return&nbsp;GPR_NUMBER;</span></span>
+<span class="tr"><span class="th" id="line349">349</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    parsed_number = FloatParse(buf, bufend-buf, true);</span></span>
+<span class="tr"><span class="th" id="line350">350</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (parsed_number == FLOAT_NAN)</span></span>
+<span class="tr"><span class="th" id="line351">351</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        return GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line352">352</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return GPR_NUMBER;</span></span>
 <span class="tr"><span class="th" id="line353">353</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line354">354</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line355">355</span><span class="td">!&nbsp;Floating-point&nbsp;printing&nbsp;routines.&nbsp;(These&nbsp;are&nbsp;based&nbsp;on&nbsp;code&nbsp;in</span></span>
-<span class="tr"><span class="th" id="line356">356</span><span class="td">!&nbsp;Glulxercise.inf,&nbsp;but&nbsp;modified.)</span></span>
-<span class="tr"><span class="th" id="line357">357</span><span class="td">&nbsp;&nbsp;</span></span>
-<span class="tr"><span class="th" id="line358">358</span><span class="td">!&nbsp;Print&nbsp;a&nbsp;float.&nbsp;This&nbsp;uses&nbsp;exponential&nbsp;notation&nbsp;(&quot;[-]N.NNNe[+-]NN&quot;)&nbsp;if</span></span>
-<span class="tr"><span class="th" id="line359">359</span><span class="td">!&nbsp;the&nbsp;exponent&nbsp;is&nbsp;not&nbsp;between&nbsp;6&nbsp;and&nbsp;-4.&nbsp;If&nbsp;it&nbsp;is&nbsp;(that&nbsp;is,&nbsp;if&nbsp;the</span></span>
-<span class="tr"><span class="th" id="line360">360</span><span class="td">!&nbsp;absolute&nbsp;value&nbsp;is&nbsp;near&nbsp;1.0)&nbsp;then&nbsp;it&nbsp;uses&nbsp;decimal&nbsp;notation&nbsp;(&quot;[-]NNN.NNNNN&quot;).</span></span>
-<span class="tr"><span class="th" id="line361">361</span><span class="td">!&nbsp;The&nbsp;precision&nbsp;is&nbsp;the&nbsp;number&nbsp;of&nbsp;digits&nbsp;after&nbsp;the&nbsp;decimal&nbsp;point</span></span>
-<span class="tr"><span class="th" id="line362">362</span><span class="td">!&nbsp;(at&nbsp;least&nbsp;one,&nbsp;no&nbsp;more&nbsp;than&nbsp;eight).&nbsp;The&nbsp;default&nbsp;is&nbsp;five,&nbsp;because</span></span>
-<span class="tr"><span class="th" id="line363">363</span><span class="td">!&nbsp;beyond&nbsp;that&nbsp;rounding&nbsp;errors&nbsp;creep&nbsp;in,&nbsp;and&nbsp;even&nbsp;exactly-represented</span></span>
-<span class="tr"><span class="th" id="line364">364</span><span class="td">!&nbsp;float&nbsp;values&nbsp;are&nbsp;printed&nbsp;with&nbsp;trailing&nbsp;fudgy&nbsp;digits.</span></span>
-<span class="tr"><span class="th" id="line365">365</span><span class="td">!&nbsp;Trailing&nbsp;zeroes&nbsp;are&nbsp;trimmed.</span></span>
-<span class="tr"><span class="th" id="line366">366</span><span class="td">[&nbsp;Float&nbsp;val&nbsp;prec&nbsp;&nbsp;&nbsp;pval;</span></span>
-<span class="tr"><span class="th" id="line367">367</span><span class="td">&nbsp;pval&nbsp;=&nbsp;val&nbsp;&amp;&nbsp;$7FFFFFFF;</span></span>
+<span class="tr"><span class="th" id="line355">355</span><span class="td">! Floating-point printing routines. (These are based on code in</span></span>
+<span class="tr"><span class="th" id="line356">356</span><span class="td">! Glulxercise.inf, but modified.)</span></span>
+<span class="tr"><span class="th" id="line357">357</span><span class="td">&nbsp;&nbsp;  </span></span>
+<span class="tr"><span class="th" id="line358">358</span><span class="td">! Print a float. This uses exponential notation (&quot;[-]N.NNNe[+-]NN&quot;) if</span></span>
+<span class="tr"><span class="th" id="line359">359</span><span class="td">! the exponent is not between 6 and -4. If it is (that is, if the</span></span>
+<span class="tr"><span class="th" id="line360">360</span><span class="td">! absolute value is near 1.0) then it uses decimal notation (&quot;[-]NNN.NNNNN&quot;).</span></span>
+<span class="tr"><span class="th" id="line361">361</span><span class="td">! The precision is the number of digits after the decimal point</span></span>
+<span class="tr"><span class="th" id="line362">362</span><span class="td">! (at least one, no more than eight). The default is five, because</span></span>
+<span class="tr"><span class="th" id="line363">363</span><span class="td">! beyond that rounding errors creep in, and even exactly-represented</span></span>
+<span class="tr"><span class="th" id="line364">364</span><span class="td">! float values are printed with trailing fudgy digits.</span></span>
+<span class="tr"><span class="th" id="line365">365</span><span class="td">! Trailing zeroes are trimmed.</span></span>
+<span class="tr"><span class="th" id="line366">366</span><span class="td">[ Float val prec   pval;</span></span>
+<span class="tr"><span class="th" id="line367">367</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    pval = val &amp; $7FFFFFFF;</span></span>
 <span class="tr"><span class="th" id="line368">368</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line369">369</span><span class="td">&nbsp;@jz&nbsp;pval&nbsp;?UseFloatDec;</span></span>
-<span class="tr"><span class="th" id="line370">370</span><span class="td">&nbsp;@jfge&nbsp;pval&nbsp;$49742400&nbsp;?UseFloatExp;&nbsp;!&nbsp;1000000.0</span></span>
-<span class="tr"><span class="th" id="line371">371</span><span class="td">&nbsp;@jflt&nbsp;pval&nbsp;$38D1B717&nbsp;?UseFloatExp;&nbsp;!&nbsp;0.0001</span></span>
+<span class="tr"><span class="th" id="line369">369</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @jz pval ?UseFloatDec;</span></span>
+<span class="tr"><span class="th" id="line370">370</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @jfge pval $49742400 ?UseFloatExp; ! 1000000.0</span></span>
+<span class="tr"><span class="th" id="line371">371</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @jflt pval $38D1B717 ?UseFloatExp; ! 0.0001</span></span>
 <span class="tr"><span class="th" id="line372">372</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line373">373</span><span class="td">&nbsp;.UseFloatDec;</span></span>
-<span class="tr"><span class="th" id="line374">374</span><span class="td">&nbsp;return&nbsp;FloatDec(val,&nbsp;prec);</span></span>
-<span class="tr"><span class="th" id="line375">375</span><span class="td">&nbsp;.UseFloatExp;</span></span>
-<span class="tr"><span class="th" id="line376">376</span><span class="td">&nbsp;return&nbsp;FloatExp(val,&nbsp;prec);</span></span>
+<span class="tr"><span class="th" id="line373">373</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    .UseFloatDec;</span></span>
+<span class="tr"><span class="th" id="line374">374</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return FloatDec(val, prec);</span></span>
+<span class="tr"><span class="th" id="line375">375</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    .UseFloatExp;</span></span>
+<span class="tr"><span class="th" id="line376">376</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return FloatExp(val, prec);</span></span>
 <span class="tr"><span class="th" id="line377">377</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line378">378</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line379">379</span><span class="td">Array&nbsp;PowersOfTen&nbsp;--&gt;&nbsp;1&nbsp;10&nbsp;100&nbsp;1000&nbsp;10000&nbsp;100000&nbsp;1000000&nbsp;10000000&nbsp;100000000&nbsp;1000000000;</span></span>
+<span class="tr"><span class="th" id="line379">379</span><span class="td">Array PowersOfTen --&gt; 1 10 100 1000 10000 100000 1000000 10000000 100000000 1000000000;</span></span>
 <span class="tr"><span class="th" id="line380">380</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line381">381</span><span class="td">!&nbsp;Print&nbsp;a&nbsp;float&nbsp;in&nbsp;exponential&nbsp;notation:&nbsp;&quot;[-]N.NNNe[+-]NN&quot;.</span></span>
-<span class="tr"><span class="th" id="line382">382</span><span class="td">!&nbsp;The&nbsp;precision&nbsp;is&nbsp;the&nbsp;number&nbsp;of&nbsp;digits&nbsp;after&nbsp;the&nbsp;decimal&nbsp;point</span></span>
-<span class="tr"><span class="th" id="line383">383</span><span class="td">!&nbsp;(at&nbsp;least&nbsp;one,&nbsp;no&nbsp;more&nbsp;than&nbsp;eight).&nbsp;The&nbsp;default&nbsp;is&nbsp;five,&nbsp;because</span></span>
-<span class="tr"><span class="th" id="line384">384</span><span class="td">!&nbsp;beyond&nbsp;that&nbsp;rounding&nbsp;errors&nbsp;creep&nbsp;in,&nbsp;and&nbsp;even&nbsp;exactly-represented</span></span>
-<span class="tr"><span class="th" id="line385">385</span><span class="td">!&nbsp;float&nbsp;values&nbsp;are&nbsp;printed&nbsp;with&nbsp;trailing&nbsp;fudgy&nbsp;digits.</span></span>
-<span class="tr"><span class="th" id="line386">386</span><span class="td">!&nbsp;Trailing&nbsp;zeroes&nbsp;are&nbsp;trimmed.</span></span>
-<span class="tr"><span class="th" id="line387">387</span><span class="td">[&nbsp;FloatExp&nbsp;val&nbsp;prec&nbsp;&nbsp;&nbsp;log10val&nbsp;expo&nbsp;fexpo&nbsp;idig&nbsp;ix&nbsp;pow10;</span></span>
-<span class="tr"><span class="th" id="line388">388</span><span class="td">&nbsp;if&nbsp;(prec&nbsp;==&nbsp;0)</span></span>
-<span class="tr"><span class="th" id="line389">389</span><span class="td">&nbsp;&nbsp;prec&nbsp;=&nbsp;5;</span></span>
-<span class="tr"><span class="th" id="line390">390</span><span class="td">&nbsp;if&nbsp;(prec&nbsp;&gt;&nbsp;8)</span></span>
-<span class="tr"><span class="th" id="line391">391</span><span class="td">&nbsp;&nbsp;prec&nbsp;=&nbsp;8;</span></span>
-<span class="tr"><span class="th" id="line392">392</span><span class="td">&nbsp;pow10&nbsp;=&nbsp;PowersOfTen&nbsp;--&gt;&nbsp;prec;</span></span>
+<span class="tr"><span class="th" id="line381">381</span><span class="td">! Print a float in exponential notation: &quot;[-]N.NNNe[+-]NN&quot;.</span></span>
+<span class="tr"><span class="th" id="line382">382</span><span class="td">! The precision is the number of digits after the decimal point</span></span>
+<span class="tr"><span class="th" id="line383">383</span><span class="td">! (at least one, no more than eight). The default is five, because</span></span>
+<span class="tr"><span class="th" id="line384">384</span><span class="td">! beyond that rounding errors creep in, and even exactly-represented</span></span>
+<span class="tr"><span class="th" id="line385">385</span><span class="td">! float values are printed with trailing fudgy digits.</span></span>
+<span class="tr"><span class="th" id="line386">386</span><span class="td">! Trailing zeroes are trimmed.</span></span>
+<span class="tr"><span class="th" id="line387">387</span><span class="td">[ FloatExp val prec   log10val expo fexpo idig ix pow10;</span></span>
+<span class="tr"><span class="th" id="line388">388</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (prec == 0)</span></span>
+<span class="tr"><span class="th" id="line389">389</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        prec = 5;</span></span>
+<span class="tr"><span class="th" id="line390">390</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (prec &gt; 8)</span></span>
+<span class="tr"><span class="th" id="line391">391</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        prec = 8;</span></span>
+<span class="tr"><span class="th" id="line392">392</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    pow10 = PowersOfTen --&gt; prec;</span></span>
 <span class="tr"><span class="th" id="line393">393</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line394">394</span><span class="td">&nbsp;!&nbsp;Knock&nbsp;off&nbsp;the&nbsp;sign&nbsp;bit&nbsp;first.</span></span>
-<span class="tr"><span class="th" id="line395">395</span><span class="td">&nbsp;if&nbsp;(val&nbsp;&amp;&nbsp;$80000000)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line396">396</span><span class="td">&nbsp;&nbsp;@streamchar&nbsp;&#39;-&#39;;</span></span>
-<span class="tr"><span class="th" id="line397">397</span><span class="td">&nbsp;&nbsp;val&nbsp;=&nbsp;val&nbsp;&amp;&nbsp;$7FFFFFFF;</span></span>
-<span class="tr"><span class="th" id="line398">398</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line399">399</span><span class="td">&nbsp;</span></span>
-<span class="tr"><span class="th" id="line400">400</span><span class="td">&nbsp;@jisnan&nbsp;val&nbsp;?IsNan;</span></span>
-<span class="tr"><span class="th" id="line401">401</span><span class="td">&nbsp;@jisinf&nbsp;val&nbsp;?IsInf;</span></span>
+<span class="tr"><span class="th" id="line394">394</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Knock off the sign bit first.</span></span>
+<span class="tr"><span class="th" id="line395">395</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (val &amp; $80000000) {</span></span>
+<span class="tr"><span class="th" id="line396">396</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @streamchar &#39;-&#39;;</span></span>
+<span class="tr"><span class="th" id="line397">397</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        val = val &amp; $7FFFFFFF;</span></span>
+<span class="tr"><span class="th" id="line398">398</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line399">399</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    </span></span>
+<span class="tr"><span class="th" id="line400">400</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @jisnan val ?IsNan;</span></span>
+<span class="tr"><span class="th" id="line401">401</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @jisinf val ?IsInf;</span></span>
 <span class="tr"><span class="th" id="line402">402</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line403">403</span><span class="td">&nbsp;if&nbsp;(val&nbsp;==&nbsp;$0)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line404">404</span><span class="td">&nbsp;&nbsp;expo&nbsp;=&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line405">405</span><span class="td">&nbsp;&nbsp;idig&nbsp;=&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line406">406</span><span class="td">&nbsp;&nbsp;jump&nbsp;<a href="./RealNumber.i6t.html#line570">DoPrint</a>;</span></span>
-<span class="tr"><span class="th" id="line407">407</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line403">403</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (val == $0) {</span></span>
+<span class="tr"><span class="th" id="line404">404</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        expo = 0;</span></span>
+<span class="tr"><span class="th" id="line405">405</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        idig = 0;</span></span>
+<span class="tr"><span class="th" id="line406">406</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        jump <a href="./RealNumber.i6t.html#line570">DoPrint</a>;</span></span>
+<span class="tr"><span class="th" id="line407">407</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
 <span class="tr"><span class="th" id="line408">408</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line409">409</span><span class="td">&nbsp;!&nbsp;Take&nbsp;as&nbsp;an&nbsp;example&nbsp;val=123.5,&nbsp;with&nbsp;precision=6.&nbsp;The&nbsp;desired</span></span>
-<span class="tr"><span class="th" id="line410">410</span><span class="td">&nbsp;!&nbsp;result&nbsp;is&nbsp;&quot;1.23000e+02&quot;.</span></span>
-<span class="tr"><span class="th" id="line411">411</span><span class="td">&nbsp;</span></span>
-<span class="tr"><span class="th" id="line412">412</span><span class="td">&nbsp;@log&nbsp;val&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line413">413</span><span class="td">&nbsp;@fdiv&nbsp;sp&nbsp;$40135D8E&nbsp;log10val;&nbsp;!&nbsp;$40135D8E&nbsp;is&nbsp;log(10)</span></span>
-<span class="tr"><span class="th" id="line414">414</span><span class="td">&nbsp;@floor&nbsp;log10val&nbsp;fexpo;</span></span>
-<span class="tr"><span class="th" id="line415">415</span><span class="td">&nbsp;@ftonumn&nbsp;fexpo&nbsp;expo;</span></span>
-<span class="tr"><span class="th" id="line416">416</span><span class="td">&nbsp;!&nbsp;expo&nbsp;is&nbsp;now&nbsp;the&nbsp;exponent&nbsp;(as&nbsp;an&nbsp;integer).&nbsp;For&nbsp;our&nbsp;example,&nbsp;expo=2.</span></span>
+<span class="tr"><span class="th" id="line409">409</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Take as an example val=123.5, with precision=6. The desired</span></span>
+<span class="tr"><span class="th" id="line410">410</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! result is &quot;1.23000e+02&quot;.</span></span>
+<span class="tr"><span class="th" id="line411">411</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    </span></span>
+<span class="tr"><span class="th" id="line412">412</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @log val sp;</span></span>
+<span class="tr"><span class="th" id="line413">413</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @fdiv sp $40135D8E log10val; ! $40135D8E is log(10)</span></span>
+<span class="tr"><span class="th" id="line414">414</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @floor log10val fexpo;</span></span>
+<span class="tr"><span class="th" id="line415">415</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @ftonumn fexpo expo;</span></span>
+<span class="tr"><span class="th" id="line416">416</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! expo is now the exponent (as an integer). For our example, expo=2.</span></span>
 <span class="tr"><span class="th" id="line417">417</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line418">418</span><span class="td">&nbsp;@fsub&nbsp;log10val&nbsp;fexpo&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line419">419</span><span class="td">&nbsp;@numtof&nbsp;prec&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line420">420</span><span class="td">&nbsp;@fadd&nbsp;sp&nbsp;sp&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line421">421</span><span class="td">&nbsp;@fmul&nbsp;sp&nbsp;$40135D8E&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line422">422</span><span class="td">&nbsp;@exp&nbsp;sp&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line423">423</span><span class="td">&nbsp;!&nbsp;The&nbsp;stack&nbsp;value&nbsp;is&nbsp;now&nbsp;exp((log10val&nbsp;-&nbsp;fexpo&nbsp;+&nbsp;prec)&nbsp;*&nbsp;log(10)).</span></span>
-<span class="tr"><span class="th" id="line424">424</span><span class="td">&nbsp;!&nbsp;We&#39;ve&nbsp;shifted&nbsp;the&nbsp;decimal&nbsp;point&nbsp;left&nbsp;by&nbsp;expo&nbsp;digits&nbsp;(so&nbsp;that</span></span>
-<span class="tr"><span class="th" id="line425">425</span><span class="td">&nbsp;!&nbsp;it&#39;s&nbsp;after&nbsp;the&nbsp;first&nbsp;nonzero&nbsp;digit),&nbsp;and&nbsp;then&nbsp;right&nbsp;by&nbsp;prec</span></span>
-<span class="tr"><span class="th" id="line426">426</span><span class="td">&nbsp;!&nbsp;digits.&nbsp;In&nbsp;our&nbsp;example,&nbsp;that&nbsp;would&nbsp;be&nbsp;1235000.0.</span></span>
-<span class="tr"><span class="th" id="line427">427</span><span class="td">&nbsp;@ftonumn&nbsp;sp&nbsp;idig;</span></span>
-<span class="tr"><span class="th" id="line428">428</span><span class="td">&nbsp;!&nbsp;Round&nbsp;to&nbsp;an&nbsp;integer,&nbsp;and&nbsp;we&nbsp;have&nbsp;1235000.&nbsp;Notice&nbsp;that&nbsp;this&nbsp;is</span></span>
-<span class="tr"><span class="th" id="line429">429</span><span class="td">&nbsp;!&nbsp;exactly&nbsp;the&nbsp;digits&nbsp;we&nbsp;want&nbsp;to&nbsp;print&nbsp;(if&nbsp;we&nbsp;stick&nbsp;a&nbsp;decimal&nbsp;point</span></span>
-<span class="tr"><span class="th" id="line430">430</span><span class="td">&nbsp;!&nbsp;after&nbsp;the&nbsp;first).</span></span>
+<span class="tr"><span class="th" id="line418">418</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @fsub log10val fexpo sp;</span></span>
+<span class="tr"><span class="th" id="line419">419</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @numtof prec sp;</span></span>
+<span class="tr"><span class="th" id="line420">420</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @fadd sp sp sp;</span></span>
+<span class="tr"><span class="th" id="line421">421</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @fmul sp $40135D8E sp;</span></span>
+<span class="tr"><span class="th" id="line422">422</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @exp sp sp;</span></span>
+<span class="tr"><span class="th" id="line423">423</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! The stack value is now exp((log10val - fexpo + prec) * log(10)).</span></span>
+<span class="tr"><span class="th" id="line424">424</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! We&#39;ve shifted the decimal point left by expo digits (so that</span></span>
+<span class="tr"><span class="th" id="line425">425</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! it&#39;s after the first nonzero digit), and then right by prec</span></span>
+<span class="tr"><span class="th" id="line426">426</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! digits. In our example, that would be 1235000.0.</span></span>
+<span class="tr"><span class="th" id="line427">427</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @ftonumn sp idig;</span></span>
+<span class="tr"><span class="th" id="line428">428</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Round to an integer, and we have 1235000. Notice that this is</span></span>
+<span class="tr"><span class="th" id="line429">429</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! exactly the digits we want to print (if we stick a decimal point</span></span>
+<span class="tr"><span class="th" id="line430">430</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! after the first).</span></span>
 <span class="tr"><span class="th" id="line431">431</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line432">432</span><span class="td">&nbsp;.DoPrint;</span></span>
-<span class="tr"><span class="th" id="line433">433</span><span class="td">&nbsp;</span></span>
-<span class="tr"><span class="th" id="line434">434</span><span class="td">&nbsp;if&nbsp;(idig&nbsp;&gt;=&nbsp;10*pow10)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line435">435</span><span class="td">&nbsp;&nbsp;!&nbsp;Rounding&nbsp;errors&nbsp;have&nbsp;left&nbsp;us&nbsp;outside&nbsp;the&nbsp;decimal&nbsp;range&nbsp;of</span></span>
-<span class="tr"><span class="th" id="line436">436</span><span class="td">&nbsp;&nbsp;!&nbsp;[1.0,&nbsp;10.0)&nbsp;where&nbsp;we&nbsp;should&nbsp;be.&nbsp;Adjust&nbsp;to&nbsp;the&nbsp;next&nbsp;higher</span></span>
-<span class="tr"><span class="th" id="line437">437</span><span class="td">&nbsp;&nbsp;!&nbsp;exponent.</span></span>
-<span class="tr"><span class="th" id="line438">438</span><span class="td">&nbsp;&nbsp;expo++;</span></span>
-<span class="tr"><span class="th" id="line439">439</span><span class="td">&nbsp;&nbsp;@div&nbsp;idig&nbsp;10&nbsp;idig;</span></span>
-<span class="tr"><span class="th" id="line440">440</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line441">441</span><span class="td">&nbsp;</span></span>
-<span class="tr"><span class="th" id="line442">442</span><span class="td">&nbsp;!&nbsp;Trim&nbsp;off&nbsp;trailing&nbsp;zeroes,&nbsp;as&nbsp;long&nbsp;as&nbsp;there&#39;s&nbsp;at&nbsp;least&nbsp;one&nbsp;digit</span></span>
-<span class="tr"><span class="th" id="line443">443</span><span class="td">&nbsp;!&nbsp;after&nbsp;the&nbsp;decimal&nbsp;point.&nbsp;(Delete&nbsp;this&nbsp;stanza&nbsp;if&nbsp;you&nbsp;want&nbsp;to</span></span>
-<span class="tr"><span class="th" id="line444">444</span><span class="td">&nbsp;!&nbsp;keep&nbsp;the&nbsp;trailing&nbsp;zeroes.)</span></span>
-<span class="tr"><span class="th" id="line445">445</span><span class="td">&nbsp;while&nbsp;(prec&nbsp;&gt;&nbsp;1)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line446">446</span><span class="td">&nbsp;&nbsp;@mod&nbsp;idig&nbsp;10&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line447">447</span><span class="td">&nbsp;&nbsp;@jnz&nbsp;sp&nbsp;?DoneTrimming;</span></span>
-<span class="tr"><span class="th" id="line448">448</span><span class="td">&nbsp;&nbsp;@div&nbsp;pow10&nbsp;10&nbsp;pow10;</span></span>
-<span class="tr"><span class="th" id="line449">449</span><span class="td">&nbsp;&nbsp;@div&nbsp;idig&nbsp;10&nbsp;idig;</span></span>
-<span class="tr"><span class="th" id="line450">450</span><span class="td">&nbsp;&nbsp;prec--;</span></span>
-<span class="tr"><span class="th" id="line451">451</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line452">452</span><span class="td">&nbsp;.DoneTrimming;</span></span>
-<span class="tr"><span class="th" id="line453">453</span><span class="td">&nbsp;</span></span>
-<span class="tr"><span class="th" id="line454">454</span><span class="td">&nbsp;for&nbsp;(ix=0&nbsp;:&nbsp;ix&lt;=prec&nbsp;:&nbsp;ix++)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line455">455</span><span class="td">&nbsp;&nbsp;@div&nbsp;idig&nbsp;pow10&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line456">456</span><span class="td">&nbsp;&nbsp;@mod&nbsp;sp&nbsp;10&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line457">457</span><span class="td">&nbsp;&nbsp;@streamnum&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line458">458</span><span class="td">&nbsp;&nbsp;if&nbsp;(ix&nbsp;==&nbsp;0)</span></span>
-<span class="tr"><span class="th" id="line459">459</span><span class="td">&nbsp;&nbsp;&nbsp;@streamchar&nbsp;&#39;.&#39;;</span></span>
-<span class="tr"><span class="th" id="line460">460</span><span class="td">&nbsp;&nbsp;@div&nbsp;pow10&nbsp;10&nbsp;pow10;</span></span>
-<span class="tr"><span class="th" id="line461">461</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line432">432</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    .DoPrint;</span></span>
+<span class="tr"><span class="th" id="line433">433</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    </span></span>
+<span class="tr"><span class="th" id="line434">434</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (idig &gt;= 10*pow10) {</span></span>
+<span class="tr"><span class="th" id="line435">435</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! Rounding errors have left us outside the decimal range of</span></span>
+<span class="tr"><span class="th" id="line436">436</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! [1.0, 10.0) where we should be. Adjust to the next higher</span></span>
+<span class="tr"><span class="th" id="line437">437</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! exponent.</span></span>
+<span class="tr"><span class="th" id="line438">438</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        expo++;</span></span>
+<span class="tr"><span class="th" id="line439">439</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @div idig 10 idig;</span></span>
+<span class="tr"><span class="th" id="line440">440</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line441">441</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    </span></span>
+<span class="tr"><span class="th" id="line442">442</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Trim off trailing zeroes, as long as there&#39;s at least one digit</span></span>
+<span class="tr"><span class="th" id="line443">443</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! after the decimal point. (Delete this stanza if you want to</span></span>
+<span class="tr"><span class="th" id="line444">444</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! keep the trailing zeroes.)</span></span>
+<span class="tr"><span class="th" id="line445">445</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    while (prec &gt; 1) {</span></span>
+<span class="tr"><span class="th" id="line446">446</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @mod idig 10 sp;</span></span>
+<span class="tr"><span class="th" id="line447">447</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @jnz sp ?DoneTrimming;</span></span>
+<span class="tr"><span class="th" id="line448">448</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @div pow10 10 pow10;</span></span>
+<span class="tr"><span class="th" id="line449">449</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @div idig 10 idig;</span></span>
+<span class="tr"><span class="th" id="line450">450</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        prec--;</span></span>
+<span class="tr"><span class="th" id="line451">451</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line452">452</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    .DoneTrimming;</span></span>
+<span class="tr"><span class="th" id="line453">453</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    </span></span>
+<span class="tr"><span class="th" id="line454">454</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (ix=0 : ix&lt;=prec : ix++) {</span></span>
+<span class="tr"><span class="th" id="line455">455</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @div idig pow10 sp;</span></span>
+<span class="tr"><span class="th" id="line456">456</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @mod sp 10 sp;</span></span>
+<span class="tr"><span class="th" id="line457">457</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @streamnum sp;</span></span>
+<span class="tr"><span class="th" id="line458">458</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (ix == 0)</span></span>
+<span class="tr"><span class="th" id="line459">459</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            @streamchar &#39;.&#39;;</span></span>
+<span class="tr"><span class="th" id="line460">460</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @div pow10 10 pow10;</span></span>
+<span class="tr"><span class="th" id="line461">461</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
 <span class="tr"><span class="th" id="line462">462</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line463">463</span><span class="td">&nbsp;!&nbsp;Print&nbsp;the&nbsp;exponent.&nbsp;There&nbsp;are&nbsp;two&nbsp;conventions&nbsp;coded&nbsp;here:&nbsp;the</span></span>
-<span class="tr"><span class="th" id="line464">464</span><span class="td">&nbsp;!&nbsp;programmatic&nbsp;(&quot;1.0e+00&quot;)&nbsp;and&nbsp;the&nbsp;literary&nbsp;(&quot;1.0&nbsp;x&nbsp;10^0&quot;).</span></span>
-<span class="tr"><span class="th" id="line465">465</span><span class="td">&nbsp;#ifndef&nbsp;FLOAT_PROGRAMMING_EXPONENTS;</span></span>
-<span class="tr"><span class="th" id="line466">466</span><span class="td">&nbsp;&nbsp;PrintMultiplicationSign();</span></span>
-<span class="tr"><span class="th" id="line467">467</span><span class="td">&nbsp;&nbsp;@streamstr&nbsp;&quot;10&quot;;</span></span>
-<span class="tr"><span class="th" id="line468">468</span><span class="td">&nbsp;&nbsp;@streamchar&nbsp;$5E;</span></span>
-<span class="tr"><span class="th" id="line469">469</span><span class="td">&nbsp;&nbsp;@streamnum&nbsp;expo;</span></span>
-<span class="tr"><span class="th" id="line470">470</span><span class="td">&nbsp;#ifnot;</span></span>
-<span class="tr"><span class="th" id="line471">471</span><span class="td">&nbsp;&nbsp;!&nbsp;Convention&nbsp;is&nbsp;to&nbsp;use&nbsp;at&nbsp;least&nbsp;two&nbsp;digits.</span></span>
-<span class="tr"><span class="th" id="line472">472</span><span class="td">&nbsp;&nbsp;@streamchar&nbsp;&#39;e&#39;;</span></span>
-<span class="tr"><span class="th" id="line473">473</span><span class="td">&nbsp;&nbsp;if&nbsp;(expo&nbsp;&lt;&nbsp;0)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line474">474</span><span class="td">&nbsp;&nbsp;&nbsp;@streamchar&nbsp;&#39;-&#39;;</span></span>
-<span class="tr"><span class="th" id="line475">475</span><span class="td">&nbsp;&nbsp;&nbsp;@neg&nbsp;expo&nbsp;expo;</span></span>
-<span class="tr"><span class="th" id="line476">476</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line477">477</span><span class="td">&nbsp;&nbsp;else&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line478">478</span><span class="td">&nbsp;&nbsp;&nbsp;@streamchar&nbsp;&#39;+&#39;;</span></span>
-<span class="tr"><span class="th" id="line479">479</span><span class="td">&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line480">480</span><span class="td">&nbsp;&nbsp;if&nbsp;(expo&nbsp;&lt;&nbsp;10)</span></span>
-<span class="tr"><span class="th" id="line481">481</span><span class="td">&nbsp;&nbsp;&nbsp;@streamchar&nbsp;&#39;0&#39;;</span></span>
-<span class="tr"><span class="th" id="line482">482</span><span class="td">&nbsp;&nbsp;@streamnum&nbsp;expo;</span></span>
-<span class="tr"><span class="th" id="line483">483</span><span class="td">&nbsp;#endif;&nbsp;!&nbsp;FLOAT_PROGRAMMING_EXPONENTS</span></span>
-<span class="tr"><span class="th" id="line484">484</span><span class="td">&nbsp;</span></span>
-<span class="tr"><span class="th" id="line485">485</span><span class="td">&nbsp;rtrue;</span></span>
+<span class="tr"><span class="th" id="line463">463</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Print the exponent. There are two conventions coded here: the</span></span>
+<span class="tr"><span class="th" id="line464">464</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! programmatic (&quot;1.0e+00&quot;) and the literary (&quot;1.0 x 10^0&quot;).</span></span>
+<span class="tr"><span class="th" id="line465">465</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #ifndef FLOAT_PROGRAMMING_EXPONENTS;</span></span>
+<span class="tr"><span class="th" id="line466">466</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        PrintMultiplicationSign();</span></span>
+<span class="tr"><span class="th" id="line467">467</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @streamstr &quot;10&quot;;</span></span>
+<span class="tr"><span class="th" id="line468">468</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @streamchar $5E;</span></span>
+<span class="tr"><span class="th" id="line469">469</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @streamnum expo;</span></span>
+<span class="tr"><span class="th" id="line470">470</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #ifnot;</span></span>
+<span class="tr"><span class="th" id="line471">471</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! Convention is to use at least two digits.</span></span>
+<span class="tr"><span class="th" id="line472">472</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @streamchar &#39;e&#39;;</span></span>
+<span class="tr"><span class="th" id="line473">473</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (expo &lt; 0) {</span></span>
+<span class="tr"><span class="th" id="line474">474</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            @streamchar &#39;-&#39;;</span></span>
+<span class="tr"><span class="th" id="line475">475</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            @neg expo expo;</span></span>
+<span class="tr"><span class="th" id="line476">476</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
+<span class="tr"><span class="th" id="line477">477</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        else {</span></span>
+<span class="tr"><span class="th" id="line478">478</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            @streamchar &#39;+&#39;;</span></span>
+<span class="tr"><span class="th" id="line479">479</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
+<span class="tr"><span class="th" id="line480">480</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (expo &lt; 10)</span></span>
+<span class="tr"><span class="th" id="line481">481</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            @streamchar &#39;0&#39;;</span></span>
+<span class="tr"><span class="th" id="line482">482</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @streamnum expo;</span></span>
+<span class="tr"><span class="th" id="line483">483</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #endif; ! FLOAT_PROGRAMMING_EXPONENTS</span></span>
+<span class="tr"><span class="th" id="line484">484</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    </span></span>
+<span class="tr"><span class="th" id="line485">485</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rtrue;</span></span>
 <span class="tr"><span class="th" id="line486">486</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line487">487</span><span class="td">&nbsp;.IsNan;</span></span>
-<span class="tr"><span class="th" id="line488">488</span><span class="td">&nbsp;PrintNan();</span></span>
-<span class="tr"><span class="th" id="line489">489</span><span class="td">&nbsp;rtrue;</span></span>
+<span class="tr"><span class="th" id="line487">487</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    .IsNan;</span></span>
+<span class="tr"><span class="th" id="line488">488</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    PrintNan();</span></span>
+<span class="tr"><span class="th" id="line489">489</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rtrue;</span></span>
 <span class="tr"><span class="th" id="line490">490</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line491">491</span><span class="td">&nbsp;.IsInf;</span></span>
-<span class="tr"><span class="th" id="line492">492</span><span class="td">&nbsp;PrintInfinity();</span></span>
-<span class="tr"><span class="th" id="line493">493</span><span class="td">&nbsp;rtrue;</span></span>
+<span class="tr"><span class="th" id="line491">491</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    .IsInf;</span></span>
+<span class="tr"><span class="th" id="line492">492</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    PrintInfinity();</span></span>
+<span class="tr"><span class="th" id="line493">493</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rtrue;</span></span>
 <span class="tr"><span class="th" id="line494">494</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line495">495</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line496">496</span><span class="td">!&nbsp;Print&nbsp;a&nbsp;float&nbsp;in&nbsp;decimal&nbsp;notation:&nbsp;&quot;[-]NNN.NNNNN&quot;.</span></span>
-<span class="tr"><span class="th" id="line497">497</span><span class="td">!&nbsp;The&nbsp;precision&nbsp;is&nbsp;the&nbsp;number&nbsp;of&nbsp;digits&nbsp;after&nbsp;the&nbsp;decimal&nbsp;point</span></span>
-<span class="tr"><span class="th" id="line498">498</span><span class="td">!&nbsp;(at&nbsp;least&nbsp;one,&nbsp;no&nbsp;more&nbsp;than&nbsp;eight).&nbsp;The&nbsp;default&nbsp;is&nbsp;five,&nbsp;because</span></span>
-<span class="tr"><span class="th" id="line499">499</span><span class="td">!&nbsp;beyond&nbsp;that&nbsp;rounding&nbsp;errors&nbsp;creep&nbsp;in,&nbsp;and&nbsp;even&nbsp;exactly-represented</span></span>
-<span class="tr"><span class="th" id="line500">500</span><span class="td">!&nbsp;float&nbsp;values&nbsp;are&nbsp;printed&nbsp;with&nbsp;trailing&nbsp;fudgy&nbsp;digits.</span></span>
-<span class="tr"><span class="th" id="line501">501</span><span class="td">!&nbsp;Trailing&nbsp;zeroes&nbsp;are&nbsp;trimmed.</span></span>
-<span class="tr"><span class="th" id="line502">502</span><span class="td">[&nbsp;FloatDec&nbsp;val&nbsp;prec&nbsp;&nbsp;&nbsp;log10val&nbsp;int&nbsp;fint&nbsp;extra0&nbsp;frac&nbsp;idig&nbsp;ix&nbsp;pow10;</span></span>
-<span class="tr"><span class="th" id="line503">503</span><span class="td">&nbsp;if&nbsp;(prec&nbsp;==&nbsp;0)</span></span>
-<span class="tr"><span class="th" id="line504">504</span><span class="td">&nbsp;&nbsp;prec&nbsp;=&nbsp;5;</span></span>
-<span class="tr"><span class="th" id="line505">505</span><span class="td">&nbsp;if&nbsp;(prec&nbsp;&gt;&nbsp;8)</span></span>
-<span class="tr"><span class="th" id="line506">506</span><span class="td">&nbsp;&nbsp;prec&nbsp;=&nbsp;8;</span></span>
-<span class="tr"><span class="th" id="line507">507</span><span class="td">&nbsp;pow10&nbsp;=&nbsp;PowersOfTen&nbsp;--&gt;&nbsp;prec;</span></span>
-<span class="tr"><span class="th" id="line508">508</span><span class="td">&nbsp;</span></span>
-<span class="tr"><span class="th" id="line509">509</span><span class="td">&nbsp;!&nbsp;Knock&nbsp;off&nbsp;the&nbsp;sign&nbsp;bit&nbsp;first.</span></span>
-<span class="tr"><span class="th" id="line510">510</span><span class="td">&nbsp;if&nbsp;(val&nbsp;&amp;&nbsp;$80000000)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line511">511</span><span class="td">&nbsp;&nbsp;@streamchar&nbsp;&#39;-&#39;;</span></span>
-<span class="tr"><span class="th" id="line512">512</span><span class="td">&nbsp;&nbsp;val&nbsp;=&nbsp;val&nbsp;&amp;&nbsp;$7FFFFFFF;</span></span>
-<span class="tr"><span class="th" id="line513">513</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line514">514</span><span class="td">&nbsp;</span></span>
-<span class="tr"><span class="th" id="line515">515</span><span class="td">&nbsp;@jisnan&nbsp;val&nbsp;?IsNan;</span></span>
-<span class="tr"><span class="th" id="line516">516</span><span class="td">&nbsp;@jisinf&nbsp;val&nbsp;?IsInf;</span></span>
+<span class="tr"><span class="th" id="line496">496</span><span class="td">! Print a float in decimal notation: &quot;[-]NNN.NNNNN&quot;.</span></span>
+<span class="tr"><span class="th" id="line497">497</span><span class="td">! The precision is the number of digits after the decimal point</span></span>
+<span class="tr"><span class="th" id="line498">498</span><span class="td">! (at least one, no more than eight). The default is five, because</span></span>
+<span class="tr"><span class="th" id="line499">499</span><span class="td">! beyond that rounding errors creep in, and even exactly-represented</span></span>
+<span class="tr"><span class="th" id="line500">500</span><span class="td">! float values are printed with trailing fudgy digits.</span></span>
+<span class="tr"><span class="th" id="line501">501</span><span class="td">! Trailing zeroes are trimmed.</span></span>
+<span class="tr"><span class="th" id="line502">502</span><span class="td">[ FloatDec val prec   log10val int fint extra0 frac idig ix pow10;</span></span>
+<span class="tr"><span class="th" id="line503">503</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (prec == 0)</span></span>
+<span class="tr"><span class="th" id="line504">504</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        prec = 5;</span></span>
+<span class="tr"><span class="th" id="line505">505</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (prec &gt; 8)</span></span>
+<span class="tr"><span class="th" id="line506">506</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        prec = 8;</span></span>
+<span class="tr"><span class="th" id="line507">507</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    pow10 = PowersOfTen --&gt; prec;</span></span>
+<span class="tr"><span class="th" id="line508">508</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    </span></span>
+<span class="tr"><span class="th" id="line509">509</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Knock off the sign bit first.</span></span>
+<span class="tr"><span class="th" id="line510">510</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (val &amp; $80000000) {</span></span>
+<span class="tr"><span class="th" id="line511">511</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @streamchar &#39;-&#39;;</span></span>
+<span class="tr"><span class="th" id="line512">512</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        val = val &amp; $7FFFFFFF;</span></span>
+<span class="tr"><span class="th" id="line513">513</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line514">514</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    </span></span>
+<span class="tr"><span class="th" id="line515">515</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @jisnan val ?IsNan;</span></span>
+<span class="tr"><span class="th" id="line516">516</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @jisinf val ?IsInf;</span></span>
 <span class="tr"><span class="th" id="line517">517</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line518">518</span><span class="td">&nbsp;!&nbsp;Take&nbsp;as&nbsp;an&nbsp;example&nbsp;val=123.5,&nbsp;with&nbsp;precision=6.&nbsp;The&nbsp;desired&nbsp;result</span></span>
-<span class="tr"><span class="th" id="line519">519</span><span class="td">&nbsp;!&nbsp;is&nbsp;&quot;123.50000&quot;.</span></span>
-<span class="tr"><span class="th" id="line520">520</span><span class="td">&nbsp;</span></span>
-<span class="tr"><span class="th" id="line521">521</span><span class="td">&nbsp;extra0&nbsp;=&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line522">522</span><span class="td">&nbsp;@fmod&nbsp;val&nbsp;$3F800000&nbsp;frac&nbsp;fint;&nbsp;!&nbsp;$3F800000&nbsp;is&nbsp;1.0.</span></span>
-<span class="tr"><span class="th" id="line523">523</span><span class="td">&nbsp;@ftonumz&nbsp;fint&nbsp;int;</span></span>
-<span class="tr"><span class="th" id="line524">524</span><span class="td">&nbsp;!&nbsp;This&nbsp;converts&nbsp;the&nbsp;integer&nbsp;part&nbsp;of&nbsp;the&nbsp;value&nbsp;to&nbsp;an&nbsp;integer&nbsp;value;</span></span>
-<span class="tr"><span class="th" id="line525">525</span><span class="td">&nbsp;!&nbsp;in&nbsp;our&nbsp;example,&nbsp;123.</span></span>
-<span class="tr"><span class="th" id="line526">526</span><span class="td">&nbsp;</span></span>
-<span class="tr"><span class="th" id="line527">527</span><span class="td">&nbsp;if&nbsp;(int&nbsp;==&nbsp;$7FFFFFFF)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line528">528</span><span class="td">&nbsp;&nbsp;!&nbsp;Looks&nbsp;like&nbsp;the&nbsp;integer&nbsp;part&nbsp;of&nbsp;the&nbsp;value&nbsp;is&nbsp;bigger&nbsp;than</span></span>
-<span class="tr"><span class="th" id="line529">529</span><span class="td">&nbsp;&nbsp;!&nbsp;we&nbsp;can&nbsp;store&nbsp;in&nbsp;an&nbsp;int&nbsp;variable.&nbsp;(It&nbsp;could&nbsp;be&nbsp;as&nbsp;large</span></span>
-<span class="tr"><span class="th" id="line530">530</span><span class="td">&nbsp;&nbsp;!&nbsp;as&nbsp;3e+38.)&nbsp;We&#39;re&nbsp;going&nbsp;to&nbsp;have&nbsp;to&nbsp;use&nbsp;a&nbsp;log&nbsp;function&nbsp;to</span></span>
-<span class="tr"><span class="th" id="line531">531</span><span class="td">&nbsp;&nbsp;!&nbsp;reduce&nbsp;it&nbsp;by&nbsp;some&nbsp;number&nbsp;of&nbsp;factors&nbsp;of&nbsp;10,&nbsp;and&nbsp;then&nbsp;pad</span></span>
-<span class="tr"><span class="th" id="line532">532</span><span class="td">&nbsp;&nbsp;!&nbsp;with&nbsp;zeroes.</span></span>
-<span class="tr"><span class="th" id="line533">533</span><span class="td">&nbsp;&nbsp;@log&nbsp;fint&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line534">534</span><span class="td">&nbsp;&nbsp;@fdiv&nbsp;sp&nbsp;$40135D8E&nbsp;log10val;&nbsp;!&nbsp;$40135D8E&nbsp;is&nbsp;log(10)</span></span>
-<span class="tr"><span class="th" id="line535">535</span><span class="td">&nbsp;&nbsp;@ftonumz&nbsp;log10val&nbsp;extra0;</span></span>
-<span class="tr"><span class="th" id="line536">536</span><span class="td">&nbsp;&nbsp;@sub&nbsp;extra0&nbsp;8&nbsp;extra0;</span></span>
-<span class="tr"><span class="th" id="line537">537</span><span class="td">&nbsp;&nbsp;!&nbsp;extra0&nbsp;is&nbsp;the&nbsp;number&nbsp;of&nbsp;zeroes&nbsp;we&#39;ll&nbsp;be&nbsp;padding&nbsp;with.</span></span>
-<span class="tr"><span class="th" id="line538">538</span><span class="td">&nbsp;&nbsp;@numtof&nbsp;extra0&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line539">539</span><span class="td">&nbsp;&nbsp;@fsub&nbsp;log10val&nbsp;sp&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line540">540</span><span class="td">&nbsp;&nbsp;@fmul&nbsp;sp&nbsp;$40135D8E&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line541">541</span><span class="td">&nbsp;&nbsp;@exp&nbsp;sp&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line542">542</span><span class="td">&nbsp;&nbsp;!&nbsp;The&nbsp;stack&nbsp;value&nbsp;is&nbsp;now&nbsp;exp((log10val&nbsp;-&nbsp;extra0)&nbsp;*&nbsp;log(10)).</span></span>
-<span class="tr"><span class="th" id="line543">543</span><span class="td">&nbsp;&nbsp;!&nbsp;We&#39;ve&nbsp;shifted&nbsp;the&nbsp;decimal&nbsp;point&nbsp;far&nbsp;enough&nbsp;left&nbsp;to&nbsp;leave</span></span>
-<span class="tr"><span class="th" id="line544">544</span><span class="td">&nbsp;&nbsp;!&nbsp;about&nbsp;eight&nbsp;digits,&nbsp;which&nbsp;is&nbsp;all&nbsp;we&nbsp;can&nbsp;print&nbsp;as&nbsp;an&nbsp;integer.</span></span>
-<span class="tr"><span class="th" id="line545">545</span><span class="td">&nbsp;&nbsp;@ftonumz&nbsp;sp&nbsp;int;</span></span>
-<span class="tr"><span class="th" id="line546">546</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line518">518</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Take as an example val=123.5, with precision=6. The desired result</span></span>
+<span class="tr"><span class="th" id="line519">519</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! is &quot;123.50000&quot;.</span></span>
+<span class="tr"><span class="th" id="line520">520</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    </span></span>
+<span class="tr"><span class="th" id="line521">521</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    extra0 = 0;</span></span>
+<span class="tr"><span class="th" id="line522">522</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @fmod val $3F800000 frac fint; ! $3F800000 is 1.0.</span></span>
+<span class="tr"><span class="th" id="line523">523</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @ftonumz fint int;</span></span>
+<span class="tr"><span class="th" id="line524">524</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! This converts the integer part of the value to an integer value;</span></span>
+<span class="tr"><span class="th" id="line525">525</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! in our example, 123.</span></span>
+<span class="tr"><span class="th" id="line526">526</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    </span></span>
+<span class="tr"><span class="th" id="line527">527</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (int == $7FFFFFFF) {</span></span>
+<span class="tr"><span class="th" id="line528">528</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! Looks like the integer part of the value is bigger than</span></span>
+<span class="tr"><span class="th" id="line529">529</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! we can store in an int variable. (It could be as large</span></span>
+<span class="tr"><span class="th" id="line530">530</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! as 3e+38.) We&#39;re going to have to use a log function to</span></span>
+<span class="tr"><span class="th" id="line531">531</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! reduce it by some number of factors of 10, and then pad</span></span>
+<span class="tr"><span class="th" id="line532">532</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! with zeroes.</span></span>
+<span class="tr"><span class="th" id="line533">533</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @log fint sp;</span></span>
+<span class="tr"><span class="th" id="line534">534</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @fdiv sp $40135D8E log10val; ! $40135D8E is log(10)</span></span>
+<span class="tr"><span class="th" id="line535">535</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @ftonumz log10val extra0;</span></span>
+<span class="tr"><span class="th" id="line536">536</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @sub extra0 8 extra0;</span></span>
+<span class="tr"><span class="th" id="line537">537</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! extra0 is the number of zeroes we&#39;ll be padding with.</span></span>
+<span class="tr"><span class="th" id="line538">538</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @numtof extra0 sp;</span></span>
+<span class="tr"><span class="th" id="line539">539</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @fsub log10val sp sp;</span></span>
+<span class="tr"><span class="th" id="line540">540</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @fmul sp $40135D8E sp;</span></span>
+<span class="tr"><span class="th" id="line541">541</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @exp sp sp;</span></span>
+<span class="tr"><span class="th" id="line542">542</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! The stack value is now exp((log10val - extra0) * log(10)).</span></span>
+<span class="tr"><span class="th" id="line543">543</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! We&#39;ve shifted the decimal point far enough left to leave</span></span>
+<span class="tr"><span class="th" id="line544">544</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! about eight digits, which is all we can print as an integer.</span></span>
+<span class="tr"><span class="th" id="line545">545</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @ftonumz sp int;</span></span>
+<span class="tr"><span class="th" id="line546">546</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
 <span class="tr"><span class="th" id="line547">547</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line548">548</span><span class="td">&nbsp;!&nbsp;Print&nbsp;the&nbsp;integer&nbsp;part.</span></span>
-<span class="tr"><span class="th" id="line549">549</span><span class="td">&nbsp;@streamnum&nbsp;int;</span></span>
-<span class="tr"><span class="th" id="line550">550</span><span class="td">&nbsp;for&nbsp;(ix=0&nbsp;:&nbsp;ix&lt;extra0&nbsp;:&nbsp;ix++)</span></span>
-<span class="tr"><span class="th" id="line551">551</span><span class="td">&nbsp;&nbsp;@streamchar&nbsp;&#39;0&#39;;</span></span>
+<span class="tr"><span class="th" id="line548">548</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Print the integer part.</span></span>
+<span class="tr"><span class="th" id="line549">549</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @streamnum int;</span></span>
+<span class="tr"><span class="th" id="line550">550</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (ix=0 : ix&lt;extra0 : ix++)</span></span>
+<span class="tr"><span class="th" id="line551">551</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @streamchar &#39;0&#39;;</span></span>
 <span class="tr"><span class="th" id="line552">552</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line553">553</span><span class="td">&nbsp;@streamchar&nbsp;&#39;.&#39;;</span></span>
+<span class="tr"><span class="th" id="line553">553</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @streamchar &#39;.&#39;;</span></span>
 <span class="tr"><span class="th" id="line554">554</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line555">555</span><span class="td">&nbsp;!&nbsp;Now&nbsp;we&nbsp;need&nbsp;to&nbsp;print&nbsp;the&nbsp;frac&nbsp;part,&nbsp;which&nbsp;is&nbsp;.5.</span></span>
-<span class="tr"><span class="th" id="line556">556</span><span class="td">&nbsp;</span></span>
-<span class="tr"><span class="th" id="line557">557</span><span class="td">&nbsp;@log&nbsp;frac&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line558">558</span><span class="td">&nbsp;@fdiv&nbsp;sp&nbsp;$40135D8E&nbsp;log10val;&nbsp;!&nbsp;$40135D8E&nbsp;is&nbsp;log(10)</span></span>
-<span class="tr"><span class="th" id="line559">559</span><span class="td">&nbsp;@numtof&nbsp;prec&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line560">560</span><span class="td">&nbsp;@fadd&nbsp;log10val&nbsp;sp&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line561">561</span><span class="td">&nbsp;@fmul&nbsp;sp&nbsp;$40135D8E&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line562">562</span><span class="td">&nbsp;@exp&nbsp;sp&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line563">563</span><span class="td">&nbsp;!&nbsp;The&nbsp;stack&nbsp;value&nbsp;is&nbsp;now&nbsp;exp((frac&nbsp;+&nbsp;prec)&nbsp;*&nbsp;log(10)).</span></span>
-<span class="tr"><span class="th" id="line564">564</span><span class="td">&nbsp;!&nbsp;We&#39;ve&nbsp;shifted&nbsp;the&nbsp;decimal&nbsp;point&nbsp;right&nbsp;by&nbsp;prec</span></span>
-<span class="tr"><span class="th" id="line565">565</span><span class="td">&nbsp;!&nbsp;digits.&nbsp;In&nbsp;our&nbsp;example,&nbsp;that&nbsp;would&nbsp;be&nbsp;50000.0.</span></span>
-<span class="tr"><span class="th" id="line566">566</span><span class="td">&nbsp;@ftonumn&nbsp;sp&nbsp;idig;</span></span>
-<span class="tr"><span class="th" id="line567">567</span><span class="td">&nbsp;!&nbsp;Round&nbsp;to&nbsp;an&nbsp;integer,&nbsp;and&nbsp;we&nbsp;have&nbsp;50000.&nbsp;Notice&nbsp;that&nbsp;this&nbsp;is</span></span>
-<span class="tr"><span class="th" id="line568">568</span><span class="td">&nbsp;!&nbsp;exactly&nbsp;the&nbsp;(post-decimal-point)&nbsp;digits&nbsp;we&nbsp;want&nbsp;to&nbsp;print.</span></span>
+<span class="tr"><span class="th" id="line555">555</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Now we need to print the frac part, which is .5.</span></span>
+<span class="tr"><span class="th" id="line556">556</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    </span></span>
+<span class="tr"><span class="th" id="line557">557</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @log frac sp;</span></span>
+<span class="tr"><span class="th" id="line558">558</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @fdiv sp $40135D8E log10val; ! $40135D8E is log(10)</span></span>
+<span class="tr"><span class="th" id="line559">559</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @numtof prec sp;</span></span>
+<span class="tr"><span class="th" id="line560">560</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @fadd log10val sp sp;</span></span>
+<span class="tr"><span class="th" id="line561">561</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @fmul sp $40135D8E sp;</span></span>
+<span class="tr"><span class="th" id="line562">562</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @exp sp sp;</span></span>
+<span class="tr"><span class="th" id="line563">563</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! The stack value is now exp((frac + prec) * log(10)).</span></span>
+<span class="tr"><span class="th" id="line564">564</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! We&#39;ve shifted the decimal point right by prec</span></span>
+<span class="tr"><span class="th" id="line565">565</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! digits. In our example, that would be 50000.0.</span></span>
+<span class="tr"><span class="th" id="line566">566</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @ftonumn sp idig;</span></span>
+<span class="tr"><span class="th" id="line567">567</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Round to an integer, and we have 50000. Notice that this is</span></span>
+<span class="tr"><span class="th" id="line568">568</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! exactly the (post-decimal-point) digits we want to print.</span></span>
 <span class="tr"><span class="th" id="line569">569</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line570">570</span><span class="td">&nbsp;.DoPrint;</span></span>
-<span class="tr"><span class="th" id="line571">571</span><span class="td">&nbsp;</span></span>
-<span class="tr"><span class="th" id="line572">572</span><span class="td">&nbsp;if&nbsp;(idig&nbsp;&gt;=&nbsp;pow10)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line573">573</span><span class="td">&nbsp;&nbsp;!&nbsp;Rounding&nbsp;errors&nbsp;have&nbsp;left&nbsp;us&nbsp;outside&nbsp;the&nbsp;decimal&nbsp;range&nbsp;of</span></span>
-<span class="tr"><span class="th" id="line574">574</span><span class="td">&nbsp;&nbsp;!&nbsp;[0.0,&nbsp;1.0)&nbsp;where&nbsp;we&nbsp;should&nbsp;be.&nbsp;I&#39;m&nbsp;not&nbsp;sure&nbsp;this&nbsp;is&nbsp;possible,</span></span>
-<span class="tr"><span class="th" id="line575">575</span><span class="td">&nbsp;&nbsp;!&nbsp;actually,&nbsp;but&nbsp;we&#39;ll&nbsp;just&nbsp;adjust&nbsp;downward.</span></span>
-<span class="tr"><span class="th" id="line576">576</span><span class="td">&nbsp;&nbsp;idig&nbsp;=&nbsp;pow10&nbsp;-&nbsp;1;</span></span>
-<span class="tr"><span class="th" id="line577">577</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line570">570</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    .DoPrint;</span></span>
+<span class="tr"><span class="th" id="line571">571</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    </span></span>
+<span class="tr"><span class="th" id="line572">572</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (idig &gt;= pow10) {</span></span>
+<span class="tr"><span class="th" id="line573">573</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! Rounding errors have left us outside the decimal range of</span></span>
+<span class="tr"><span class="th" id="line574">574</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! [0.0, 1.0) where we should be. I&#39;m not sure this is possible,</span></span>
+<span class="tr"><span class="th" id="line575">575</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! actually, but we&#39;ll just adjust downward.</span></span>
+<span class="tr"><span class="th" id="line576">576</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        idig = pow10 - 1;</span></span>
+<span class="tr"><span class="th" id="line577">577</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
 <span class="tr"><span class="th" id="line578">578</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line579">579</span><span class="td">&nbsp;!&nbsp;Trim&nbsp;off&nbsp;trailing&nbsp;zeroes,&nbsp;as&nbsp;long&nbsp;as&nbsp;there&#39;s&nbsp;at&nbsp;least&nbsp;one&nbsp;digit</span></span>
-<span class="tr"><span class="th" id="line580">580</span><span class="td">&nbsp;!&nbsp;after&nbsp;the&nbsp;decimal&nbsp;point.&nbsp;(Delete&nbsp;this&nbsp;stanza&nbsp;if&nbsp;you&nbsp;want&nbsp;to</span></span>
-<span class="tr"><span class="th" id="line581">581</span><span class="td">&nbsp;!&nbsp;keep&nbsp;the&nbsp;trailing&nbsp;zeroes.)</span></span>
-<span class="tr"><span class="th" id="line582">582</span><span class="td">&nbsp;while&nbsp;(prec&nbsp;&gt;&nbsp;1)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line583">583</span><span class="td">&nbsp;&nbsp;@mod&nbsp;idig&nbsp;10&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line584">584</span><span class="td">&nbsp;&nbsp;@jnz&nbsp;sp&nbsp;?DoneTrimming;</span></span>
-<span class="tr"><span class="th" id="line585">585</span><span class="td">&nbsp;&nbsp;@div&nbsp;pow10&nbsp;10&nbsp;pow10;</span></span>
-<span class="tr"><span class="th" id="line586">586</span><span class="td">&nbsp;&nbsp;@div&nbsp;idig&nbsp;10&nbsp;idig;</span></span>
-<span class="tr"><span class="th" id="line587">587</span><span class="td">&nbsp;&nbsp;prec--;</span></span>
-<span class="tr"><span class="th" id="line588">588</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line589">589</span><span class="td">&nbsp;.DoneTrimming;</span></span>
-<span class="tr"><span class="th" id="line590">590</span><span class="td">&nbsp;</span></span>
-<span class="tr"><span class="th" id="line591">591</span><span class="td">&nbsp;@div&nbsp;pow10&nbsp;10&nbsp;pow10;</span></span>
-<span class="tr"><span class="th" id="line592">592</span><span class="td">&nbsp;for&nbsp;(ix=0&nbsp;:&nbsp;ix&lt;prec&nbsp;:&nbsp;ix++)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line593">593</span><span class="td">&nbsp;&nbsp;@div&nbsp;idig&nbsp;pow10&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line594">594</span><span class="td">&nbsp;&nbsp;@mod&nbsp;sp&nbsp;10&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line595">595</span><span class="td">&nbsp;&nbsp;@streamnum&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line596">596</span><span class="td">&nbsp;&nbsp;@div&nbsp;pow10&nbsp;10&nbsp;pow10;</span></span>
-<span class="tr"><span class="th" id="line597">597</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line598">598</span><span class="td">&nbsp;rtrue;</span></span>
+<span class="tr"><span class="th" id="line579">579</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Trim off trailing zeroes, as long as there&#39;s at least one digit</span></span>
+<span class="tr"><span class="th" id="line580">580</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! after the decimal point. (Delete this stanza if you want to</span></span>
+<span class="tr"><span class="th" id="line581">581</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! keep the trailing zeroes.)</span></span>
+<span class="tr"><span class="th" id="line582">582</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    while (prec &gt; 1) {</span></span>
+<span class="tr"><span class="th" id="line583">583</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @mod idig 10 sp;</span></span>
+<span class="tr"><span class="th" id="line584">584</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @jnz sp ?DoneTrimming;</span></span>
+<span class="tr"><span class="th" id="line585">585</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @div pow10 10 pow10;</span></span>
+<span class="tr"><span class="th" id="line586">586</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @div idig 10 idig;</span></span>
+<span class="tr"><span class="th" id="line587">587</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        prec--;</span></span>
+<span class="tr"><span class="th" id="line588">588</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line589">589</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    .DoneTrimming;</span></span>
+<span class="tr"><span class="th" id="line590">590</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    </span></span>
+<span class="tr"><span class="th" id="line591">591</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @div pow10 10 pow10;</span></span>
+<span class="tr"><span class="th" id="line592">592</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (ix=0 : ix&lt;prec : ix++) {</span></span>
+<span class="tr"><span class="th" id="line593">593</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @div idig pow10 sp;</span></span>
+<span class="tr"><span class="th" id="line594">594</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @mod sp 10 sp;</span></span>
+<span class="tr"><span class="th" id="line595">595</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @streamnum sp;</span></span>
+<span class="tr"><span class="th" id="line596">596</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @div pow10 10 pow10;</span></span>
+<span class="tr"><span class="th" id="line597">597</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line598">598</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rtrue;</span></span>
 <span class="tr"><span class="th" id="line599">599</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line600">600</span><span class="td">&nbsp;.IsNan;</span></span>
-<span class="tr"><span class="th" id="line601">601</span><span class="td">&nbsp;PrintNan();</span></span>
-<span class="tr"><span class="th" id="line602">602</span><span class="td">&nbsp;rtrue;</span></span>
+<span class="tr"><span class="th" id="line600">600</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    .IsNan;</span></span>
+<span class="tr"><span class="th" id="line601">601</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    PrintNan();</span></span>
+<span class="tr"><span class="th" id="line602">602</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rtrue;</span></span>
 <span class="tr"><span class="th" id="line603">603</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line604">604</span><span class="td">&nbsp;.IsInf;</span></span>
-<span class="tr"><span class="th" id="line605">605</span><span class="td">&nbsp;PrintInfinity();</span></span>
-<span class="tr"><span class="th" id="line606">606</span><span class="td">&nbsp;rtrue;</span></span>
+<span class="tr"><span class="th" id="line604">604</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    .IsInf;</span></span>
+<span class="tr"><span class="th" id="line605">605</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    PrintInfinity();</span></span>
+<span class="tr"><span class="th" id="line606">606</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rtrue;</span></span>
 <span class="tr"><span class="th" id="line607">607</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line608">608</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line609">609</span><span class="td">[&nbsp;PrintInfinity;</span></span>
-<span class="tr"><span class="th" id="line610">610</span><span class="td">&nbsp;@streamunichar&nbsp;$221E;</span></span>
-<span class="tr"><span class="th" id="line611">611</span><span class="td">&nbsp;!&nbsp;@streamstr&nbsp;&quot;Inf&quot;;</span></span>
+<span class="tr"><span class="th" id="line609">609</span><span class="td">[ PrintInfinity;</span></span>
+<span class="tr"><span class="th" id="line610">610</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @streamunichar $221E;</span></span>
+<span class="tr"><span class="th" id="line611">611</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! @streamstr &quot;Inf&quot;;</span></span>
 <span class="tr"><span class="th" id="line612">612</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line613">613</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line614">614</span><span class="td">[&nbsp;PrintNan;</span></span>
-<span class="tr"><span class="th" id="line615">615</span><span class="td">&nbsp;@streamunichar&nbsp;$26a0;</span></span>
-<span class="tr"><span class="th" id="line616">616</span><span class="td">&nbsp;!&nbsp;@streamstr&nbsp;&quot;NaN&quot;;</span></span>
+<span class="tr"><span class="th" id="line614">614</span><span class="td">[ PrintNan;</span></span>
+<span class="tr"><span class="th" id="line615">615</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @streamunichar $26a0;</span></span>
+<span class="tr"><span class="th" id="line616">616</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! @streamstr &quot;NaN&quot;;</span></span>
 <span class="tr"><span class="th" id="line617">617</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line618">618</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line619">619</span><span class="td">[&nbsp;PrintMultiplicationSign;</span></span>
-<span class="tr"><span class="th" id="line620">620</span><span class="td">&nbsp;print&nbsp;&quot;&nbsp;&quot;;</span></span>
-<span class="tr"><span class="th" id="line621">621</span><span class="td">&nbsp;@streamunichar&nbsp;$D7;</span></span>
-<span class="tr"><span class="th" id="line622">622</span><span class="td">&nbsp;print&nbsp;&quot;&nbsp;&quot;;</span></span>
-<span class="tr"><span class="th" id="line623">623</span><span class="td">&nbsp;!&nbsp;@streamstr&nbsp;&quot;&nbsp;x&nbsp;&quot;;</span></span>
+<span class="tr"><span class="th" id="line619">619</span><span class="td">[ PrintMultiplicationSign;</span></span>
+<span class="tr"><span class="th" id="line620">620</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    print &quot; &quot;;</span></span>
+<span class="tr"><span class="th" id="line621">621</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @streamunichar $D7;</span></span>
+<span class="tr"><span class="th" id="line622">622</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    print &quot; &quot;;</span></span>
+<span class="tr"><span class="th" id="line623">623</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! @streamstr &quot; x &quot;;</span></span>
 <span class="tr"><span class="th" id="line624">624</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line625">625</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line626">626</span><span class="td">#Ifnot;&nbsp;!&nbsp;TARGET_GLULX</span></span>
+<span class="tr"><span class="th" id="line626">626</span><span class="td">#Ifnot; ! TARGET_GLULX</span></span>
 <span class="tr"><span class="th" id="line627">627</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line628">628</span><span class="td">[&nbsp;REAL_NUMBER_TY_Say&nbsp;real;&nbsp;print&nbsp;real;&nbsp;];&nbsp;!&nbsp;Needs&nbsp;to&nbsp;exist,&nbsp;but&nbsp;likely&nbsp;never&nbsp;used</span></span>
+<span class="tr"><span class="th" id="line628">628</span><span class="td">[ REAL_NUMBER_TY_Say real; print real; ]; ! Needs to exist, but likely never used</span></span>
 <span class="tr"><span class="th" id="line629">629</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line630">630</span><span class="td">[&nbsp;REAL_NUMBER_TY_Compare&nbsp;r1&nbsp;r2;&nbsp;return&nbsp;UnsignedCompare(r1,&nbsp;r2);&nbsp;];</span></span>
+<span class="tr"><span class="th" id="line630">630</span><span class="td">[ REAL_NUMBER_TY_Compare r1 r2; return UnsignedCompare(r1, r2); ];</span></span>
 <span class="tr"><span class="th" id="line631">631</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line632">632</span><span class="td">#Endif;&nbsp;!&nbsp;TARGET_GLULX</span></span>
-</div><footer><hr><p><em>From I6T lib 6/12N &copy; Graham Nelson and published under the <a href="https://github.com/zedlopez/standard_rules/blob/main/LICENSE.md">Artistic License 2.0</a>. Distributed with <a href="http://inform7.com/">Inform 7 6M62</a>.</em></p></footer></body></html>
+<span class="tr"><span class="th" id="line632">632</span><span class="td">#Endif; ! TARGET_GLULX</span></span>
+</div><footer><p><em>From I6T lib 6/12N &copy; Graham Nelson and published under the <a href="https://github.com/zedlopez/standard_rules/blob/main/LICENSE.md">Artistic License 2.0</a>. Distributed with <a href="http://inform7.com/">Inform 7 6M62</a>.</em></p></footer></body></html>

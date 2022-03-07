@@ -7,22 +7,25 @@ span.th, span.td { display: table-cell; }
 span.td { padding-left: 2rem; }
 span.th { width:4rem; text-align: right; }
 span.tr { display: table-row;     counter-increment: linenum; }
-span.line_no::before {
+.pre-lines { font-family: monospace; margin-left: 3rem; line-height: 1.5rem; }
+/*span.line_no::before {
     content: counter(linenum);
     text-align: right;
     display: block;
     font-family: monospace;
     font-weight: normal;
-}
+}*/
 h1 { margin: 0; }
 .fixed { font-family: monospace }
 .em { font-style: italic; }
 .center { text-align: center; }
-    body { font-family: sans-serif; margin: 1.5rem 0 0 3rem; background-color: #fafaf0; width: 80rem; }
+    body { font-family: sans-serif; margin: 1.5rem 0 3rem 3rem; background-color: #fafaf0; width: 80rem; }
     .pre { font-family: monospace; margin: auto; width: 80rem; }
-#front_matter,.text { width: 50rem; }
+#front_matter,.text { width: 48rem; }
+/* h3 { margin-top: 1.5rem; padding-top: 1.5rem; }*/
 .text { border-bottom: .5px solid black; border-top: .5px solid black; margin-top: 1rem;
-padding-bottom: 1rem; margin-bottom: 2rem; }
+padding-bottom: .5rem; margin-bottom: 1.5rem; margin-top: 1.75rem; padding-top: .25rem;}
+footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; margin-bottom: 0;}
 /*.subtitle { font-weight: bold; font-size: 1.2rem; }*/
     </style>
 </head>
@@ -31,605 +34,605 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <h1>I6 Template Layer</h1>
 <div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Index</a> &bull; <a href="./Introduction.i6t.html">Introduction</a></div><hr></header>
 <div id="front_matter">
-<h2><a href="./ZMachine.i6t">ZMachine.i6t</a></h2><h3 id="#zmachine-summary">Summary.</h3><p><p> This segment closely parallels <a href="./Glulx.i6t.html">Glulx.i6t</a>, which provides exactly equivalent functionality (indeed, usually the same-named functions and in the same order) for the Glulx VM. This is intended to make the rest of the template code independent of the choice of VM, although that is more of an ideal than a reality, because there are so many fiddly differences in some of the grammar and dictionary tables that it is not really practical for the parser (for instance) to call VM-neutral routines to get the data it wants out of these arrays.<p></p><p><h3 id="#zmachine-variables-and-arrays">Variables and Arrays.</h3><p><p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line20">20</span><span class="td">Global&nbsp;top_object;&nbsp;!&nbsp;largest&nbsp;valid&nbsp;number&nbsp;of&nbsp;any&nbsp;tree&nbsp;object</span></span>
-<span class="tr"><span class="th" id="line21">21</span><span class="td">Global&nbsp;xcommsdir;&nbsp;!&nbsp;true&nbsp;if&nbsp;command&nbsp;recording&nbsp;is&nbsp;on</span></span>
-<span class="tr"><span class="th" id="line22">22</span><span class="td">Global&nbsp;transcript_mode;&nbsp;!&nbsp;true&nbsp;if&nbsp;game&nbsp;scripting&nbsp;is&nbsp;on</span></span>
+<h2><a href="./ZMachine.i6t.txt">ZMachine.i6t</a></h2><h3 id="#zmachine-summary">Summary.</h3><p><p> This segment closely parallels <a href="./Glulx.i6t.html">Glulx.i6t</a>, which provides exactly equivalent functionality (indeed, usually the same-named functions and in the same order) for the Glulx VM. This is intended to make the rest of the template code independent of the choice of VM, although that is more of an ideal than a reality, because there are so many fiddly differences in some of the grammar and dictionary tables that it is not really practical for the parser (for instance) to call VM-neutral routines to get the data it wants out of these arrays.<p></p><p><h3 id="#zmachine-variables-and-arrays">Variables and Arrays.</h3><p><p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line20">20</span><span class="td">Global top_object; ! largest valid number of any tree object</span></span>
+<span class="tr"><span class="th" id="line21">21</span><span class="td">Global xcommsdir; ! true if command recording is on</span></span>
+<span class="tr"><span class="th" id="line22">22</span><span class="td">Global transcript_mode; ! true if game scripting is on</span></span>
 <span class="tr"><span class="th" id="line23">23</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line24">24</span><span class="td">Constant&nbsp;INPUT_BUFFER_LEN&nbsp;=&nbsp;120;&nbsp;!&nbsp;Length&nbsp;of&nbsp;buffer&nbsp;array</span></span>
+<span class="tr"><span class="th" id="line24">24</span><span class="td">Constant INPUT_BUFFER_LEN = 120; ! Length of buffer array</span></span>
 <span class="tr"><span class="th" id="line25">25</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line26">26</span><span class="td">Array&nbsp;&nbsp;buffer&nbsp;&nbsp;&nbsp;&nbsp;-&gt;&nbsp;123;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!&nbsp;Buffer&nbsp;for&nbsp;parsing&nbsp;main&nbsp;line&nbsp;of&nbsp;input</span></span>
-<span class="tr"><span class="th" id="line27">27</span><span class="td">Array&nbsp;&nbsp;buffer2&nbsp;&nbsp;&nbsp;-&gt;&nbsp;123;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!&nbsp;Buffers&nbsp;for&nbsp;supplementary&nbsp;questions</span></span>
-<span class="tr"><span class="th" id="line28">28</span><span class="td">Array&nbsp;&nbsp;buffer3&nbsp;&nbsp;&nbsp;-&gt;&nbsp;123;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!&nbsp;Buffer&nbsp;retaining&nbsp;input&nbsp;for&nbsp;&quot;again&quot;</span></span>
-<span class="tr"><span class="th" id="line29">29</span><span class="td">Array&nbsp;&nbsp;parse&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;buffer&nbsp;63;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!&nbsp;Parse&nbsp;table&nbsp;mirroring&nbsp;it</span></span>
-<span class="tr"><span class="th" id="line30">30</span><span class="td">Array&nbsp;&nbsp;parse2&nbsp;&nbsp;&nbsp;&nbsp;buffer&nbsp;63;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!</span></span>
+<span class="tr"><span class="th" id="line26">26</span><span class="td">Array  buffer    -&gt; 123;            ! Buffer for parsing main line of input</span></span>
+<span class="tr"><span class="th" id="line27">27</span><span class="td">Array  buffer2   -&gt; 123;            ! Buffers for supplementary questions</span></span>
+<span class="tr"><span class="th" id="line28">28</span><span class="td">Array  buffer3   -&gt; 123;            ! Buffer retaining input for &quot;again&quot;</span></span>
+<span class="tr"><span class="th" id="line29">29</span><span class="td">Array  parse     buffer 63;         ! Parse table mirroring it</span></span>
+<span class="tr"><span class="th" id="line30">30</span><span class="td">Array  parse2    buffer 63;         !</span></span>
 <span class="tr"><span class="th" id="line31">31</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line32">32</span><span class="td">Global&nbsp;dict_start;</span></span>
-<span class="tr"><span class="th" id="line33">33</span><span class="td">Global&nbsp;dict_entry_size;</span></span>
-<span class="tr"><span class="th" id="line34">34</span><span class="td">Global&nbsp;dict_end;</span></span>
+<span class="tr"><span class="th" id="line32">32</span><span class="td">Global dict_start;</span></span>
+<span class="tr"><span class="th" id="line33">33</span><span class="td">Global dict_entry_size;</span></span>
+<span class="tr"><span class="th" id="line34">34</span><span class="td">Global dict_end;</span></span>
 </div><div class='text'>
 <h3 id="#zmachine-starting-up">Starting Up.</h3><p><p> <span class="fixed"><a href="./Glulx.i6t.html#line967">VM_Initialise()</a></span> is almost the first routine called, except that the &quot;starting the virtual machine&quot; activity is allowed to go first.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line41">41</span><span class="td">[&nbsp;VM_Initialise&nbsp;i;</span></span>
-<span class="tr"><span class="th" id="line42">42</span><span class="td">&nbsp;standard_interpreter&nbsp;=&nbsp;HDR_TERPSTANDARD--&gt;0;</span></span>
-<span class="tr"><span class="th" id="line43">43</span><span class="td">&nbsp;transcript_mode&nbsp;=&nbsp;((HDR_GAMEFLAGS--&gt;0)&nbsp;&amp;&nbsp;1);</span></span>
+<span class="tr"><span class="th" id="line41">41</span><span class="td">[ VM_Initialise i;</span></span>
+<span class="tr"><span class="th" id="line42">42</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    standard_interpreter = HDR_TERPSTANDARD--&gt;0;</span></span>
+<span class="tr"><span class="th" id="line43">43</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    transcript_mode = ((HDR_GAMEFLAGS--&gt;0) &amp; 1);</span></span>
 <span class="tr"><span class="th" id="line44">44</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line45">45</span><span class="td">&nbsp;dict_start&nbsp;=&nbsp;HDR_DICTIONARY--&gt;0;</span></span>
-<span class="tr"><span class="th" id="line46">46</span><span class="td">&nbsp;dict_entry_size&nbsp;=&nbsp;dict_start-&gt;(dict_start-&gt;0&nbsp;+&nbsp;1);</span></span>
-<span class="tr"><span class="th" id="line47">47</span><span class="td">&nbsp;dict_start&nbsp;=&nbsp;dict_start&nbsp;+&nbsp;dict_start-&gt;0&nbsp;+&nbsp;4;</span></span>
-<span class="tr"><span class="th" id="line48">48</span><span class="td">&nbsp;dict_end&nbsp;=&nbsp;dict_start&nbsp;+&nbsp;((dict_start&nbsp;-&nbsp;2)--&gt;0)&nbsp;*&nbsp;dict_entry_size;</span></span>
+<span class="tr"><span class="th" id="line45">45</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    dict_start = HDR_DICTIONARY--&gt;0;</span></span>
+<span class="tr"><span class="th" id="line46">46</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    dict_entry_size = dict_start-&gt;(dict_start-&gt;0 + 1);</span></span>
+<span class="tr"><span class="th" id="line47">47</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    dict_start = dict_start + dict_start-&gt;0 + 4;</span></span>
+<span class="tr"><span class="th" id="line48">48</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    dict_end = dict_start + ((dict_start - 2)--&gt;0) * dict_entry_size;</span></span>
 <span class="tr"><span class="th" id="line49">49</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line50">50</span><span class="td">&nbsp;buffer-&gt;0&nbsp;&nbsp;=&nbsp;INPUT_BUFFER_LEN;</span></span>
-<span class="tr"><span class="th" id="line51">51</span><span class="td">&nbsp;buffer2-&gt;0&nbsp;=&nbsp;INPUT_BUFFER_LEN;</span></span>
-<span class="tr"><span class="th" id="line52">52</span><span class="td">&nbsp;buffer3-&gt;0&nbsp;=&nbsp;INPUT_BUFFER_LEN;</span></span>
-<span class="tr"><span class="th" id="line53">53</span><span class="td">&nbsp;parse-&gt;0&nbsp;&nbsp;&nbsp;=&nbsp;15;</span></span>
-<span class="tr"><span class="th" id="line54">54</span><span class="td">&nbsp;parse2-&gt;0&nbsp;&nbsp;=&nbsp;15;</span></span>
+<span class="tr"><span class="th" id="line50">50</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    buffer-&gt;0  = INPUT_BUFFER_LEN;</span></span>
+<span class="tr"><span class="th" id="line51">51</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    buffer2-&gt;0 = INPUT_BUFFER_LEN;</span></span>
+<span class="tr"><span class="th" id="line52">52</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    buffer3-&gt;0 = INPUT_BUFFER_LEN;</span></span>
+<span class="tr"><span class="th" id="line53">53</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    parse-&gt;0   = 15;</span></span>
+<span class="tr"><span class="th" id="line54">54</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    parse2-&gt;0  = 15;</span></span>
 <span class="tr"><span class="th" id="line55">55</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line56">56</span><span class="td">&nbsp;top_object&nbsp;=&nbsp;#largest_object-255;</span></span>
+<span class="tr"><span class="th" id="line56">56</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    top_object = #largest_object-255;</span></span>
 <span class="tr"><span class="th" id="line57">57</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line58">58</span><span class="td">&nbsp;#ifdef&nbsp;FIX_RNG;</span></span>
-<span class="tr"><span class="th" id="line59">59</span><span class="td">&nbsp;@random&nbsp;10000&nbsp;-&gt;&nbsp;i;</span></span>
-<span class="tr"><span class="th" id="line60">60</span><span class="td">&nbsp;i&nbsp;=&nbsp;-i-2000;</span></span>
-<span class="tr"><span class="th" id="line61">61</span><span class="td">&nbsp;print&nbsp;&quot;[Random&nbsp;number&nbsp;generator&nbsp;seed&nbsp;is&nbsp;&quot;,&nbsp;i,&nbsp;&quot;]^&quot;;</span></span>
-<span class="tr"><span class="th" id="line62">62</span><span class="td">&nbsp;@random&nbsp;i&nbsp;-&gt;&nbsp;i;</span></span>
-<span class="tr"><span class="th" id="line63">63</span><span class="td">&nbsp;#endif;&nbsp;!&nbsp;FIX_RNG&nbsp;</span></span>
+<span class="tr"><span class="th" id="line58">58</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #ifdef FIX_RNG;</span></span>
+<span class="tr"><span class="th" id="line59">59</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @random 10000 -&gt; i;</span></span>
+<span class="tr"><span class="th" id="line60">60</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    i = -i-2000;</span></span>
+<span class="tr"><span class="th" id="line61">61</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    print &quot;[Random number generator seed is &quot;, i, &quot;]^&quot;;</span></span>
+<span class="tr"><span class="th" id="line62">62</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @random i -&gt; i;</span></span>
+<span class="tr"><span class="th" id="line63">63</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #endif; ! FIX_RNG    </span></span>
 <span class="tr"><span class="th" id="line64">64</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#zmachine-enable-acceleration">Enable Acceleration.</h3><p><p> This rule enables use of March 2009 extension to Glulx which optimises the speed of Inform-compiled story files, so for the Z-machine it has no effect.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line71">71</span><span class="td">[&nbsp;ENABLE_GLULX_ACCEL_R;</span></span>
-<span class="tr"><span class="th" id="line72">72</span><span class="td">&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line71">71</span><span class="td">[ ENABLE_GLULX_ACCEL_R;</span></span>
+<span class="tr"><span class="th" id="line72">72</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rfalse;</span></span>
 <span class="tr"><span class="th" id="line73">73</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#zmachine-release-number">Release Number.</h3><p><p> Like all software, IF story files have release numbers to mark revised versions being circulated: unlike most software, and partly for traditional reasons, the version number is recorded not in some print statement or variable but is branded on, so to speak, in a specific memory location of the story file header.<p></p><p> <span class="fixed"><a href="./Glulx.i6t.html#line1158">VM_Describe_Release()</a></span> describes the release and is used as part of the &quot;banner&quot;, IF&#39;s equivalent to a title page.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line86">86</span><span class="td">[&nbsp;VM_Describe_Release&nbsp;i;</span></span>
-<span class="tr"><span class="th" id="line87">87</span><span class="td">&nbsp;print&nbsp;&quot;Release&nbsp;&quot;,&nbsp;(HDR_GAMERELEASE--&gt;0)&nbsp;&amp;&nbsp;$03ff,&nbsp;&quot;&nbsp;/&nbsp;Serial&nbsp;number&nbsp;&quot;;</span></span>
-<span class="tr"><span class="th" id="line88">88</span><span class="td">&nbsp;for&nbsp;(i=0&nbsp;:&nbsp;i&lt;6&nbsp;:&nbsp;i++)&nbsp;print&nbsp;(char)&nbsp;HDR_GAMESERIAL-&gt;i;</span></span>
+<span class="tr"><span class="th" id="line86">86</span><span class="td">[ VM_Describe_Release i;</span></span>
+<span class="tr"><span class="th" id="line87">87</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    print &quot;Release &quot;, (HDR_GAMERELEASE--&gt;0) &amp; $03ff, &quot; / Serial number &quot;;</span></span>
+<span class="tr"><span class="th" id="line88">88</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (i=0 : i&lt;6 : i++) print (char) HDR_GAMESERIAL-&gt;i;</span></span>
 <span class="tr"><span class="th" id="line89">89</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#zmachine-keyboard-input">Keyboard Input.</h3><p><p> The VM must provide three routines for keyboard input:<p></p><p> (a) <span class="fixed"><a href="./Glulx.i6t.html#line1180">VM_KeyChar()</a></span> waits for a key to be pressed and then returns the character chosen as a ZSCII character. (b) <span class="fixed"><a href="./Glulx.i6t.html#line1263">VM_KeyDelay(N)</a></span> waits up to <em>N/10</em> seconds for a key to be pressed, returning the ZSCII character if so, or 0 if not. (c) <span class="fixed"><a href="./Glulx.i6t.html#line1283">VM_ReadKeyboard(b, t)</a></span> reads a whole newline-terminated command into the buffer <span class="fixed">b</span>, then parses it into a word stream in the table <span class="fixed">t</span>.<p></p><p> There are elaborations to due with mouse clicks, but this isn&#39;t the place to document all of that.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line105">105</span><span class="td">[&nbsp;VM_KeyChar&nbsp;win&nbsp;&nbsp;key;</span></span>
-<span class="tr"><span class="th" id="line106">106</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(win)&nbsp;@set_window&nbsp;win;</span></span>
-<span class="tr"><span class="th" id="line107">107</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;@read_char&nbsp;1&nbsp;-&gt;&nbsp;key;</span></span>
-<span class="tr"><span class="th" id="line108">108</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;key;</span></span>
+<span class="tr"><span class="th" id="line105">105</span><span class="td">[ VM_KeyChar win  key;</span></span>
+<span class="tr"><span class="th" id="line106">106</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (win) @set_window win;</span></span>
+<span class="tr"><span class="th" id="line107">107</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @read_char 1 -&gt; key;</span></span>
+<span class="tr"><span class="th" id="line108">108</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return key;</span></span>
 <span class="tr"><span class="th" id="line109">109</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line110">110</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line111">111</span><span class="td">[&nbsp;VM_KeyDelay&nbsp;tenths&nbsp;&nbsp;key;</span></span>
-<span class="tr"><span class="th" id="line112">112</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;@read_char&nbsp;1&nbsp;tenths&nbsp;VM_KeyDelay_Interrupt&nbsp;-&gt;&nbsp;key;</span></span>
-<span class="tr"><span class="th" id="line113">113</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;key;</span></span>
+<span class="tr"><span class="th" id="line111">111</span><span class="td">[ VM_KeyDelay tenths  key;</span></span>
+<span class="tr"><span class="th" id="line112">112</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @read_char 1 tenths VM_KeyDelay_Interrupt -&gt; key;</span></span>
+<span class="tr"><span class="th" id="line113">113</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return key;</span></span>
 <span class="tr"><span class="th" id="line114">114</span><span class="td">];</span></span>
-<span class="tr"><span class="th" id="line115">115</span><span class="td">[&nbsp;VM_KeyDelay_Interrupt;&nbsp;rtrue;&nbsp;];</span></span>
+<span class="tr"><span class="th" id="line115">115</span><span class="td">[ VM_KeyDelay_Interrupt; rtrue; ];</span></span>
 <span class="tr"><span class="th" id="line116">116</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line117">117</span><span class="td">[&nbsp;VM_ReadKeyboard&nbsp;&nbsp;a_buffer&nbsp;a_table&nbsp;i;</span></span>
-<span class="tr"><span class="th" id="line118">118</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;read&nbsp;a_buffer&nbsp;a_table;</span></span>
-<span class="tr"><span class="th" id="line119">119</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;#ifdef&nbsp;ECHO_COMMANDS;</span></span>
-<span class="tr"><span class="th" id="line120">120</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;&quot;**&nbsp;&quot;;</span></span>
-<span class="tr"><span class="th" id="line121">121</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(i=2:&nbsp;i&lt;=(a_buffer-&gt;1)+1:&nbsp;i++)&nbsp;print&nbsp;(char)&nbsp;a_buffer-&gt;i;</span></span>
-<span class="tr"><span class="th" id="line122">122</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;&quot;^&quot;;</span></span>
-<span class="tr"><span class="th" id="line123">123</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;#ifnot;</span></span>
-<span class="tr"><span class="th" id="line124">124</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;i=0;&nbsp;&nbsp;!&nbsp;suppress&nbsp;compiler&nbsp;warning</span></span>
-<span class="tr"><span class="th" id="line125">125</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;#endif;</span></span>
+<span class="tr"><span class="th" id="line117">117</span><span class="td">[ VM_ReadKeyboard  a_buffer a_table i;</span></span>
+<span class="tr"><span class="th" id="line118">118</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    read a_buffer a_table;</span></span>
+<span class="tr"><span class="th" id="line119">119</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #ifdef ECHO_COMMANDS;</span></span>
+<span class="tr"><span class="th" id="line120">120</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    print &quot;** &quot;;</span></span>
+<span class="tr"><span class="th" id="line121">121</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (i=2: i&lt;=(a_buffer-&gt;1)+1: i++) print (char) a_buffer-&gt;i;</span></span>
+<span class="tr"><span class="th" id="line122">122</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    print &quot;^&quot;;</span></span>
+<span class="tr"><span class="th" id="line123">123</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #ifnot;</span></span>
+<span class="tr"><span class="th" id="line124">124</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    i=0;  ! suppress compiler warning</span></span>
+<span class="tr"><span class="th" id="line125">125</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #endif;</span></span>
 <span class="tr"><span class="th" id="line126">126</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line127">127</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;#Iftrue&nbsp;(#version_number&nbsp;==&nbsp;6);</span></span>
-<span class="tr"><span class="th" id="line128">128</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;@output_stream&nbsp;-1;</span></span>
-<span class="tr"><span class="th" id="line129">129</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;@loadb&nbsp;a_buffer&nbsp;1&nbsp;-&gt;&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line130">130</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;@add&nbsp;a_buffer&nbsp;2&nbsp;-&gt;&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line131">131</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;@print_table&nbsp;sp&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line132">132</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;new_line;</span></span>
-<span class="tr"><span class="th" id="line133">133</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;@output_stream&nbsp;1;</span></span>
-<span class="tr"><span class="th" id="line134">134</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;#Endif;</span></span>
+<span class="tr"><span class="th" id="line127">127</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #Iftrue (#version_number == 6);</span></span>
+<span class="tr"><span class="th" id="line128">128</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @output_stream -1;</span></span>
+<span class="tr"><span class="th" id="line129">129</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @loadb a_buffer 1 -&gt; sp;</span></span>
+<span class="tr"><span class="th" id="line130">130</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @add a_buffer 2 -&gt; sp;</span></span>
+<span class="tr"><span class="th" id="line131">131</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @print_table sp sp;</span></span>
+<span class="tr"><span class="th" id="line132">132</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    new_line;</span></span>
+<span class="tr"><span class="th" id="line133">133</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @output_stream 1;</span></span>
+<span class="tr"><span class="th" id="line134">134</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #Endif;</span></span>
 <span class="tr"><span class="th" id="line135">135</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#zmachine-buffer-functions">Buffer Functions.</h3><p><p> A &quot;buffer&quot;, in this sense, is an array containing a stream of characters typed from the keyboard; a &quot;parse buffer&quot; is an array which resolves this into individual words, pointing to the relevant entries in the dictionary structure. Because each VM has its own format for each of these arrays (not to mention the dictionary), we have to provide some standard operations needed by the rest of the template as routines for each VM.<p></p><p> The Z-machine buffer and parse buffer formats are documented in the DM4.<p></p><p> <span class="fixed"><a href="./Glulx.i6t.html#line1359">VM_CopyBuffer(to, from)</a></span> copies one buffer into another.<p></p><p> <span class="fixed"><a href="./Glulx.i6t.html#line1381">VM_Tokenise(buff, parse_buff)</a></span> takes the text in the buffer <span class="fixed">buff</span> and produces the corresponding data in the parse buffer <span class="fixed">parse_buff</span> &ndash; this is called tokenisation since the characters are divided into words: in traditional computing jargon, such clumps of characters treated syntactically as units are called tokens.<p></p><p> <span class="fixed"><a href="./Glulx.i6t.html#line1426">LTI_Insert</a></span> is documented in the DM4 and the <span class="fixed">LTI</span> prefix stands for &quot;Language To Informese&quot;: it&#39;s used only by translations into non-English languages of play, and is not called in the template.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line160">160</span><span class="td">[&nbsp;VM_CopyBuffer&nbsp;bto&nbsp;bfrom&nbsp;i;</span></span>
-<span class="tr"><span class="th" id="line161">161</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(i=0:&nbsp;i&lt;INPUT_BUFFER_LEN:&nbsp;i++)&nbsp;bto-&gt;i&nbsp;=&nbsp;bfrom-&gt;i;</span></span>
+<span class="tr"><span class="th" id="line160">160</span><span class="td">[ VM_CopyBuffer bto bfrom i;</span></span>
+<span class="tr"><span class="th" id="line161">161</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (i=0: i&lt;INPUT_BUFFER_LEN: i++) bto-&gt;i = bfrom-&gt;i;</span></span>
 <span class="tr"><span class="th" id="line162">162</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line163">163</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line164">164</span><span class="td">[&nbsp;VM_PrintToBuffer&nbsp;buf&nbsp;len&nbsp;a&nbsp;b&nbsp;c;</span></span>
-<span class="tr"><span class="th" id="line165">165</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;@output_stream&nbsp;3&nbsp;buf;</span></span>
-<span class="tr"><span class="th" id="line166">166</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;switch&nbsp;(metaclass(a))&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line167">167</span><span class="td">&nbsp;&nbsp;String:&nbsp;print&nbsp;(string)&nbsp;a;</span></span>
-<span class="tr"><span class="th" id="line168">168</span><span class="td">&nbsp;&nbsp;Routine:&nbsp;a(b,&nbsp;c);</span></span>
-<span class="tr"><span class="th" id="line169">169</span><span class="td">&nbsp;&nbsp;Object,&nbsp;Class:&nbsp;if&nbsp;(b)&nbsp;PrintOrRun(a,&nbsp;b,&nbsp;true);&nbsp;else&nbsp;print&nbsp;(name)&nbsp;a;</span></span>
-<span class="tr"><span class="th" id="line170">170</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line171">171</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;@output_stream&nbsp;-3;</span></span>
-<span class="tr"><span class="th" id="line172">172</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(buf--&gt;0&nbsp;&gt;&nbsp;len)&nbsp;print&nbsp;&quot;Error:&nbsp;Overflow&nbsp;in&nbsp;VM_PrintToBuffer.^&quot;;</span></span>
-<span class="tr"><span class="th" id="line173">173</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;buf--&gt;0;</span></span>
+<span class="tr"><span class="th" id="line164">164</span><span class="td">[ VM_PrintToBuffer buf len a b c;</span></span>
+<span class="tr"><span class="th" id="line165">165</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @output_stream 3 buf;</span></span>
+<span class="tr"><span class="th" id="line166">166</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    switch (metaclass(a)) {</span></span>
+<span class="tr"><span class="th" id="line167">167</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        String: print (string) a;</span></span>
+<span class="tr"><span class="th" id="line168">168</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        Routine: a(b, c);</span></span>
+<span class="tr"><span class="th" id="line169">169</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        Object, Class: if (b) PrintOrRun(a, b, true); else print (name) a;</span></span>
+<span class="tr"><span class="th" id="line170">170</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line171">171</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @output_stream -3;</span></span>
+<span class="tr"><span class="th" id="line172">172</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (buf--&gt;0 &gt; len) print &quot;Error: Overflow in VM_PrintToBuffer.^&quot;;</span></span>
+<span class="tr"><span class="th" id="line173">173</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return buf--&gt;0;</span></span>
 <span class="tr"><span class="th" id="line174">174</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line175">175</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line176">176</span><span class="td">[&nbsp;VM_Tokenise&nbsp;b&nbsp;p;&nbsp;b-&gt;(2&nbsp;+&nbsp;b-&gt;1)&nbsp;=&nbsp;0;&nbsp;@tokenise&nbsp;b&nbsp;p;&nbsp;];</span></span>
+<span class="tr"><span class="th" id="line176">176</span><span class="td">[ VM_Tokenise b p; b-&gt;(2 + b-&gt;1) = 0; @tokenise b p; ];</span></span>
 <span class="tr"><span class="th" id="line177">177</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line178">178</span><span class="td">[&nbsp;LTI_Insert&nbsp;i&nbsp;ch&nbsp;&nbsp;b&nbsp;y;</span></span>
-<span class="tr"><span class="th" id="line179">179</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;!&nbsp;Protect&nbsp;us&nbsp;from&nbsp;strict&nbsp;mode,&nbsp;as&nbsp;this&nbsp;isn&#39;t&nbsp;an&nbsp;array&nbsp;in&nbsp;quite&nbsp;the</span></span>
-<span class="tr"><span class="th" id="line180">180</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;!&nbsp;sense&nbsp;it&nbsp;expects</span></span>
-<span class="tr"><span class="th" id="line181">181</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;b&nbsp;=&nbsp;buffer;</span></span>
+<span class="tr"><span class="th" id="line178">178</span><span class="td">[ LTI_Insert i ch  b y;</span></span>
+<span class="tr"><span class="th" id="line179">179</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Protect us from strict mode, as this isn&#39;t an array in quite the</span></span>
+<span class="tr"><span class="th" id="line180">180</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! sense it expects</span></span>
+<span class="tr"><span class="th" id="line181">181</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    b = buffer;</span></span>
 <span class="tr"><span class="th" id="line182">182</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line183">183</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;!&nbsp;Insert&nbsp;character&nbsp;ch&nbsp;into&nbsp;buffer&nbsp;at&nbsp;point&nbsp;i.</span></span>
-<span class="tr"><span class="th" id="line184">184</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;!&nbsp;Being&nbsp;careful&nbsp;not&nbsp;to&nbsp;let&nbsp;the&nbsp;buffer&nbsp;possibly&nbsp;overflow:</span></span>
-<span class="tr"><span class="th" id="line185">185</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;y&nbsp;=&nbsp;b-&gt;1;</span></span>
-<span class="tr"><span class="th" id="line186">186</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(y&nbsp;&gt;&nbsp;b-&gt;0)&nbsp;y&nbsp;=&nbsp;b-&gt;0;</span></span>
+<span class="tr"><span class="th" id="line183">183</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Insert character ch into buffer at point i.</span></span>
+<span class="tr"><span class="th" id="line184">184</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Being careful not to let the buffer possibly overflow:</span></span>
+<span class="tr"><span class="th" id="line185">185</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    y = b-&gt;1;</span></span>
+<span class="tr"><span class="th" id="line186">186</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (y &gt; b-&gt;0) y = b-&gt;0;</span></span>
 <span class="tr"><span class="th" id="line187">187</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line188">188</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;!&nbsp;Move&nbsp;the&nbsp;subsequent&nbsp;text&nbsp;along&nbsp;one&nbsp;character:</span></span>
-<span class="tr"><span class="th" id="line189">189</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(y=y+2&nbsp;:&nbsp;y&gt;i&nbsp;:&nbsp;y--)&nbsp;b-&gt;y&nbsp;=&nbsp;b-&gt;(y-1);</span></span>
-<span class="tr"><span class="th" id="line190">190</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;b-&gt;i&nbsp;=&nbsp;ch;</span></span>
+<span class="tr"><span class="th" id="line188">188</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Move the subsequent text along one character:</span></span>
+<span class="tr"><span class="th" id="line189">189</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (y=y+2 : y&gt;i : y--) b-&gt;y = b-&gt;(y-1);</span></span>
+<span class="tr"><span class="th" id="line190">190</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    b-&gt;i = ch;</span></span>
 <span class="tr"><span class="th" id="line191">191</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line192">192</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;!&nbsp;And&nbsp;the&nbsp;text&nbsp;is&nbsp;now&nbsp;one&nbsp;character&nbsp;longer:</span></span>
-<span class="tr"><span class="th" id="line193">193</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(b-&gt;1&nbsp;&lt;&nbsp;b-&gt;0)&nbsp;(b-&gt;1)++;</span></span>
+<span class="tr"><span class="th" id="line192">192</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! And the text is now one character longer:</span></span>
+<span class="tr"><span class="th" id="line193">193</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (b-&gt;1 &lt; b-&gt;0) (b-&gt;1)++;</span></span>
 <span class="tr"><span class="th" id="line194">194</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#zmachine-dictionary-functions">Dictionary Functions.</h3><p><p> Again, the dictionary structure is differently arranged on the different VMs. This is a data structure containing, in compressed form, the text of all the words to be recognised by tokenisation (above). In I6 for Z, a dictionary word value is represented at run-time by its record number in the dictionary, 0, 1, 2, ..., in alphabetical order.<p></p><p> <span class="fixed"><a href="./Glulx.i6t.html#line1462">VM_InvalidDictionaryAddress(A)</a></span> tests whether <span class="fixed">A</span> is a valid record address in the dictionary data structure.<p></p><p><span class="fixed"><a href="./Glulx.i6t.html#line1467">VM_DictionaryAddressToNumber(A)</a></span> and <span class="fixed"><a href="./Glulx.i6t.html#line1468">VM_NumberToDictionaryAddress(N)</a></span><br> convert between record numbers and dictionary addresses.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line210">210</span><span class="td">[&nbsp;VM_InvalidDictionaryAddress&nbsp;addr;</span></span>
-<span class="tr"><span class="th" id="line211">211</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;((UnsignedCompare(addr,&nbsp;dict_start)&nbsp;&lt;&nbsp;0)&nbsp;||</span></span>
-<span class="tr"><span class="th" id="line212">212</span><span class="td">&nbsp;&nbsp;(UnsignedCompare(addr,&nbsp;dict_end)&nbsp;&gt;=&nbsp;0)&nbsp;||</span></span>
-<span class="tr"><span class="th" id="line213">213</span><span class="td">&nbsp;&nbsp;((addr&nbsp;-&nbsp;dict_start)&nbsp;%&nbsp;dict_entry_size&nbsp;~=&nbsp;0))&nbsp;rtrue;</span></span>
-<span class="tr"><span class="th" id="line214">214</span><span class="td">&nbsp;rfalse;</span></span>
+<h3 id="#zmachine-dictionary-functions">Dictionary Functions.</h3><p><p> Again, the dictionary structure is differently arranged on the different VMs. This is a data structure containing, in compressed form, the text of all the words to be recognised by tokenisation (above). In I6 for Z, a dictionary word value is represented at run-time by its record number in the dictionary, 0, 1, 2, ..., in alphabetical order.<p></p><p> <span class="fixed"><a href="./Glulx.i6t.html#line1462">VM_InvalidDictionaryAddress(A)</a></span> tests whether <span class="fixed">A</span> is a valid record address in the dictionary data structure.<p></p><p> <span class="fixed"><a href="./Glulx.i6t.html#line1467">VM_DictionaryAddressToNumber(A)</a></span> and <span class="fixed"><a href="./Glulx.i6t.html#line1468">VM_NumberToDictionaryAddress(N)</a></span> convert between record numbers and dictionary addresses.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line210">210</span><span class="td">[ VM_InvalidDictionaryAddress addr;</span></span>
+<span class="tr"><span class="th" id="line211">211</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if ((UnsignedCompare(addr, dict_start) &lt; 0) ||</span></span>
+<span class="tr"><span class="th" id="line212">212</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        (UnsignedCompare(addr, dict_end) &gt;= 0) ||</span></span>
+<span class="tr"><span class="th" id="line213">213</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ((addr - dict_start) % dict_entry_size ~= 0)) rtrue;</span></span>
+<span class="tr"><span class="th" id="line214">214</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rfalse;</span></span>
 <span class="tr"><span class="th" id="line215">215</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line216">216</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line217">217</span><span class="td">[&nbsp;VM_DictionaryAddressToNumber&nbsp;w;&nbsp;return&nbsp;(w-(HDR_DICTIONARY--&gt;0&nbsp;+&nbsp;7))/9;&nbsp;];</span></span>
-<span class="tr"><span class="th" id="line218">218</span><span class="td">[&nbsp;VM_NumberToDictionaryAddress&nbsp;n;&nbsp;return&nbsp;HDR_DICTIONARY--&gt;0&nbsp;+&nbsp;7&nbsp;+&nbsp;9*n;&nbsp;];</span></span>
+<span class="tr"><span class="th" id="line217">217</span><span class="td">[ VM_DictionaryAddressToNumber w; return (w-(HDR_DICTIONARY--&gt;0 + 7))/9; ];</span></span>
+<span class="tr"><span class="th" id="line218">218</span><span class="td">[ VM_NumberToDictionaryAddress n; return HDR_DICTIONARY--&gt;0 + 7 + 9*n; ];</span></span>
 </div><div class='text'>
 <h3 id="#zmachine-command-tables">Command Tables.</h3><p><p> The VM is also generated containing a data structure for the grammar produced by I6&#39;s <span class="fixed">Verb</span> and <span class="fixed">Extend</span> directives: this is essentially a list of command verbs such as DROP or PUSH, together with a list of synonyms, and then the grammar for the subsequent commands to be recognised by the parser.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line228">228</span><span class="td">[&nbsp;VM_CommandTableAddress&nbsp;i;</span></span>
-<span class="tr"><span class="th" id="line229">229</span><span class="td">&nbsp;return&nbsp;(HDR_STATICMEMORY--&gt;0)--&gt;i;</span></span>
+<span class="tr"><span class="th" id="line228">228</span><span class="td">[ VM_CommandTableAddress i;</span></span>
+<span class="tr"><span class="th" id="line229">229</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return (HDR_STATICMEMORY--&gt;0)--&gt;i;</span></span>
 <span class="tr"><span class="th" id="line230">230</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line231">231</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line232">232</span><span class="td">[&nbsp;VM_PrintCommandWords&nbsp;i&nbsp;da&nbsp;j;</span></span>
-<span class="tr"><span class="th" id="line233">233</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;da&nbsp;=&nbsp;HDR_DICTIONARY--&gt;0;</span></span>
-<span class="tr"><span class="th" id="line234">234</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(j=0&nbsp;:&nbsp;j&lt;(da+5)--&gt;0&nbsp;:&nbsp;j++)</span></span>
-<span class="tr"><span class="th" id="line235">235</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(da-&gt;(j*9&nbsp;+&nbsp;14)&nbsp;==&nbsp;$ff-i)</span></span>
-<span class="tr"><span class="th" id="line236">236</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;&quot;&#39;&quot;,&nbsp;(address)&nbsp;VM_NumberToDictionaryAddress(j),&nbsp;&quot;&#39;&nbsp;&quot;;</span></span>
+<span class="tr"><span class="th" id="line232">232</span><span class="td">[ VM_PrintCommandWords i da j;</span></span>
+<span class="tr"><span class="th" id="line233">233</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    da = HDR_DICTIONARY--&gt;0;</span></span>
+<span class="tr"><span class="th" id="line234">234</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (j=0 : j&lt;(da+5)--&gt;0 : j++)</span></span>
+<span class="tr"><span class="th" id="line235">235</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (da-&gt;(j*9 + 14) == $ff-i)</span></span>
+<span class="tr"><span class="th" id="line236">236</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            print &quot;&#39;&quot;, (address) VM_NumberToDictionaryAddress(j), &quot;&#39; &quot;;</span></span>
 <span class="tr"><span class="th" id="line237">237</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#zmachine-showverb-support">SHOWVERB support.</h3><p><p> Further VM-specific tables cover actions and attributes, and these are used by the SHOWVERB testing command.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line244">244</span><span class="td">#Ifdef&nbsp;DEBUG;</span></span>
-<span class="tr"><span class="th" id="line245">245</span><span class="td">[&nbsp;DebugAction&nbsp;a&nbsp;anames;</span></span>
-<span class="tr"><span class="th" id="line246">246</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(a&nbsp;&gt;=&nbsp;4096)&nbsp;{&nbsp;print&nbsp;&quot;&lt;fake&nbsp;action&nbsp;&quot;,&nbsp;a-4096,&nbsp;&quot;&gt;&quot;;&nbsp;return;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line247">247</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;anames&nbsp;=&nbsp;#identifiers_table;</span></span>
-<span class="tr"><span class="th" id="line248">248</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;anames&nbsp;=&nbsp;anames&nbsp;+&nbsp;2*(anames--&gt;0)&nbsp;+&nbsp;2*48;</span></span>
-<span class="tr"><span class="th" id="line249">249</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;(string)&nbsp;anames--&gt;a;</span></span>
+<span class="tr"><span class="th" id="line244">244</span><span class="td">#Ifdef DEBUG;</span></span>
+<span class="tr"><span class="th" id="line245">245</span><span class="td">[ DebugAction a anames;</span></span>
+<span class="tr"><span class="th" id="line246">246</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (a &gt;= 4096) { print &quot;&lt;fake action &quot;, a-4096, &quot;&gt;&quot;; return; }</span></span>
+<span class="tr"><span class="th" id="line247">247</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    anames = #identifiers_table;</span></span>
+<span class="tr"><span class="th" id="line248">248</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    anames = anames + 2*(anames--&gt;0) + 2*48;</span></span>
+<span class="tr"><span class="th" id="line249">249</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    print (string) anames--&gt;a;</span></span>
 <span class="tr"><span class="th" id="line250">250</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line251">251</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line252">252</span><span class="td">[&nbsp;DebugAttribute&nbsp;a&nbsp;anames;</span></span>
-<span class="tr"><span class="th" id="line253">253</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(a&nbsp;&lt;&nbsp;0&nbsp;||&nbsp;a&nbsp;&gt;=&nbsp;48)&nbsp;print&nbsp;&quot;&lt;invalid&nbsp;attribute&nbsp;&quot;,&nbsp;a,&nbsp;&quot;&gt;&quot;;</span></span>
-<span class="tr"><span class="th" id="line254">254</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;else&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line255">255</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;anames&nbsp;=&nbsp;#identifiers_table;&nbsp;anames&nbsp;=&nbsp;anames&nbsp;+&nbsp;2*(anames--&gt;0);</span></span>
-<span class="tr"><span class="th" id="line256">256</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;(string)&nbsp;anames--&gt;a;</span></span>
-<span class="tr"><span class="th" id="line257">257</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line252">252</span><span class="td">[ DebugAttribute a anames;</span></span>
+<span class="tr"><span class="th" id="line253">253</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (a &lt; 0 || a &gt;= 48) print &quot;&lt;invalid attribute &quot;, a, &quot;&gt;&quot;;</span></span>
+<span class="tr"><span class="th" id="line254">254</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    else {</span></span>
+<span class="tr"><span class="th" id="line255">255</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        anames = #identifiers_table; anames = anames + 2*(anames--&gt;0);</span></span>
+<span class="tr"><span class="th" id="line256">256</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        print (string) anames--&gt;a;</span></span>
+<span class="tr"><span class="th" id="line257">257</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
 <span class="tr"><span class="th" id="line258">258</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line259">259</span><span class="td">#Endif;</span></span>
 </div><div class='text'>
 <h3 id="#zmachine-rng">RNG.</h3><p><p> No routine is needed for extracting a random number, since I6&#39;s built-in <span class="fixed">random</span> function does that, but it&#39;s useful to abstract the process of seeding the RNG so that it produces a repeatable sequence of &quot;random&quot; numbers from here on: the necessary opcodes are different for the two VMs.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line268">268</span><span class="td">[&nbsp;VM_Seed_RNG&nbsp;n;</span></span>
-<span class="tr"><span class="th" id="line269">269</span><span class="td">&nbsp;if&nbsp;(n&nbsp;&gt;&nbsp;0)&nbsp;n&nbsp;=&nbsp;-n;</span></span>
-<span class="tr"><span class="th" id="line270">270</span><span class="td">&nbsp;@random&nbsp;n&nbsp;-&gt;&nbsp;n;</span></span>
+<span class="tr"><span class="th" id="line268">268</span><span class="td">[ VM_Seed_RNG n;</span></span>
+<span class="tr"><span class="th" id="line269">269</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (n &gt; 0) n = -n;</span></span>
+<span class="tr"><span class="th" id="line270">270</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @random n -&gt; n;</span></span>
 <span class="tr"><span class="th" id="line271">271</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#zmachine-memory-allocation">Memory Allocation.</h3><p><p> This is dynamic memory allocation: something which is never practicable in the Z-machine, because the whole address range is already claimed, but which is viable on recent revisions of Glulx.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line279">279</span><span class="td">[&nbsp;VM_AllocateMemory&nbsp;amount;</span></span>
-<span class="tr"><span class="th" id="line280">280</span><span class="td">&nbsp;return&nbsp;0;</span></span>
+<span class="tr"><span class="th" id="line279">279</span><span class="td">[ VM_AllocateMemory amount;</span></span>
+<span class="tr"><span class="th" id="line280">280</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return 0;</span></span>
 <span class="tr"><span class="th" id="line281">281</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line282">282</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line283">283</span><span class="td">[&nbsp;VM_FreeMemory&nbsp;address;</span></span>
+<span class="tr"><span class="th" id="line283">283</span><span class="td">[ VM_FreeMemory address;</span></span>
 <span class="tr"><span class="th" id="line284">284</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#zmachine-audiovisual-resources">Audiovisual Resources.</h3><p><p> The Z-machine only barely supports figures and sound effects. I7 only allows us to use them for Version 6 of the Z-machine, even though sound effects have a longer pedigree and Infocom used them on some version 5 and even some version 3 works: really, though, from an I7 point of view we would prefer that anyone needing figures and sounds use Glulx instead.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line294">294</span><span class="td">[&nbsp;VM_Picture&nbsp;resource_ID;</span></span>
-<span class="tr"><span class="th" id="line295">295</span><span class="td">&nbsp;#IFTRUE&nbsp;#version_number&nbsp;==&nbsp;6;&nbsp;!&nbsp;Z-machine&nbsp;version&nbsp;6</span></span>
-<span class="tr"><span class="th" id="line296">296</span><span class="td">&nbsp;@draw_picture&nbsp;resource_ID;</span></span>
-<span class="tr"><span class="th" id="line297">297</span><span class="td">&nbsp;#ENDIF;</span></span>
+<span class="tr"><span class="th" id="line294">294</span><span class="td">[ VM_Picture resource_ID;</span></span>
+<span class="tr"><span class="th" id="line295">295</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #IFTRUE #version_number == 6; ! Z-machine version 6</span></span>
+<span class="tr"><span class="th" id="line296">296</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @draw_picture resource_ID;</span></span>
+<span class="tr"><span class="th" id="line297">297</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #ENDIF;</span></span>
 <span class="tr"><span class="th" id="line298">298</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line299">299</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line300">300</span><span class="td">[&nbsp;VM_SoundEffect&nbsp;resource_ID;</span></span>
-<span class="tr"><span class="th" id="line301">301</span><span class="td">&nbsp;#IFTRUE&nbsp;#version_number&nbsp;==&nbsp;6;&nbsp;!&nbsp;Z-machine&nbsp;version&nbsp;6</span></span>
-<span class="tr"><span class="th" id="line302">302</span><span class="td">&nbsp;@sound_effect&nbsp;resource_ID;</span></span>
-<span class="tr"><span class="th" id="line303">303</span><span class="td">&nbsp;#ENDIF;</span></span>
+<span class="tr"><span class="th" id="line300">300</span><span class="td">[ VM_SoundEffect resource_ID;</span></span>
+<span class="tr"><span class="th" id="line301">301</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #IFTRUE #version_number == 6; ! Z-machine version 6</span></span>
+<span class="tr"><span class="th" id="line302">302</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @sound_effect resource_ID;</span></span>
+<span class="tr"><span class="th" id="line303">303</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #ENDIF;</span></span>
 <span class="tr"><span class="th" id="line304">304</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#zmachine-typography">Typography.</h3><p><p> Relatively few typographic effects are available on the Z-machine, so that many of the semantic markups for text which would be distinguishable on Glulx are indistinguishable here.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line312">312</span><span class="td">[&nbsp;VM_Style&nbsp;sty;</span></span>
-<span class="tr"><span class="th" id="line313">313</span><span class="td">&nbsp;switch&nbsp;(sty)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line314">314</span><span class="td">&nbsp;&nbsp;NORMAL_VMSTY,&nbsp;NOTE_VMSTY:&nbsp;style&nbsp;roman;</span></span>
-<span class="tr"><span class="th" id="line315">315</span><span class="td">&nbsp;&nbsp;HEADER_VMSTY,&nbsp;SUBHEADER_VMSTY,&nbsp;ALERT_VMSTY:&nbsp;style&nbsp;bold;</span></span>
-<span class="tr"><span class="th" id="line316">316</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line312">312</span><span class="td">[ VM_Style sty;</span></span>
+<span class="tr"><span class="th" id="line313">313</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    switch (sty) {</span></span>
+<span class="tr"><span class="th" id="line314">314</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        NORMAL_VMSTY, NOTE_VMSTY: style roman;</span></span>
+<span class="tr"><span class="th" id="line315">315</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        HEADER_VMSTY, SUBHEADER_VMSTY, ALERT_VMSTY: style bold;</span></span>
+<span class="tr"><span class="th" id="line316">316</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
 <span class="tr"><span class="th" id="line317">317</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#zmachine-character-casing">Character Casing.</h3><p><p> The following are the equivalent of <span class="fixed">tolower</span> and <span class="fixed">toupper</span>, the traditional C library functions for forcing letters into lower and upper case form, for the ZSCII character set.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line325">325</span><span class="td">[&nbsp;VM_UpperToLowerCase&nbsp;c;</span></span>
-<span class="tr"><span class="th" id="line326">326</span><span class="td">&nbsp;&nbsp;&nbsp;switch&nbsp;(c)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line327">327</span><span class="td">&nbsp;&nbsp;&#39;A&#39;&nbsp;to&nbsp;&#39;Z&#39;:&nbsp;c&nbsp;=&nbsp;c&nbsp;+&nbsp;32;</span></span>
-<span class="tr"><span class="th" id="line328">328</span><span class="td">&nbsp;&nbsp;202,&nbsp;204,&nbsp;212,&nbsp;214,&nbsp;221:&nbsp;c--;</span></span>
-<span class="tr"><span class="th" id="line329">329</span><span class="td">&nbsp;&nbsp;217,&nbsp;218:&nbsp;c&nbsp;=&nbsp;c&nbsp;-&nbsp;2;</span></span>
-<span class="tr"><span class="th" id="line330">330</span><span class="td">&nbsp;&nbsp;158&nbsp;to&nbsp;160,&nbsp;167&nbsp;to&nbsp;168,&nbsp;208&nbsp;to&nbsp;210:&nbsp;c&nbsp;=&nbsp;c&nbsp;-&nbsp;3;</span></span>
-<span class="tr"><span class="th" id="line331">331</span><span class="td">&nbsp;&nbsp;186&nbsp;to&nbsp;190,&nbsp;196&nbsp;to&nbsp;200:&nbsp;c&nbsp;=&nbsp;c&nbsp;-&nbsp;5&nbsp;;</span></span>
-<span class="tr"><span class="th" id="line332">332</span><span class="td">&nbsp;&nbsp;175&nbsp;to&nbsp;180:&nbsp;c&nbsp;=&nbsp;c&nbsp;-&nbsp;6;</span></span>
-<span class="tr"><span class="th" id="line333">333</span><span class="td">&nbsp;&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line334">334</span><span class="td">&nbsp;&nbsp;&nbsp;return&nbsp;c;</span></span>
+<span class="tr"><span class="th" id="line325">325</span><span class="td">[ VM_UpperToLowerCase c;</span></span>
+<span class="tr"><span class="th" id="line326">326</span><span class="td">&nbsp;&nbsp;&nbsp;   switch (c) {</span></span>
+<span class="tr"><span class="th" id="line327">327</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        &#39;A&#39; to &#39;Z&#39;: c = c + 32;</span></span>
+<span class="tr"><span class="th" id="line328">328</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        202, 204, 212, 214, 221: c--;</span></span>
+<span class="tr"><span class="th" id="line329">329</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        217, 218: c = c - 2;</span></span>
+<span class="tr"><span class="th" id="line330">330</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        158 to 160, 167 to 168, 208 to 210: c = c - 3;</span></span>
+<span class="tr"><span class="th" id="line331">331</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        186 to 190, 196 to 200: c = c - 5 ;</span></span>
+<span class="tr"><span class="th" id="line332">332</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        175 to 180: c = c - 6;</span></span>
+<span class="tr"><span class="th" id="line333">333</span><span class="td">&nbsp;&nbsp;&nbsp;   }</span></span>
+<span class="tr"><span class="th" id="line334">334</span><span class="td">&nbsp;&nbsp;&nbsp;   return c;</span></span>
 <span class="tr"><span class="th" id="line335">335</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line336">336</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line337">337</span><span class="td">[&nbsp;VM_LowerToUpperCase&nbsp;c;</span></span>
-<span class="tr"><span class="th" id="line338">338</span><span class="td">&nbsp;&nbsp;&nbsp;switch&nbsp;(c)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line339">339</span><span class="td">&nbsp;&nbsp;&#39;a&#39;&nbsp;to&nbsp;&#39;z&#39;:&nbsp;c&nbsp;=&nbsp;c&nbsp;-&nbsp;32;</span></span>
-<span class="tr"><span class="th" id="line340">340</span><span class="td">&nbsp;&nbsp;201,&nbsp;203,&nbsp;211,&nbsp;213,&nbsp;220:&nbsp;c++;</span></span>
-<span class="tr"><span class="th" id="line341">341</span><span class="td">&nbsp;&nbsp;215,&nbsp;216:&nbsp;c&nbsp;=&nbsp;c&nbsp;+&nbsp;2;</span></span>
-<span class="tr"><span class="th" id="line342">342</span><span class="td">&nbsp;&nbsp;155&nbsp;to&nbsp;157,&nbsp;164&nbsp;to&nbsp;165,&nbsp;205&nbsp;to&nbsp;207:&nbsp;c&nbsp;=&nbsp;c&nbsp;+&nbsp;3;</span></span>
-<span class="tr"><span class="th" id="line343">343</span><span class="td">&nbsp;&nbsp;181&nbsp;to&nbsp;185,&nbsp;191&nbsp;to&nbsp;195:&nbsp;c&nbsp;=&nbsp;c&nbsp;+&nbsp;5&nbsp;;</span></span>
-<span class="tr"><span class="th" id="line344">344</span><span class="td">&nbsp;&nbsp;169&nbsp;to&nbsp;174:&nbsp;c&nbsp;=&nbsp;c&nbsp;+&nbsp;6;</span></span>
-<span class="tr"><span class="th" id="line345">345</span><span class="td">&nbsp;&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line346">346</span><span class="td">&nbsp;&nbsp;&nbsp;return&nbsp;c;</span></span>
+<span class="tr"><span class="th" id="line337">337</span><span class="td">[ VM_LowerToUpperCase c;</span></span>
+<span class="tr"><span class="th" id="line338">338</span><span class="td">&nbsp;&nbsp;&nbsp;   switch (c) {</span></span>
+<span class="tr"><span class="th" id="line339">339</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        &#39;a&#39; to &#39;z&#39;: c = c - 32;</span></span>
+<span class="tr"><span class="th" id="line340">340</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        201, 203, 211, 213, 220: c++;</span></span>
+<span class="tr"><span class="th" id="line341">341</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        215, 216: c = c + 2;</span></span>
+<span class="tr"><span class="th" id="line342">342</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        155 to 157, 164 to 165, 205 to 207: c = c + 3;</span></span>
+<span class="tr"><span class="th" id="line343">343</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        181 to 185, 191 to 195: c = c + 5 ;</span></span>
+<span class="tr"><span class="th" id="line344">344</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        169 to 174: c = c + 6;</span></span>
+<span class="tr"><span class="th" id="line345">345</span><span class="td">&nbsp;&nbsp;&nbsp;   }</span></span>
+<span class="tr"><span class="th" id="line346">346</span><span class="td">&nbsp;&nbsp;&nbsp;   return c;</span></span>
 <span class="tr"><span class="th" id="line347">347</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#zmachine-the-screen">The Screen.</h3><p><p> Our generic screen model is that the screen is made up of windows: we tend to refer only to two of these, the main window and the status line, but others may also exist from time to time. Windows have unique ID numbers: the special window ID <em>-1</em> means &quot;all windows&quot; or &quot;the entire screen&quot;, which usually amounts to the same thing.<p></p><p> Screen height and width are measured in characters, with respect to the fixed-pitch font used for the status line. The main window normally contains variable-pitch text which may even have been kerned, and character dimensions make little sense there.<p></p><p> Clearing all windows (<span class="fixed"><a href="./Definitions.i6t.html#line251">WIN_ALL</a></span> here) has the side-effect of collapsing the status line, so we need to ensure that <span class="fixed"><a href="./Output.i6t.html#line342">statuswin_cursize</a></span> is reduced to 0, in order to keep it accurate.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line366">366</span><span class="td">[&nbsp;VM_ClearScreen&nbsp;window;</span></span>
-<span class="tr"><span class="th" id="line367">367</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;switch&nbsp;(window)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line368">368</span><span class="td">&nbsp;&nbsp;WIN_ALL:&nbsp;&nbsp;&nbsp;&nbsp;@erase_window&nbsp;-1;&nbsp;statuswin_cursize&nbsp;=&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line369">369</span><span class="td">&nbsp;&nbsp;WIN_STATUS:&nbsp;@erase_window&nbsp;1;</span></span>
-<span class="tr"><span class="th" id="line370">370</span><span class="td">&nbsp;&nbsp;WIN_MAIN:&nbsp;&nbsp;&nbsp;@erase_window&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line371">371</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line366">366</span><span class="td">[ VM_ClearScreen window;</span></span>
+<span class="tr"><span class="th" id="line367">367</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    switch (window) {</span></span>
+<span class="tr"><span class="th" id="line368">368</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        WIN_ALL:    @erase_window -1; statuswin_cursize = 0;</span></span>
+<span class="tr"><span class="th" id="line369">369</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        WIN_STATUS: @erase_window 1;</span></span>
+<span class="tr"><span class="th" id="line370">370</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        WIN_MAIN:   @erase_window 0;</span></span>
+<span class="tr"><span class="th" id="line371">371</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
 <span class="tr"><span class="th" id="line372">372</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line373">373</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line374">374</span><span class="td">#Iftrue&nbsp;(#version_number&nbsp;==&nbsp;6);</span></span>
-<span class="tr"><span class="th" id="line375">375</span><span class="td">[&nbsp;VM_ScreenWidth&nbsp;&nbsp;width&nbsp;charw;</span></span>
-<span class="tr"><span class="th" id="line376">376</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;@get_wind_prop&nbsp;1&nbsp;3&nbsp;-&gt;&nbsp;width;</span></span>
-<span class="tr"><span class="th" id="line377">377</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;@get_wind_prop&nbsp;1&nbsp;13&nbsp;-&gt;&nbsp;charw;</span></span>
-<span class="tr"><span class="th" id="line378">378</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;charw&nbsp;=&nbsp;charw&nbsp;&amp;&nbsp;$FF;</span></span>
-<span class="tr"><span class="th" id="line379">379</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(width+charw-1)&nbsp;/&nbsp;charw;</span></span>
+<span class="tr"><span class="th" id="line374">374</span><span class="td">#Iftrue (#version_number == 6);</span></span>
+<span class="tr"><span class="th" id="line375">375</span><span class="td">[ VM_ScreenWidth  width charw;</span></span>
+<span class="tr"><span class="th" id="line376">376</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @get_wind_prop 1 3 -&gt; width;</span></span>
+<span class="tr"><span class="th" id="line377">377</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @get_wind_prop 1 13 -&gt; charw;</span></span>
+<span class="tr"><span class="th" id="line378">378</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    charw = charw &amp; $FF;</span></span>
+<span class="tr"><span class="th" id="line379">379</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return (width+charw-1) / charw;</span></span>
 <span class="tr"><span class="th" id="line380">380</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line381">381</span><span class="td">#Ifnot;</span></span>
-<span class="tr"><span class="th" id="line382">382</span><span class="td">[&nbsp;VM_ScreenWidth;&nbsp;return&nbsp;(HDR_SCREENWCHARS-&gt;0);&nbsp;];</span></span>
+<span class="tr"><span class="th" id="line382">382</span><span class="td">[ VM_ScreenWidth; return (HDR_SCREENWCHARS-&gt;0); ];</span></span>
 <span class="tr"><span class="th" id="line383">383</span><span class="td">#Endif;</span></span>
 <span class="tr"><span class="th" id="line384">384</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line385">385</span><span class="td">[&nbsp;VM_ScreenHeight;&nbsp;return&nbsp;(HDR_SCREENHLINES-&gt;0);&nbsp;];</span></span>
+<span class="tr"><span class="th" id="line385">385</span><span class="td">[ VM_ScreenHeight; return (HDR_SCREENHLINES-&gt;0); ];</span></span>
 </div><div class='text'>
 <h3 id="#zmachine-window-colours">Window Colours.</h3><p><p> Each window can have its own foreground and background colours.<p></p><p> The colour of individual letters or words of type is not controllable in Glulx, to the frustration of many, and so the template layer of I7 has no framework for handling this (even though it is controllable on the Z-machine, which is greatly superior in this respect).<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line396">396</span><span class="td">[&nbsp;VM_SetWindowColours&nbsp;f&nbsp;b&nbsp;window;</span></span>
-<span class="tr"><span class="th" id="line397">397</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(clr_on&nbsp;&amp;&amp;&nbsp;f&nbsp;&amp;&amp;&nbsp;b)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line398">398</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(window&nbsp;==&nbsp;0)&nbsp;{&nbsp;&nbsp;!&nbsp;if&nbsp;setting&nbsp;both&nbsp;together,&nbsp;set&nbsp;reverse</span></span>
-<span class="tr"><span class="th" id="line399">399</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clr_fgstatus&nbsp;=&nbsp;b;</span></span>
-<span class="tr"><span class="th" id="line400">400</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clr_bgstatus&nbsp;=&nbsp;f;</span></span>
-<span class="tr"><span class="th" id="line401">401</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line402">402</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(window&nbsp;==&nbsp;1)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line403">403</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clr_fgstatus&nbsp;=&nbsp;f;</span></span>
-<span class="tr"><span class="th" id="line404">404</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clr_bgstatus&nbsp;=&nbsp;b;</span></span>
-<span class="tr"><span class="th" id="line405">405</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line406">406</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(window&nbsp;==&nbsp;0&nbsp;or&nbsp;2)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line407">407</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clr_fg&nbsp;=&nbsp;f;</span></span>
-<span class="tr"><span class="th" id="line408">408</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clr_bg&nbsp;=&nbsp;b;</span></span>
-<span class="tr"><span class="th" id="line409">409</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line410">410</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(statuswin_current)</span></span>
-<span class="tr"><span class="th" id="line411">411</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@set_colour&nbsp;clr_fgstatus&nbsp;clr_bgstatus;</span></span>
-<span class="tr"><span class="th" id="line412">412</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else</span></span>
-<span class="tr"><span class="th" id="line413">413</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@set_colour&nbsp;clr_fg&nbsp;clr_bg;</span></span>
-<span class="tr"><span class="th" id="line414">414</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line396">396</span><span class="td">[ VM_SetWindowColours f b window;</span></span>
+<span class="tr"><span class="th" id="line397">397</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (clr_on &amp;&amp; f &amp;&amp; b) {</span></span>
+<span class="tr"><span class="th" id="line398">398</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (window == 0) {  ! if setting both together, set reverse</span></span>
+<span class="tr"><span class="th" id="line399">399</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            clr_fgstatus = b;</span></span>
+<span class="tr"><span class="th" id="line400">400</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            clr_bgstatus = f;</span></span>
+<span class="tr"><span class="th" id="line401">401</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            }</span></span>
+<span class="tr"><span class="th" id="line402">402</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (window == 1) {</span></span>
+<span class="tr"><span class="th" id="line403">403</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            clr_fgstatus = f;</span></span>
+<span class="tr"><span class="th" id="line404">404</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            clr_bgstatus = b;</span></span>
+<span class="tr"><span class="th" id="line405">405</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
+<span class="tr"><span class="th" id="line406">406</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (window == 0 or 2) {</span></span>
+<span class="tr"><span class="th" id="line407">407</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            clr_fg = f;</span></span>
+<span class="tr"><span class="th" id="line408">408</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            clr_bg = b;</span></span>
+<span class="tr"><span class="th" id="line409">409</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
+<span class="tr"><span class="th" id="line410">410</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (statuswin_current)</span></span>
+<span class="tr"><span class="th" id="line411">411</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            @set_colour clr_fgstatus clr_bgstatus;</span></span>
+<span class="tr"><span class="th" id="line412">412</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        else</span></span>
+<span class="tr"><span class="th" id="line413">413</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            @set_colour clr_fg clr_bg;</span></span>
+<span class="tr"><span class="th" id="line414">414</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
 <span class="tr"><span class="th" id="line415">415</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line416">416</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line417">417</span><span class="td">[&nbsp;VM_RestoreWindowColours;&nbsp;!&nbsp;compare&nbsp;I6&nbsp;library&nbsp;patch&nbsp;L61007</span></span>
-<span class="tr"><span class="th" id="line418">418</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(clr_on)&nbsp;{&nbsp;!&nbsp;check&nbsp;colour&nbsp;has&nbsp;been&nbsp;used</span></span>
-<span class="tr"><span class="th" id="line419">419</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VM_SetWindowColours(clr_fg,&nbsp;clr_bg,&nbsp;2);&nbsp;!&nbsp;make&nbsp;sure&nbsp;both&nbsp;sets&nbsp;of&nbsp;variables&nbsp;are&nbsp;restored</span></span>
-<span class="tr"><span class="th" id="line420">420</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VM_SetWindowColours(clr_fgstatus,&nbsp;clr_bgstatus,&nbsp;1,&nbsp;true);</span></span>
-<span class="tr"><span class="th" id="line421">421</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VM_ClearScreen();</span></span>
-<span class="tr"><span class="th" id="line422">422</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line423">423</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;#Iftrue&nbsp;(#version_number&nbsp;==&nbsp;6);&nbsp;!&nbsp;request&nbsp;screen&nbsp;update</span></span>
-<span class="tr"><span class="th" id="line424">424</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;(0--&gt;8)&nbsp;=&nbsp;(0--&gt;8)&nbsp;|&nbsp;$$00000100;</span></span>
-<span class="tr"><span class="th" id="line425">425</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;#Endif;</span></span>
+<span class="tr"><span class="th" id="line417">417</span><span class="td">[ VM_RestoreWindowColours; ! compare I6 library patch L61007</span></span>
+<span class="tr"><span class="th" id="line418">418</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (clr_on) { ! check colour has been used</span></span>
+<span class="tr"><span class="th" id="line419">419</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        VM_SetWindowColours(clr_fg, clr_bg, 2); ! make sure both sets of variables are restored</span></span>
+<span class="tr"><span class="th" id="line420">420</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        VM_SetWindowColours(clr_fgstatus, clr_bgstatus, 1, true);</span></span>
+<span class="tr"><span class="th" id="line421">421</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        VM_ClearScreen();</span></span>
+<span class="tr"><span class="th" id="line422">422</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line423">423</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #Iftrue (#version_number == 6); ! request screen update</span></span>
+<span class="tr"><span class="th" id="line424">424</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    (0--&gt;8) = (0--&gt;8) | $$00000100;</span></span>
+<span class="tr"><span class="th" id="line425">425</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #Endif;</span></span>
 <span class="tr"><span class="th" id="line426">426</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#zmachine-main-window">Main Window.</h3><p><p> The part of the screen on which commands and responses are printed, which ordinarily occupies almost all of the screen area.<p></p><p> <span class="fixed"><a href="./Glulx.i6t.html#line1850">VM_MainWindow()</a></span> switches printing back from another window, usually the status line, to the main window. Note that the Z-machine implementation emulates the Glulx model of window rather than text colours.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line437">437</span><span class="td">[&nbsp;VM_MainWindow;</span></span>
-<span class="tr"><span class="th" id="line438">438</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(statuswin_current)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line439">439</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(clr_on&nbsp;&amp;&amp;&nbsp;clr_bgstatus&nbsp;&gt;&nbsp;1)&nbsp;@set_colour&nbsp;clr_fg&nbsp;clr_bg;</span></span>
-<span class="tr"><span class="th" id="line440">440</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else&nbsp;style&nbsp;roman;</span></span>
-<span class="tr"><span class="th" id="line441">441</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@set_window&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line442">442</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line443">443</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;statuswin_current&nbsp;=&nbsp;false;</span></span>
+<span class="tr"><span class="th" id="line437">437</span><span class="td">[ VM_MainWindow;</span></span>
+<span class="tr"><span class="th" id="line438">438</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (statuswin_current) {</span></span>
+<span class="tr"><span class="th" id="line439">439</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (clr_on &amp;&amp; clr_bgstatus &gt; 1) @set_colour clr_fg clr_bg;</span></span>
+<span class="tr"><span class="th" id="line440">440</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        else style roman;</span></span>
+<span class="tr"><span class="th" id="line441">441</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @set_window 0;</span></span>
+<span class="tr"><span class="th" id="line442">442</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line443">443</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    statuswin_current = false;</span></span>
 <span class="tr"><span class="th" id="line444">444</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#zmachine-status-line">Status Line.</h3><p><p> Despite the name, the status line need not be a single line at the top of the screen: that&#39;s only the conventional default arrangement. It can expand to become the equivalent of an old-fashioned VT220 terminal, with menus and grids and mazes displayed lovingly in character graphics, or it can close up to invisibility.<p></p><p> <span class="fixed"><a href="./Glulx.i6t.html#line1874">VM_StatusLineHeight(n)</a></span> sets the status line to have a height of <span class="fixed">n</span> lines of type. (The width of the status line is always the width of the whole screen, and the position is always at the top, so the height is the only controllable aspect.) The <em>n=0</em> case makes the status line disappear.<p></p><p> <span class="fixed"><a href="./Glulx.i6t.html#line1881">VM_MoveCursorInStatusLine(x, y)</a></span> switches printing to the status line, positioning the &quot;cursor&quot; &ndash; the position at which printing will begin &ndash; at the given character grid position <em>(x, y)</em>. Line 1 represents the top line; line 2 is underneath, and so on; columns are similarly numbered from 1 at the left.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line465">465</span><span class="td">[&nbsp;VM_MoveCursorInStatusLine&nbsp;line&nbsp;column;&nbsp;!&nbsp;1-based&nbsp;position&nbsp;on&nbsp;text&nbsp;grid</span></span>
-<span class="tr"><span class="th" id="line466">466</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(~~statuswin_current)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line467">467</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@set_window&nbsp;1;</span></span>
-<span class="tr"><span class="th" id="line468">468</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(clr_on&nbsp;&amp;&amp;&nbsp;clr_bgstatus&nbsp;&gt;&nbsp;1)&nbsp;@set_colour&nbsp;clr_fgstatus&nbsp;clr_bgstatus;</span></span>
-<span class="tr"><span class="th" id="line469">469</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;style&nbsp;reverse;</span></span>
-<span class="tr"><span class="th" id="line470">470</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line471">471</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(line&nbsp;==&nbsp;0)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line472">472</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;line&nbsp;=&nbsp;1;</span></span>
-<span class="tr"><span class="th" id="line473">473</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;column&nbsp;=&nbsp;1;</span></span>
-<span class="tr"><span class="th" id="line474">474</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line475">475</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;#Iftrue&nbsp;(#version_number&nbsp;==&nbsp;6);</span></span>
-<span class="tr"><span class="th" id="line476">476</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;Z6_MoveCursor(line,&nbsp;column);</span></span>
-<span class="tr"><span class="th" id="line477">477</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;#Ifnot;</span></span>
-<span class="tr"><span class="th" id="line478">478</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;@set_cursor&nbsp;line&nbsp;column;</span></span>
-<span class="tr"><span class="th" id="line479">479</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;#Endif;</span></span>
-<span class="tr"><span class="th" id="line480">480</span><span class="td">&nbsp;statuswin_current&nbsp;=&nbsp;true;</span></span>
+<span class="tr"><span class="th" id="line465">465</span><span class="td">[ VM_MoveCursorInStatusLine line column; ! 1-based position on text grid</span></span>
+<span class="tr"><span class="th" id="line466">466</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (~~statuswin_current) {</span></span>
+<span class="tr"><span class="th" id="line467">467</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         @set_window 1;</span></span>
+<span class="tr"><span class="th" id="line468">468</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         if (clr_on &amp;&amp; clr_bgstatus &gt; 1) @set_colour clr_fgstatus clr_bgstatus;</span></span>
+<span class="tr"><span class="th" id="line469">469</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         else                            style reverse;</span></span>
+<span class="tr"><span class="th" id="line470">470</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line471">471</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (line == 0) {</span></span>
+<span class="tr"><span class="th" id="line472">472</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        line = 1;</span></span>
+<span class="tr"><span class="th" id="line473">473</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        column = 1;</span></span>
+<span class="tr"><span class="th" id="line474">474</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line475">475</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #Iftrue (#version_number == 6);</span></span>
+<span class="tr"><span class="th" id="line476">476</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    Z6_MoveCursor(line, column);</span></span>
+<span class="tr"><span class="th" id="line477">477</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #Ifnot;</span></span>
+<span class="tr"><span class="th" id="line478">478</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @set_cursor line column;</span></span>
+<span class="tr"><span class="th" id="line479">479</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #Endif;</span></span>
+<span class="tr"><span class="th" id="line480">480</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    statuswin_current = true;</span></span>
 <span class="tr"><span class="th" id="line481">481</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line482">482</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line483">483</span><span class="td">#Iftrue&nbsp;(#version_number&nbsp;==&nbsp;6);</span></span>
-<span class="tr"><span class="th" id="line484">484</span><span class="td">[&nbsp;Z6_MoveCursor&nbsp;line&nbsp;column&nbsp;&nbsp;charw&nbsp;charh;&nbsp;!&nbsp;1-based&nbsp;position&nbsp;on&nbsp;text&nbsp;grid</span></span>
-<span class="tr"><span class="th" id="line485">485</span><span class="td">&nbsp;@get_wind_prop&nbsp;1&nbsp;13&nbsp;-&gt;&nbsp;charw;&nbsp;!&nbsp;font&nbsp;size</span></span>
-<span class="tr"><span class="th" id="line486">486</span><span class="td">&nbsp;@log_shift&nbsp;charw&nbsp;$FFF8&nbsp;-&gt;&nbsp;charh;</span></span>
-<span class="tr"><span class="th" id="line487">487</span><span class="td">&nbsp;charw&nbsp;=&nbsp;charw&nbsp;/&nbsp;$100;</span></span>
-<span class="tr"><span class="th" id="line488">488</span><span class="td">&nbsp;line&nbsp;=&nbsp;1&nbsp;+&nbsp;charh*(line-1);</span></span>
-<span class="tr"><span class="th" id="line489">489</span><span class="td">&nbsp;column&nbsp;=&nbsp;1&nbsp;+&nbsp;charw*(column-1);</span></span>
-<span class="tr"><span class="th" id="line490">490</span><span class="td">&nbsp;@set_cursor&nbsp;line&nbsp;column;</span></span>
+<span class="tr"><span class="th" id="line483">483</span><span class="td">#Iftrue (#version_number == 6);</span></span>
+<span class="tr"><span class="th" id="line484">484</span><span class="td">[ Z6_MoveCursor line column  charw charh; ! 1-based position on text grid</span></span>
+<span class="tr"><span class="th" id="line485">485</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @get_wind_prop 1 13 -&gt; charw; ! font size</span></span>
+<span class="tr"><span class="th" id="line486">486</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @log_shift charw $FFF8 -&gt; charh;</span></span>
+<span class="tr"><span class="th" id="line487">487</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    charw = charw / $100;</span></span>
+<span class="tr"><span class="th" id="line488">488</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    line = 1 + charh*(line-1);</span></span>
+<span class="tr"><span class="th" id="line489">489</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    column = 1 + charw*(column-1);</span></span>
+<span class="tr"><span class="th" id="line490">490</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @set_cursor line column;</span></span>
 <span class="tr"><span class="th" id="line491">491</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line492">492</span><span class="td">#Endif;</span></span>
 <span class="tr"><span class="th" id="line493">493</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line494">494</span><span class="td">#Iftrue&nbsp;(#version_number&nbsp;==&nbsp;6);</span></span>
-<span class="tr"><span class="th" id="line495">495</span><span class="td">[&nbsp;VM_StatusLineHeight&nbsp;height&nbsp;&nbsp;wx&nbsp;wy&nbsp;x&nbsp;y&nbsp;charh;</span></span>
-<span class="tr"><span class="th" id="line496">496</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;!&nbsp;Split&nbsp;the&nbsp;window.&nbsp;Standard&nbsp;1.0&nbsp;interpreters&nbsp;should&nbsp;keep&nbsp;the&nbsp;window&nbsp;0</span></span>
-<span class="tr"><span class="th" id="line497">497</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;!&nbsp;cursor&nbsp;in&nbsp;the&nbsp;same&nbsp;absolute&nbsp;position,&nbsp;but&nbsp;older&nbsp;interpreters,</span></span>
-<span class="tr"><span class="th" id="line498">498</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;!&nbsp;including&nbsp;Infocom&#39;s&nbsp;don&#39;t&nbsp;-&nbsp;they&nbsp;keep&nbsp;the&nbsp;window&nbsp;0&nbsp;cursor&nbsp;in&nbsp;the</span></span>
-<span class="tr"><span class="th" id="line499">499</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;!&nbsp;same&nbsp;position&nbsp;relative&nbsp;to&nbsp;its&nbsp;origin.&nbsp;We&nbsp;therefore&nbsp;compensate</span></span>
-<span class="tr"><span class="th" id="line500">500</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;!&nbsp;manually.</span></span>
-<span class="tr"><span class="th" id="line501">501</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;@get_wind_prop&nbsp;0&nbsp;0&nbsp;-&gt;&nbsp;wy;&nbsp;@get_wind_prop&nbsp;0&nbsp;1&nbsp;-&gt;&nbsp;wx;</span></span>
-<span class="tr"><span class="th" id="line502">502</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;@get_wind_prop&nbsp;0&nbsp;13&nbsp;-&gt;&nbsp;charh;&nbsp;@log_shift&nbsp;charh&nbsp;$FFF8&nbsp;-&gt;&nbsp;charh;</span></span>
-<span class="tr"><span class="th" id="line503">503</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;@get_wind_prop&nbsp;0&nbsp;4&nbsp;-&gt;&nbsp;y;&nbsp;@get_wind_prop&nbsp;0&nbsp;5&nbsp;-&gt;&nbsp;x;</span></span>
-<span class="tr"><span class="th" id="line504">504</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;height&nbsp;=&nbsp;height&nbsp;*&nbsp;charh;</span></span>
-<span class="tr"><span class="th" id="line505">505</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;@split_window&nbsp;height;</span></span>
-<span class="tr"><span class="th" id="line506">506</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;y&nbsp;=&nbsp;y&nbsp;-&nbsp;height&nbsp;+&nbsp;wy&nbsp;-&nbsp;1;</span></span>
-<span class="tr"><span class="th" id="line507">507</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(y&nbsp;&lt;&nbsp;1)&nbsp;y&nbsp;=&nbsp;1;</span></span>
-<span class="tr"><span class="th" id="line508">508</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;=&nbsp;x&nbsp;+&nbsp;wx&nbsp;-&nbsp;1;</span></span>
-<span class="tr"><span class="th" id="line509">509</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;@set_cursor&nbsp;y&nbsp;x&nbsp;0;</span></span>
-<span class="tr"><span class="th" id="line510">510</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;statuswin_cursize&nbsp;=&nbsp;height;</span></span>
+<span class="tr"><span class="th" id="line494">494</span><span class="td">#Iftrue (#version_number == 6);</span></span>
+<span class="tr"><span class="th" id="line495">495</span><span class="td">[ VM_StatusLineHeight height  wx wy x y charh;</span></span>
+<span class="tr"><span class="th" id="line496">496</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Split the window. Standard 1.0 interpreters should keep the window 0</span></span>
+<span class="tr"><span class="th" id="line497">497</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! cursor in the same absolute position, but older interpreters,</span></span>
+<span class="tr"><span class="th" id="line498">498</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! including Infocom&#39;s don&#39;t - they keep the window 0 cursor in the</span></span>
+<span class="tr"><span class="th" id="line499">499</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! same position relative to its origin. We therefore compensate</span></span>
+<span class="tr"><span class="th" id="line500">500</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! manually.</span></span>
+<span class="tr"><span class="th" id="line501">501</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @get_wind_prop 0 0 -&gt; wy; @get_wind_prop 0 1 -&gt; wx;</span></span>
+<span class="tr"><span class="th" id="line502">502</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @get_wind_prop 0 13 -&gt; charh; @log_shift charh $FFF8 -&gt; charh;</span></span>
+<span class="tr"><span class="th" id="line503">503</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @get_wind_prop 0 4 -&gt; y; @get_wind_prop 0 5 -&gt; x;</span></span>
+<span class="tr"><span class="th" id="line504">504</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    height = height * charh;</span></span>
+<span class="tr"><span class="th" id="line505">505</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @split_window height;</span></span>
+<span class="tr"><span class="th" id="line506">506</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    y = y - height + wy - 1;</span></span>
+<span class="tr"><span class="th" id="line507">507</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (y &lt; 1) y = 1;</span></span>
+<span class="tr"><span class="th" id="line508">508</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    x = x + wx - 1;</span></span>
+<span class="tr"><span class="th" id="line509">509</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @set_cursor y x 0;</span></span>
+<span class="tr"><span class="th" id="line510">510</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    statuswin_cursize = height;</span></span>
 <span class="tr"><span class="th" id="line511">511</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line512">512</span><span class="td">#Ifnot;</span></span>
-<span class="tr"><span class="th" id="line513">513</span><span class="td">[&nbsp;VM_StatusLineHeight&nbsp;height;</span></span>
-<span class="tr"><span class="th" id="line514">514</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(statuswin_cursize&nbsp;~=&nbsp;height)</span></span>
-<span class="tr"><span class="th" id="line515">515</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@split_window&nbsp;height;</span></span>
-<span class="tr"><span class="th" id="line516">516</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;statuswin_cursize&nbsp;=&nbsp;height;</span></span>
+<span class="tr"><span class="th" id="line513">513</span><span class="td">[ VM_StatusLineHeight height;</span></span>
+<span class="tr"><span class="th" id="line514">514</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (statuswin_cursize ~= height)</span></span>
+<span class="tr"><span class="th" id="line515">515</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @split_window height;</span></span>
+<span class="tr"><span class="th" id="line516">516</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    statuswin_cursize = height;</span></span>
 <span class="tr"><span class="th" id="line517">517</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line518">518</span><span class="td">#Endif;</span></span>
 <span class="tr"><span class="th" id="line519">519</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line520">520</span><span class="td">#Iftrue&nbsp;(#version_number&nbsp;==&nbsp;6);</span></span>
-<span class="tr"><span class="th" id="line521">521</span><span class="td">[&nbsp;Z6_DrawStatusLine&nbsp;width&nbsp;x&nbsp;charw&nbsp;scw;</span></span>
-<span class="tr"><span class="th" id="line522">522</span><span class="td">&nbsp;(0--&gt;8)&nbsp;=&nbsp;(0--&gt;8)&nbsp;&amp;~&nbsp;$$00000100;</span></span>
-<span class="tr"><span class="th" id="line523">523</span><span class="td">&nbsp;@push&nbsp;say__p;&nbsp;@push&nbsp;say__pc;</span></span>
-<span class="tr"><span class="th" id="line524">524</span><span class="td">&nbsp;BeginActivity(CONSTRUCTING_STATUS_LINE_ACT);</span></span>
-<span class="tr"><span class="th" id="line525">525</span><span class="td">&nbsp;VM_StatusLineHeight(statuswin_size);</span></span>
-<span class="tr"><span class="th" id="line526">526</span><span class="td">&nbsp;!&nbsp;Now&nbsp;clear&nbsp;the&nbsp;window.&nbsp;This&nbsp;isn&#39;t&nbsp;totally&nbsp;trivial.&nbsp;Our&nbsp;approach&nbsp;is&nbsp;to&nbsp;select&nbsp;the</span></span>
-<span class="tr"><span class="th" id="line527">527</span><span class="td">&nbsp;!&nbsp;fixed&nbsp;space&nbsp;font,&nbsp;measure&nbsp;its&nbsp;width,&nbsp;and&nbsp;print&nbsp;an&nbsp;appropriate</span></span>
-<span class="tr"><span class="th" id="line528">528</span><span class="td">&nbsp;!&nbsp;number&nbsp;of&nbsp;spaces.&nbsp;We&nbsp;round&nbsp;up&nbsp;if&nbsp;the&nbsp;screen&nbsp;isn&#39;t&nbsp;a&nbsp;whole&nbsp;number</span></span>
-<span class="tr"><span class="th" id="line529">529</span><span class="td">&nbsp;!&nbsp;of&nbsp;characters&nbsp;wide,&nbsp;and&nbsp;rely&nbsp;on&nbsp;window&nbsp;1&nbsp;being&nbsp;set&nbsp;to&nbsp;clip&nbsp;by&nbsp;default.</span></span>
-<span class="tr"><span class="th" id="line530">530</span><span class="td">&nbsp;VM_MoveCursorInStatusLine(1,&nbsp;1);</span></span>
-<span class="tr"><span class="th" id="line531">531</span><span class="td">&nbsp;@set_font&nbsp;4&nbsp;-&gt;&nbsp;x;</span></span>
-<span class="tr"><span class="th" id="line532">532</span><span class="td">&nbsp;width&nbsp;=&nbsp;VM_ScreenWidth();</span></span>
-<span class="tr"><span class="th" id="line533">533</span><span class="td">&nbsp;spaces&nbsp;width;</span></span>
-<span class="tr"><span class="th" id="line534">534</span><span class="td">&nbsp;ClearParagraphing(8);</span></span>
-<span class="tr"><span class="th" id="line535">535</span><span class="td">&nbsp;if&nbsp;(ForActivity(CONSTRUCTING_STATUS_LINE_ACT)&nbsp;==&nbsp;false)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line536">536</span><span class="td">&nbsp;&nbsp;!&nbsp;Back&nbsp;to&nbsp;standard&nbsp;font&nbsp;for&nbsp;the&nbsp;display.&nbsp;We&nbsp;use&nbsp;output_stream&nbsp;3&nbsp;to</span></span>
-<span class="tr"><span class="th" id="line537">537</span><span class="td">&nbsp;&nbsp;!&nbsp;measure&nbsp;the&nbsp;space&nbsp;required,&nbsp;the&nbsp;aim&nbsp;being&nbsp;to&nbsp;get&nbsp;50&nbsp;characters</span></span>
-<span class="tr"><span class="th" id="line538">538</span><span class="td">&nbsp;&nbsp;!&nbsp;worth&nbsp;of&nbsp;space&nbsp;for&nbsp;the&nbsp;location&nbsp;name.</span></span>
-<span class="tr"><span class="th" id="line539">539</span><span class="td">&nbsp;&nbsp;VM_MoveCursorInStatusLine(1,&nbsp;2);</span></span>
-<span class="tr"><span class="th" id="line540">540</span><span class="td">&nbsp;&nbsp;@set_font&nbsp;1&nbsp;-&gt;&nbsp;x;</span></span>
-<span class="tr"><span class="th" id="line541">541</span><span class="td">&nbsp;&nbsp;TEXT_TY_Say(left_hand_status_line);</span></span>
-<span class="tr"><span class="th" id="line542">542</span><span class="td">&nbsp;&nbsp;@get_wind_prop&nbsp;1&nbsp;3&nbsp;-&gt;&nbsp;width;</span></span>
-<span class="tr"><span class="th" id="line543">543</span><span class="td">&nbsp;&nbsp;@get_wind_prop&nbsp;1&nbsp;13&nbsp;-&gt;&nbsp;charw;</span></span>
-<span class="tr"><span class="th" id="line544">544</span><span class="td">&nbsp;&nbsp;charw&nbsp;=&nbsp;charw&nbsp;&amp;&nbsp;$FF;</span></span>
-<span class="tr"><span class="th" id="line545">545</span><span class="td">&nbsp;&nbsp;@output_stream&nbsp;3&nbsp;StorageForShortName;</span></span>
-<span class="tr"><span class="th" id="line546">546</span><span class="td">&nbsp;&nbsp;TEXT_TY_Say(right_hand_status_line);</span></span>
-<span class="tr"><span class="th" id="line547">547</span><span class="td">&nbsp;&nbsp;@output_stream&nbsp;-3;&nbsp;scw&nbsp;=&nbsp;HDR_PIXELSTO3--&gt;0&nbsp;+&nbsp;charw;</span></span>
-<span class="tr"><span class="th" id="line548">548</span><span class="td">&nbsp;&nbsp;x&nbsp;=&nbsp;1+width-scw;</span></span>
-<span class="tr"><span class="th" id="line549">549</span><span class="td">&nbsp;&nbsp;@set_cursor&nbsp;1&nbsp;x;&nbsp;TEXT_TY_Say(right_hand_status_line);</span></span>
-<span class="tr"><span class="th" id="line550">550</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line551">551</span><span class="td">&nbsp;!&nbsp;Reselect&nbsp;roman,&nbsp;as&nbsp;Infocom&#39;s&nbsp;interpreters&nbsp;go&nbsp;funny&nbsp;if&nbsp;reverse&nbsp;is&nbsp;selected&nbsp;twice.</span></span>
-<span class="tr"><span class="th" id="line552">552</span><span class="td">&nbsp;VM_MainWindow();</span></span>
-<span class="tr"><span class="th" id="line553">553</span><span class="td">&nbsp;ClearParagraphing(8);</span></span>
-<span class="tr"><span class="th" id="line554">554</span><span class="td">&nbsp;EndActivity(CONSTRUCTING_STATUS_LINE_ACT);</span></span>
-<span class="tr"><span class="th" id="line555">555</span><span class="td">&nbsp;@pull&nbsp;say__pc;&nbsp;@pull&nbsp;say__p;</span></span>
+<span class="tr"><span class="th" id="line520">520</span><span class="td">#Iftrue (#version_number == 6);</span></span>
+<span class="tr"><span class="th" id="line521">521</span><span class="td">[ Z6_DrawStatusLine width x charw scw;</span></span>
+<span class="tr"><span class="th" id="line522">522</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    (0--&gt;8) = (0--&gt;8) &amp;~ $$00000100;</span></span>
+<span class="tr"><span class="th" id="line523">523</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @push say__p; @push say__pc;</span></span>
+<span class="tr"><span class="th" id="line524">524</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    BeginActivity(CONSTRUCTING_STATUS_LINE_ACT);</span></span>
+<span class="tr"><span class="th" id="line525">525</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    VM_StatusLineHeight(statuswin_size);</span></span>
+<span class="tr"><span class="th" id="line526">526</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Now clear the window. This isn&#39;t totally trivial. Our approach is to select the</span></span>
+<span class="tr"><span class="th" id="line527">527</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! fixed space font, measure its width, and print an appropriate</span></span>
+<span class="tr"><span class="th" id="line528">528</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! number of spaces. We round up if the screen isn&#39;t a whole number</span></span>
+<span class="tr"><span class="th" id="line529">529</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! of characters wide, and rely on window 1 being set to clip by default.</span></span>
+<span class="tr"><span class="th" id="line530">530</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    VM_MoveCursorInStatusLine(1, 1);</span></span>
+<span class="tr"><span class="th" id="line531">531</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @set_font 4 -&gt; x;</span></span>
+<span class="tr"><span class="th" id="line532">532</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    width = VM_ScreenWidth();</span></span>
+<span class="tr"><span class="th" id="line533">533</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    spaces width;</span></span>
+<span class="tr"><span class="th" id="line534">534</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ClearParagraphing(8);</span></span>
+<span class="tr"><span class="th" id="line535">535</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (ForActivity(CONSTRUCTING_STATUS_LINE_ACT) == false) {</span></span>
+<span class="tr"><span class="th" id="line536">536</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! Back to standard font for the display. We use output_stream 3 to</span></span>
+<span class="tr"><span class="th" id="line537">537</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! measure the space required, the aim being to get 50 characters</span></span>
+<span class="tr"><span class="th" id="line538">538</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! worth of space for the location name.</span></span>
+<span class="tr"><span class="th" id="line539">539</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        VM_MoveCursorInStatusLine(1, 2);</span></span>
+<span class="tr"><span class="th" id="line540">540</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @set_font 1 -&gt; x;</span></span>
+<span class="tr"><span class="th" id="line541">541</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        TEXT_TY_Say(left_hand_status_line);</span></span>
+<span class="tr"><span class="th" id="line542">542</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @get_wind_prop 1 3 -&gt; width;</span></span>
+<span class="tr"><span class="th" id="line543">543</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @get_wind_prop 1 13 -&gt; charw;</span></span>
+<span class="tr"><span class="th" id="line544">544</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        charw = charw &amp; $FF;</span></span>
+<span class="tr"><span class="th" id="line545">545</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @output_stream 3 StorageForShortName;</span></span>
+<span class="tr"><span class="th" id="line546">546</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        TEXT_TY_Say(right_hand_status_line);</span></span>
+<span class="tr"><span class="th" id="line547">547</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @output_stream -3; scw = HDR_PIXELSTO3--&gt;0 + charw;</span></span>
+<span class="tr"><span class="th" id="line548">548</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        x = 1+width-scw;</span></span>
+<span class="tr"><span class="th" id="line549">549</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @set_cursor 1 x; TEXT_TY_Say(right_hand_status_line);</span></span>
+<span class="tr"><span class="th" id="line550">550</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line551">551</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Reselect roman, as Infocom&#39;s interpreters go funny if reverse is selected twice.</span></span>
+<span class="tr"><span class="th" id="line552">552</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    VM_MainWindow();</span></span>
+<span class="tr"><span class="th" id="line553">553</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ClearParagraphing(8);</span></span>
+<span class="tr"><span class="th" id="line554">554</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    EndActivity(CONSTRUCTING_STATUS_LINE_ACT);</span></span>
+<span class="tr"><span class="th" id="line555">555</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @pull say__pc; @pull say__p;</span></span>
 <span class="tr"><span class="th" id="line556">556</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line557">557</span><span class="td">#Endif;</span></span>
 </div><div class='text'>
 <h3 id="#zmachine-quotation-boxes">Quotation Boxes.</h3><p><p> No routine is needed to produce quotation boxes: the I6 <span class="fixed">box</span> statement generates the necessary Z-machine opcodes all by itself.<p></p><p><h3 id="#zmachine-undo">Undo.</h3><p><p> These simply wrap the relevant opcodes.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line567">567</span><span class="td">[&nbsp;VM_Undo&nbsp;result_code;</span></span>
-<span class="tr"><span class="th" id="line568">568</span><span class="td">&nbsp;@restore_undo&nbsp;result_code;</span></span>
-<span class="tr"><span class="th" id="line569">569</span><span class="td">&nbsp;return&nbsp;result_code;</span></span>
+<span class="tr"><span class="th" id="line567">567</span><span class="td">[ VM_Undo result_code;</span></span>
+<span class="tr"><span class="th" id="line568">568</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @restore_undo result_code;</span></span>
+<span class="tr"><span class="th" id="line569">569</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return result_code;</span></span>
 <span class="tr"><span class="th" id="line570">570</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line571">571</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line572">572</span><span class="td">[&nbsp;VM_Save_Undo&nbsp;result_code;</span></span>
-<span class="tr"><span class="th" id="line573">573</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;@save_undo&nbsp;result_code;</span></span>
-<span class="tr"><span class="th" id="line574">574</span><span class="td">&nbsp;return&nbsp;result_code;</span></span>
+<span class="tr"><span class="th" id="line572">572</span><span class="td">[ VM_Save_Undo result_code;</span></span>
+<span class="tr"><span class="th" id="line573">573</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @save_undo result_code;</span></span>
+<span class="tr"><span class="th" id="line574">574</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return result_code;</span></span>
 <span class="tr"><span class="th" id="line575">575</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#zmachine-quit-the-game-rule">Quit The Game Rule.</h3><p><p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line580">580</span><span class="td">[&nbsp;QUIT_THE_GAME_R;</span></span>
-<span class="tr"><span class="th" id="line581">581</span><span class="td">&nbsp;if&nbsp;(actor&nbsp;~=&nbsp;player)&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line582">582</span><span class="td">&nbsp;QUIT_THE_GAME_RM(&#39;A&#39;);</span></span>
-<span class="tr"><span class="th" id="line583">583</span><span class="td">&nbsp;if&nbsp;(YesOrNo()~=0)&nbsp;quit;</span></span>
+<span class="tr"><span class="th" id="line580">580</span><span class="td">[ QUIT_THE_GAME_R;</span></span>
+<span class="tr"><span class="th" id="line581">581</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (actor ~= player) rfalse;</span></span>
+<span class="tr"><span class="th" id="line582">582</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    QUIT_THE_GAME_RM(&#39;A&#39;);</span></span>
+<span class="tr"><span class="th" id="line583">583</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (YesOrNo()~=0) quit;</span></span>
 <span class="tr"><span class="th" id="line584">584</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#zmachine-restart-the-game-rule">Restart The Game Rule.</h3><p><p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line589">589</span><span class="td">[&nbsp;RESTART_THE_GAME_R;</span></span>
-<span class="tr"><span class="th" id="line590">590</span><span class="td">&nbsp;if&nbsp;(actor&nbsp;~=&nbsp;player)&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line591">591</span><span class="td">&nbsp;RESTART_THE_GAME_RM(&#39;A&#39;);</span></span>
-<span class="tr"><span class="th" id="line592">592</span><span class="td">&nbsp;if&nbsp;(YesOrNo()~=0)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line593">593</span><span class="td">&nbsp;&nbsp;@restart;</span></span>
-<span class="tr"><span class="th" id="line594">594</span><span class="td">&nbsp;&nbsp;RESTART_THE_GAME_RM(&#39;B&#39;);&nbsp;new_line;</span></span>
-<span class="tr"><span class="th" id="line595">595</span><span class="td">&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line589">589</span><span class="td">[ RESTART_THE_GAME_R;</span></span>
+<span class="tr"><span class="th" id="line590">590</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (actor ~= player) rfalse;</span></span>
+<span class="tr"><span class="th" id="line591">591</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    RESTART_THE_GAME_RM(&#39;A&#39;);</span></span>
+<span class="tr"><span class="th" id="line592">592</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (YesOrNo()~=0) {</span></span>
+<span class="tr"><span class="th" id="line593">593</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @restart;</span></span>
+<span class="tr"><span class="th" id="line594">594</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        RESTART_THE_GAME_RM(&#39;B&#39;); new_line;</span></span>
+<span class="tr"><span class="th" id="line595">595</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
 <span class="tr"><span class="th" id="line596">596</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#zmachine-restore-the-game-rule">Restore The Game Rule.</h3><p><p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line601">601</span><span class="td">[&nbsp;RESTORE_THE_GAME_R;</span></span>
-<span class="tr"><span class="th" id="line602">602</span><span class="td">&nbsp;if&nbsp;(actor&nbsp;~=&nbsp;player)&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line603">603</span><span class="td">&nbsp;restore&nbsp;Rmaybe;</span></span>
-<span class="tr"><span class="th" id="line604">604</span><span class="td">&nbsp;RESTORE_THE_GAME_RM(&#39;A&#39;);&nbsp;new_line;</span></span>
-<span class="tr"><span class="th" id="line605">605</span><span class="td">&nbsp;rtrue;</span></span>
-<span class="tr"><span class="th" id="line606">606</span><span class="td">&nbsp;.RMaybe;&nbsp;RESTORE_THE_GAME_RM(&#39;B&#39;);&nbsp;new_line;</span></span>
+<span class="tr"><span class="th" id="line601">601</span><span class="td">[ RESTORE_THE_GAME_R;</span></span>
+<span class="tr"><span class="th" id="line602">602</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (actor ~= player) rfalse;</span></span>
+<span class="tr"><span class="th" id="line603">603</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    restore Rmaybe;</span></span>
+<span class="tr"><span class="th" id="line604">604</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    RESTORE_THE_GAME_RM(&#39;A&#39;); new_line;</span></span>
+<span class="tr"><span class="th" id="line605">605</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rtrue;</span></span>
+<span class="tr"><span class="th" id="line606">606</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    .RMaybe; RESTORE_THE_GAME_RM(&#39;B&#39;); new_line;</span></span>
 <span class="tr"><span class="th" id="line607">607</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#zmachine-save-the-game-rule">Save The Game Rule.</h3><p><p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line612">612</span><span class="td">[&nbsp;SAVE_THE_GAME_R&nbsp;flag;</span></span>
-<span class="tr"><span class="th" id="line613">613</span><span class="td">&nbsp;if&nbsp;(actor&nbsp;~=&nbsp;player)&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line614">614</span><span class="td">&nbsp;#IFV5;</span></span>
-<span class="tr"><span class="th" id="line615">615</span><span class="td">&nbsp;@save&nbsp;-&gt;&nbsp;flag;</span></span>
-<span class="tr"><span class="th" id="line616">616</span><span class="td">&nbsp;switch&nbsp;(flag)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line617">617</span><span class="td">&nbsp;&nbsp;0:&nbsp;SAVE_THE_GAME_RM(&#39;A&#39;);&nbsp;new_line;</span></span>
-<span class="tr"><span class="th" id="line618">618</span><span class="td">&nbsp;&nbsp;1:&nbsp;SAVE_THE_GAME_RM(&#39;B&#39;);&nbsp;new_line;</span></span>
-<span class="tr"><span class="th" id="line619">619</span><span class="td">&nbsp;&nbsp;2:&nbsp;RESTORE_THE_GAME_RM(&#39;B&#39;);&nbsp;new_line;</span></span>
-<span class="tr"><span class="th" id="line620">620</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line621">621</span><span class="td">&nbsp;#IFNOT;</span></span>
-<span class="tr"><span class="th" id="line622">622</span><span class="td">&nbsp;save&nbsp;Smaybe;</span></span>
-<span class="tr"><span class="th" id="line623">623</span><span class="td">&nbsp;SAVE_THE_GAME_RM(&#39;A&#39;);&nbsp;new_line;&nbsp;rtrue;</span></span>
-<span class="tr"><span class="th" id="line624">624</span><span class="td">&nbsp;.SMaybe;&nbsp;SAVE_THE_GAME_RM(&#39;B&#39;);&nbsp;new_line;</span></span>
-<span class="tr"><span class="th" id="line625">625</span><span class="td">&nbsp;#ENDIF;</span></span>
+<span class="tr"><span class="th" id="line612">612</span><span class="td">[ SAVE_THE_GAME_R flag;</span></span>
+<span class="tr"><span class="th" id="line613">613</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (actor ~= player) rfalse;</span></span>
+<span class="tr"><span class="th" id="line614">614</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #IFV5;</span></span>
+<span class="tr"><span class="th" id="line615">615</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @save -&gt; flag;</span></span>
+<span class="tr"><span class="th" id="line616">616</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    switch (flag) {</span></span>
+<span class="tr"><span class="th" id="line617">617</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        0: SAVE_THE_GAME_RM(&#39;A&#39;); new_line;</span></span>
+<span class="tr"><span class="th" id="line618">618</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        1: SAVE_THE_GAME_RM(&#39;B&#39;); new_line;</span></span>
+<span class="tr"><span class="th" id="line619">619</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        2: RESTORE_THE_GAME_RM(&#39;B&#39;); new_line;</span></span>
+<span class="tr"><span class="th" id="line620">620</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line621">621</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #IFNOT;</span></span>
+<span class="tr"><span class="th" id="line622">622</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    save Smaybe;</span></span>
+<span class="tr"><span class="th" id="line623">623</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    SAVE_THE_GAME_RM(&#39;A&#39;); new_line; rtrue;</span></span>
+<span class="tr"><span class="th" id="line624">624</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    .SMaybe; SAVE_THE_GAME_RM(&#39;B&#39;); new_line;</span></span>
+<span class="tr"><span class="th" id="line625">625</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #ENDIF;</span></span>
 <span class="tr"><span class="th" id="line626">626</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#zmachine-verify-the-story-file-rule">Verify The Story File Rule.</h3><p><p> This is a fossil now, really, but in the days of Infocom, the 110K story file occupying an entire disc was a huge data set: floppy discs were by no means a reliable medium, and cheap hardware often used hit-and-miss components, as on the notorious Commodore 64 disc controller. If somebody experienced an apparent bug in play, it could easily be that he had a corrupt disc or was unable to read data of that density. So the VERIFY command, which took up to ten minutes on some early computers, would chug through the entire story file and compute a checksum, compare it against a known result in the header, and determine that the story file could or could not properly be read. The Z-machine provided this service as an opcode, and so Glulx followed suit.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line642">642</span><span class="td">[&nbsp;VERIFY_THE_STORY_FILE_R;</span></span>
-<span class="tr"><span class="th" id="line643">643</span><span class="td">&nbsp;if&nbsp;(actor&nbsp;~=&nbsp;player)&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line644">644</span><span class="td">&nbsp;@verify&nbsp;?Vmaybe;</span></span>
-<span class="tr"><span class="th" id="line645">645</span><span class="td">&nbsp;jump&nbsp;<a href="./ZMachine.i6t.html#line647">Vwrong</a>;</span></span>
-<span class="tr"><span class="th" id="line646">646</span><span class="td">&nbsp;.Vmaybe;&nbsp;VERIFY_THE_STORY_FILE_RM(&#39;A&#39;);&nbsp;new_line;&nbsp;rtrue;</span></span>
-<span class="tr"><span class="th" id="line647">647</span><span class="td">&nbsp;.Vwrong;</span></span>
-<span class="tr"><span class="th" id="line648">648</span><span class="td">&nbsp;VERIFY_THE_STORY_FILE_RM(&#39;B&#39;);&nbsp;new_line;</span></span>
+<span class="tr"><span class="th" id="line642">642</span><span class="td">[ VERIFY_THE_STORY_FILE_R;</span></span>
+<span class="tr"><span class="th" id="line643">643</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (actor ~= player) rfalse;</span></span>
+<span class="tr"><span class="th" id="line644">644</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @verify ?Vmaybe;</span></span>
+<span class="tr"><span class="th" id="line645">645</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    jump <a href="./ZMachine.i6t.html#line647">Vwrong</a>;</span></span>
+<span class="tr"><span class="th" id="line646">646</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    .Vmaybe; VERIFY_THE_STORY_FILE_RM(&#39;A&#39;); new_line; rtrue;</span></span>
+<span class="tr"><span class="th" id="line647">647</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    .Vwrong;</span></span>
+<span class="tr"><span class="th" id="line648">648</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    VERIFY_THE_STORY_FILE_RM(&#39;B&#39;); new_line;</span></span>
 <span class="tr"><span class="th" id="line649">649</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#zmachine-switch-transcript-on-rule">Switch Transcript On Rule.</h3><p><p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line654">654</span><span class="td">[&nbsp;SWITCH_TRANSCRIPT_ON_R;</span></span>
-<span class="tr"><span class="th" id="line655">655</span><span class="td">&nbsp;if&nbsp;(actor&nbsp;~=&nbsp;player)&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line656">656</span><span class="td">&nbsp;transcript_mode&nbsp;=&nbsp;((0--&gt;8)&nbsp;&amp;&nbsp;1);</span></span>
-<span class="tr"><span class="th" id="line657">657</span><span class="td">&nbsp;if&nbsp;(transcript_mode)&nbsp;{&nbsp;SWITCH_TRANSCRIPT_ON_RM(&#39;A&#39;);&nbsp;new_line;&nbsp;rtrue;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line658">658</span><span class="td">&nbsp;@output_stream&nbsp;2;</span></span>
-<span class="tr"><span class="th" id="line659">659</span><span class="td">&nbsp;if&nbsp;(((0--&gt;8)&nbsp;&amp;&nbsp;1)&nbsp;==&nbsp;0)&nbsp;{&nbsp;SWITCH_TRANSCRIPT_ON_RM(&#39;C&#39;);&nbsp;new_line;&nbsp;rtrue;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line660">660</span><span class="td">&nbsp;SWITCH_TRANSCRIPT_ON_RM(&#39;B&#39;);&nbsp;new_line;&nbsp;VersionSub();</span></span>
-<span class="tr"><span class="th" id="line661">661</span><span class="td">&nbsp;transcript_mode&nbsp;=&nbsp;true;</span></span>
+<span class="tr"><span class="th" id="line654">654</span><span class="td">[ SWITCH_TRANSCRIPT_ON_R;</span></span>
+<span class="tr"><span class="th" id="line655">655</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (actor ~= player) rfalse;</span></span>
+<span class="tr"><span class="th" id="line656">656</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    transcript_mode = ((0--&gt;8) &amp; 1);</span></span>
+<span class="tr"><span class="th" id="line657">657</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (transcript_mode) { SWITCH_TRANSCRIPT_ON_RM(&#39;A&#39;); new_line; rtrue; }</span></span>
+<span class="tr"><span class="th" id="line658">658</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @output_stream 2;</span></span>
+<span class="tr"><span class="th" id="line659">659</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (((0--&gt;8) &amp; 1) == 0) { SWITCH_TRANSCRIPT_ON_RM(&#39;C&#39;); new_line; rtrue; }</span></span>
+<span class="tr"><span class="th" id="line660">660</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    SWITCH_TRANSCRIPT_ON_RM(&#39;B&#39;); new_line; VersionSub();</span></span>
+<span class="tr"><span class="th" id="line661">661</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    transcript_mode = true;</span></span>
 <span class="tr"><span class="th" id="line662">662</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#zmachine-switch-transcript-off-rule">Switch Transcript Off Rule.</h3><p><p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line667">667</span><span class="td">[&nbsp;SWITCH_TRANSCRIPT_OFF_R;</span></span>
-<span class="tr"><span class="th" id="line668">668</span><span class="td">&nbsp;if&nbsp;(actor&nbsp;~=&nbsp;player)&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line669">669</span><span class="td">&nbsp;transcript_mode&nbsp;=&nbsp;((0--&gt;8)&nbsp;&amp;&nbsp;1);</span></span>
-<span class="tr"><span class="th" id="line670">670</span><span class="td">&nbsp;if&nbsp;(transcript_mode&nbsp;==&nbsp;false)&nbsp;{&nbsp;SWITCH_TRANSCRIPT_OFF_RM(&#39;A&#39;);&nbsp;new_line;&nbsp;rtrue;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line671">671</span><span class="td">&nbsp;SWITCH_TRANSCRIPT_OFF_RM(&#39;B&#39;);&nbsp;new_line;</span></span>
-<span class="tr"><span class="th" id="line672">672</span><span class="td">&nbsp;@output_stream&nbsp;-2;</span></span>
-<span class="tr"><span class="th" id="line673">673</span><span class="td">&nbsp;if&nbsp;((0--&gt;8)&nbsp;&amp;&nbsp;1)&nbsp;{&nbsp;SWITCH_TRANSCRIPT_ON_RM(&#39;C&#39;);&nbsp;new_line;&nbsp;rtrue;&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line674">674</span><span class="td">&nbsp;transcript_mode&nbsp;=&nbsp;false;</span></span>
+<span class="tr"><span class="th" id="line667">667</span><span class="td">[ SWITCH_TRANSCRIPT_OFF_R;</span></span>
+<span class="tr"><span class="th" id="line668">668</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (actor ~= player) rfalse;</span></span>
+<span class="tr"><span class="th" id="line669">669</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    transcript_mode = ((0--&gt;8) &amp; 1);</span></span>
+<span class="tr"><span class="th" id="line670">670</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (transcript_mode == false) { SWITCH_TRANSCRIPT_OFF_RM(&#39;A&#39;); new_line; rtrue; }</span></span>
+<span class="tr"><span class="th" id="line671">671</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    SWITCH_TRANSCRIPT_OFF_RM(&#39;B&#39;); new_line;</span></span>
+<span class="tr"><span class="th" id="line672">672</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @output_stream -2;</span></span>
+<span class="tr"><span class="th" id="line673">673</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if ((0--&gt;8) &amp; 1) { SWITCH_TRANSCRIPT_ON_RM(&#39;C&#39;); new_line; rtrue; }</span></span>
+<span class="tr"><span class="th" id="line674">674</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    transcript_mode = false;</span></span>
 <span class="tr"><span class="th" id="line675">675</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#zmachine-announce-story-file-version-rule">Announce Story File Version Rule.</h3><p><p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line680">680</span><span class="td">[&nbsp;ANNOUNCE_STORY_FILE_VERSION_R&nbsp;ix;</span></span>
-<span class="tr"><span class="th" id="line681">681</span><span class="td">&nbsp;if&nbsp;(actor&nbsp;~=&nbsp;player)&nbsp;rfalse;</span></span>
-<span class="tr"><span class="th" id="line682">682</span><span class="td">&nbsp;Banner();</span></span>
-<span class="tr"><span class="th" id="line683">683</span><span class="td">&nbsp;print&nbsp;&quot;Identification&nbsp;number:&nbsp;&quot;;</span></span>
-<span class="tr"><span class="th" id="line684">684</span><span class="td">&nbsp;for&nbsp;(ix=6:&nbsp;ix&nbsp;&lt;=&nbsp;UUID_ARRAY-&gt;0:&nbsp;ix++)&nbsp;print&nbsp;(char)&nbsp;UUID_ARRAY-&gt;ix;</span></span>
-<span class="tr"><span class="th" id="line685">685</span><span class="td">&nbsp;print&nbsp;&quot;^&quot;;</span></span>
-<span class="tr"><span class="th" id="line686">686</span><span class="td">&nbsp;ix&nbsp;=&nbsp;0;&nbsp;!&nbsp;shut&nbsp;up&nbsp;compiler&nbsp;warning</span></span>
-<span class="tr"><span class="th" id="line687">687</span><span class="td">&nbsp;if&nbsp;(standard_interpreter&nbsp;&gt;&nbsp;0)&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line688">688</span><span class="td">&nbsp;&nbsp;print&nbsp;&quot;Standard&nbsp;interpreter&nbsp;&quot;,</span></span>
-<span class="tr"><span class="th" id="line689">689</span><span class="td">&nbsp;&nbsp;&nbsp;standard_interpreter/256,&nbsp;&quot;.&quot;,&nbsp;standard_interpreter%256,</span></span>
-<span class="tr"><span class="th" id="line690">690</span><span class="td">&nbsp;&nbsp;&nbsp;&quot;&nbsp;(&quot;,&nbsp;HDR_TERPNUMBER-&gt;0;</span></span>
-<span class="tr"><span class="th" id="line691">691</span><span class="td">&nbsp;&nbsp;#Iftrue&nbsp;(#version_number&nbsp;==&nbsp;6);</span></span>
-<span class="tr"><span class="th" id="line692">692</span><span class="td">&nbsp;&nbsp;print&nbsp;(char)&nbsp;&#39;.&#39;,&nbsp;HDR_TERPVERSION-&gt;0;</span></span>
-<span class="tr"><span class="th" id="line693">693</span><span class="td">&nbsp;&nbsp;#Ifnot;</span></span>
-<span class="tr"><span class="th" id="line694">694</span><span class="td">&nbsp;&nbsp;print&nbsp;(char)&nbsp;HDR_TERPVERSION-&gt;0;</span></span>
-<span class="tr"><span class="th" id="line695">695</span><span class="td">&nbsp;&nbsp;#Endif;</span></span>
-<span class="tr"><span class="th" id="line696">696</span><span class="td">&nbsp;&nbsp;print&nbsp;&quot;)&nbsp;/&nbsp;&quot;;</span></span>
-<span class="tr"><span class="th" id="line697">697</span><span class="td">&nbsp;}&nbsp;else&nbsp;{</span></span>
-<span class="tr"><span class="th" id="line698">698</span><span class="td">&nbsp;&nbsp;print&nbsp;&quot;Interpreter&nbsp;&quot;,&nbsp;HDR_TERPNUMBER-&gt;0,&nbsp;&quot;&nbsp;Version&nbsp;&quot;;</span></span>
-<span class="tr"><span class="th" id="line699">699</span><span class="td">&nbsp;&nbsp;#Iftrue&nbsp;(#version_number&nbsp;==&nbsp;6);</span></span>
-<span class="tr"><span class="th" id="line700">700</span><span class="td">&nbsp;&nbsp;print&nbsp;HDR_TERPVERSION-&gt;0;</span></span>
-<span class="tr"><span class="th" id="line701">701</span><span class="td">&nbsp;&nbsp;#Ifnot;</span></span>
-<span class="tr"><span class="th" id="line702">702</span><span class="td">&nbsp;&nbsp;print&nbsp;(char)&nbsp;HDR_TERPVERSION-&gt;0;</span></span>
-<span class="tr"><span class="th" id="line703">703</span><span class="td">&nbsp;&nbsp;#Endif;</span></span>
-<span class="tr"><span class="th" id="line704">704</span><span class="td">&nbsp;&nbsp;print&nbsp;&quot;&nbsp;/&nbsp;&quot;;</span></span>
-<span class="tr"><span class="th" id="line705">705</span><span class="td">&nbsp;}</span></span>
-<span class="tr"><span class="th" id="line706">706</span><span class="td">&nbsp;print&nbsp;&quot;Library&nbsp;serial&nbsp;number&nbsp;&quot;,&nbsp;(string)&nbsp;LibSerial,&nbsp;&quot;^&quot;;</span></span>
-<span class="tr"><span class="th" id="line707">707</span><span class="td">&nbsp;#Ifdef&nbsp;LanguageVersion;</span></span>
-<span class="tr"><span class="th" id="line708">708</span><span class="td">&nbsp;print&nbsp;(string)&nbsp;LanguageVersion,&nbsp;&quot;^&quot;;</span></span>
-<span class="tr"><span class="th" id="line709">709</span><span class="td">&nbsp;#Endif;&nbsp;!&nbsp;LanguageVersion</span></span>
-<span class="tr"><span class="th" id="line710">710</span><span class="td">&nbsp;#ifdef&nbsp;ShowExtensionVersions;</span></span>
-<span class="tr"><span class="th" id="line711">711</span><span class="td">&nbsp;ShowExtensionVersions();</span></span>
-<span class="tr"><span class="th" id="line712">712</span><span class="td">&nbsp;#endif;</span></span>
-<span class="tr"><span class="th" id="line713">713</span><span class="td">&nbsp;say__p&nbsp;=&nbsp;1;</span></span>
+<span class="tr"><span class="th" id="line680">680</span><span class="td">[ ANNOUNCE_STORY_FILE_VERSION_R ix;</span></span>
+<span class="tr"><span class="th" id="line681">681</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (actor ~= player) rfalse;</span></span>
+<span class="tr"><span class="th" id="line682">682</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    Banner();</span></span>
+<span class="tr"><span class="th" id="line683">683</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    print &quot;Identification number: &quot;;</span></span>
+<span class="tr"><span class="th" id="line684">684</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (ix=6: ix &lt;= UUID_ARRAY-&gt;0: ix++) print (char) UUID_ARRAY-&gt;ix;</span></span>
+<span class="tr"><span class="th" id="line685">685</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    print &quot;^&quot;;</span></span>
+<span class="tr"><span class="th" id="line686">686</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ix = 0; ! shut up compiler warning</span></span>
+<span class="tr"><span class="th" id="line687">687</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (standard_interpreter &gt; 0) {</span></span>
+<span class="tr"><span class="th" id="line688">688</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        print &quot;Standard interpreter &quot;,</span></span>
+<span class="tr"><span class="th" id="line689">689</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            standard_interpreter/256, &quot;.&quot;, standard_interpreter%256,</span></span>
+<span class="tr"><span class="th" id="line690">690</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            &quot; (&quot;, HDR_TERPNUMBER-&gt;0;</span></span>
+<span class="tr"><span class="th" id="line691">691</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        #Iftrue (#version_number == 6);</span></span>
+<span class="tr"><span class="th" id="line692">692</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        print (char) &#39;.&#39;, HDR_TERPVERSION-&gt;0;</span></span>
+<span class="tr"><span class="th" id="line693">693</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        #Ifnot;</span></span>
+<span class="tr"><span class="th" id="line694">694</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        print (char) HDR_TERPVERSION-&gt;0;</span></span>
+<span class="tr"><span class="th" id="line695">695</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        #Endif;</span></span>
+<span class="tr"><span class="th" id="line696">696</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        print &quot;) / &quot;;</span></span>
+<span class="tr"><span class="th" id="line697">697</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    } else {</span></span>
+<span class="tr"><span class="th" id="line698">698</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        print &quot;Interpreter &quot;, HDR_TERPNUMBER-&gt;0, &quot; Version &quot;;</span></span>
+<span class="tr"><span class="th" id="line699">699</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        #Iftrue (#version_number == 6);</span></span>
+<span class="tr"><span class="th" id="line700">700</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        print HDR_TERPVERSION-&gt;0;</span></span>
+<span class="tr"><span class="th" id="line701">701</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        #Ifnot;</span></span>
+<span class="tr"><span class="th" id="line702">702</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        print (char) HDR_TERPVERSION-&gt;0;</span></span>
+<span class="tr"><span class="th" id="line703">703</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        #Endif;</span></span>
+<span class="tr"><span class="th" id="line704">704</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        print &quot; / &quot;;</span></span>
+<span class="tr"><span class="th" id="line705">705</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line706">706</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    print &quot;Library serial number &quot;, (string) LibSerial, &quot;^&quot;;</span></span>
+<span class="tr"><span class="th" id="line707">707</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #Ifdef LanguageVersion;</span></span>
+<span class="tr"><span class="th" id="line708">708</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    print (string) LanguageVersion, &quot;^&quot;;</span></span>
+<span class="tr"><span class="th" id="line709">709</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #Endif; ! LanguageVersion</span></span>
+<span class="tr"><span class="th" id="line710">710</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #ifdef ShowExtensionVersions;</span></span>
+<span class="tr"><span class="th" id="line711">711</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ShowExtensionVersions();</span></span>
+<span class="tr"><span class="th" id="line712">712</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    #endif;</span></span>
+<span class="tr"><span class="th" id="line713">713</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    say__p = 1;</span></span>
 <span class="tr"><span class="th" id="line714">714</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#zmachine-descend-to-specific-action-rule">Descend To Specific Action Rule.</h3><p><p> There are 100 or so actions, typically, and this rule is for efficiency&#39;s sake: rather than perform 100 or so comparisons to see which routine tocall, we indirect through a jump table. The routines called are the <span class="fixed">-Sub</span><br> routines: thus, for instance, if <span class="fixed"><a href="./Output.i6t.html#line240">action</a></span> is <span class="fixed">##Wait</span> then <span class="fixed">WaitSub</span> is called. It is essential that this routine not be called for fake actions: in I7 use this is guaranteed, since fake actions are not allowed into the action machinery at all.<p></p><p> Strangely, Glulx&#39;s action routines table is numbered in an off-by-one way compared to the Z-machine&#39;s: hence the <span class="fixed">+1</span>.<p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line729">729</span><span class="td">[&nbsp;DESCEND_TO_SPECIFIC_ACTION_R;</span></span>
-<span class="tr"><span class="th" id="line730">730</span><span class="td">&nbsp;indirect(#actions_table--&gt;action);</span></span>
-<span class="tr"><span class="th" id="line731">731</span><span class="td">&nbsp;rtrue;</span></span>
+<h3 id="#zmachine-descend-to-specific-action-rule">Descend To Specific Action Rule.</h3><p><p> There are 100 or so actions, typically, and this rule is for efficiency&#39;s sake: rather than perform 100 or so comparisons to see which routine to call, we indirect through a jump table. The routines called are the <span class="fixed">-Sub</span> routines: thus, for instance, if <span class="fixed"><a href="./Output.i6t.html#line240">action</a></span> is <span class="fixed">##Wait</span> then <span class="fixed">WaitSub</span> is called. It is essential that this routine not be called for fake actions: in I7 use this is guaranteed, since fake actions are not allowed into the action machinery at all.<p></p><p> Strangely, Glulx&#39;s action routines table is numbered in an off-by-one way compared to the Z-machine&#39;s: hence the <span class="fixed">+1</span>.<p></p><p></div><div class="pre">
+<span class="tr"><span class="th" id="line729">729</span><span class="td">[ DESCEND_TO_SPECIFIC_ACTION_R;</span></span>
+<span class="tr"><span class="th" id="line730">730</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    indirect(#actions_table--&gt;action);</span></span>
+<span class="tr"><span class="th" id="line731">731</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rtrue;</span></span>
 <span class="tr"><span class="th" id="line732">732</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#zmachine-veneer">Veneer.</h3><p><p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line737">737</span><span class="td">[&nbsp;OC__Cl&nbsp;obj&nbsp;cla&nbsp;j&nbsp;a&nbsp;n&nbsp;objflag;</span></span>
+<span class="tr"><span class="th" id="line737">737</span><span class="td">[ OC__Cl obj cla j a n objflag;</span></span>
 <span class="tr"><span class="th" id="line738">738</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line739">739</span><span class="td">&nbsp;@jl&nbsp;obj&nbsp;1&nbsp;?NotObj;</span></span>
-<span class="tr"><span class="th" id="line740">740</span><span class="td">&nbsp;@jg&nbsp;obj&nbsp;max_z_object&nbsp;?NotObj;</span></span>
-<span class="tr"><span class="th" id="line741">741</span><span class="td">&nbsp;@inc&nbsp;objflag;</span></span>
-<span class="tr"><span class="th" id="line742">742</span><span class="td">&nbsp;@je&nbsp;cla&nbsp;K1_room&nbsp;?~NotRoom;</span></span>
-<span class="tr"><span class="th" id="line743">743</span><span class="td">&nbsp;@test_attr&nbsp;obj&nbsp;mark_as_room&nbsp;?rtrue;</span></span>
-<span class="tr"><span class="th" id="line744">744</span><span class="td">&nbsp;@rfalse;</span></span>
-<span class="tr"><span class="th" id="line745">745</span><span class="td">&nbsp;.NotRoom;</span></span>
-<span class="tr"><span class="th" id="line746">746</span><span class="td">&nbsp;@je&nbsp;cla&nbsp;K2_thing&nbsp;?~NotObj;</span></span>
-<span class="tr"><span class="th" id="line747">747</span><span class="td">&nbsp;@test_attr&nbsp;obj&nbsp;mark_as_thing&nbsp;?rtrue;</span></span>
-<span class="tr"><span class="th" id="line748">748</span><span class="td">&nbsp;@rfalse;</span></span>
-<span class="tr"><span class="th" id="line749">749</span><span class="td">&nbsp;.NotObj;</span></span>
+<span class="tr"><span class="th" id="line739">739</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @jl obj 1 ?NotObj;</span></span>
+<span class="tr"><span class="th" id="line740">740</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @jg obj max_z_object ?NotObj;</span></span>
+<span class="tr"><span class="th" id="line741">741</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @inc objflag;</span></span>
+<span class="tr"><span class="th" id="line742">742</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @je cla K1_room ?~NotRoom;</span></span>
+<span class="tr"><span class="th" id="line743">743</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @test_attr obj mark_as_room ?rtrue;</span></span>
+<span class="tr"><span class="th" id="line744">744</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @rfalse;</span></span>
+<span class="tr"><span class="th" id="line745">745</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    .NotRoom;</span></span>
+<span class="tr"><span class="th" id="line746">746</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @je cla K2_thing ?~NotObj;</span></span>
+<span class="tr"><span class="th" id="line747">747</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @test_attr obj mark_as_thing ?rtrue;</span></span>
+<span class="tr"><span class="th" id="line748">748</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @rfalse;</span></span>
+<span class="tr"><span class="th" id="line749">749</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    .NotObj;</span></span>
 <span class="tr"><span class="th" id="line750">750</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line751">751</span><span class="td">&nbsp;@je&nbsp;cla&nbsp;Object&nbsp;Class&nbsp;?ObjOrClass;</span></span>
-<span class="tr"><span class="th" id="line752">752</span><span class="td">&nbsp;@je&nbsp;cla&nbsp;Routine&nbsp;String&nbsp;?RoutOrStr;</span></span>
+<span class="tr"><span class="th" id="line751">751</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @je cla Object Class ?ObjOrClass;</span></span>
+<span class="tr"><span class="th" id="line752">752</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @je cla Routine String ?RoutOrStr;</span></span>
 <span class="tr"><span class="th" id="line753">753</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line754">754</span><span class="td">&nbsp;@jin&nbsp;cla&nbsp;1&nbsp;?~Mistake;</span></span>
+<span class="tr"><span class="th" id="line754">754</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @jin cla 1 ?~Mistake;</span></span>
 <span class="tr"><span class="th" id="line755">755</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line756">756</span><span class="td">&nbsp;@jz&nbsp;objflag&nbsp;?rfalse;</span></span>
-<span class="tr"><span class="th" id="line757">757</span><span class="td">&nbsp;@get_prop_addr&nbsp;obj&nbsp;2&nbsp;-&gt;&nbsp;a;</span></span>
-<span class="tr"><span class="th" id="line758">758</span><span class="td">&nbsp;@jz&nbsp;a&nbsp;?rfalse;</span></span>
-<span class="tr"><span class="th" id="line759">759</span><span class="td">&nbsp;@get_prop_len&nbsp;a&nbsp;-&gt;&nbsp;n;</span></span>
+<span class="tr"><span class="th" id="line756">756</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @jz objflag ?rfalse;</span></span>
+<span class="tr"><span class="th" id="line757">757</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @get_prop_addr obj 2 -&gt; a;</span></span>
+<span class="tr"><span class="th" id="line758">758</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @jz a ?rfalse;</span></span>
+<span class="tr"><span class="th" id="line759">759</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @get_prop_len a -&gt; n;</span></span>
 <span class="tr"><span class="th" id="line760">760</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line761">761</span><span class="td">&nbsp;@div&nbsp;n&nbsp;2&nbsp;-&gt;&nbsp;n;</span></span>
-<span class="tr"><span class="th" id="line762">762</span><span class="td">&nbsp;.Loop;</span></span>
-<span class="tr"><span class="th" id="line763">763</span><span class="td">&nbsp;@loadw&nbsp;a&nbsp;j&nbsp;-&gt;&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line764">764</span><span class="td">&nbsp;@je&nbsp;sp&nbsp;cla&nbsp;?rtrue;</span></span>
-<span class="tr"><span class="th" id="line765">765</span><span class="td">&nbsp;@inc&nbsp;j;</span></span>
-<span class="tr"><span class="th" id="line766">766</span><span class="td">&nbsp;@jl&nbsp;j&nbsp;n&nbsp;?Loop;</span></span>
-<span class="tr"><span class="th" id="line767">767</span><span class="td">&nbsp;@rfalse;</span></span>
+<span class="tr"><span class="th" id="line761">761</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @div n 2 -&gt; n;</span></span>
+<span class="tr"><span class="th" id="line762">762</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    .Loop;</span></span>
+<span class="tr"><span class="th" id="line763">763</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @loadw a j -&gt; sp;</span></span>
+<span class="tr"><span class="th" id="line764">764</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @je sp cla ?rtrue;</span></span>
+<span class="tr"><span class="th" id="line765">765</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @inc j;</span></span>
+<span class="tr"><span class="th" id="line766">766</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @jl j n ?Loop;</span></span>
+<span class="tr"><span class="th" id="line767">767</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @rfalse;</span></span>
 <span class="tr"><span class="th" id="line768">768</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line769">769</span><span class="td">&nbsp;.ObjOrClass;</span></span>
-<span class="tr"><span class="th" id="line770">770</span><span class="td">&nbsp;@jz&nbsp;objflag&nbsp;?rfalse;</span></span>
-<span class="tr"><span class="th" id="line771">771</span><span class="td">&nbsp;@je&nbsp;cla&nbsp;Object&nbsp;?JustObj;</span></span>
+<span class="tr"><span class="th" id="line769">769</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    .ObjOrClass;</span></span>
+<span class="tr"><span class="th" id="line770">770</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @jz objflag ?rfalse;</span></span>
+<span class="tr"><span class="th" id="line771">771</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @je cla Object ?JustObj;</span></span>
 <span class="tr"><span class="th" id="line772">772</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line773">773</span><span class="td">&nbsp;!&nbsp;So&nbsp;now&nbsp;cla&nbsp;is&nbsp;Class</span></span>
-<span class="tr"><span class="th" id="line774">774</span><span class="td">&nbsp;@jg&nbsp;obj&nbsp;String&nbsp;?~rtrue;</span></span>
-<span class="tr"><span class="th" id="line775">775</span><span class="td">&nbsp;@jin&nbsp;obj&nbsp;Class&nbsp;?rtrue;</span></span>
-<span class="tr"><span class="th" id="line776">776</span><span class="td">&nbsp;@rfalse;</span></span>
+<span class="tr"><span class="th" id="line773">773</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! So now cla is Class</span></span>
+<span class="tr"><span class="th" id="line774">774</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @jg obj String ?~rtrue;</span></span>
+<span class="tr"><span class="th" id="line775">775</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @jin obj Class ?rtrue;</span></span>
+<span class="tr"><span class="th" id="line776">776</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @rfalse;</span></span>
 <span class="tr"><span class="th" id="line777">777</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line778">778</span><span class="td">&nbsp;.JustObj;</span></span>
-<span class="tr"><span class="th" id="line779">779</span><span class="td">&nbsp;!&nbsp;So&nbsp;now&nbsp;cla&nbsp;is&nbsp;Object</span></span>
-<span class="tr"><span class="th" id="line780">780</span><span class="td">&nbsp;@jg&nbsp;obj&nbsp;String&nbsp;?~rfalse;</span></span>
-<span class="tr"><span class="th" id="line781">781</span><span class="td">&nbsp;@jin&nbsp;obj&nbsp;Class&nbsp;?rfalse;</span></span>
-<span class="tr"><span class="th" id="line782">782</span><span class="td">&nbsp;@rtrue;</span></span>
+<span class="tr"><span class="th" id="line778">778</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    .JustObj;</span></span>
+<span class="tr"><span class="th" id="line779">779</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! So now cla is Object</span></span>
+<span class="tr"><span class="th" id="line780">780</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @jg obj String ?~rfalse;</span></span>
+<span class="tr"><span class="th" id="line781">781</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @jin obj Class ?rfalse;</span></span>
+<span class="tr"><span class="th" id="line782">782</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @rtrue;</span></span>
 <span class="tr"><span class="th" id="line783">783</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line784">784</span><span class="td">&nbsp;.RoutOrStr;</span></span>
-<span class="tr"><span class="th" id="line785">785</span><span class="td">&nbsp;@jz&nbsp;objflag&nbsp;?~rfalse;</span></span>
-<span class="tr"><span class="th" id="line786">786</span><span class="td">&nbsp;@call_2s&nbsp;Z__Region&nbsp;obj&nbsp;-&gt;&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line787">787</span><span class="td">&nbsp;@inc&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line788">788</span><span class="td">&nbsp;@je&nbsp;sp&nbsp;cla&nbsp;?rtrue;</span></span>
-<span class="tr"><span class="th" id="line789">789</span><span class="td">&nbsp;@rfalse;</span></span>
+<span class="tr"><span class="th" id="line784">784</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    .RoutOrStr;</span></span>
+<span class="tr"><span class="th" id="line785">785</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @jz objflag ?~rfalse;</span></span>
+<span class="tr"><span class="th" id="line786">786</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @call_2s Z__Region obj -&gt; sp;</span></span>
+<span class="tr"><span class="th" id="line787">787</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @inc sp;</span></span>
+<span class="tr"><span class="th" id="line788">788</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @je sp cla ?rtrue;</span></span>
+<span class="tr"><span class="th" id="line789">789</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @rfalse;</span></span>
 <span class="tr"><span class="th" id="line790">790</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line791">791</span><span class="td">&nbsp;.Mistake;</span></span>
-<span class="tr"><span class="th" id="line792">792</span><span class="td">&nbsp;RT__Err(&quot;apply&nbsp;&#39;ofclass&#39;&nbsp;for&quot;,&nbsp;cla,&nbsp;-1);</span></span>
-<span class="tr"><span class="th" id="line793">793</span><span class="td">&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line791">791</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    .Mistake;</span></span>
+<span class="tr"><span class="th" id="line792">792</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    RT__Err(&quot;apply &#39;ofclass&#39; for&quot;, cla, -1);</span></span>
+<span class="tr"><span class="th" id="line793">793</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rfalse;</span></span>
 <span class="tr"><span class="th" id="line794">794</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line795">795</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line796">796</span><span class="td">[&nbsp;Unsigned__Compare&nbsp;x&nbsp;y&nbsp;u&nbsp;v;</span></span>
-<span class="tr"><span class="th" id="line797">797</span><span class="td">&nbsp;@je&nbsp;x&nbsp;y&nbsp;?rfalse;&nbsp;!&nbsp;i.e.,&nbsp;return&nbsp;0</span></span>
-<span class="tr"><span class="th" id="line798">798</span><span class="td">&nbsp;@jl&nbsp;x&nbsp;0&nbsp;?XNegative;</span></span>
-<span class="tr"><span class="th" id="line799">799</span><span class="td">&nbsp;!&nbsp;So&nbsp;here&nbsp;x&nbsp;&gt;=&nbsp;0&nbsp;and&nbsp;x&nbsp;~=&nbsp;y</span></span>
-<span class="tr"><span class="th" id="line800">800</span><span class="td">&nbsp;@jl&nbsp;y&nbsp;0&nbsp;?XPosYNeg;</span></span>
+<span class="tr"><span class="th" id="line796">796</span><span class="td">[ Unsigned__Compare x y u v;</span></span>
+<span class="tr"><span class="th" id="line797">797</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @je x y ?rfalse; ! i.e., return 0</span></span>
+<span class="tr"><span class="th" id="line798">798</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @jl x 0 ?XNegative;</span></span>
+<span class="tr"><span class="th" id="line799">799</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! So here x &gt;= 0 and x ~= y</span></span>
+<span class="tr"><span class="th" id="line800">800</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @jl y 0 ?XPosYNeg;</span></span>
 <span class="tr"><span class="th" id="line801">801</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line802">802</span><span class="td">&nbsp;!&nbsp;Here&nbsp;x&nbsp;&gt;=0,&nbsp;y&nbsp;&gt;=&nbsp;0,&nbsp;x&nbsp;~=&nbsp;y</span></span>
+<span class="tr"><span class="th" id="line802">802</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Here x &gt;=0, y &gt;= 0, x ~= y</span></span>
 <span class="tr"><span class="th" id="line803">803</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line804">804</span><span class="td">&nbsp;@jg&nbsp;x&nbsp;y&nbsp;?rtrue;&nbsp;!&nbsp;i.e.,&nbsp;return&nbsp;1</span></span>
-<span class="tr"><span class="th" id="line805">805</span><span class="td">&nbsp;@ret&nbsp;-1;</span></span>
+<span class="tr"><span class="th" id="line804">804</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @jg x y ?rtrue; ! i.e., return 1</span></span>
+<span class="tr"><span class="th" id="line805">805</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @ret -1;</span></span>
 <span class="tr"><span class="th" id="line806">806</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line807">807</span><span class="td">&nbsp;.XPosYNeg;</span></span>
-<span class="tr"><span class="th" id="line808">808</span><span class="td">&nbsp;!&nbsp;Here&nbsp;x&nbsp;&gt;=&nbsp;0,&nbsp;y&nbsp;&lt;&nbsp;0,&nbsp;x&nbsp;~=&nbsp;y</span></span>
-<span class="tr"><span class="th" id="line809">809</span><span class="td">&nbsp;@ret&nbsp;-1;</span></span>
+<span class="tr"><span class="th" id="line807">807</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    .XPosYNeg;</span></span>
+<span class="tr"><span class="th" id="line808">808</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Here x &gt;= 0, y &lt; 0, x ~= y</span></span>
+<span class="tr"><span class="th" id="line809">809</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @ret -1;</span></span>
 <span class="tr"><span class="th" id="line810">810</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line811">811</span><span class="td">&nbsp;.XNegative;</span></span>
-<span class="tr"><span class="th" id="line812">812</span><span class="td">&nbsp;@jl&nbsp;y&nbsp;0&nbsp;?~rtrue;&nbsp;!&nbsp;if&nbsp;x&nbsp;&lt;&nbsp;0,&nbsp;y&nbsp;&gt;=&nbsp;0,&nbsp;return&nbsp;1</span></span>
-<span class="tr"><span class="th" id="line813">813</span><span class="td">&nbsp;</span></span>
-<span class="tr"><span class="th" id="line814">814</span><span class="td">&nbsp;!&nbsp;Here&nbsp;x&nbsp;&lt;&nbsp;0,&nbsp;y&nbsp;&lt;&nbsp;0,&nbsp;x&nbsp;~=&nbsp;y</span></span>
-<span class="tr"><span class="th" id="line815">815</span><span class="td">&nbsp;@jg&nbsp;x&nbsp;y&nbsp;?rtrue;</span></span>
-<span class="tr"><span class="th" id="line816">816</span><span class="td">&nbsp;@ret&nbsp;-1;</span></span>
+<span class="tr"><span class="th" id="line811">811</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    .XNegative;</span></span>
+<span class="tr"><span class="th" id="line812">812</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @jl y 0 ?~rtrue; ! if x &lt; 0, y &gt;= 0, return 1</span></span>
+<span class="tr"><span class="th" id="line813">813</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    </span></span>
+<span class="tr"><span class="th" id="line814">814</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    ! Here x &lt; 0, y &lt; 0, x ~= y</span></span>
+<span class="tr"><span class="th" id="line815">815</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @jg x y ?rtrue;</span></span>
+<span class="tr"><span class="th" id="line816">816</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @ret -1;</span></span>
 <span class="tr"><span class="th" id="line817">817</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line818">818</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line819">819</span><span class="td">[&nbsp;RT__ChLDW&nbsp;base&nbsp;offset;</span></span>
-<span class="tr"><span class="th" id="line820">820</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;@loadw&nbsp;base&nbsp;offset&nbsp;-&gt;&nbsp;sp;</span></span>
-<span class="tr"><span class="th" id="line821">821</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;@ret&nbsp;sp;</span></span>
+<span class="tr"><span class="th" id="line819">819</span><span class="td">[ RT__ChLDW base offset;</span></span>
+<span class="tr"><span class="th" id="line820">820</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @loadw base offset -&gt; sp;</span></span>
+<span class="tr"><span class="th" id="line821">821</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @ret sp;</span></span>
 <span class="tr"><span class="th" id="line822">822</span><span class="td">];</span></span>
-</div><footer><hr><p><em>From I6T lib 6/12N &copy; Graham Nelson and published under the <a href="https://github.com/zedlopez/standard_rules/blob/main/LICENSE.md">Artistic License 2.0</a>. Distributed with <a href="http://inform7.com/">Inform 7 6M62</a>.</em></p></footer></body></html>
+</div><footer><p><em>From I6T lib 6/12N &copy; Graham Nelson and published under the <a href="https://github.com/zedlopez/standard_rules/blob/main/LICENSE.md">Artistic License 2.0</a>. Distributed with <a href="http://inform7.com/">Inform 7 6M62</a>.</em></p></footer></body></html>

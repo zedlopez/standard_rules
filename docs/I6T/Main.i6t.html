@@ -7,22 +7,25 @@ span.th, span.td { display: table-cell; }
 span.td { padding-left: 2rem; }
 span.th { width:4rem; text-align: right; }
 span.tr { display: table-row;     counter-increment: linenum; }
-span.line_no::before {
+.pre-lines { font-family: monospace; margin-left: 3rem; line-height: 1.5rem; }
+/*span.line_no::before {
     content: counter(linenum);
     text-align: right;
     display: block;
     font-family: monospace;
     font-weight: normal;
-}
+}*/
 h1 { margin: 0; }
 .fixed { font-family: monospace }
 .em { font-style: italic; }
 .center { text-align: center; }
-    body { font-family: sans-serif; margin: 1.5rem 0 0 3rem; background-color: #fafaf0; width: 80rem; }
+    body { font-family: sans-serif; margin: 1.5rem 0 3rem 3rem; background-color: #fafaf0; width: 80rem; }
     .pre { font-family: monospace; margin: auto; width: 80rem; }
-#front_matter,.text { width: 50rem; }
+#front_matter,.text { width: 48rem; }
+/* h3 { margin-top: 1.5rem; padding-top: 1.5rem; }*/
 .text { border-bottom: .5px solid black; border-top: .5px solid black; margin-top: 1rem;
-padding-bottom: 1rem; margin-bottom: 2rem; }
+padding-bottom: .5rem; margin-bottom: 1.5rem; margin-top: 1.75rem; padding-top: .25rem;}
+footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; margin-bottom: 0;}
 /*.subtitle { font-weight: bold; font-size: 1.2rem; }*/
     </style>
 </head>
@@ -31,7 +34,7 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <h1>I6 Template Layer</h1>
 <div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Index</a> &bull; <a href="./Introduction.i6t.html">Introduction</a></div><hr></header>
 <div id="front_matter">
-<h2><a href="./Main.i6t">Main.i6t</a></h2><h3 id="#main-startup">Startup.</h3><p><p> This segment of the template is not like any other. It contains almost the complete logical sequence of operations followed by NI &ndash; indeed, NI essentially works by parsing some command-line arguments to set switches and then asking the template interpreter to run through <a href="./Main.i6t.html">Main.i6t</a>, the only template file which must always exist. (The other template files are only ever involved when called on by the <span class="fixed">{-segment:...}</span> command from a template file already running.) Whereas most template segments contain I6 code to pass through into NI&#39;s output, this one runs both before and after NI&#39;s output file is being written, and contains only commands.<p></p><p> The Startup paragraph is not in fact modifiable in any easy way, because of course &quot;Include...&quot; sentences &ndash; used to tell the template interpreter to override the template files &ndash; will not be understood until long after this paragraph has been fully dealt with. But perhaps that&#39;s no bad thing.<p></p><p></div><div class="pre">
+<h2><a href="./Main.i6t.txt">Main.i6t</a></h2><h3 id="#main-startup">Startup.</h3><p><p> This segment of the template is not like any other. It contains almost the complete logical sequence of operations followed by NI &ndash; indeed, NI essentially works by parsing some command-line arguments to set switches and then asking the template interpreter to run through <a href="./Main.i6t.html">Main.i6t</a>, the only template file which must always exist. (The other template files are only ever involved when called on by the <span class="fixed">{-segment:...}</span> command from a template file already running.) Whereas most template segments contain I6 code to pass through into NI&#39;s output, this one runs both before and after NI&#39;s output file is being written, and contains only commands.<p></p><p> The Startup paragraph is not in fact modifiable in any easy way, because of course &quot;Include...&quot; sentences &ndash; used to tell the template interpreter to override the template files &ndash; will not be understood until long after this paragraph has been fully dealt with. But perhaps that&#39;s no bad thing.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line26">26</span><span class="td">{-callv:Lexer::start}</span></span>
 <span class="tr"><span class="th" id="line27">27</span><span class="td">{-callv:Preform::read_definition}</span></span>
 <span class="tr"><span class="th" id="line28">28</span><span class="td">{-callv:Plugins::Manage::start}</span></span>
@@ -41,39 +44,39 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line32">32</span><span class="td"></span></span>
 <span class="tr"><span class="th" id="line33">33</span><span class="td"></span></span>
 <span class="tr"><span class="th" id="line34">34</span><span class="td">{-progress-stage:0}</span></span>
-<span class="tr"><span class="th" id="line35">35</span><span class="td">{-log-phase:Lexical&nbsp;analysis}</span></span>
+<span class="tr"><span class="th" id="line35">35</span><span class="td">{-log-phase:Lexical analysis}</span></span>
 <span class="tr"><span class="th" id="line36">36</span><span class="td">{-callv:SourceFiles::read_primary_source_text}</span></span>
 <span class="tr"><span class="th" id="line37">37</span><span class="td">{-callv:Sentences::RuleSubtrees::create_standard_csps}</span></span>
 </div><div class='text'>
 <h3 id="#main-semantic-analysis">Semantic Analysis.</h3><p><p> Similarly: Include... sentences are not read until this paragraph is long forgotten.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line44">44</span><span class="td">{-progress-stage:1}</span></span>
-<span class="tr"><span class="th" id="line45">45</span><span class="td">{-log-phase:Semantic&nbsp;analysis&nbsp;Ia}</span></span>
-<span class="tr"><span class="th" id="line46">46</span><span class="td">{-callv:ParseTree::plant_parse_tree}&nbsp;!&nbsp;Initialise&nbsp;the&nbsp;parse&nbsp;tree</span></span>
-<span class="tr"><span class="th" id="line47">47</span><span class="td">{-callv:Sentences::break_source}&nbsp;!&nbsp;Build&nbsp;first&nbsp;tranche&nbsp;of&nbsp;sentences</span></span>
-<span class="tr"><span class="th" id="line48">48</span><span class="td">{-callv:Extensions::Inclusion::traverse}&nbsp;!&nbsp;Expand&nbsp;extension&nbsp;inclusions&nbsp;and&nbsp;build&nbsp;sentences</span></span>
+<span class="tr"><span class="th" id="line45">45</span><span class="td">{-log-phase:Semantic analysis Ia}</span></span>
+<span class="tr"><span class="th" id="line46">46</span><span class="td">{-callv:ParseTree::plant_parse_tree} ! Initialise the parse tree</span></span>
+<span class="tr"><span class="th" id="line47">47</span><span class="td">{-callv:Sentences::break_source} ! Build first tranche of sentences</span></span>
+<span class="tr"><span class="th" id="line48">48</span><span class="td">{-callv:Extensions::Inclusion::traverse} ! Expand extension inclusions and build sentences</span></span>
 <span class="tr"><span class="th" id="line49">49</span><span class="td">{-callv:Sentences::Headings::satisfy_dependencies}</span></span>
 <span class="tr"><span class="th" id="line50">50</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line51">51</span><span class="td">{-log-phase:Initialise&nbsp;language&nbsp;semantics}</span></span>
+<span class="tr"><span class="th" id="line51">51</span><span class="td">{-log-phase:Initialise language semantics}</span></span>
 <span class="tr"><span class="th" id="line52">52</span><span class="td">{-plugin:load}</span></span>
 <span class="tr"><span class="th" id="line53">53</span><span class="td">{-callv:BinaryPredicates::make_built_in}</span></span>
 <span class="tr"><span class="th" id="line54">54</span><span class="td">{-callv:Verbs::stock}</span></span>
 <span class="tr"><span class="th" id="line55">55</span><span class="td">{-callv:Quantifiers::make_built_in}</span></span>
 <span class="tr"><span class="th" id="line56">56</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line57">57</span><span class="td">{-log-phase:Semantic&nbsp;analysis&nbsp;Ib}</span></span>
-<span class="tr"><span class="th" id="line58">58</span><span class="td">{-callv:Sentences::VPs::traverse}&nbsp;!&nbsp;Find&nbsp;verbs&nbsp;in&nbsp;the&nbsp;assertion&nbsp;sentences</span></span>
-<span class="tr"><span class="th" id="line59">59</span><span class="td">{-callv:Plurals::traverse_for_definitions}&nbsp;!&nbsp;Build&nbsp;irregular&nbsp;plurals&nbsp;dictionary</span></span>
-<span class="tr"><span class="th" id="line60">60</span><span class="td">{-callv:Sentences::Rearrangement::tidy_up_ofs_and_froms}&nbsp;!&nbsp;More&nbsp;&quot;of&quot;&nbsp;wrangling</span></span>
-<span class="tr"><span class="th" id="line61">61</span><span class="td">{-callv:Sentences::RuleSubtrees::register_recently_lexed_phrases}&nbsp;!&nbsp;To&nbsp;make&nbsp;commands&nbsp;children&nbsp;of&nbsp;their&nbsp;routines</span></span>
+<span class="tr"><span class="th" id="line57">57</span><span class="td">{-log-phase:Semantic analysis Ib}</span></span>
+<span class="tr"><span class="th" id="line58">58</span><span class="td">{-callv:Sentences::VPs::traverse} ! Find verbs in the assertion sentences</span></span>
+<span class="tr"><span class="th" id="line59">59</span><span class="td">{-callv:Plurals::traverse_for_definitions} ! Build irregular plurals dictionary</span></span>
+<span class="tr"><span class="th" id="line60">60</span><span class="td">{-callv:Sentences::Rearrangement::tidy_up_ofs_and_froms} ! More &quot;of&quot; wrangling</span></span>
+<span class="tr"><span class="th" id="line61">61</span><span class="td">{-callv:Sentences::RuleSubtrees::register_recently_lexed_phrases} ! To make commands children of their routines</span></span>
 <span class="tr"><span class="th" id="line62">62</span><span class="td">{-callv:Sentences::declare_source_loaded}</span></span>
 <span class="tr"><span class="th" id="line63">63</span><span class="td">{-callv:Kinds::Interpreter::include_templates_for_kinds}</span></span>
 <span class="tr"><span class="th" id="line64">64</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line65">65</span><span class="td">{-log-phase:Semantic&nbsp;analysis&nbsp;II}</span></span>
-<span class="tr"><span class="th" id="line66">66</span><span class="td">{-callv:ParseTree::verify}&nbsp;!&nbsp;Purely&nbsp;to&nbsp;check&nbsp;that&nbsp;NI&nbsp;is&nbsp;running&nbsp;correctly</span></span>
-<span class="tr"><span class="th" id="line67">67</span><span class="td">{-callv:Extensions::Files::check_versions}&nbsp;!&nbsp;Do&nbsp;the&nbsp;extension&nbsp;version&nbsp;numbers&nbsp;meet&nbsp;needs?</span></span>
-<span class="tr"><span class="th" id="line68">68</span><span class="td">{-callv:Sentences::Headings::make_tree}&nbsp;!&nbsp;Stratify&nbsp;headings&nbsp;and&nbsp;subheadings</span></span>
-<span class="tr"><span class="th" id="line69">69</span><span class="td">{-callv:Sentences::Headings::write_as_xml}&nbsp;!&nbsp;Dump&nbsp;them&nbsp;to&nbsp;a&nbsp;file&nbsp;for&nbsp;the&nbsp;GUI&nbsp;to&nbsp;use</span></span>
+<span class="tr"><span class="th" id="line65">65</span><span class="td">{-log-phase:Semantic analysis II}</span></span>
+<span class="tr"><span class="th" id="line66">66</span><span class="td">{-callv:ParseTree::verify} ! Purely to check that NI is running correctly</span></span>
+<span class="tr"><span class="th" id="line67">67</span><span class="td">{-callv:Extensions::Files::check_versions} ! Do the extension version numbers meet needs?</span></span>
+<span class="tr"><span class="th" id="line68">68</span><span class="td">{-callv:Sentences::Headings::make_tree} ! Stratify headings and subheadings</span></span>
+<span class="tr"><span class="th" id="line69">69</span><span class="td">{-callv:Sentences::Headings::write_as_xml} ! Dump them to a file for the GUI to use</span></span>
 <span class="tr"><span class="th" id="line70">70</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line71">71</span><span class="td">{-log-phase:Semantic&nbsp;analysis&nbsp;III}</span></span>
+<span class="tr"><span class="th" id="line71">71</span><span class="td">{-log-phase:Semantic analysis III}</span></span>
 <span class="tr"><span class="th" id="line72">72</span><span class="td">{-callv:Phrases::Adjectives::traverse}</span></span>
 <span class="tr"><span class="th" id="line73">73</span><span class="td">{-callv:Equations::traverse_to_create}</span></span>
 <span class="tr"><span class="th" id="line74">74</span><span class="td">{-callv:Tables::traverse_to_create}</span></span>
@@ -81,14 +84,14 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 </div><div class='text'>
 <h3 id="#main-assertion-reading">Assertion Reading.</h3><p><p> Since Include... sentences are read during pass 2, they might just be able to meddle by adding instructions to take place after this paragraph, but would be too late to work before or instead of it.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line83">83</span><span class="td">{-progress-stage:2}</span></span>
-<span class="tr"><span class="th" id="line84">84</span><span class="td">{-log-phase:First&nbsp;pass&nbsp;through&nbsp;assertions}</span></span>
+<span class="tr"><span class="th" id="line84">84</span><span class="td">{-log-phase:First pass through assertions}</span></span>
 <span class="tr"><span class="th" id="line85">85</span><span class="td">{-read-assertions:1}</span></span>
 <span class="tr"><span class="th" id="line86">86</span><span class="td">{-callv:Tables::traverse_to_stock}</span></span>
-<span class="tr"><span class="th" id="line87">87</span><span class="td">{-log-phase:Second&nbsp;pass&nbsp;through&nbsp;assertions}</span></span>
+<span class="tr"><span class="th" id="line87">87</span><span class="td">{-log-phase:Second pass through assertions}</span></span>
 <span class="tr"><span class="th" id="line88">88</span><span class="td">{-read-assertions:2}</span></span>
 </div><div class='text'>
 <h3 id="#main-model-construction">Model Construction.</h3><p><p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line93">93</span><span class="td">{-log-phase:Making&nbsp;the&nbsp;model&nbsp;world}</span></span>
+<span class="tr"><span class="th" id="line93">93</span><span class="td">{-log-phase:Making the model world}</span></span>
 <span class="tr"><span class="th" id="line94">94</span><span class="td">{-callv:Properties::ObjectImplementation::allocate_attributes}</span></span>
 <span class="tr"><span class="th" id="line95">95</span><span class="td">{-callv:PL::Actions::name_all}</span></span>
 <span class="tr"><span class="th" id="line96">96</span><span class="td">{-callv:Nametags::name_all}</span></span>
@@ -97,14 +100,14 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <span class="tr"><span class="th" id="line99">99</span><span class="td">{-callv:BinaryPredicates::make_built_in_further}</span></span>
 </div><div class='text'>
 <h3 id="#main-tables-and-grammar">Tables and Grammar.</h3><p><p></p><p></div><div class="pre">
-<span class="tr"><span class="th" id="line104">104</span><span class="td">{-log-phase:Tables&nbsp;and&nbsp;grammar}</span></span>
+<span class="tr"><span class="th" id="line104">104</span><span class="td">{-log-phase:Tables and grammar}</span></span>
 <span class="tr"><span class="th" id="line105">105</span><span class="td">{-callv:Tables::check_tables_for_kind_clashes}</span></span>
 <span class="tr"><span class="th" id="line106">106</span><span class="td">{-callv:PL::Parsing::traverse}</span></span>
 <span class="tr"><span class="th" id="line107">107</span><span class="td">{-callv:World::complete_additions}</span></span>
 </div><div class='text'>
 <h3 id="#main-phrases-and-rules">Phrases and Rules.</h3><p><p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line112">112</span><span class="td">{-progress-stage:3}</span></span>
-<span class="tr"><span class="th" id="line113">113</span><span class="td">{-log-phase:Phrases&nbsp;and&nbsp;rules}</span></span>
+<span class="tr"><span class="th" id="line113">113</span><span class="td">{-log-phase:Phrases and rules}</span></span>
 <span class="tr"><span class="th" id="line114">114</span><span class="td">{-callv:LiteralPatterns::define_named_phrases}</span></span>
 <span class="tr"><span class="th" id="line115">115</span><span class="td">{-callv:Phrases::Manager::traverse}</span></span>
 <span class="tr"><span class="th" id="line116">116</span><span class="td">{-callv:Phrases::Manager::register_meanings}</span></span>
@@ -116,9 +119,9 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 </div><div class='text'>
 <h3 id="#main-code-generation">Code Generation.</h3><p><p> This is where we hand over to regular template files &ndash; containing code passed through as I6 source, as well as a few further commands &ndash; starting with <a href="./Output.i6t.html">Output.i6t</a>.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line129">129</span><span class="td">{-progress-stage:4}</span></span>
-<span class="tr"><span class="th" id="line130">130</span><span class="td">{-log-phase:Code&nbsp;generation}</span></span>
+<span class="tr"><span class="th" id="line130">130</span><span class="td">{-log-phase:Code generation}</span></span>
 <span class="tr"><span class="th" id="line131">131</span><span class="td">{-open-file}{-segment:Output.i6t}{-close-file}</span></span>
-<span class="tr"><span class="th" id="line132">132</span><span class="td">{-log-phase:Compilation&nbsp;now&nbsp;complete}</span></span>
+<span class="tr"><span class="th" id="line132">132</span><span class="td">{-log-phase:Compilation now complete}</span></span>
 </div><div class='text'>
 <h3 id="#main-metadata">Metadata.</h3><p><p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line137">137</span><span class="td">{-callv:PL::Bibliographic::Release::write_ifiction_and_blurb}</span></span>
@@ -126,58 +129,58 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <h3 id="#main-indexing">Indexing.</h3><p><p> This paragraph can be skipped without harming any of the rest of NI&#39;s work: the only effect is to suppress the generation of the index. (Indeed, if NI is called with the <span class="fixed">-noindex</span> command-line switch, then the template interpreter ignores all commands in between <span class="fixed">{-open-index}</span> and <span class="fixed">{-close-index}</span>, thus skipping exactly this paragraph.)<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line147">147</span><span class="td">{-open-index}</span></span>
 <span class="tr"><span class="th" id="line148">148</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line149">149</span><span class="td">{-index-page:cf0a38=Contents&nbsp;Index=Like&nbsp;the&nbsp;preliminary&nbsp;pages&nbsp;of&nbsp;a&nbsp;book}</span></span>
-<span class="tr"><span class="th" id="line150">150</span><span class="td">{-index-element:C&nbsp;Contents=Like&nbsp;the&nbsp;contents&nbsp;page&nbsp;of&nbsp;a&nbsp;book.|About&nbsp;headings&lt;HEADINGS&gt;;&nbsp;About&nbsp;extensions&lt;EXTENSIONS&gt;}</span></span>
-<span class="tr"><span class="th" id="line151">151</span><span class="td">{-index-element:Cd&nbsp;Card=How&nbsp;this&nbsp;project&nbsp;might&nbsp;be&nbsp;filed&nbsp;in&nbsp;a&nbsp;library&nbsp;catalogue.|About&nbsp;the&nbsp;Library&nbsp;Card&lt;LCARDS&gt;;&nbsp;About&nbsp;IFIDs&lt;IFIDS&gt;}</span></span>
-<span class="tr"><span class="th" id="line152">152</span><span class="td">{-index-element:Tb&nbsp;Tables=Tables&nbsp;of&nbsp;information&nbsp;in&nbsp;the&nbsp;source&nbsp;text.|About&nbsp;tables&lt;TABLES&gt;}</span></span>
-<span class="tr"><span class="th" id="line153">153</span><span class="td">{-index-element:Fi&nbsp;Figures=The&nbsp;figures,&nbsp;sound&nbsp;effects&nbsp;or&nbsp;external&nbsp;files&nbsp;used.|About&nbsp;figures&lt;FIGURES&gt;;&nbsp;About&nbsp;sounds&lt;SOUNDS&gt;;&nbsp;About&nbsp;files&lt;EFILES&gt;}</span></span>
-<span class="tr"><span class="th" id="line154">154</span><span class="td">{-index-element:In&nbsp;Innards=Technicalities&nbsp;about&nbsp;the&nbsp;story&nbsp;file&nbsp;being&nbsp;produced.|About&nbsp;the&nbsp;story&nbsp;file&lt;STORYFILES&gt;;&nbsp;About&nbsp;use&nbsp;options&lt;OPTIONS&gt;}</span></span>
+<span class="tr"><span class="th" id="line149">149</span><span class="td">{-index-page:cf0a38=Contents Index=Like the preliminary pages of a book}</span></span>
+<span class="tr"><span class="th" id="line150">150</span><span class="td">{-index-element:C Contents=Like the contents page of a book.|About headings&lt;HEADINGS&gt;; About extensions&lt;EXTENSIONS&gt;}</span></span>
+<span class="tr"><span class="th" id="line151">151</span><span class="td">{-index-element:Cd Card=How this project might be filed in a library catalogue.|About the Library Card&lt;LCARDS&gt;; About IFIDs&lt;IFIDS&gt;}</span></span>
+<span class="tr"><span class="th" id="line152">152</span><span class="td">{-index-element:Tb Tables=Tables of information in the source text.|About tables&lt;TABLES&gt;}</span></span>
+<span class="tr"><span class="th" id="line153">153</span><span class="td">{-index-element:Fi Figures=The figures, sound effects or external files used.|About figures&lt;FIGURES&gt;; About sounds&lt;SOUNDS&gt;; About files&lt;EFILES&gt;}</span></span>
+<span class="tr"><span class="th" id="line154">154</span><span class="td">{-index-element:In Innards=Technicalities about the story file being produced.|About the story file&lt;STORYFILES&gt;; About use options&lt;OPTIONS&gt;}</span></span>
 <span class="tr"><span class="th" id="line155">155</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line156">156</span><span class="td">{-index-page:ea5b1f=Actions&nbsp;Index=Things&nbsp;that&nbsp;people&nbsp;can&nbsp;try&nbsp;to&nbsp;do}</span></span>
-<span class="tr"><span class="th" id="line157">157</span><span class="td">{-index-element:A1&nbsp;Grouped=With&nbsp;similar&nbsp;actions&nbsp;grouped&nbsp;together|About&nbsp;actions&lt;ACTIONS&gt;;&nbsp;New&nbsp;actions&lt;NEWACTIONS&gt;;&nbsp;Out&nbsp;of&nbsp;world&nbsp;actions&nbsp;(in&nbsp;red)&lt;OUTOFWORLD&gt;}</span></span>
-<span class="tr"><span class="th" id="line158">158</span><span class="td">{-index-element:A2&nbsp;Alphabetic=Listed&nbsp;in&nbsp;alphabetical&nbsp;order|About&nbsp;actions&lt;ACTIONS&gt;;&nbsp;New&nbsp;actions&lt;NEWACTIONS&gt;;&nbsp;Out&nbsp;of&nbsp;world&nbsp;actions&nbsp;(in&nbsp;red)&lt;OUTOFWORLD&gt;}</span></span>
-<span class="tr"><span class="th" id="line159">159</span><span class="td">{-index-element:Bh&nbsp;Behaviour=Kinds&nbsp;of&nbsp;action,&nbsp;grouped&nbsp;under&nbsp;common&nbsp;names|About&nbsp;kinds&nbsp;of&nbsp;action&lt;KACTIONS&gt;}</span></span>
-<span class="tr"><span class="th" id="line160">160</span><span class="td">{-index-element:Cm&nbsp;Commands=Commands&nbsp;which&nbsp;the&nbsp;player&nbsp;can&nbsp;type|About&nbsp;commands&lt;UNDERSTANDING&gt;}</span></span>
-<span class="tr"><span class="th" id="line161">161</span><span class="td">{-index-element:To&nbsp;Tokens=Those&nbsp;square-bracketed&nbsp;pieces&nbsp;inside&nbsp;Understand&nbsp;grammar|About&nbsp;tokens&lt;TOKENS&gt;;&nbsp;New&nbsp;tokens&lt;NEWTOKENS&gt;}</span></span>
+<span class="tr"><span class="th" id="line156">156</span><span class="td">{-index-page:ea5b1f=Actions Index=Things that people can try to do}</span></span>
+<span class="tr"><span class="th" id="line157">157</span><span class="td">{-index-element:A1 Grouped=With similar actions grouped together|About actions&lt;ACTIONS&gt;; New actions&lt;NEWACTIONS&gt;; Out of world actions (in red)&lt;OUTOFWORLD&gt;}</span></span>
+<span class="tr"><span class="th" id="line158">158</span><span class="td">{-index-element:A2 Alphabetic=Listed in alphabetical order|About actions&lt;ACTIONS&gt;; New actions&lt;NEWACTIONS&gt;; Out of world actions (in red)&lt;OUTOFWORLD&gt;}</span></span>
+<span class="tr"><span class="th" id="line159">159</span><span class="td">{-index-element:Bh Behaviour=Kinds of action, grouped under common names|About kinds of action&lt;KACTIONS&gt;}</span></span>
+<span class="tr"><span class="th" id="line160">160</span><span class="td">{-index-element:Cm Commands=Commands which the player can type|About commands&lt;UNDERSTANDING&gt;}</span></span>
+<span class="tr"><span class="th" id="line161">161</span><span class="td">{-index-element:To Tokens=Those square-bracketed pieces inside Understand grammar|About tokens&lt;TOKENS&gt;; New tokens&lt;NEWTOKENS&gt;}</span></span>
 <span class="tr"><span class="th" id="line162">162</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line163">163</span><span class="td">{-index-page:e9cf08=Kinds&nbsp;Index=All&nbsp;the&nbsp;different&nbsp;sorts&nbsp;of&nbsp;value}</span></span>
-<span class="tr"><span class="th" id="line164">164</span><span class="td">{-index-element:Ch&nbsp;Chart=A&nbsp;chart&nbsp;of&nbsp;all&nbsp;the&nbsp;kinds|About&nbsp;kinds&lt;KINDS&gt;;&nbsp;New&nbsp;kinds&nbsp;of&nbsp;object&lt;NEWKINDS&gt;;&nbsp;Other&nbsp;new&nbsp;kinds&lt;KINDSVALUE&gt;}</span></span>
-<span class="tr"><span class="th" id="line165">165</span><span class="td">{-index-element:Ar&nbsp;Arithmetic=Which&nbsp;values&nbsp;can&nbsp;be&nbsp;added&nbsp;up,&nbsp;multiplied&nbsp;and&nbsp;so&nbsp;on|About&nbsp;arithmetic&lt;ARITHMETIC&gt;}</span></span>
-<span class="tr"><span class="th" id="line166">166</span><span class="td">{-index-element:Vl&nbsp;Values=Values&nbsp;which&nbsp;vary&nbsp;during&nbsp;play,&nbsp;and&nbsp;equations.|About&nbsp;variables&lt;VARIABLES&gt;}</span></span>
+<span class="tr"><span class="th" id="line163">163</span><span class="td">{-index-page:e9cf08=Kinds Index=All the different sorts of value}</span></span>
+<span class="tr"><span class="th" id="line164">164</span><span class="td">{-index-element:Ch Chart=A chart of all the kinds|About kinds&lt;KINDS&gt;; New kinds of object&lt;NEWKINDS&gt;; Other new kinds&lt;KINDSVALUE&gt;}</span></span>
+<span class="tr"><span class="th" id="line165">165</span><span class="td">{-index-element:Ar Arithmetic=Which values can be added up, multiplied and so on|About arithmetic&lt;ARITHMETIC&gt;}</span></span>
+<span class="tr"><span class="th" id="line166">166</span><span class="td">{-index-element:Vl Values=Values which vary during play, and equations.|About variables&lt;VARIABLES&gt;}</span></span>
 <span class="tr"><span class="th" id="line167">167</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line168">168</span><span class="td">{-index-page:52992f=Phrasebook&nbsp;Index=A&nbsp;short&nbsp;dictionary}</span></span>
-<span class="tr"><span class="th" id="line169">169</span><span class="td">{-index-element:Ph&nbsp;Phrases=A&nbsp;guide&nbsp;to&nbsp;the&nbsp;phrases&nbsp;allowed|About&nbsp;phrases&lt;PHRASES&gt;}</span></span>
-<span class="tr"><span class="th" id="line170">170</span><span class="td">{-index-element:Lx&nbsp;Lexicon=Words&nbsp;used&nbsp;in&nbsp;descriptions|About&nbsp;descriptions&lt;DESCRIPTIONS&gt;}</span></span>
-<span class="tr"><span class="th" id="line171">171</span><span class="td">{-index-element:Rl&nbsp;Relations=Relations&nbsp;give&nbsp;meaning&nbsp;to&nbsp;verbs|About&nbsp;relations&lt;RELATIONS&gt;}</span></span>
-<span class="tr"><span class="th" id="line172">172</span><span class="td">{-index-element:Vb&nbsp;Verbs=A&nbsp;table&nbsp;of&nbsp;verbs|About&nbsp;verbs&lt;VERBS&gt;}</span></span>
+<span class="tr"><span class="th" id="line168">168</span><span class="td">{-index-page:52992f=Phrasebook Index=A short dictionary}</span></span>
+<span class="tr"><span class="th" id="line169">169</span><span class="td">{-index-element:Ph Phrases=A guide to the phrases allowed|About phrases&lt;PHRASES&gt;}</span></span>
+<span class="tr"><span class="th" id="line170">170</span><span class="td">{-index-element:Lx Lexicon=Words used in descriptions|About descriptions&lt;DESCRIPTIONS&gt;}</span></span>
+<span class="tr"><span class="th" id="line171">171</span><span class="td">{-index-element:Rl Relations=Relations give meaning to verbs|About relations&lt;RELATIONS&gt;}</span></span>
+<span class="tr"><span class="th" id="line172">172</span><span class="td">{-index-element:Vb Verbs=A table of verbs|About verbs&lt;VERBS&gt;}</span></span>
 <span class="tr"><span class="th" id="line173">173</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line174">174</span><span class="td">{-index-page:1d31b4=Rules&nbsp;Index=Inform&#39;s&nbsp;general&nbsp;workings}</span></span>
-<span class="tr"><span class="th" id="line175">175</span><span class="td">{-index-element:St&nbsp;Standards=From&nbsp;the&nbsp;Standard&nbsp;Rules|About&nbsp;rulebooks&lt;RULEBOOKS&gt;;&nbsp;About&nbsp;activities&lt;ACTIVITIES&gt;;&nbsp;Moving&nbsp;or&nbsp;abolishing&nbsp;rules&lt;RLISTING&gt;}</span></span>
-<span class="tr"><span class="th" id="line176">176</span><span class="td">{-index-element:Xt&nbsp;Extras=Further&nbsp;rulebooks,&nbsp;from&nbsp;the&nbsp;source&nbsp;or&nbsp;extensions|About&nbsp;rulebooks&lt;RULEBOOKS&gt;;&nbsp;About&nbsp;activities&lt;ACTIVITIES&gt;;&nbsp;Moving&nbsp;or&nbsp;abolishing&nbsp;rules&lt;RLISTING&gt;}</span></span>
+<span class="tr"><span class="th" id="line174">174</span><span class="td">{-index-page:1d31b4=Rules Index=Inform&#39;s general workings}</span></span>
+<span class="tr"><span class="th" id="line175">175</span><span class="td">{-index-element:St Standards=From the Standard Rules|About rulebooks&lt;RULEBOOKS&gt;; About activities&lt;ACTIVITIES&gt;; Moving or abolishing rules&lt;RLISTING&gt;}</span></span>
+<span class="tr"><span class="th" id="line176">176</span><span class="td">{-index-element:Xt Extras=Further rulebooks, from the source or extensions|About rulebooks&lt;RULEBOOKS&gt;; About activities&lt;ACTIVITIES&gt;; Moving or abolishing rules&lt;RLISTING&gt;}</span></span>
 <span class="tr"><span class="th" id="line177">177</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line178">178</span><span class="td">{-index-page:001860=Scenes&nbsp;Index=Like&nbsp;scenes&nbsp;in&nbsp;a&nbsp;movie}</span></span>
-<span class="tr"><span class="th" id="line179">179</span><span class="td">{-index-element:Pl&nbsp;Plot=A&nbsp;map&nbsp;of&nbsp;how&nbsp;the&nbsp;scenes&nbsp;begin&nbsp;and&nbsp;end|About&nbsp;scenes&lt;SCENESINTRO&gt;;&nbsp;How&nbsp;they&nbsp;link&nbsp;together&lt;LINKINGSCENES&gt;}</span></span>
-<span class="tr"><span class="th" id="line180">180</span><span class="td">{-index-element:Ev&nbsp;Events=Timed&nbsp;events,&nbsp;if&nbsp;any|About&nbsp;timed&nbsp;events&lt;TIMEDEVENTS&gt;}</span></span>
-<span class="tr"><span class="th" id="line181">181</span><span class="td">{-index-element:RS&nbsp;Rules=General&nbsp;rules&nbsp;about&nbsp;scenes}</span></span>
+<span class="tr"><span class="th" id="line178">178</span><span class="td">{-index-page:001860=Scenes Index=Like scenes in a movie}</span></span>
+<span class="tr"><span class="th" id="line179">179</span><span class="td">{-index-element:Pl Plot=A map of how the scenes begin and end|About scenes&lt;SCENESINTRO&gt;; How they link together&lt;LINKINGSCENES&gt;}</span></span>
+<span class="tr"><span class="th" id="line180">180</span><span class="td">{-index-element:Ev Events=Timed events, if any|About timed events&lt;TIMEDEVENTS&gt;}</span></span>
+<span class="tr"><span class="th" id="line181">181</span><span class="td">{-index-element:RS Rules=General rules about scenes}</span></span>
 <span class="tr"><span class="th" id="line182">182</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line183">183</span><span class="td">{-index-page:8b58bf=World&nbsp;Index=Like&nbsp;locations,&nbsp;props&nbsp;and&nbsp;actors&nbsp;in&nbsp;a&nbsp;movie}</span></span>
-<span class="tr"><span class="th" id="line184">184</span><span class="td">{-index-element:Mp&nbsp;Map=A&nbsp;map&nbsp;of&nbsp;the&nbsp;world}</span></span>
-<span class="tr"><span class="th" id="line185">185</span><span class="td">{-index-element:Gz&nbsp;Gazetteer=An&nbsp;A-Z&nbsp;of&nbsp;places,&nbsp;things,&nbsp;people&nbsp;and&nbsp;so&nbsp;on}</span></span>
+<span class="tr"><span class="th" id="line183">183</span><span class="td">{-index-page:8b58bf=World Index=Like locations, props and actors in a movie}</span></span>
+<span class="tr"><span class="th" id="line184">184</span><span class="td">{-index-element:Mp Map=A map of the world}</span></span>
+<span class="tr"><span class="th" id="line185">185</span><span class="td">{-index-element:Gz Gazetteer=An A-Z of places, things, people and so on}</span></span>
 <span class="tr"><span class="th" id="line186">186</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line187">187</span><span class="td">{-index-page:111111=Welcome&nbsp;Index=This&nbsp;text&nbsp;is&nbsp;not&nbsp;actually&nbsp;used}</span></span>
-<span class="tr"><span class="th" id="line188">188</span><span class="td">{-index-element:Bg&nbsp;Bogus=Does&nbsp;not&nbsp;in&nbsp;fact&nbsp;exist}</span></span>
+<span class="tr"><span class="th" id="line187">187</span><span class="td">{-index-page:111111=Welcome Index=This text is not actually used}</span></span>
+<span class="tr"><span class="th" id="line188">188</span><span class="td">{-index-element:Bg Bogus=Does not in fact exist}</span></span>
 <span class="tr"><span class="th" id="line189">189</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line190">190</span><span class="td">{-index:Contents&nbsp;Index=How&nbsp;the&nbsp;source&nbsp;text&nbsp;is&nbsp;organised}</span></span>
-<span class="tr"><span class="th" id="line191">191</span><span class="td">{-index:Actions&nbsp;Index=Things&nbsp;that&nbsp;people&nbsp;can&nbsp;try&nbsp;to&nbsp;do}</span></span>
-<span class="tr"><span class="th" id="line192">192</span><span class="td">{-index:Kinds&nbsp;Index=All&nbsp;the&nbsp;different&nbsp;sorts&nbsp;of&nbsp;value}</span></span>
-<span class="tr"><span class="th" id="line193">193</span><span class="td">{-index:Phrasebook&nbsp;Index=A&nbsp;short&nbsp;dictionary}</span></span>
-<span class="tr"><span class="th" id="line194">194</span><span class="td">{-index:Rules&nbsp;Index=And&nbsp;the&nbsp;rulebooks&nbsp;they&nbsp;belong&nbsp;to}</span></span>
-<span class="tr"><span class="th" id="line195">195</span><span class="td">{-index:Scenes&nbsp;Index=Like&nbsp;scenes&nbsp;in&nbsp;a&nbsp;movie}</span></span>
-<span class="tr"><span class="th" id="line196">196</span><span class="td">{-index:World&nbsp;Index=Like&nbsp;locations,&nbsp;props&nbsp;and&nbsp;actors&nbsp;in&nbsp;a&nbsp;movie}</span></span>
-<span class="tr"><span class="th" id="line197">197</span><span class="td">{-index:Welcome&nbsp;Index=Navigation&nbsp;only}</span></span>
+<span class="tr"><span class="th" id="line190">190</span><span class="td">{-index:Contents Index=How the source text is organised}</span></span>
+<span class="tr"><span class="th" id="line191">191</span><span class="td">{-index:Actions Index=Things that people can try to do}</span></span>
+<span class="tr"><span class="th" id="line192">192</span><span class="td">{-index:Kinds Index=All the different sorts of value}</span></span>
+<span class="tr"><span class="th" id="line193">193</span><span class="td">{-index:Phrasebook Index=A short dictionary}</span></span>
+<span class="tr"><span class="th" id="line194">194</span><span class="td">{-index:Rules Index=And the rulebooks they belong to}</span></span>
+<span class="tr"><span class="th" id="line195">195</span><span class="td">{-index:Scenes Index=Like scenes in a movie}</span></span>
+<span class="tr"><span class="th" id="line196">196</span><span class="td">{-index:World Index=Like locations, props and actors in a movie}</span></span>
+<span class="tr"><span class="th" id="line197">197</span><span class="td">{-index:Welcome Index=Navigation only}</span></span>
 <span class="tr"><span class="th" id="line198">198</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line199">199</span><span class="td">{-index-page:cf0a38=Action&nbsp;Details=This&nbsp;text&nbsp;is&nbsp;not&nbsp;actually&nbsp;used}</span></span>
-<span class="tr"><span class="th" id="line200">200</span><span class="td">{-index-element:Bg&nbsp;Bogus=Does&nbsp;not&nbsp;in&nbsp;fact&nbsp;exist}</span></span>
+<span class="tr"><span class="th" id="line199">199</span><span class="td">{-index-page:cf0a38=Action Details=This text is not actually used}</span></span>
+<span class="tr"><span class="th" id="line200">200</span><span class="td">{-index-element:Bg Bogus=Does not in fact exist}</span></span>
 <span class="tr"><span class="th" id="line201">201</span><span class="td"></span></span>
 <span class="tr"><span class="th" id="line202">202</span><span class="td">{-callv:Index::complete}</span></span>
 <span class="tr"><span class="th" id="line203">203</span><span class="td">{-close-index}</span></span>
@@ -185,10 +188,10 @@ padding-bottom: 1rem; margin-bottom: 2rem; }
 <h3 id="#main-shutdown">Shutdown.</h3><p><p> Making any final reports to the debugging log, and that&#39;s then it.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line209">209</span><span class="td">{-callv:TemplateFiles::report_unacted_upon_interventions}</span></span>
 <span class="tr"><span class="th" id="line210">210</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line211">211</span><span class="td">{!&nbsp;-callv:ParseTree::write_main_source_to_log}</span></span>
-<span class="tr"><span class="th" id="line212">212</span><span class="td">{!&nbsp;-callv:Memory::log_statistics}</span></span>
-<span class="tr"><span class="th" id="line213">213</span><span class="td">{!&nbsp;-callv:Preform::log_language}</span></span>
-<span class="tr"><span class="th" id="line214">214</span><span class="td">{!&nbsp;-callv:Index::DocReferences::log_statistics}</span></span>
-<span class="tr"><span class="th" id="line215">215</span><span class="td">{!&nbsp;-callv:Parser::SParser::debug_parser_statistics}</span></span>
-<span class="tr"><span class="th" id="line216">216</span><span class="td">{!&nbsp;-callv:Verbs::log_all}</span></span>
-</div><footer><hr><p><em>From I6T lib 6/12N &copy; Graham Nelson and published under the <a href="https://github.com/zedlopez/standard_rules/blob/main/LICENSE.md">Artistic License 2.0</a>. Distributed with <a href="http://inform7.com/">Inform 7 6M62</a>.</em></p></footer></body></html>
+<span class="tr"><span class="th" id="line211">211</span><span class="td">{! -callv:ParseTree::write_main_source_to_log}</span></span>
+<span class="tr"><span class="th" id="line212">212</span><span class="td">{! -callv:Memory::log_statistics}</span></span>
+<span class="tr"><span class="th" id="line213">213</span><span class="td">{! -callv:Preform::log_language}</span></span>
+<span class="tr"><span class="th" id="line214">214</span><span class="td">{! -callv:Index::DocReferences::log_statistics}</span></span>
+<span class="tr"><span class="th" id="line215">215</span><span class="td">{! -callv:Parser::SParser::debug_parser_statistics}</span></span>
+<span class="tr"><span class="th" id="line216">216</span><span class="td">{! -callv:Verbs::log_all}</span></span>
+</div><footer><p><em>From I6T lib 6/12N &copy; Graham Nelson and published under the <a href="https://github.com/zedlopez/standard_rules/blob/main/LICENSE.md">Artistic License 2.0</a>. Distributed with <a href="http://inform7.com/">Inform 7 6M62</a>.</em></p></footer></body></html>
