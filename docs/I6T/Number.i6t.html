@@ -27,76 +27,85 @@ h1 { margin: 0; }
 padding-bottom: .5rem; margin-bottom: 1.5rem; margin-top: 1.75rem; padding-top: .25rem;}
 footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; margin-bottom: 0;}
 /*.subtitle { font-weight: bold; font-size: 1.2rem; }*/
+.dstring { font-weight: bold;
+  color: #095097; }
+.sstring { font-weight: bold;
+  color: #095097; }
+.comment {  
+  color: #156D15; } /* #207D20; */
     </style>
 </head>
 <body>
 <header>
 <h1>I6 Template Layer</h1>
-<div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Index</a> &bull; <a href="./Introduction.i6t.html">Introduction</a></div><hr></header>
+<div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Index</a> &bull; <a href="./Introduction.i6t.html">Introduction</a> 
+&bull; <a href="fn_index.html">Function Index</a> 
+&bull; <a href="rules_index.html">Rules Index</a> 
+</div><hr></header>
 <div id="front_matter">
 <h2><a href="./Number.i6t.txt">Number.i6t</a></h2><h3 id="#number-understanding">Understanding.</h3><p><p> In our target virtual machines, numbers are stored in twos-complement form, so that a 16-bit VM can hold the range of integers <em>-2<sup>15</sup> = -32768</em> to <em>2<sup>15</sup>-1 = +32767</em>, while a 32-bit VM can hold <em>-2<sup>31</sup> = -2147483648</em> to <em>2<sup>31</sup>-1 = +2147483647</em>: the token below accepts exactly those ranges.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line14">14</span><span class="td">[ DECIMAL_TOKEN wnc wna r n wa wl sign base digit digit_count original_wn group_wn;</span></span>
-<span class="tr"><span class="th" id="line15">15</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    wnc = wn; original_wn = wn; group_wn = wn;</span></span>
+<span class="tr"><span class="th" id="line15">15</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;wnc = wn; original_wn = wn; group_wn = wn;</span></span>
 <span class="tr"><span class="th" id="line16">16</span><span class="td">{-call:PL::Parsing::Tokens::Values::number}</span></span>
-<span class="tr"><span class="th" id="line17">17</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    wn = wnc;</span></span>
-<span class="tr"><span class="th" id="line18">18</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    r = ParseTokenStopped(ELEMENTARY_TT, NUMBER_TOKEN);</span></span>
-<span class="tr"><span class="th" id="line19">19</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if ((r == GPR_NUMBER) &amp;&amp; (parsed_number ~= 10000)) return r;</span></span>
-<span class="tr"><span class="th" id="line20">20</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    wn = wnc;</span></span>
-<span class="tr"><span class="th" id="line21">21</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    wa = WordAddress(wn);</span></span>
-<span class="tr"><span class="th" id="line22">22</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    wl = WordLength(wn);</span></span>
-<span class="tr"><span class="th" id="line23">23</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    sign = 1; base = 10; digit_count = 0;</span></span>
-<span class="tr"><span class="th" id="line24">24</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (wa-&gt;0 ~= &#39;-&#39; or &#39;$&#39; or &#39;0&#39; or &#39;1&#39; or &#39;2&#39; or &#39;3&#39; or &#39;4&#39;</span></span>
-<span class="tr"><span class="th" id="line25">25</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        or &#39;5&#39; or &#39;6&#39; or &#39;7&#39; or &#39;8&#39; or &#39;9&#39;)</span></span>
-<span class="tr"><span class="th" id="line26">26</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        return GPR_FAIL;</span></span>
-<span class="tr"><span class="th" id="line27">27</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (wa-&gt;0 == &#39;-&#39;) { sign = -1; wl--; wa++; }</span></span>
-<span class="tr"><span class="th" id="line28">28</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (wl == 0) return GPR_FAIL;</span></span>
-<span class="tr"><span class="th" id="line29">29</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    n = 0;</span></span>
-<span class="tr"><span class="th" id="line30">30</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    while (wl &gt; 0) {</span></span>
-<span class="tr"><span class="th" id="line31">31</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (wa-&gt;0 &gt;= &#39;a&#39;) digit = wa-&gt;0 - &#39;a&#39; + 10;</span></span>
-<span class="tr"><span class="th" id="line32">32</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        else digit = wa-&gt;0 - &#39;0&#39;;</span></span>
-<span class="tr"><span class="th" id="line33">33</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        digit_count++;</span></span>
-<span class="tr"><span class="th" id="line34">34</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        switch (base) {</span></span>
-<span class="tr"><span class="th" id="line35">35</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            2:  if (digit_count == 17) return GPR_FAIL;</span></span>
-<span class="tr"><span class="th" id="line36">36</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            10:</span></span>
-<span class="tr"><span class="th" id="line37">37</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                #Iftrue (WORDSIZE == 2);</span></span>
-<span class="tr"><span class="th" id="line38">38</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                if (digit_count == 6) return GPR_FAIL;</span></span>
-<span class="tr"><span class="th" id="line39">39</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                if (digit_count == 5) {</span></span>
-<span class="tr"><span class="th" id="line40">40</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    if (n &gt; 3276) return GPR_FAIL;</span></span>
-<span class="tr"><span class="th" id="line41">41</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    if (n == 3276) {</span></span>
-<span class="tr"><span class="th" id="line42">42</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                        if (sign == 1 &amp;&amp; digit &gt; 7) return GPR_FAIL;</span></span>
-<span class="tr"><span class="th" id="line43">43</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                        if (sign == -1 &amp;&amp; digit &gt; 8) return GPR_FAIL;</span></span>
-<span class="tr"><span class="th" id="line44">44</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    }</span></span>
-<span class="tr"><span class="th" id="line45">45</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                }</span></span>
-<span class="tr"><span class="th" id="line46">46</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                #Ifnot; ! i.e., if (WORDSIZE == 4)</span></span>
-<span class="tr"><span class="th" id="line47">47</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                if (digit_count == 11) return GPR_FAIL;</span></span>
-<span class="tr"><span class="th" id="line48">48</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                if (digit_count == 10) {</span></span>
-<span class="tr"><span class="th" id="line49">49</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    if (n &gt; 214748364) return GPR_FAIL;</span></span>
-<span class="tr"><span class="th" id="line50">50</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    if (n == 214748364) {</span></span>
-<span class="tr"><span class="th" id="line51">51</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                        if (sign == 1 &amp;&amp; digit &gt; 7) return GPR_FAIL;</span></span>
-<span class="tr"><span class="th" id="line52">52</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                        if (sign == -1 &amp;&amp; digit &gt; 8) return GPR_FAIL;</span></span>
-<span class="tr"><span class="th" id="line53">53</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    }</span></span>
-<span class="tr"><span class="th" id="line54">54</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                }</span></span>
-<span class="tr"><span class="th" id="line55">55</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                #Endif; </span></span>
-<span class="tr"><span class="th" id="line56">56</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            16: if (digit_count == 5) return GPR_FAIL;</span></span>
-<span class="tr"><span class="th" id="line57">57</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
-<span class="tr"><span class="th" id="line58">58</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (digit &gt;= 0 &amp;&amp; digit &lt; base) n = base*n + digit;</span></span>
-<span class="tr"><span class="th" id="line59">59</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        else return GPR_FAIL;</span></span>
-<span class="tr"><span class="th" id="line60">60</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        wl--; wa++;</span></span>
-<span class="tr"><span class="th" id="line61">61</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line62">62</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    parsed_number = n*sign; wn++;</span></span>
-<span class="tr"><span class="th" id="line63">63</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return GPR_NUMBER;</span></span>
+<span class="tr"><span class="th" id="line17">17</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;wn = wnc;</span></span>
+<span class="tr"><span class="th" id="line18">18</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;r = ParseTokenStopped(ELEMENTARY_TT, NUMBER_TOKEN);</span></span>
+<span class="tr"><span class="th" id="line19">19</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if ((r == GPR_NUMBER) &amp;&amp; (parsed_number ~= 10000)) return r;</span></span>
+<span class="tr"><span class="th" id="line20">20</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;wn = wnc;</span></span>
+<span class="tr"><span class="th" id="line21">21</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;wa = WordAddress(wn);</span></span>
+<span class="tr"><span class="th" id="line22">22</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;wl = WordLength(wn);</span></span>
+<span class="tr"><span class="th" id="line23">23</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;sign = 1; base = 10; digit_count = 0;</span></span>
+<span class="tr"><span class="th" id="line24">24</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (wa-&gt;0 ~= <span class="sstring">&#39;-&#39;</span> or <span class="sstring">&#39;$&#39;</span> or <span class="sstring">&#39;0&#39;</span> or <span class="sstring">&#39;1&#39;</span> or <span class="sstring">&#39;2&#39;</span> or <span class="sstring">&#39;3&#39;</span> or <span class="sstring">&#39;4&#39;</span></span></span>
+<span class="tr"><span class="th" id="line25">25</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;or <span class="sstring">&#39;5&#39;</span> or <span class="sstring">&#39;6&#39;</span> or <span class="sstring">&#39;7&#39;</span> or <span class="sstring">&#39;8&#39;</span> or <span class="sstring">&#39;9&#39;</span>)</span></span>
+<span class="tr"><span class="th" id="line26">26</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line27">27</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (wa-&gt;0 == <span class="sstring">&#39;-&#39;</span>) { sign = -1; wl--; wa++; }</span></span>
+<span class="tr"><span class="th" id="line28">28</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (wl == 0) return GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line29">29</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;n = 0;</span></span>
+<span class="tr"><span class="th" id="line30">30</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;while (wl &gt; 0) {</span></span>
+<span class="tr"><span class="th" id="line31">31</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (wa-&gt;0 &gt;= <span class="sstring">&#39;a&#39;</span>) digit = wa-&gt;0 - <span class="sstring">&#39;a&#39;</span> + 10;</span></span>
+<span class="tr"><span class="th" id="line32">32</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else digit = wa-&gt;0 - <span class="sstring">&#39;0&#39;</span>;</span></span>
+<span class="tr"><span class="th" id="line33">33</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;digit_count++;</span></span>
+<span class="tr"><span class="th" id="line34">34</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;switch (base) {</span></span>
+<span class="tr"><span class="th" id="line35">35</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2:  if (digit_count == 17) return GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line36">36</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10:</span></span>
+<span class="tr"><span class="th" id="line37">37</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#Iftrue (WORDSIZE == 2);</span></span>
+<span class="tr"><span class="th" id="line38">38</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (digit_count == 6) return GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line39">39</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (digit_count == 5) {</span></span>
+<span class="tr"><span class="th" id="line40">40</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (n &gt; 3276) return GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line41">41</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (n == 3276) {</span></span>
+<span class="tr"><span class="th" id="line42">42</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (sign == 1 &amp;&amp; digit &gt; 7) return GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line43">43</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (sign == -1 &amp;&amp; digit &gt; 8) return GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line44">44</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line45">45</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line46">46</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#Ifnot; <span class="comment">! i.e., if (WORDSIZE == 4)</span></span></span>
+<span class="tr"><span class="th" id="line47">47</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (digit_count == 11) return GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line48">48</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (digit_count == 10) {</span></span>
+<span class="tr"><span class="th" id="line49">49</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (n &gt; 214748364) return GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line50">50</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (n == 214748364) {</span></span>
+<span class="tr"><span class="th" id="line51">51</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (sign == 1 &amp;&amp; digit &gt; 7) return GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line52">52</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (sign == -1 &amp;&amp; digit &gt; 8) return GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line53">53</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line54">54</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line55">55</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#Endif; </span></span>
+<span class="tr"><span class="th" id="line56">56</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;16: if (digit_count == 5) return GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line57">57</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line58">58</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (digit &gt;= 0 &amp;&amp; digit &lt; base) n = base*n + digit;</span></span>
+<span class="tr"><span class="th" id="line59">59</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else return GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line60">60</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wl--; wa++;</span></span>
+<span class="tr"><span class="th" id="line61">61</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line62">62</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;parsed_number = n*sign; wn++;</span></span>
+<span class="tr"><span class="th" id="line63">63</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return GPR_NUMBER;</span></span>
 <span class="tr"><span class="th" id="line64">64</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#number-truth-states">Truth states.</h3><p><p> And although truth states are not strictly speaking numbers, this seems as good a point as any to parse them:<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line71">71</span><span class="td">[ TRUTH_STATE_TOKEN original_wn wd;</span></span>
-<span class="tr"><span class="th" id="line72">72</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    original_wn = wn;</span></span>
+<span class="tr"><span class="th" id="line72">72</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;original_wn = wn;</span></span>
 <span class="tr"><span class="th" id="line73">73</span><span class="td">{-call:PL::Parsing::Tokens::Values::truth_state}</span></span>
-<span class="tr"><span class="th" id="line74">74</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    wn = original_wn;</span></span>
-<span class="tr"><span class="th" id="line75">75</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    wd = NextWordStopped();</span></span>
-<span class="tr"><span class="th" id="line76">76</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (wd == &#39;true&#39;) { parsed_number = 1; return GPR_NUMBER; }</span></span>
-<span class="tr"><span class="th" id="line77">77</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (wd == &#39;false&#39;) { parsed_number = 0; return GPR_NUMBER; }</span></span>
-<span class="tr"><span class="th" id="line78">78</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    wn = original_wn;</span></span>
-<span class="tr"><span class="th" id="line79">79</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return GPR_FAIL;</span></span>
+<span class="tr"><span class="th" id="line74">74</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;wn = original_wn;</span></span>
+<span class="tr"><span class="th" id="line75">75</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;wd = NextWordStopped();</span></span>
+<span class="tr"><span class="th" id="line76">76</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (wd == <span class="sstring">&#39;true&#39;</span>) { parsed_number = 1; return GPR_NUMBER; }</span></span>
+<span class="tr"><span class="th" id="line77">77</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (wd == <span class="sstring">&#39;false&#39;</span>) { parsed_number = 0; return GPR_NUMBER; }</span></span>
+<span class="tr"><span class="th" id="line78">78</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;wn = original_wn;</span></span>
+<span class="tr"><span class="th" id="line79">79</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return GPR_FAIL;</span></span>
 <span class="tr"><span class="th" id="line80">80</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#number-absolute-value">Absolute value.</h3><p><p> It&#39;s convenient to have this around somewhere:<p></p><p></div><div class="pre">

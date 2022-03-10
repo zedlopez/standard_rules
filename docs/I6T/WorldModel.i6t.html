@@ -27,266 +27,275 @@ h1 { margin: 0; }
 padding-bottom: .5rem; margin-bottom: 1.5rem; margin-top: 1.75rem; padding-top: .25rem;}
 footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; margin-bottom: 0;}
 /*.subtitle { font-weight: bold; font-size: 1.2rem; }*/
+.dstring { font-weight: bold;
+  color: #095097; }
+.sstring { font-weight: bold;
+  color: #095097; }
+.comment {  
+  color: #156D15; } /* #207D20; */
     </style>
 </head>
 <body>
 <header>
 <h1>I6 Template Layer</h1>
-<div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Index</a> &bull; <a href="./Introduction.i6t.html">Introduction</a></div><hr></header>
+<div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Index</a> &bull; <a href="./Introduction.i6t.html">Introduction</a> 
+&bull; <a href="fn_index.html">Function Index</a> 
+&bull; <a href="rules_index.html">Rules Index</a> 
+</div><hr></header>
 <div id="front_matter">
 <h2><a href="./WorldModel.i6t.txt">WorldModel.i6t</a></h2><h3 id="#worldmodel-the-core-tree">The Core Tree.</h3><p><p> Whereas I6 traditionally has a simple object tree hierarchy for containment, support, carrying and so on, the I7 template also uses the <span class="fixed">component_*</span> properties to provide a second tree which defines the &quot;part of&quot; relation. These two trees interact in a subtle way, and it took a very long time to work out the simplest way to express this.<p></p><p> The <strong> core</strong> of an object is the root of its subtree in the component relation tree. So for a television set with a control panel which has a button on, the core for the button (and also for the panel and the set) will be the set. When X is a part of Y, it must be spatially in the same position as Y, and so the spatial location of X is determined by the position in the object tree of its core. (In effect, the spatial situation can be found by contracting together all nodes corresponding to objects which are parts of each other, but it would waste memory to construct such a tree: <span class="fixed"><a href="./WorldModel.i6t.html#line58">CoreOfParentOfCoreOf</a></span> simulates what the <span class="fixed">parent</span> operation would be in such a tree if it existed, wasting a little time instead.)<p></p><p> The <strong> holder</strong> of an object is its component parent, if it is part of something, or its object-tree parent if it has one. It is illegal for both of these to be non-<span class="fixed">nothing</span>, so this is unambiguous.<p></p><p> It is just possible for <span class="fixed"><a href="./WorldModel.i6t.html#line41">HolderOf</a></span> to be called before the player has been placed into the model world, in cases where Inform is checking a past tense condition in the opening pre-turn. We don&#39;t want to return <span class="fixed">nothing</span> then because that would make it true that<p></p><p><div class="pre-lines">HolderOf(player) == ContainerOf(player)</div><p></p><p> and similar conditions &ndash; thus, it would appear that in the immediate past the player had been on the holder of the player, which is not in fact the case. So we return <span class="fixed">thedark</span> as a typesafe but impossible value here.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line41">41</span><span class="td">[ HolderOf o;</span></span>
-<span class="tr"><span class="th" id="line42">42</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (InitialSituation--&gt;DONE_INIS == false) return thedark;</span></span>
-<span class="tr"><span class="th" id="line43">43</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (o &amp;&amp; (o.component_parent)) return o.component_parent;</span></span>
-<span class="tr"><span class="th" id="line44">44</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (o &amp;&amp; (parent(o))) return parent(o);</span></span>
-<span class="tr"><span class="th" id="line45">45</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return nothing;</span></span>
+<span class="tr"><span class="th" id="line42">42</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (InitialSituation--&gt;DONE_INIS == false) return thedark;</span></span>
+<span class="tr"><span class="th" id="line43">43</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (o &amp;&amp; (o.component_parent)) return o.component_parent;</span></span>
+<span class="tr"><span class="th" id="line44">44</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (o &amp;&amp; (parent(o))) return parent(o);</span></span>
+<span class="tr"><span class="th" id="line45">45</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return nothing;</span></span>
 <span class="tr"><span class="th" id="line46">46</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line47">47</span><span class="td"></span></span>
 <span class="tr"><span class="th" id="line48">48</span><span class="td">[ ParentOf o;</span></span>
-<span class="tr"><span class="th" id="line49">49</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (o) o = parent(o);</span></span>
-<span class="tr"><span class="th" id="line50">50</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return o;</span></span>
+<span class="tr"><span class="th" id="line49">49</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (o) o = parent(o);</span></span>
+<span class="tr"><span class="th" id="line50">50</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return o;</span></span>
 <span class="tr"><span class="th" id="line51">51</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line52">52</span><span class="td"></span></span>
 <span class="tr"><span class="th" id="line53">53</span><span class="td">[ CoreOf o;</span></span>
-<span class="tr"><span class="th" id="line54">54</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    while (o &amp;&amp; (o provides component_parent) &amp;&amp; (o.component_parent)) o = o.component_parent;</span></span>
-<span class="tr"><span class="th" id="line55">55</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return o;</span></span>
+<span class="tr"><span class="th" id="line54">54</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;while (o &amp;&amp; (o provides component_parent) &amp;&amp; (o.component_parent)) o = o.component_parent;</span></span>
+<span class="tr"><span class="th" id="line55">55</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return o;</span></span>
 <span class="tr"><span class="th" id="line56">56</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line57">57</span><span class="td"></span></span>
 <span class="tr"><span class="th" id="line58">58</span><span class="td">[ CoreOfParentOfCoreOf o;</span></span>
-<span class="tr"><span class="th" id="line59">59</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    while (o &amp;&amp; (o provides component_parent) &amp;&amp; (o.component_parent)) o = o.component_parent;</span></span>
-<span class="tr"><span class="th" id="line60">60</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (o) o = parent(o);</span></span>
-<span class="tr"><span class="th" id="line61">61</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    while (o &amp;&amp; (o provides component_parent) &amp;&amp; (o.component_parent)) o = o.component_parent;</span></span>
-<span class="tr"><span class="th" id="line62">62</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return o;</span></span>
+<span class="tr"><span class="th" id="line59">59</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;while (o &amp;&amp; (o provides component_parent) &amp;&amp; (o.component_parent)) o = o.component_parent;</span></span>
+<span class="tr"><span class="th" id="line60">60</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (o) o = parent(o);</span></span>
+<span class="tr"><span class="th" id="line61">61</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;while (o &amp;&amp; (o provides component_parent) &amp;&amp; (o.component_parent)) o = o.component_parent;</span></span>
+<span class="tr"><span class="th" id="line62">62</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return o;</span></span>
 <span class="tr"><span class="th" id="line63">63</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#worldmodel-climbing-the-core-tree">Climbing the Core Tree.</h3><p><p> <span class="fixed"><a href="./WorldModel.i6t.html#line78">LocationOf</a></span> returns the room in which an object can be found, or <span class="fixed">nothing</span> if it is out of play. Directions and regions are always out of play. Doors and backdrops can be in multiple places: if they are in the current location, then that&#39;s the answer; otherwise a two-sided door is in its &quot;front side&quot;, and a backdrop in the earliest declared room which it&#39;s currently in. For a room, <span class="fixed"><a href="./WorldModel.i6t.html#line78">LocationOf</a></span> is necessarily itself.<p></p><p> <span class="fixed"><a href="./WorldModel.i6t.html#line95">CommonAncestor</a></span> finds the nearest object indirectly containing <span class="fixed">o1</span> and <span class="fixed">o2</span>, or returns <span class="fixed">nothing</span> if there is no common ancestor. (This is a port of <span class="fixed"><a href="./WorldModel.i6t.html#line95">CommonAncestor</a></span> from the I6 library, adapted to work on the core tree.)<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line78">78</span><span class="td">[ LocationOf o;</span></span>
-<span class="tr"><span class="th" id="line79">79</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (~~(o ofclass K1_room or K2_thing)) return nothing;</span></span>
-<span class="tr"><span class="th" id="line80">80</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (o ofclass K4_door) {</span></span>
-<span class="tr"><span class="th" id="line81">81</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (parent(o) == real_location) return real_location;</span></span>
-<span class="tr"><span class="th" id="line82">82</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        return FrontSideOfDoor(o);</span></span>
-<span class="tr"><span class="th" id="line83">83</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line84">84</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (o ofclass K7_backdrop) {</span></span>
-<span class="tr"><span class="th" id="line85">85</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ! print &quot;(deciding &quot;, (the) O, &quot; is at &quot;, (the) BackdropLocation(o), &quot;) &quot;;</span></span>
-<span class="tr"><span class="th" id="line86">86</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        return BackdropLocation(o);</span></span>
-<span class="tr"><span class="th" id="line87">87</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line88">88</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    while (o) {</span></span>
-<span class="tr"><span class="th" id="line89">89</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (o ofclass K1_room) return o;</span></span>
-<span class="tr"><span class="th" id="line90">90</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        o = CoreOfParentOfCoreOf(o);</span></span>
-<span class="tr"><span class="th" id="line91">91</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line92">92</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return nothing;</span></span>
+<span class="tr"><span class="th" id="line79">79</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (~~(o ofclass K1_room or K2_thing)) return nothing;</span></span>
+<span class="tr"><span class="th" id="line80">80</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (o ofclass K4_door) {</span></span>
+<span class="tr"><span class="th" id="line81">81</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (parent(o) == real_location) return real_location;</span></span>
+<span class="tr"><span class="th" id="line82">82</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return FrontSideOfDoor(o);</span></span>
+<span class="tr"><span class="th" id="line83">83</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line84">84</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (o ofclass K7_backdrop) {</span></span>
+<span class="tr"><span class="th" id="line85">85</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">! print &quot;(deciding &quot;, (the) O, &quot; is at &quot;, (the) BackdropLocation(o), &quot;) &quot;;</span></span></span>
+<span class="tr"><span class="th" id="line86">86</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return BackdropLocation(o);</span></span>
+<span class="tr"><span class="th" id="line87">87</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line88">88</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;while (o) {</span></span>
+<span class="tr"><span class="th" id="line89">89</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (o ofclass K1_room) return o;</span></span>
+<span class="tr"><span class="th" id="line90">90</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;o = CoreOfParentOfCoreOf(o);</span></span>
+<span class="tr"><span class="th" id="line91">91</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line92">92</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return nothing;</span></span>
 <span class="tr"><span class="th" id="line93">93</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line94">94</span><span class="td"></span></span>
 <span class="tr"><span class="th" id="line95">95</span><span class="td">[ CommonAncestor o1 o2 i j;</span></span>
-<span class="tr"><span class="th" id="line96">96</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    o1 = CoreOf(o1);</span></span>
-<span class="tr"><span class="th" id="line97">97</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    o2 = CoreOf(o2);</span></span>
-<span class="tr"><span class="th" id="line98">98</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    </span></span>
-<span class="tr"><span class="th" id="line99">99</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (i=o1: i: i = CoreOfParentOfCoreOf(i))</span></span>
-<span class="tr"><span class="th" id="line100">100</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        for (j=o2: j: j = CoreOfParentOfCoreOf(j))</span></span>
-<span class="tr"><span class="th" id="line101">101</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (j == i) return j;</span></span>
+<span class="tr"><span class="th" id="line96">96</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;o1 = CoreOf(o1);</span></span>
+<span class="tr"><span class="th" id="line97">97</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;o2 = CoreOf(o2);</span></span>
+<span class="tr"><span class="th" id="line98">98</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;</span></span>
+<span class="tr"><span class="th" id="line99">99</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;for (i=o1: i: i = CoreOfParentOfCoreOf(i))</span></span>
+<span class="tr"><span class="th" id="line100">100</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for (j=o2: j: j = CoreOfParentOfCoreOf(j))</span></span>
+<span class="tr"><span class="th" id="line101">101</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (j == i) return j;</span></span>
 <span class="tr"><span class="th" id="line102">102</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line103">103</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return nothing;</span></span>
+<span class="tr"><span class="th" id="line103">103</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return nothing;</span></span>
 <span class="tr"><span class="th" id="line104">104</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line105">105</span><span class="td"></span></span>
 <span class="tr"><span class="th" id="line106">106</span><span class="td">[ IndirectlyContains o1 o2;</span></span>
-<span class="tr"><span class="th" id="line107">107</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if ((o1 == nothing) || (o2 == nothing)) rfalse;</span></span>
-<span class="tr"><span class="th" id="line108">108</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if ((o1 ofclass K1_room) &amp;&amp; (o2 ofclass K4_door)) {</span></span>
-<span class="tr"><span class="th" id="line109">109</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (o1 == FrontSideOfDoor(o2)) rtrue;</span></span>
-<span class="tr"><span class="th" id="line110">110</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (o1 == BackSideOfDoor(o2)) rtrue;</span></span>
-<span class="tr"><span class="th" id="line111">111</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        rfalse;</span></span>
-<span class="tr"><span class="th" id="line112">112</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line113">113</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (o2 ofclass K7_backdrop) rfalse;</span></span>
-<span class="tr"><span class="th" id="line114">114</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (o2 = HolderOf(o2) : o2 &amp;&amp; o2 ~= thedark : o2 = HolderOf(o2)) if (o2 == o1) rtrue;</span></span>
-<span class="tr"><span class="th" id="line115">115</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rfalse;</span></span>
+<span class="tr"><span class="th" id="line107">107</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if ((o1 == nothing) || (o2 == nothing)) rfalse;</span></span>
+<span class="tr"><span class="th" id="line108">108</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if ((o1 ofclass K1_room) &amp;&amp; (o2 ofclass K4_door)) {</span></span>
+<span class="tr"><span class="th" id="line109">109</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (o1 == FrontSideOfDoor(o2)) rtrue;</span></span>
+<span class="tr"><span class="th" id="line110">110</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (o1 == BackSideOfDoor(o2)) rtrue;</span></span>
+<span class="tr"><span class="th" id="line111">111</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line112">112</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line113">113</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (o2 ofclass K7_backdrop) rfalse;</span></span>
+<span class="tr"><span class="th" id="line114">114</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;for (o2 = HolderOf(o2) : o2 &amp;&amp; o2 ~= thedark : o2 = HolderOf(o2)) if (o2 == o1) rtrue;</span></span>
+<span class="tr"><span class="th" id="line115">115</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;rfalse;</span></span>
 <span class="tr"><span class="th" id="line116">116</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#worldmodel-to-decide-whether-in">To Decide Whether In.</h3><p><p> A curiosity, this: the I6 definition of &quot;To decide whether in (obj - object)&quot;. As can be seen, there are three possible interpretations of &quot;in&quot;, depending on the kind of object, so this could all be done with three different definitions in the Standard Rules, so that run-time type checking would decide which to apply: but that would produce a little overhead and make the code for this rather common operation a bit complicated. Besides, this way we can produce a respectable run-time problem message when the phrase is misapplied.<p></p><p> Note that &quot;in X&quot; is not equivalent to &quot;the player is in X&quot;: the latter uses direct containment, whereas we use indirect containment. Thus &quot;in the Hall&quot; and &quot;in the laundry-basket&quot; are both true if the player is in a laundry-basket in the Hall.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line133">133</span><span class="td">[ WhetherIn obj;</span></span>
-<span class="tr"><span class="th" id="line134">134</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (obj has enterable) {</span></span>
-<span class="tr"><span class="th" id="line135">135</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (IndirectlyContains(obj, player)) rtrue;</span></span>
-<span class="tr"><span class="th" id="line136">136</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        rfalse;</span></span>
-<span class="tr"><span class="th" id="line137">137</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line138">138</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (obj ofclass K9_region) return TestRegionalContainment(real_location, obj);</span></span>
-<span class="tr"><span class="th" id="line139">139</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (obj ofclass K1_room) {</span></span>
-<span class="tr"><span class="th" id="line140">140</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (obj == real_location) rtrue;</span></span>
-<span class="tr"><span class="th" id="line141">141</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        rfalse;</span></span>
-<span class="tr"><span class="th" id="line142">142</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line143">143</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    RunTimeProblem(RTP_NOTINAROOM, obj);</span></span>
-<span class="tr"><span class="th" id="line144">144</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rfalse;</span></span>
+<span class="tr"><span class="th" id="line134">134</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (obj has enterable) {</span></span>
+<span class="tr"><span class="th" id="line135">135</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (IndirectlyContains(obj, player)) rtrue;</span></span>
+<span class="tr"><span class="th" id="line136">136</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line137">137</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line138">138</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (obj ofclass K9_region) return TestRegionalContainment(real_location, obj);</span></span>
+<span class="tr"><span class="th" id="line139">139</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (obj ofclass K1_room) {</span></span>
+<span class="tr"><span class="th" id="line140">140</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (obj == real_location) rtrue;</span></span>
+<span class="tr"><span class="th" id="line141">141</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line142">142</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line143">143</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;RunTimeProblem(RTP_NOTINAROOM, obj);</span></span>
+<span class="tr"><span class="th" id="line144">144</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;rfalse;</span></span>
 <span class="tr"><span class="th" id="line145">145</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#worldmodel-containment-relation">Containment Relation.</h3><p><p> This is the single most important relation in I7: direct containment. It is complicated by the fact that &quot;A is in B&quot; is represented differently at run-time when A is a room and B is a region, and when it isn&#39;t.<p></p><p> For each A there is at most one B such that &quot;A is in B&quot; is true. Because of this we test the relation with a function of one variable which turns A into B, rather than a function of two variables returning true or false. <span class="fixed"><a href="./WorldModel.i6t.html#line164">ContainerOf</a></span> is that function.<p></p><p> I7 frequently needs to compile loops over all A such that &quot;A is in B&quot;. In simpler relations (such as the support relation below) it can do this efficiently by iterating through the object-tree children of B, but for containment we have to provide an iterator function <span class="fixed"><a href="./WorldModel.i6t.html#line174">TestContainmentRange</a></span>, as otherwise we would get the wrong result when B is a region.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line164">164</span><span class="td">[ ContainerOf A p;</span></span>
-<span class="tr"><span class="th" id="line165">165</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (A ofclass K1_room) return A.map_region;</span></span>
-<span class="tr"><span class="th" id="line166">166</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    p = parent(A);</span></span>
-<span class="tr"><span class="th" id="line167">167</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (p == nothing) return nothing;</span></span>
-<span class="tr"><span class="th" id="line168">168</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (p ofclass K5_container) return p;</span></span>
-<span class="tr"><span class="th" id="line169">169</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (p ofclass K1_room) return p;</span></span>
-<span class="tr"><span class="th" id="line170">170</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (p ofclass K9_region) return p;</span></span>
-<span class="tr"><span class="th" id="line171">171</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return nothing;</span></span>
+<span class="tr"><span class="th" id="line165">165</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (A ofclass K1_room) return A.map_region;</span></span>
+<span class="tr"><span class="th" id="line166">166</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;p = parent(A);</span></span>
+<span class="tr"><span class="th" id="line167">167</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (p == nothing) return nothing;</span></span>
+<span class="tr"><span class="th" id="line168">168</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (p ofclass K5_container) return p;</span></span>
+<span class="tr"><span class="th" id="line169">169</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (p ofclass K1_room) return p;</span></span>
+<span class="tr"><span class="th" id="line170">170</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (p ofclass K9_region) return p;</span></span>
+<span class="tr"><span class="th" id="line171">171</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return nothing;</span></span>
 <span class="tr"><span class="th" id="line172">172</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line173">173</span><span class="td"></span></span>
 <span class="tr"><span class="th" id="line174">174</span><span class="td">[ TestContainmentRange obj e f;</span></span>
-<span class="tr"><span class="th" id="line175">175</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (obj ofclass K9_region) {</span></span>
-<span class="tr"><span class="th" id="line176">176</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        objectloop (f ofclass K1_room &amp;&amp; f.map_region == obj)</span></span>
-<span class="tr"><span class="th" id="line177">177</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (f &gt; e) return f;</span></span>
-<span class="tr"><span class="th" id="line178">178</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        return nothing;</span></span>
-<span class="tr"><span class="th" id="line179">179</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line180">180</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (obj ofclass K5_container or K1_room) {</span></span>
-<span class="tr"><span class="th" id="line181">181</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (e == nothing) return child(obj);</span></span>
-<span class="tr"><span class="th" id="line182">182</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        return sibling(e);</span></span>
-<span class="tr"><span class="th" id="line183">183</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line184">184</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return nothing;</span></span>
+<span class="tr"><span class="th" id="line175">175</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (obj ofclass K9_region) {</span></span>
+<span class="tr"><span class="th" id="line176">176</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;objectloop (f ofclass K1_room &amp;&amp; f.map_region == obj)</span></span>
+<span class="tr"><span class="th" id="line177">177</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (f &gt; e) return f;</span></span>
+<span class="tr"><span class="th" id="line178">178</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return nothing;</span></span>
+<span class="tr"><span class="th" id="line179">179</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line180">180</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (obj ofclass K5_container or K1_room) {</span></span>
+<span class="tr"><span class="th" id="line181">181</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (e == nothing) return child(obj);</span></span>
+<span class="tr"><span class="th" id="line182">182</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return sibling(e);</span></span>
+<span class="tr"><span class="th" id="line183">183</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line184">184</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return nothing;</span></span>
 <span class="tr"><span class="th" id="line185">185</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#worldmodel-support-relation">Support Relation.</h3><p><p> This then is simpler, with no need for an iterator governing searches.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line191">191</span><span class="td">[ SupporterOf obj p;</span></span>
-<span class="tr"><span class="th" id="line192">192</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    p = parent(obj);</span></span>
-<span class="tr"><span class="th" id="line193">193</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (p == nothing) return nothing;</span></span>
-<span class="tr"><span class="th" id="line194">194</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (p ofclass K6_supporter) return p;</span></span>
-<span class="tr"><span class="th" id="line195">195</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return nothing;</span></span>
+<span class="tr"><span class="th" id="line192">192</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;p = parent(obj);</span></span>
+<span class="tr"><span class="th" id="line193">193</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (p == nothing) return nothing;</span></span>
+<span class="tr"><span class="th" id="line194">194</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (p ofclass K6_supporter) return p;</span></span>
+<span class="tr"><span class="th" id="line195">195</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return nothing;</span></span>
 <span class="tr"><span class="th" id="line196">196</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#worldmodel-carrying-relation">Carrying Relation.</h3><p><p> Only people may carry, and something worn is not in this sense carried.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line202">202</span><span class="td">[ CarrierOf obj p;</span></span>
-<span class="tr"><span class="th" id="line203">203</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    p = parent(obj);</span></span>
-<span class="tr"><span class="th" id="line204">204</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (p &amp;&amp; (p ofclass K8_person) &amp;&amp; (obj hasnt worn)) return p;</span></span>
-<span class="tr"><span class="th" id="line205">205</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return nothing;</span></span>
+<span class="tr"><span class="th" id="line203">203</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;p = parent(obj);</span></span>
+<span class="tr"><span class="th" id="line204">204</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (p &amp;&amp; (p ofclass K8_person) &amp;&amp; (obj hasnt worn)) return p;</span></span>
+<span class="tr"><span class="th" id="line205">205</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return nothing;</span></span>
 <span class="tr"><span class="th" id="line206">206</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#worldmodel-wearing-relation">Wearing Relation.</h3><p><p> Only people may wear.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line212">212</span><span class="td">[ WearerOf obj p;</span></span>
-<span class="tr"><span class="th" id="line213">213</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    p = parent(obj);</span></span>
-<span class="tr"><span class="th" id="line214">214</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (p &amp;&amp; (p ofclass K8_person) &amp;&amp; (obj has worn)) return p;</span></span>
-<span class="tr"><span class="th" id="line215">215</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return nothing;</span></span>
+<span class="tr"><span class="th" id="line213">213</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;p = parent(obj);</span></span>
+<span class="tr"><span class="th" id="line214">214</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (p &amp;&amp; (p ofclass K8_person) &amp;&amp; (obj has worn)) return p;</span></span>
+<span class="tr"><span class="th" id="line215">215</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return nothing;</span></span>
 <span class="tr"><span class="th" id="line216">216</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#worldmodel-having-relation">Having Relation.</h3><p><p> A person has something if and only if he either wears or carries it.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line222">222</span><span class="td">[ OwnerOf obj p;</span></span>
-<span class="tr"><span class="th" id="line223">223</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    p = parent(obj);</span></span>
-<span class="tr"><span class="th" id="line224">224</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (p &amp;&amp; (p ofclass K8_person)) return p;</span></span>
-<span class="tr"><span class="th" id="line225">225</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return nothing;</span></span>
+<span class="tr"><span class="th" id="line223">223</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;p = parent(obj);</span></span>
+<span class="tr"><span class="th" id="line224">224</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (p &amp;&amp; (p ofclass K8_person)) return p;</span></span>
+<span class="tr"><span class="th" id="line225">225</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return nothing;</span></span>
 <span class="tr"><span class="th" id="line226">226</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#worldmodel-making-parts">Making Parts.</h3><p><p> Note that <span class="fixed"><a href="./WorldModel.i6t.html#line233">MakePart</a></span> removes the part-to-be from the object tree before attaching it: it cannot, of course, be the core of the resulting object.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line233">233</span><span class="td">[ MakePart P Of First;</span></span>
-<span class="tr"><span class="th" id="line234">234</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (P == player) return RunTimeProblem(RTP_CANTMAKEPART, Of);</span></span>
-<span class="tr"><span class="th" id="line235">235</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (parent(P)) remove P; give P ~worn;</span></span>
-<span class="tr"><span class="th" id="line236">236</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (Of == nothing) { DetachPart(P); return; }</span></span>
-<span class="tr"><span class="th" id="line237">237</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (P.component_parent) DetachPart(P);</span></span>
-<span class="tr"><span class="th" id="line238">238</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    P.component_parent = Of;</span></span>
-<span class="tr"><span class="th" id="line239">239</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    First = Of.component_child;</span></span>
-<span class="tr"><span class="th" id="line240">240</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    Of.component_child = P; P.component_sibling = First;</span></span>
+<span class="tr"><span class="th" id="line234">234</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (P == player) return RunTimeProblem(RTP_CANTMAKEPART, Of);</span></span>
+<span class="tr"><span class="th" id="line235">235</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (parent(P)) remove P; give P ~worn;</span></span>
+<span class="tr"><span class="th" id="line236">236</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (Of == nothing) { DetachPart(P); return; }</span></span>
+<span class="tr"><span class="th" id="line237">237</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (P.component_parent) DetachPart(P);</span></span>
+<span class="tr"><span class="th" id="line238">238</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;P.component_parent = Of;</span></span>
+<span class="tr"><span class="th" id="line239">239</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;First = Of.component_child;</span></span>
+<span class="tr"><span class="th" id="line240">240</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;Of.component_child = P; P.component_sibling = First;</span></span>
 <span class="tr"><span class="th" id="line241">241</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line242">242</span><span class="td"></span></span>
 <span class="tr"><span class="th" id="line243">243</span><span class="td">[ DetachPart P From Daddy O;</span></span>
-<span class="tr"><span class="th" id="line244">244</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    Daddy = P.component_parent; P.component_parent = nothing;</span></span>
-<span class="tr"><span class="th" id="line245">245</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (Daddy == nothing) { P.component_sibling = nothing; return; }</span></span>
-<span class="tr"><span class="th" id="line246">246</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (Daddy.component_child == P) {</span></span>
-<span class="tr"><span class="th" id="line247">247</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        Daddy.component_child = P.component_sibling;</span></span>
-<span class="tr"><span class="th" id="line248">248</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        P.component_sibling = nothing; return;</span></span>
-<span class="tr"><span class="th" id="line249">249</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line250">250</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (O = Daddy.component_child: O: O = O.component_sibling)</span></span>
-<span class="tr"><span class="th" id="line251">251</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (O.component_sibling == P) {</span></span>
-<span class="tr"><span class="th" id="line252">252</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            O.component_sibling = P.component_sibling;</span></span>
-<span class="tr"><span class="th" id="line253">253</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            P.component_sibling = nothing; return;</span></span>
-<span class="tr"><span class="th" id="line254">254</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
+<span class="tr"><span class="th" id="line244">244</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;Daddy = P.component_parent; P.component_parent = nothing;</span></span>
+<span class="tr"><span class="th" id="line245">245</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (Daddy == nothing) { P.component_sibling = nothing; return; }</span></span>
+<span class="tr"><span class="th" id="line246">246</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (Daddy.component_child == P) {</span></span>
+<span class="tr"><span class="th" id="line247">247</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Daddy.component_child = P.component_sibling;</span></span>
+<span class="tr"><span class="th" id="line248">248</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;P.component_sibling = nothing; return;</span></span>
+<span class="tr"><span class="th" id="line249">249</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line250">250</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;for (O = Daddy.component_child: O: O = O.component_sibling)</span></span>
+<span class="tr"><span class="th" id="line251">251</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (O.component_sibling == P) {</span></span>
+<span class="tr"><span class="th" id="line252">252</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;O.component_sibling = P.component_sibling;</span></span>
+<span class="tr"><span class="th" id="line253">253</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;P.component_sibling = nothing; return;</span></span>
+<span class="tr"><span class="th" id="line254">254</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
 <span class="tr"><span class="th" id="line255">255</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#worldmodel-movements">Movements.</h3><p><p> Note that an object is detached from its component parent, if it has one, when moved.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line262">262</span><span class="td">[ MoveObject F T opt going_mode was L;</span></span>
-<span class="tr"><span class="th" id="line263">263</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (F == nothing) return RunTimeProblem(RTP_CANTMOVENOTHING);</span></span>
-<span class="tr"><span class="th" id="line264">264</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (F ofclass K7_backdrop) {</span></span>
-<span class="tr"><span class="th" id="line265">265</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (T ofclass K9_region) {</span></span>
-<span class="tr"><span class="th" id="line266">266</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            give F ~absent; F.found_in = T.regional_found_in;</span></span>
-<span class="tr"><span class="th" id="line267">267</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (TestRegionalContainment(LocationOf(player), T)) move F to LocationOf(player);</span></span>
-<span class="tr"><span class="th" id="line268">268</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            else remove F;</span></span>
-<span class="tr"><span class="th" id="line269">269</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            return; }</span></span>
-<span class="tr"><span class="th" id="line270">270</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (T == FoundEverywhere) {</span></span>
-<span class="tr"><span class="th" id="line271">271</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            give F ~absent; F.found_in = FoundEverywhere;</span></span>
-<span class="tr"><span class="th" id="line272">272</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            return;</span></span>
-<span class="tr"><span class="th" id="line273">273</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
-<span class="tr"><span class="th" id="line274">274</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        return RunTimeProblem(RTP_BACKDROP, F, T);</span></span>
-<span class="tr"><span class="th" id="line275">275</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line276">276</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (T ofclass K9_region) return RunTimeProblem(RTP_NOTBACKDROP, F, T);</span></span>
-<span class="tr"><span class="th" id="line277">277</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (T == FoundEverywhere) return RunTimeProblem(RTP_BACKDROPONLY, F);</span></span>
-<span class="tr"><span class="th" id="line278">278</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (~~(F ofclass K2_thing)) return RunTimeProblem(RTP_NOTTHING, F, T);</span></span>
-<span class="tr"><span class="th" id="line279">279</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (F has worn) {</span></span>
-<span class="tr"><span class="th" id="line280">280</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        give F ~worn;</span></span>
-<span class="tr"><span class="th" id="line281">281</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (F in T) return;</span></span>
-<span class="tr"><span class="th" id="line282">282</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line283">283</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    DetachPart(F);</span></span>
-<span class="tr"><span class="th" id="line284">284</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (going_mode == false) {</span></span>
-<span class="tr"><span class="th" id="line285">285</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (F == player) { PlayerTo(T, opt); return; }</span></span>
-<span class="tr"><span class="th" id="line286">286</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (IndirectlyContains(F, player)) {</span></span>
-<span class="tr"><span class="th" id="line287">287</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            L = LocationOf(T);</span></span>
-<span class="tr"><span class="th" id="line288">288</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (L == nothing) return RunTimeProblem(RTP_CANTBEOFFSTAGE);</span></span>
-<span class="tr"><span class="th" id="line289">289</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (LocationOf(player) ~= L) {</span></span>
-<span class="tr"><span class="th" id="line290">290</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                was = parent(player);</span></span>
-<span class="tr"><span class="th" id="line291">291</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                move player to real_location;</span></span>
-<span class="tr"><span class="th" id="line292">292</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                move F to T;</span></span>
-<span class="tr"><span class="th" id="line293">293</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                PlayerTo(was, true);</span></span>
-<span class="tr"><span class="th" id="line294">294</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                return;</span></span>
-<span class="tr"><span class="th" id="line295">295</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            }</span></span>
-<span class="tr"><span class="th" id="line296">296</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
-<span class="tr"><span class="th" id="line297">297</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line298">298</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    move F to T;</span></span>
+<span class="tr"><span class="th" id="line263">263</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (F == nothing) return RunTimeProblem(RTP_CANTMOVENOTHING);</span></span>
+<span class="tr"><span class="th" id="line264">264</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (F ofclass K7_backdrop) {</span></span>
+<span class="tr"><span class="th" id="line265">265</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (T ofclass K9_region) {</span></span>
+<span class="tr"><span class="th" id="line266">266</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;give F ~absent; F.found_in = T.regional_found_in;</span></span>
+<span class="tr"><span class="th" id="line267">267</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (TestRegionalContainment(LocationOf(player), T)) move F to LocationOf(player);</span></span>
+<span class="tr"><span class="th" id="line268">268</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else remove F;</span></span>
+<span class="tr"><span class="th" id="line269">269</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return; }</span></span>
+<span class="tr"><span class="th" id="line270">270</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (T == FoundEverywhere) {</span></span>
+<span class="tr"><span class="th" id="line271">271</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;give F ~absent; F.found_in = FoundEverywhere;</span></span>
+<span class="tr"><span class="th" id="line272">272</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;</span></span>
+<span class="tr"><span class="th" id="line273">273</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line274">274</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return RunTimeProblem(RTP_BACKDROP, F, T);</span></span>
+<span class="tr"><span class="th" id="line275">275</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line276">276</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (T ofclass K9_region) return RunTimeProblem(RTP_NOTBACKDROP, F, T);</span></span>
+<span class="tr"><span class="th" id="line277">277</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (T == FoundEverywhere) return RunTimeProblem(RTP_BACKDROPONLY, F);</span></span>
+<span class="tr"><span class="th" id="line278">278</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (~~(F ofclass K2_thing)) return RunTimeProblem(RTP_NOTTHING, F, T);</span></span>
+<span class="tr"><span class="th" id="line279">279</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (F has worn) {</span></span>
+<span class="tr"><span class="th" id="line280">280</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;give F ~worn;</span></span>
+<span class="tr"><span class="th" id="line281">281</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (F in T) return;</span></span>
+<span class="tr"><span class="th" id="line282">282</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line283">283</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;DetachPart(F);</span></span>
+<span class="tr"><span class="th" id="line284">284</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (going_mode == false) {</span></span>
+<span class="tr"><span class="th" id="line285">285</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (F == player) { PlayerTo(T, opt); return; }</span></span>
+<span class="tr"><span class="th" id="line286">286</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (IndirectlyContains(F, player)) {</span></span>
+<span class="tr"><span class="th" id="line287">287</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L = LocationOf(T);</span></span>
+<span class="tr"><span class="th" id="line288">288</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (L == nothing) return RunTimeProblem(RTP_CANTBEOFFSTAGE);</span></span>
+<span class="tr"><span class="th" id="line289">289</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (LocationOf(player) ~= L) {</span></span>
+<span class="tr"><span class="th" id="line290">290</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;was = parent(player);</span></span>
+<span class="tr"><span class="th" id="line291">291</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move player to real_location;</span></span>
+<span class="tr"><span class="th" id="line292">292</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move F to T;</span></span>
+<span class="tr"><span class="th" id="line293">293</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PlayerTo(was, true);</span></span>
+<span class="tr"><span class="th" id="line294">294</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;</span></span>
+<span class="tr"><span class="th" id="line295">295</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line296">296</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line297">297</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line298">298</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;move F to T;</span></span>
 <span class="tr"><span class="th" id="line299">299</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line300">300</span><span class="td"></span></span>
 <span class="tr"><span class="th" id="line301">301</span><span class="td">[ RemoveFromPlay F;</span></span>
-<span class="tr"><span class="th" id="line302">302</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (F == nothing) return RunTimeProblem(RTP_CANTREMOVENOTHING);</span></span>
-<span class="tr"><span class="th" id="line303">303</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (F == player) return RunTimeProblem(RTP_CANTREMOVEPLAYER);</span></span>
-<span class="tr"><span class="th" id="line304">304</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (F ofclass K4_door) return RunTimeProblem(RTP_CANTREMOVEDOORS);</span></span>
-<span class="tr"><span class="th" id="line305">305</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (IndirectlyContains(F, player)) return RunTimeProblem(RTP_CANTBEOFFSTAGE);</span></span>
-<span class="tr"><span class="th" id="line306">306</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    give F ~worn; DetachPart(F);</span></span>
-<span class="tr"><span class="th" id="line307">307</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (F ofclass K7_backdrop) give F absent;</span></span>
-<span class="tr"><span class="th" id="line308">308</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    remove F;</span></span>
+<span class="tr"><span class="th" id="line302">302</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (F == nothing) return RunTimeProblem(RTP_CANTREMOVENOTHING);</span></span>
+<span class="tr"><span class="th" id="line303">303</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (F == player) return RunTimeProblem(RTP_CANTREMOVEPLAYER);</span></span>
+<span class="tr"><span class="th" id="line304">304</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (F ofclass K4_door) return RunTimeProblem(RTP_CANTREMOVEDOORS);</span></span>
+<span class="tr"><span class="th" id="line305">305</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (IndirectlyContains(F, player)) return RunTimeProblem(RTP_CANTBEOFFSTAGE);</span></span>
+<span class="tr"><span class="th" id="line306">306</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;give F ~worn; DetachPart(F);</span></span>
+<span class="tr"><span class="th" id="line307">307</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (F ofclass K7_backdrop) give F absent;</span></span>
+<span class="tr"><span class="th" id="line308">308</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;remove F;</span></span>
 <span class="tr"><span class="th" id="line309">309</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#worldmodel-on-stage">On Stage.</h3><p><p> The following implements the &quot;on-stage&quot; and &quot;off-stage&quot; adjectives provided by the Standard Rules. Here, as above, note that the I6 attribute <span class="fixed">absent</span> marks a floating object (see below) which has been removed from play; in I7 only doors and backdrops are allowed to float, and only backdrops are allowed to be removed from play.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line319">319</span><span class="td">[ OnStage O set x;</span></span>
-<span class="tr"><span class="th" id="line320">320</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (O ofclass K1_room) rfalse;</span></span>
-<span class="tr"><span class="th" id="line321">321</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (set &lt; 0) {</span></span>
-<span class="tr"><span class="th" id="line322">322</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        while (metaclass(O) == Object) {</span></span>
-<span class="tr"><span class="th" id="line323">323</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (O ofclass K1_room) rtrue;</span></span>
-<span class="tr"><span class="th" id="line324">324</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (O ofclass K9_region) rfalse;</span></span>
-<span class="tr"><span class="th" id="line325">325</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (O ofclass K4_door) rtrue;</span></span>
-<span class="tr"><span class="th" id="line326">326</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (O ofclass K7_backdrop) { if (O has absent) rfalse; rtrue; }</span></span>
-<span class="tr"><span class="th" id="line327">327</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            x = O.component_parent; if (x) { O = x; continue; }</span></span>
-<span class="tr"><span class="th" id="line328">328</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            x = parent(O); if (x) { O = x; continue; }</span></span>
-<span class="tr"><span class="th" id="line329">329</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            rfalse;</span></span>
-<span class="tr"><span class="th" id="line330">330</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
-<span class="tr"><span class="th" id="line331">331</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line332">332</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    x = OnStage(O, -1);</span></span>
-<span class="tr"><span class="th" id="line333">333</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if ((x) &amp;&amp; (set == false)) RemoveFromPlay(O);</span></span>
-<span class="tr"><span class="th" id="line334">334</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if ((x == false) &amp;&amp; (set)) MoveObject(O, real_location);</span></span>
-<span class="tr"><span class="th" id="line335">335</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rfalse;</span></span>
+<span class="tr"><span class="th" id="line320">320</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (O ofclass K1_room) rfalse;</span></span>
+<span class="tr"><span class="th" id="line321">321</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (set &lt; 0) {</span></span>
+<span class="tr"><span class="th" id="line322">322</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while (metaclass(O) == Object) {</span></span>
+<span class="tr"><span class="th" id="line323">323</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (O ofclass K1_room) rtrue;</span></span>
+<span class="tr"><span class="th" id="line324">324</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (O ofclass K9_region) rfalse;</span></span>
+<span class="tr"><span class="th" id="line325">325</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (O ofclass K4_door) rtrue;</span></span>
+<span class="tr"><span class="th" id="line326">326</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (O ofclass K7_backdrop) { if (O has absent) rfalse; rtrue; }</span></span>
+<span class="tr"><span class="th" id="line327">327</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x = O.component_parent; if (x) { O = x; continue; }</span></span>
+<span class="tr"><span class="th" id="line328">328</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x = parent(O); if (x) { O = x; continue; }</span></span>
+<span class="tr"><span class="th" id="line329">329</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line330">330</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line331">331</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line332">332</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;x = OnStage(O, -1);</span></span>
+<span class="tr"><span class="th" id="line333">333</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if ((x) &amp;&amp; (set == false)) RemoveFromPlay(O);</span></span>
+<span class="tr"><span class="th" id="line334">334</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if ((x == false) &amp;&amp; (set)) MoveObject(O, real_location);</span></span>
+<span class="tr"><span class="th" id="line335">335</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;rfalse;</span></span>
 <span class="tr"><span class="th" id="line336">336</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#worldmodel-moving-the-player">Moving the Player.</h3><p><p> Note that the player object can only be moved by this routine: this allows us to maintain the invariant for <span class="fixed"><a href="./Output.i6t.html#line229">real_location</a></span> and <span class="fixed"><a href="./Output.i6t.html#line169">location</a></span> (for which, see <a href="./Light.i6t.html">Light.i6t</a>) and to ensure that multiply-present objects can be witnessed where they need to be.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line345">345</span><span class="td">[ PlayerTo newplace flag L;</span></span>
-<span class="tr"><span class="th" id="line346">346</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    L = LocationOf(newplace);</span></span>
-<span class="tr"><span class="th" id="line347">347</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;       if (L == nothing) return RunTimeProblem(RTP_CANTBEOFFSTAGE);</span></span>
-<span class="tr"><span class="th" id="line348">348</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @push actor; actor = player;</span></span>
-<span class="tr"><span class="th" id="line349">349</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    move player to newplace;</span></span>
-<span class="tr"><span class="th" id="line350">350</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    location = L;</span></span>
-<span class="tr"><span class="th" id="line351">351</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    real_location = location;</span></span>
-<span class="tr"><span class="th" id="line352">352</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    MoveFloatingObjects();</span></span>
-<span class="tr"><span class="th" id="line353">353</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    SilentlyConsiderLight();</span></span>
-<span class="tr"><span class="th" id="line354">354</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    DivideParagraphPoint();</span></span>
-<span class="tr"><span class="th" id="line355">355</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (flag == 0) &lt;Look&gt;;</span></span>
-<span class="tr"><span class="th" id="line356">356</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (flag == 1) give location visited;</span></span>
-<span class="tr"><span class="th" id="line357">357</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (flag == 2) AbbreviatedRoomDescription();</span></span>
-<span class="tr"><span class="th" id="line358">358</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    @pull actor;</span></span>
+<span class="tr"><span class="th" id="line346">346</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;L = LocationOf(newplace);</span></span>
+<span class="tr"><span class="th" id="line347">347</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (L == nothing) return RunTimeProblem(RTP_CANTBEOFFSTAGE);</span></span>
+<span class="tr"><span class="th" id="line348">348</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;@push actor; actor = player;</span></span>
+<span class="tr"><span class="th" id="line349">349</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;move player to newplace;</span></span>
+<span class="tr"><span class="th" id="line350">350</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;location = L;</span></span>
+<span class="tr"><span class="th" id="line351">351</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;real_location = location;</span></span>
+<span class="tr"><span class="th" id="line352">352</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;MoveFloatingObjects();</span></span>
+<span class="tr"><span class="th" id="line353">353</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;SilentlyConsiderLight();</span></span>
+<span class="tr"><span class="th" id="line354">354</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;DivideParagraphPoint();</span></span>
+<span class="tr"><span class="th" id="line355">355</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (flag == 0) &lt;Look&gt;;</span></span>
+<span class="tr"><span class="th" id="line356">356</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (flag == 1) give location visited;</span></span>
+<span class="tr"><span class="th" id="line357">357</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (flag == 2) AbbreviatedRoomDescription();</span></span>
+<span class="tr"><span class="th" id="line358">358</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;@pull actor;</span></span>
 <span class="tr"><span class="th" id="line359">359</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#worldmodel-move-during-going">Move During Going.</h3><p><p> The following routine preserves the invariant for <span class="fixed"><a href="./Output.i6t.html#line229">real_location</a></span>, but gets <span class="fixed"><a href="./Output.i6t.html#line169">location</a></span> wrong since it doesn&#39;t adjust for light. Nor are floating objects moved. It should be used only in the course of other operations which get the rest of this right. (I7 uses it only for the &quot;going&quot; action, where these various operations are each handled by different named rules to increase the flexibility of the system.)<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line370">370</span><span class="td">[ MoveDuringGoing F T;</span></span>
-<span class="tr"><span class="th" id="line371">371</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    MoveObject(F, T, 0, true);</span></span>
-<span class="tr"><span class="th" id="line372">372</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (actor == player) {</span></span>
-<span class="tr"><span class="th" id="line373">373</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        location = LocationOf(player);</span></span>
-<span class="tr"><span class="th" id="line374">374</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        real_location = location;</span></span>
-<span class="tr"><span class="th" id="line375">375</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line371">371</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;MoveObject(F, T, 0, true);</span></span>
+<span class="tr"><span class="th" id="line372">372</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (actor == player) {</span></span>
+<span class="tr"><span class="th" id="line373">373</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;location = LocationOf(player);</span></span>
+<span class="tr"><span class="th" id="line374">374</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;real_location = location;</span></span>
+<span class="tr"><span class="th" id="line375">375</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
 <span class="tr"><span class="th" id="line376">376</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#worldmodel-being-everywhere">Being Everywhere.</h3><p><p> The following is used as the <span class="fixed">found_in</span> property for any backdrop which is &quot;everywhere&quot;, that is, which is found in every room.<p></p><p></div><div class="pre">
@@ -294,272 +303,272 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 </div><div class='text'>
 <h3 id="#worldmodel-testing-everywhere">Testing Everywhere.</h3><p><p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line388">388</span><span class="td">[ BackdropEverywhere O;</span></span>
-<span class="tr"><span class="th" id="line389">389</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (O ofclass K7_backdrop) {</span></span>
-<span class="tr"><span class="th" id="line390">390</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (O has absent) rfalse;</span></span>
-<span class="tr"><span class="th" id="line391">391</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (O.found_in == FoundEverywhere) rtrue;</span></span>
-<span class="tr"><span class="th" id="line392">392</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line393">393</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rfalse;</span></span>
+<span class="tr"><span class="th" id="line389">389</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (O ofclass K7_backdrop) {</span></span>
+<span class="tr"><span class="th" id="line390">390</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (O has absent) rfalse;</span></span>
+<span class="tr"><span class="th" id="line391">391</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (O.found_in == FoundEverywhere) rtrue;</span></span>
+<span class="tr"><span class="th" id="line392">392</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line393">393</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;rfalse;</span></span>
 <span class="tr"><span class="th" id="line394">394</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#worldmodel-changing-the-player">Changing the Player.</h3><p><p> It is very important that nobody simply change the value of the <span class="fixed"><a href="./Output.i6t.html#line228">player</a></span> variable, because so much else must be updated when the identity of the player changes: the light situation, floating objects, the <span class="fixed"><a href="./Output.i6t.html#line229">real_location</a></span> and so on. Because of this, the NI compiler contains code which compiles an assertion of the proposition &quot;is(<span class="fixed"><a href="./Output.i6t.html#line228">player</a></span>, <em>X</em>)&quot; into a function call <span class="fixed"><a href="./WorldModel.i6t.html#line419">ChangePlayer(X)</a></span> rather than a variable assignment <span class="fixed">player = X</span>. So we cannot catch out the system by writing &quot;now the player is Mr Henderson&quot;.<p></p><p> We must ensure that if <span class="fixed"><a href="./Output.i6t.html#line228">player</a></span> is initially X, is changed to Y, and is then changed back to X, that both X and Y end exactly as they began &ndash; hence the flummery below with using <span class="fixed">remove_proper</span> to ensure that <span class="fixed">proper</span> is left with the correct value. Note that: (1) at any given time exactly one person has the I6 <span class="fixed">concealed</span> attribute: the current player; (2) the <span class="fixed">selfobj</span> is the default initial value of <span class="fixed"><a href="./Output.i6t.html#line228">player</a></span>, and because it has as its actual printed name &quot;yourself&quot;, we need to override this when something else takes over as player: we change to &quot;your former self&quot;, in fact. No such device is needed for other people being changed from because they are explicitly given printed names &ndash; say &quot;Mr Darcy&quot;, &quot;the sous-chef&quot;, etc. &ndash; in the source text.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line419">419</span><span class="td">[ ChangePlayer obj flag;</span></span>
-<span class="tr"><span class="th" id="line420">420</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (~~(obj ofclass K8_person)) return RunTimeProblem(RTP_CANTCHANGE, obj);</span></span>
-<span class="tr"><span class="th" id="line421">421</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (~~(OnStage(obj, -1))) return RunTimeProblem(RTP_CANTCHANGEOFFSTAGE, obj);</span></span>
-<span class="tr"><span class="th" id="line422">422</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (obj.component_parent) return RunTimeProblem(RTP_CANTMAKEPART, obj);</span></span>
-<span class="tr"><span class="th" id="line423">423</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (obj == player) return;</span></span>
+<span class="tr"><span class="th" id="line420">420</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (~~(obj ofclass K8_person)) return RunTimeProblem(RTP_CANTCHANGE, obj);</span></span>
+<span class="tr"><span class="th" id="line421">421</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (~~(OnStage(obj, -1))) return RunTimeProblem(RTP_CANTCHANGEOFFSTAGE, obj);</span></span>
+<span class="tr"><span class="th" id="line422">422</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (obj.component_parent) return RunTimeProblem(RTP_CANTMAKEPART, obj);</span></span>
+<span class="tr"><span class="th" id="line423">423</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (obj == player) return;</span></span>
 <span class="tr"><span class="th" id="line424">424</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line425">425</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    give player ~concealed;</span></span>
-<span class="tr"><span class="th" id="line426">426</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (player has remove_proper) give player ~proper;</span></span>
-<span class="tr"><span class="th" id="line427">427</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (player == selfobj) {</span></span>
-<span class="tr"><span class="th" id="line428">428</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        player.saved_short_name = player.short_name;</span></span>
-<span class="tr"><span class="th" id="line429">429</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        player.short_name = PRINT_PROTAGONIST_INTERNAL_RM(&#39;c&#39;);</span></span>
-<span class="tr"><span class="th" id="line430">430</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line431">431</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    player = obj;</span></span>
-<span class="tr"><span class="th" id="line432">432</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (player == selfobj) {</span></span>
-<span class="tr"><span class="th" id="line433">433</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        player.short_name = player.saved_short_name;</span></span>
-<span class="tr"><span class="th" id="line434">434</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line435">435</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (player hasnt proper) give player remove_proper; ! when changing out again</span></span>
-<span class="tr"><span class="th" id="line436">436</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    give player concealed proper;</span></span>
+<span class="tr"><span class="th" id="line425">425</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;give player ~concealed;</span></span>
+<span class="tr"><span class="th" id="line426">426</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (player has remove_proper) give player ~proper;</span></span>
+<span class="tr"><span class="th" id="line427">427</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (player == selfobj) {</span></span>
+<span class="tr"><span class="th" id="line428">428</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;player.saved_short_name = player.short_name;</span></span>
+<span class="tr"><span class="th" id="line429">429</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;player.short_name = PRINT_PROTAGONIST_INTERNAL_RM(<span class="sstring">&#39;c&#39;</span>);</span></span>
+<span class="tr"><span class="th" id="line430">430</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line431">431</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;player = obj;</span></span>
+<span class="tr"><span class="th" id="line432">432</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (player == selfobj) {</span></span>
+<span class="tr"><span class="th" id="line433">433</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;player.short_name = player.saved_short_name;</span></span>
+<span class="tr"><span class="th" id="line434">434</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line435">435</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (player hasnt proper) give player remove_proper; <span class="comment">! when changing out again</span></span></span>
+<span class="tr"><span class="th" id="line436">436</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;give player concealed proper;</span></span>
 <span class="tr"><span class="th" id="line437">437</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line438">438</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    location = LocationOf(player); real_location = location;</span></span>
-<span class="tr"><span class="th" id="line439">439</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    MoveFloatingObjects();</span></span>
-<span class="tr"><span class="th" id="line440">440</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    SilentlyConsiderLight();</span></span>
+<span class="tr"><span class="th" id="line438">438</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;location = LocationOf(player); real_location = location;</span></span>
+<span class="tr"><span class="th" id="line439">439</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;MoveFloatingObjects();</span></span>
+<span class="tr"><span class="th" id="line440">440</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;SilentlyConsiderLight();</span></span>
 <span class="tr"><span class="th" id="line441">441</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#worldmodel-floating-objects">Floating Objects.</h3><p><p> A single object can only be in one position in the object tree, yet backdrops and doors must be present in multiple rooms. This is accomplished by making them, in I6 jargon, &quot;floating objects&quot;: objects which move in the tree whenever the player does, so that &ndash; from the player&#39;s perspective &ndash; they are always present when they should be. In I6, almost anything can be made a floating object, but in I7 this is strictly and only used for backdrops and two-sided doors.<p></p><p> There are several conceptual problems with this scheme: chiefly that it assumes that the only witness to the spatial arrangement of objects is the player. In I6 that was usually true, but in I7, where every person can undertake actions, it really isn&#39;t true any longer: if the objects float to follow the player, it means that they are not present with other people who might need to interact with them. This is why the accessibility rules are somewhat hacked for backdrops and doors (see <a href="./Light.i6t.html">Light.i6t</a>). In fact we generally achieve the illusion we want, but this is largely because it is difficult to catch out all the exceptions for backdrops and doors, and because in practice authors tend not to set things up so that the presence or absence of backdrops much affects what non-player characters do.<p></p><p> All the same, the scheme is not logically defensible, and this is why we do not allow the user to create new categories of floating objects in I7.<p></p><p> The I6 implementation of <span class="fixed"><a href="./WorldModel.i6t.html#line475">MoveFloatingObjects</a></span> acted on the <span class="fixed"><a href="./Output.i6t.html#line169">location</a></span> rather than the <span class="fixed"><a href="./Output.i6t.html#line229">real_location</a></span>, which (a) meant that multiply-present objects could include <span class="fixed">thedark</span> &ndash; the generic Darkness place &ndash; as one possible location, but (b) assumed that the only sense by which the player could witness an object was sight. In I7, <span class="fixed">thedark</span> is not a valid room, and we are a bit more careful about the senses.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line475">475</span><span class="td">[ MoveFloatingObjects toroom i k l m address flag;</span></span>
-<span class="tr"><span class="th" id="line476">476</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (toroom == nothing) toroom = real_location;</span></span>
-<span class="tr"><span class="th" id="line477">477</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (toroom == nothing) return;</span></span>
-<span class="tr"><span class="th" id="line478">478</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    objectloop (i) {</span></span>
-<span class="tr"><span class="th" id="line479">479</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        address = i.&amp;found_in;</span></span>
-<span class="tr"><span class="th" id="line480">480</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (address ~= 0 &amp;&amp; i hasnt absent) {</span></span>
-<span class="tr"><span class="th" id="line481">481</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (ZRegion(address--&gt;0) == 2) {</span></span>
-<span class="tr"><span class="th" id="line482">482</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                m = address--&gt;0;</span></span>
-<span class="tr"><span class="th" id="line483">483</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                .TestPropositionally;</span></span>
-<span class="tr"><span class="th" id="line484">484</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                if (m.call(toroom) ~= 0) move i to toroom;</span></span>
-<span class="tr"><span class="th" id="line485">485</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                else { if (i in toroom) remove i; }</span></span>
-<span class="tr"><span class="th" id="line486">486</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            } else {</span></span>
-<span class="tr"><span class="th" id="line487">487</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                k = i.#found_in;</span></span>
-<span class="tr"><span class="th" id="line488">488</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                for (l=0 : l&lt;k/WORDSIZE : l++) {</span></span>
-<span class="tr"><span class="th" id="line489">489</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    m = address--&gt;l;</span></span>
-<span class="tr"><span class="th" id="line490">490</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    if (ZRegion(m) == 2) jump <a href="./WorldModel.i6t.html#line483">TestPropositionally</a>;</span></span>
-<span class="tr"><span class="th" id="line491">491</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    if (m == toroom || m in toroom) {</span></span>
-<span class="tr"><span class="th" id="line492">492</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                        if (i notin toroom) move i to toroom;</span></span>
-<span class="tr"><span class="th" id="line493">493</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                        flag = true;</span></span>
-<span class="tr"><span class="th" id="line494">494</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    }</span></span>
-<span class="tr"><span class="th" id="line495">495</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                }</span></span>
-<span class="tr"><span class="th" id="line496">496</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                if (flag == false) { if (i in toroom) remove i; }</span></span>
-<span class="tr"><span class="th" id="line497">497</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            }</span></span>
-<span class="tr"><span class="th" id="line498">498</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if ((i ofclass K4_door) &amp;&amp; (parent(i) == nothing)) {</span></span>
-<span class="tr"><span class="th" id="line499">499</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                move i to ((i.door_to).call());</span></span>
-<span class="tr"><span class="th" id="line500">500</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            }</span></span>
-<span class="tr"><span class="th" id="line501">501</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
-<span class="tr"><span class="th" id="line502">502</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
+<span class="tr"><span class="th" id="line476">476</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (toroom == nothing) toroom = real_location;</span></span>
+<span class="tr"><span class="th" id="line477">477</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (toroom == nothing) return;</span></span>
+<span class="tr"><span class="th" id="line478">478</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;objectloop (i) {</span></span>
+<span class="tr"><span class="th" id="line479">479</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;address = i.&amp;found_in;</span></span>
+<span class="tr"><span class="th" id="line480">480</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (address ~= 0 &amp;&amp; i hasnt absent) {</span></span>
+<span class="tr"><span class="th" id="line481">481</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (ZRegion(address--&gt;0) == 2) {</span></span>
+<span class="tr"><span class="th" id="line482">482</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m = address--&gt;0;</span></span>
+<span class="tr"><span class="th" id="line483">483</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.TestPropositionally;</span></span>
+<span class="tr"><span class="th" id="line484">484</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (m.call(toroom) ~= 0) move i to toroom;</span></span>
+<span class="tr"><span class="th" id="line485">485</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else { if (i in toroom) remove i; }</span></span>
+<span class="tr"><span class="th" id="line486">486</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} else {</span></span>
+<span class="tr"><span class="th" id="line487">487</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;k = i.#found_in;</span></span>
+<span class="tr"><span class="th" id="line488">488</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for (l=0 : l&lt;k/WORDSIZE : l++) {</span></span>
+<span class="tr"><span class="th" id="line489">489</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m = address--&gt;l;</span></span>
+<span class="tr"><span class="th" id="line490">490</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (ZRegion(m) == 2) jump <a href="./WorldModel.i6t.html#line483">TestPropositionally</a>;</span></span>
+<span class="tr"><span class="th" id="line491">491</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (m == toroom || m in toroom) {</span></span>
+<span class="tr"><span class="th" id="line492">492</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (i notin toroom) move i to toroom;</span></span>
+<span class="tr"><span class="th" id="line493">493</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;flag = true;</span></span>
+<span class="tr"><span class="th" id="line494">494</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line495">495</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line496">496</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (flag == false) { if (i in toroom) remove i; }</span></span>
+<span class="tr"><span class="th" id="line497">497</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line498">498</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if ((i ofclass K4_door) &amp;&amp; (parent(i) == nothing)) {</span></span>
+<span class="tr"><span class="th" id="line499">499</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move i to ((i.door_to).call());</span></span>
+<span class="tr"><span class="th" id="line500">500</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line501">501</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line502">502</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
 <span class="tr"><span class="th" id="line503">503</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line504">504</span><span class="td"></span></span>
 <span class="tr"><span class="th" id="line505">505</span><span class="td">[ MoveBackdrop bd D x address;</span></span>
-<span class="tr"><span class="th" id="line506">506</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (~~(bd ofclass K7_backdrop)) return RunTimeProblem(RTP_BACKDROPONLY, bd);</span></span>
-<span class="tr"><span class="th" id="line507">507</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (bd.#found_in &gt; WORDSIZE) {</span></span>
-<span class="tr"><span class="th" id="line508">508</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        address = bd.&amp;found_in;</span></span>
-<span class="tr"><span class="th" id="line509">509</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        address--&gt;0 = D;</span></span>
-<span class="tr"><span class="th" id="line510">510</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    } else bd.found_in = D;</span></span>
-<span class="tr"><span class="th" id="line511">511</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    give bd ~absent;</span></span>
-<span class="tr"><span class="th" id="line512">512</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    MoveFloatingObjects();</span></span>
+<span class="tr"><span class="th" id="line506">506</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (~~(bd ofclass K7_backdrop)) return RunTimeProblem(RTP_BACKDROPONLY, bd);</span></span>
+<span class="tr"><span class="th" id="line507">507</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (bd.#found_in &gt; WORDSIZE) {</span></span>
+<span class="tr"><span class="th" id="line508">508</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;address = bd.&amp;found_in;</span></span>
+<span class="tr"><span class="th" id="line509">509</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;address--&gt;0 = D;</span></span>
+<span class="tr"><span class="th" id="line510">510</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;} else bd.found_in = D;</span></span>
+<span class="tr"><span class="th" id="line511">511</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;give bd ~absent;</span></span>
+<span class="tr"><span class="th" id="line512">512</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;MoveFloatingObjects();</span></span>
 <span class="tr"><span class="th" id="line513">513</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#worldmodel-backdrop-location">Backdrop Location.</h3><p><p> This determines what the &quot;location&quot; of a backdrop is, or, if &quot;target&quot; is other than nothing, determines whether it can ever be the location. Note that this routine also works for two-sided doors, despite its name.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line521">521</span><span class="td">[ BackdropLocation O target address m x i k l r sl;</span></span>
-<span class="tr"><span class="th" id="line522">522</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (O has absent) return nothing;</span></span>
-<span class="tr"><span class="th" id="line523">523</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if ((target == nothing or real_location) &amp;&amp; (parent(O) == real_location))</span></span>
-<span class="tr"><span class="th" id="line524">524</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        return real_location;</span></span>
-<span class="tr"><span class="th" id="line525">525</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    address = O.&amp;found_in;</span></span>
-<span class="tr"><span class="th" id="line526">526</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (address ~= 0) {</span></span>
-<span class="tr"><span class="th" id="line527">527</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        k = O.#found_in;</span></span>
-<span class="tr"><span class="th" id="line528">528</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        for (l=0 : l&lt;k/WORDSIZE : l++) {</span></span>
-<span class="tr"><span class="th" id="line529">529</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            m = address--&gt;l;</span></span>
-<span class="tr"><span class="th" id="line530">530</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (ZRegion(m) == 2) {</span></span>
-<span class="tr"><span class="th" id="line531">531</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                sl = location;</span></span>
-<span class="tr"><span class="th" id="line532">532</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                if (target) {</span></span>
-<span class="tr"><span class="th" id="line533">533</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    location = target;</span></span>
-<span class="tr"><span class="th" id="line534">534</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    r = m.call();</span></span>
-<span class="tr"><span class="th" id="line535">535</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    if (r ~= 0) { location = sl; return target; }</span></span>
-<span class="tr"><span class="th" id="line536">536</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                } else {</span></span>
-<span class="tr"><span class="th" id="line537">537</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    objectloop (x ofclass K1_room) {</span></span>
-<span class="tr"><span class="th" id="line538">538</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                        location = x;</span></span>
-<span class="tr"><span class="th" id="line539">539</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                        r = m.call();</span></span>
-<span class="tr"><span class="th" id="line540">540</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                        if (r ~= 0) { location = sl; return x; }</span></span>
-<span class="tr"><span class="th" id="line541">541</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    }</span></span>
-<span class="tr"><span class="th" id="line542">542</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                }</span></span>
-<span class="tr"><span class="th" id="line543">543</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                location = sl;</span></span>
-<span class="tr"><span class="th" id="line544">544</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            } else {</span></span>
-<span class="tr"><span class="th" id="line545">545</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                if (m ofclass K9_region) {</span></span>
-<span class="tr"><span class="th" id="line546">546</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    objectloop (x ofclass K1_room)</span></span>
-<span class="tr"><span class="th" id="line547">547</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                        if (TestRegionalContainment(x, m))</span></span>
-<span class="tr"><span class="th" id="line548">548</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                            if (target == nothing or x)</span></span>
-<span class="tr"><span class="th" id="line549">549</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                                return x;</span></span>
-<span class="tr"><span class="th" id="line550">550</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                } else {</span></span>
-<span class="tr"><span class="th" id="line551">551</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    if (target == nothing or m) return m;</span></span>
-<span class="tr"><span class="th" id="line552">552</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                }</span></span>
-<span class="tr"><span class="th" id="line553">553</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            }</span></span>
-<span class="tr"><span class="th" id="line554">554</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
-<span class="tr"><span class="th" id="line555">555</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line556">556</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return nothing;</span></span>
+<span class="tr"><span class="th" id="line522">522</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (O has absent) return nothing;</span></span>
+<span class="tr"><span class="th" id="line523">523</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if ((target == nothing or real_location) &amp;&amp; (parent(O) == real_location))</span></span>
+<span class="tr"><span class="th" id="line524">524</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return real_location;</span></span>
+<span class="tr"><span class="th" id="line525">525</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;address = O.&amp;found_in;</span></span>
+<span class="tr"><span class="th" id="line526">526</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (address ~= 0) {</span></span>
+<span class="tr"><span class="th" id="line527">527</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;k = O.#found_in;</span></span>
+<span class="tr"><span class="th" id="line528">528</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for (l=0 : l&lt;k/WORDSIZE : l++) {</span></span>
+<span class="tr"><span class="th" id="line529">529</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m = address--&gt;l;</span></span>
+<span class="tr"><span class="th" id="line530">530</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (ZRegion(m) == 2) {</span></span>
+<span class="tr"><span class="th" id="line531">531</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sl = location;</span></span>
+<span class="tr"><span class="th" id="line532">532</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (target) {</span></span>
+<span class="tr"><span class="th" id="line533">533</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;location = target;</span></span>
+<span class="tr"><span class="th" id="line534">534</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;r = m.call();</span></span>
+<span class="tr"><span class="th" id="line535">535</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (r ~= 0) { location = sl; return target; }</span></span>
+<span class="tr"><span class="th" id="line536">536</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} else {</span></span>
+<span class="tr"><span class="th" id="line537">537</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;objectloop (x ofclass K1_room) {</span></span>
+<span class="tr"><span class="th" id="line538">538</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;location = x;</span></span>
+<span class="tr"><span class="th" id="line539">539</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;r = m.call();</span></span>
+<span class="tr"><span class="th" id="line540">540</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (r ~= 0) { location = sl; return x; }</span></span>
+<span class="tr"><span class="th" id="line541">541</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line542">542</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line543">543</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;location = sl;</span></span>
+<span class="tr"><span class="th" id="line544">544</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} else {</span></span>
+<span class="tr"><span class="th" id="line545">545</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (m ofclass K9_region) {</span></span>
+<span class="tr"><span class="th" id="line546">546</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;objectloop (x ofclass K1_room)</span></span>
+<span class="tr"><span class="th" id="line547">547</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (TestRegionalContainment(x, m))</span></span>
+<span class="tr"><span class="th" id="line548">548</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (target == nothing or x)</span></span>
+<span class="tr"><span class="th" id="line549">549</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return x;</span></span>
+<span class="tr"><span class="th" id="line550">550</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} else {</span></span>
+<span class="tr"><span class="th" id="line551">551</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (target == nothing or m) return m;</span></span>
+<span class="tr"><span class="th" id="line552">552</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line553">553</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line554">554</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line555">555</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line556">556</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return nothing;</span></span>
 <span class="tr"><span class="th" id="line557">557</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#worldmodel-wearing-clothes">Wearing Clothes.</h3><p><p> An object X is worn by a person P if and only if (i) the object tree <span class="fixed">parent</span> of X is P, and (ii) X has the <span class="fixed">worn</span> attribute. In fact for I7 purposes we are careful to ensure that (ii) happens only when (i) does in any case: if X is moved in the object tree, or made a part of something, or removed from play, then <span class="fixed">worn</span> is removed.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line567">567</span><span class="td">[ WearObject X P opt;</span></span>
-<span class="tr"><span class="th" id="line568">568</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (X == false) rfalse;</span></span>
-<span class="tr"><span class="th" id="line569">569</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (X notin P) MoveObject(X, P, opt);</span></span>
-<span class="tr"><span class="th" id="line570">570</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    give X worn;</span></span>
+<span class="tr"><span class="th" id="line568">568</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (X == false) rfalse;</span></span>
+<span class="tr"><span class="th" id="line569">569</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (X notin P) MoveObject(X, P, opt);</span></span>
+<span class="tr"><span class="th" id="line570">570</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;give X worn;</span></span>
 <span class="tr"><span class="th" id="line571">571</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#worldmodel-map-connections">Map Connections.</h3><p><p> <span class="fixed"><a href="./WorldModel.i6t.html#line591">MapConnection</a></span> returns the room which is in the given direction (as an object) from the given room: it is used, among other things, to test the &quot;mapped east of&quot; and similar relations. (The same relations are asserted true with <span class="fixed"><a href="./WorldModel.i6t.html#line623">AssertMapConnection</a></span> and false with <span class="fixed"><a href="./WorldModel.i6t.html#line638">AssertMapUnconnection</a></span>.)<p></p><p> <span class="fixed"><a href="./WorldModel.i6t.html#line614">RoomOrDoorFrom</a></span> returns either the room or door which is in the given direction, and is thus simpler (since it doesn&#39;t have to investigate what is through such a door).<p></p><p> Both routines return values which are type-safe in I7 provided the kind of value they are assigned to is &quot;object&quot;: neither returns any specific kind of object without fail. (<span class="fixed"><a href="./WorldModel.i6t.html#line591">MapConnection</a></span> is always either a door or <span class="fixed">nothing</span>, but <span class="fixed">nothing</span> is not a typesafe value for &quot;door&quot;.)<p></p><p> Note that map connections via doors are immutable.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line591">591</span><span class="td">[ MapConnection from_room dir</span></span>
-<span class="tr"><span class="th" id="line592">592</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    in_direction through_door;</span></span>
-<span class="tr"><span class="th" id="line593">593</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if ((from_room ofclass K1_room) &amp;&amp; (dir ofclass K3_direction)) {</span></span>
-<span class="tr"><span class="th" id="line594">594</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        in_direction = Map_Storage--&gt;</span></span>
-<span class="tr"><span class="th" id="line595">595</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            ((from_room.IK1_Count)*No_Directions + dir.IK3_Count);</span></span>
-<span class="tr"><span class="th" id="line596">596</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (in_direction ofclass K1_room) return in_direction;</span></span>
-<span class="tr"><span class="th" id="line597">597</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (in_direction ofclass K4_door) {</span></span>
-<span class="tr"><span class="th" id="line598">598</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            @push location;</span></span>
-<span class="tr"><span class="th" id="line599">599</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            location = from_room;</span></span>
-<span class="tr"><span class="th" id="line600">600</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            through_door = in_direction.door_to();</span></span>
-<span class="tr"><span class="th" id="line601">601</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            @pull location;</span></span>
-<span class="tr"><span class="th" id="line602">602</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (through_door ofclass K1_room) return through_door;</span></span>
-<span class="tr"><span class="th" id="line603">603</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        }</span></span>
-<span class="tr"><span class="th" id="line604">604</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line605">605</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return nothing;</span></span>
+<span class="tr"><span class="th" id="line592">592</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;in_direction through_door;</span></span>
+<span class="tr"><span class="th" id="line593">593</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if ((from_room ofclass K1_room) &amp;&amp; (dir ofclass K3_direction)) {</span></span>
+<span class="tr"><span class="th" id="line594">594</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in_direction = Map_Storage--&gt;</span></span>
+<span class="tr"><span class="th" id="line595">595</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((from_room.IK1_Count)*No_Directions + dir.IK3_Count);</span></span>
+<span class="tr"><span class="th" id="line596">596</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (in_direction ofclass K1_room) return in_direction;</span></span>
+<span class="tr"><span class="th" id="line597">597</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (in_direction ofclass K4_door) {</span></span>
+<span class="tr"><span class="th" id="line598">598</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@push location;</span></span>
+<span class="tr"><span class="th" id="line599">599</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;location = from_room;</span></span>
+<span class="tr"><span class="th" id="line600">600</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;through_door = in_direction.door_to();</span></span>
+<span class="tr"><span class="th" id="line601">601</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@pull location;</span></span>
+<span class="tr"><span class="th" id="line602">602</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (through_door ofclass K1_room) return through_door;</span></span>
+<span class="tr"><span class="th" id="line603">603</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line604">604</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line605">605</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return nothing;</span></span>
 <span class="tr"><span class="th" id="line606">606</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line607">607</span><span class="td"></span></span>
 <span class="tr"><span class="th" id="line608">608</span><span class="td">[ DoorFrom obj dir rv;</span></span>
-<span class="tr"><span class="th" id="line609">609</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rv = RoomOrDoorFrom(obj, dir);</span></span>
-<span class="tr"><span class="th" id="line610">610</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (rv ofclass K4_door) return rv;</span></span>
-<span class="tr"><span class="th" id="line611">611</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return nothing;</span></span>
+<span class="tr"><span class="th" id="line609">609</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;rv = RoomOrDoorFrom(obj, dir);</span></span>
+<span class="tr"><span class="th" id="line610">610</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (rv ofclass K4_door) return rv;</span></span>
+<span class="tr"><span class="th" id="line611">611</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return nothing;</span></span>
 <span class="tr"><span class="th" id="line612">612</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line613">613</span><span class="td"></span></span>
 <span class="tr"><span class="th" id="line614">614</span><span class="td">[ RoomOrDoorFrom obj dir use_doors in_direction sl through_door;</span></span>
-<span class="tr"><span class="th" id="line615">615</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if ((obj ofclass K1_room) &amp;&amp; (dir ofclass K3_direction)) {</span></span>
-<span class="tr"><span class="th" id="line616">616</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        in_direction = Map_Storage--&gt;</span></span>
-<span class="tr"><span class="th" id="line617">617</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            ((obj.IK1_Count)*No_Directions + dir.IK3_Count);</span></span>
-<span class="tr"><span class="th" id="line618">618</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (in_direction ofclass K1_room or K4_door) return in_direction;    </span></span>
-<span class="tr"><span class="th" id="line619">619</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line620">620</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return nothing;</span></span>
+<span class="tr"><span class="th" id="line615">615</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if ((obj ofclass K1_room) &amp;&amp; (dir ofclass K3_direction)) {</span></span>
+<span class="tr"><span class="th" id="line616">616</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in_direction = Map_Storage--&gt;</span></span>
+<span class="tr"><span class="th" id="line617">617</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((obj.IK1_Count)*No_Directions + dir.IK3_Count);</span></span>
+<span class="tr"><span class="th" id="line618">618</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (in_direction ofclass K1_room or K4_door) return in_direction;    </span></span>
+<span class="tr"><span class="th" id="line619">619</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line620">620</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return nothing;</span></span>
 <span class="tr"><span class="th" id="line621">621</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line622">622</span><span class="td"></span></span>
 <span class="tr"><span class="th" id="line623">623</span><span class="td">[ AssertMapConnection r1 dir r2 in_direction;</span></span>
-<span class="tr"><span class="th" id="line624">624</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    SignalMapChange();</span></span>
-<span class="tr"><span class="th" id="line625">625</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    in_direction = Map_Storage--&gt;</span></span>
-<span class="tr"><span class="th" id="line626">626</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ((r1.IK1_Count)*No_Directions + dir.IK3_Count);</span></span>
-<span class="tr"><span class="th" id="line627">627</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if ((in_direction == 0) || (in_direction ofclass K1_room)) {</span></span>
-<span class="tr"><span class="th" id="line628">628</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        Map_Storage--&gt;((r1.IK1_Count)*No_Directions + dir.IK3_Count) = r2;</span></span>
-<span class="tr"><span class="th" id="line629">629</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        return;</span></span>
-<span class="tr"><span class="th" id="line630">630</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line631">631</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (in_direction ofclass K4_door) {</span></span>
-<span class="tr"><span class="th" id="line632">632</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        RunTimeProblem(RTP_EXITDOOR, r1, dir);</span></span>
-<span class="tr"><span class="th" id="line633">633</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        return;</span></span>
-<span class="tr"><span class="th" id="line634">634</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line635">635</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    RunTimeProblem(RTP_NOEXIT, r1, dir);</span></span>
+<span class="tr"><span class="th" id="line624">624</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;SignalMapChange();</span></span>
+<span class="tr"><span class="th" id="line625">625</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;in_direction = Map_Storage--&gt;</span></span>
+<span class="tr"><span class="th" id="line626">626</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((r1.IK1_Count)*No_Directions + dir.IK3_Count);</span></span>
+<span class="tr"><span class="th" id="line627">627</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if ((in_direction == 0) || (in_direction ofclass K1_room)) {</span></span>
+<span class="tr"><span class="th" id="line628">628</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Map_Storage--&gt;((r1.IK1_Count)*No_Directions + dir.IK3_Count) = r2;</span></span>
+<span class="tr"><span class="th" id="line629">629</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;</span></span>
+<span class="tr"><span class="th" id="line630">630</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line631">631</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (in_direction ofclass K4_door) {</span></span>
+<span class="tr"><span class="th" id="line632">632</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RunTimeProblem(RTP_EXITDOOR, r1, dir);</span></span>
+<span class="tr"><span class="th" id="line633">633</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;</span></span>
+<span class="tr"><span class="th" id="line634">634</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line635">635</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;RunTimeProblem(RTP_NOEXIT, r1, dir);</span></span>
 <span class="tr"><span class="th" id="line636">636</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line637">637</span><span class="td"></span></span>
 <span class="tr"><span class="th" id="line638">638</span><span class="td">[ AssertMapUnconnection r1 dir r2 in_direction;</span></span>
-<span class="tr"><span class="th" id="line639">639</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    SignalMapChange();</span></span>
-<span class="tr"><span class="th" id="line640">640</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    in_direction = Map_Storage--&gt;</span></span>
-<span class="tr"><span class="th" id="line641">641</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        ((r1.IK1_Count)*No_Directions + dir.IK3_Count);</span></span>
-<span class="tr"><span class="th" id="line642">642</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (r1 ofclass K4_door) {</span></span>
-<span class="tr"><span class="th" id="line643">643</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        RunTimeProblem(RTP_EXITDOOR, r1, dir);</span></span>
-<span class="tr"><span class="th" id="line644">644</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        return;</span></span>
-<span class="tr"><span class="th" id="line645">645</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line646">646</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (in_direction == r2)</span></span>
-<span class="tr"><span class="th" id="line647">647</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        Map_Storage--&gt;((r1.IK1_Count)*No_Directions + dir.IK3_Count) = 0;</span></span>
-<span class="tr"><span class="th" id="line648">648</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return;</span></span>
+<span class="tr"><span class="th" id="line639">639</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;SignalMapChange();</span></span>
+<span class="tr"><span class="th" id="line640">640</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;in_direction = Map_Storage--&gt;</span></span>
+<span class="tr"><span class="th" id="line641">641</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((r1.IK1_Count)*No_Directions + dir.IK3_Count);</span></span>
+<span class="tr"><span class="th" id="line642">642</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (r1 ofclass K4_door) {</span></span>
+<span class="tr"><span class="th" id="line643">643</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RunTimeProblem(RTP_EXITDOOR, r1, dir);</span></span>
+<span class="tr"><span class="th" id="line644">644</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;</span></span>
+<span class="tr"><span class="th" id="line645">645</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line646">646</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (in_direction == r2)</span></span>
+<span class="tr"><span class="th" id="line647">647</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Map_Storage--&gt;((r1.IK1_Count)*No_Directions + dir.IK3_Count) = 0;</span></span>
+<span class="tr"><span class="th" id="line648">648</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return;</span></span>
 <span class="tr"><span class="th" id="line649">649</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#worldmodel-adjacency-relation">Adjacency Relation.</h3><p><p> A relation between two rooms which, note, does not see connections through doors.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line656">656</span><span class="td">[ TestAdjacency R1 R2 i row;</span></span>
-<span class="tr"><span class="th" id="line657">657</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (R1 ofclass K9_region) RunTimeProblem(RTP_REGIONSNOTADJACENT, R1);</span></span>
-<span class="tr"><span class="th" id="line658">658</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    else if (R2 ofclass K9_region) RunTimeProblem(RTP_REGIONSNOTADJACENT, R2);</span></span>
-<span class="tr"><span class="th" id="line659">659</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    row = (R1.IK1_Count)*No_Directions;</span></span>
-<span class="tr"><span class="th" id="line660">660</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    for (i=0: i&lt;No_Directions: i++, row++)</span></span>
-<span class="tr"><span class="th" id="line661">661</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (Map_Storage--&gt;row == R2) rtrue;</span></span>
-<span class="tr"><span class="th" id="line662">662</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rfalse;</span></span>
+<span class="tr"><span class="th" id="line657">657</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (R1 ofclass K9_region) RunTimeProblem(RTP_REGIONSNOTADJACENT, R1);</span></span>
+<span class="tr"><span class="th" id="line658">658</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;else if (R2 ofclass K9_region) RunTimeProblem(RTP_REGIONSNOTADJACENT, R2);</span></span>
+<span class="tr"><span class="th" id="line659">659</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;row = (R1.IK1_Count)*No_Directions;</span></span>
+<span class="tr"><span class="th" id="line660">660</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;for (i=0: i&lt;No_Directions: i++, row++)</span></span>
+<span class="tr"><span class="th" id="line661">661</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (Map_Storage--&gt;row == R2) rtrue;</span></span>
+<span class="tr"><span class="th" id="line662">662</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;rfalse;</span></span>
 <span class="tr"><span class="th" id="line663">663</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#worldmodel-regional-containment-relation">Regional Containment Relation.</h3><p><p> This tests whether an object with a definite physical location is in a given region. (For a two-sided door which straddles regions, the front side is what counts; for a backdrop, a direction or another region, the answer is always no.) We rely on the fact that every room object has a <span class="fixed">map_region</span> property which is the smallest region containing it, if any does, and <span class="fixed">nothing</span> otherwise; region objects are then in the object tree such that parenthood corresponds to spatial containment. (Note that in I7, a region must either completely contain another region, or else have no overlap with it.)<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line676">676</span><span class="td">[ TestRegionalContainment obj region o;</span></span>
-<span class="tr"><span class="th" id="line677">677</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if ((obj == nothing) || (region == nothing)) rfalse;</span></span>
-<span class="tr"><span class="th" id="line678">678</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (obj ofclass K7_backdrop or K4_door) {</span></span>
-<span class="tr"><span class="th" id="line679">679</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (obj has absent) rfalse;</span></span>
-<span class="tr"><span class="th" id="line680">680</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        objectloop (o ofclass K1_room)</span></span>
-<span class="tr"><span class="th" id="line681">681</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            if (TestRegionalContainment(o, region))</span></span>
-<span class="tr"><span class="th" id="line682">682</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                if (BackdropLocation(obj, o))</span></span>
-<span class="tr"><span class="th" id="line683">683</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                    rtrue;</span></span>
-<span class="tr"><span class="th" id="line684">684</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        rfalse;</span></span>
-<span class="tr"><span class="th" id="line685">685</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line686">686</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (~~(obj ofclass K1_room)) obj = LocationOf(obj);</span></span>
-<span class="tr"><span class="th" id="line687">687</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (obj == nothing) rfalse;</span></span>
-<span class="tr"><span class="th" id="line688">688</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    o = obj.map_region;</span></span>
-<span class="tr"><span class="th" id="line689">689</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    while (o) {</span></span>
-<span class="tr"><span class="th" id="line690">690</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (o == region) rtrue;</span></span>
-<span class="tr"><span class="th" id="line691">691</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        o = parent(o);</span></span>
-<span class="tr"><span class="th" id="line692">692</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line693">693</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rfalse;</span></span>
+<span class="tr"><span class="th" id="line677">677</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if ((obj == nothing) || (region == nothing)) rfalse;</span></span>
+<span class="tr"><span class="th" id="line678">678</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (obj ofclass K7_backdrop or K4_door) {</span></span>
+<span class="tr"><span class="th" id="line679">679</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (obj has absent) rfalse;</span></span>
+<span class="tr"><span class="th" id="line680">680</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;objectloop (o ofclass K1_room)</span></span>
+<span class="tr"><span class="th" id="line681">681</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (TestRegionalContainment(o, region))</span></span>
+<span class="tr"><span class="th" id="line682">682</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (BackdropLocation(obj, o))</span></span>
+<span class="tr"><span class="th" id="line683">683</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rtrue;</span></span>
+<span class="tr"><span class="th" id="line684">684</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rfalse;</span></span>
+<span class="tr"><span class="th" id="line685">685</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line686">686</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (~~(obj ofclass K1_room)) obj = LocationOf(obj);</span></span>
+<span class="tr"><span class="th" id="line687">687</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (obj == nothing) rfalse;</span></span>
+<span class="tr"><span class="th" id="line688">688</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;o = obj.map_region;</span></span>
+<span class="tr"><span class="th" id="line689">689</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;while (o) {</span></span>
+<span class="tr"><span class="th" id="line690">690</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (o == region) rtrue;</span></span>
+<span class="tr"><span class="th" id="line691">691</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;o = parent(o);</span></span>
+<span class="tr"><span class="th" id="line692">692</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line693">693</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;rfalse;</span></span>
 <span class="tr"><span class="th" id="line694">694</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#worldmodel-doors">Doors.</h3><p><p> There are two sorts of door: one-sided and two-sided.<p></p><p> A two-sided door is in two rooms at once: one is called the front side, the other the back side. The front side is the one declared first in the source. Note that a one-sided door is also an I6 object of class <span class="fixed">K4_door</span>, and then the front side is the room holding it, while the back side is <span class="fixed">nothing</span>.<p></p><p> The <span class="fixed">door_to</span> property calculates the room which the door leads to; that of course depends on which side of it the player is standing. Similarly, <span class="fixed">door_dir</span> calculates the direction it leads in. Unlike the I6 setup, where <span class="fixed">door_dir</span> returned the direction property (<span class="fixed">n_to</span>, <span class="fixed">s_to</span>, etc.), here in I7&#39;s template it returns the direction object (<span class="fixed">n_obj</span>, <span class="fixed">s_obj</span>, etc.)<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line711">711</span><span class="td">[ FrontSideOfDoor D; if (~~(D ofclass K4_door)) rfalse;</span></span>
-<span class="tr"><span class="th" id="line712">712</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (D provides found_in) return (D.&amp;found_in)--&gt;0; ! Two-sided</span></span>
-<span class="tr"><span class="th" id="line713">713</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return parent(D); ! One-sided</span></span>
+<span class="tr"><span class="th" id="line712">712</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (D provides found_in) return (D.&amp;found_in)--&gt;0; <span class="comment">! Two-sided</span></span></span>
+<span class="tr"><span class="th" id="line713">713</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return parent(D); <span class="comment">! One-sided</span></span></span>
 <span class="tr"><span class="th" id="line714">714</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line715">715</span><span class="td"></span></span>
 <span class="tr"><span class="th" id="line716">716</span><span class="td">[ BackSideOfDoor D; if (~~(D ofclass K4_door)) rfalse;</span></span>
-<span class="tr"><span class="th" id="line717">717</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (D provides found_in) return (D.&amp;found_in)--&gt;1; ! Two-sided</span></span>
-<span class="tr"><span class="th" id="line718">718</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return nothing; ! One-sided</span></span>
+<span class="tr"><span class="th" id="line717">717</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (D provides found_in) return (D.&amp;found_in)--&gt;1; <span class="comment">! Two-sided</span></span></span>
+<span class="tr"><span class="th" id="line718">718</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return nothing; <span class="comment">! One-sided</span></span></span>
 <span class="tr"><span class="th" id="line719">719</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line720">720</span><span class="td"></span></span>
 <span class="tr"><span class="th" id="line721">721</span><span class="td">[ OtherSideOfDoor D from_room rv;</span></span>
-<span class="tr"><span class="th" id="line722">722</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (D ofclass K4_door) {</span></span>
-<span class="tr"><span class="th" id="line723">723</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @push location;</span></span>
-<span class="tr"><span class="th" id="line724">724</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        location = LocationOf(from_room);</span></span>
-<span class="tr"><span class="th" id="line725">725</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        rv = D.door_to();</span></span>
-<span class="tr"><span class="th" id="line726">726</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @pull location;</span></span>
-<span class="tr"><span class="th" id="line727">727</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line728">728</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return rv;</span></span>
+<span class="tr"><span class="th" id="line722">722</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (D ofclass K4_door) {</span></span>
+<span class="tr"><span class="th" id="line723">723</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@push location;</span></span>
+<span class="tr"><span class="th" id="line724">724</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;location = LocationOf(from_room);</span></span>
+<span class="tr"><span class="th" id="line725">725</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rv = D.door_to();</span></span>
+<span class="tr"><span class="th" id="line726">726</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@pull location;</span></span>
+<span class="tr"><span class="th" id="line727">727</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line728">728</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return rv;</span></span>
 <span class="tr"><span class="th" id="line729">729</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line730">730</span><span class="td"></span></span>
 <span class="tr"><span class="th" id="line731">731</span><span class="td">[ DirectionDoorLeadsIn D from_room rv dir;</span></span>
-<span class="tr"><span class="th" id="line732">732</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (D ofclass K4_door) {</span></span>
-<span class="tr"><span class="th" id="line733">733</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @push location;</span></span>
-<span class="tr"><span class="th" id="line734">734</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        location = LocationOf(from_room);</span></span>
-<span class="tr"><span class="th" id="line735">735</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        rv = D.door_dir();</span></span>
-<span class="tr"><span class="th" id="line736">736</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        @pull location;</span></span>
-<span class="tr"><span class="th" id="line737">737</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line738">738</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return rv;</span></span>
+<span class="tr"><span class="th" id="line732">732</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (D ofclass K4_door) {</span></span>
+<span class="tr"><span class="th" id="line733">733</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@push location;</span></span>
+<span class="tr"><span class="th" id="line734">734</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;location = LocationOf(from_room);</span></span>
+<span class="tr"><span class="th" id="line735">735</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rv = D.door_dir();</span></span>
+<span class="tr"><span class="th" id="line736">736</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@pull location;</span></span>
+<span class="tr"><span class="th" id="line737">737</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line738">738</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return rv;</span></span>
 <span class="tr"><span class="th" id="line739">739</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#worldmodel-visibility-relation">Visibility Relation.</h3><p><p> We use <span class="fixed"><a href="./Parser.i6t.html#line3270">TestScope</a></span> to decide whether there is a line of sight from A to B; it&#39;s a relation which cannot be asserted true or false.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line746">746</span><span class="td">[ TestVisibility A B;</span></span>
-<span class="tr"><span class="th" id="line747">747</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (~~OffersLight(parent(CoreOf(A)))) rfalse;</span></span>
-<span class="tr"><span class="th" id="line748">748</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (suppress_scope_loops) rtrue;</span></span>
-<span class="tr"><span class="th" id="line749">749</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    return TestScope(B, A);</span></span>
+<span class="tr"><span class="th" id="line747">747</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (~~OffersLight(parent(CoreOf(A)))) rfalse;</span></span>
+<span class="tr"><span class="th" id="line748">748</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (suppress_scope_loops) rtrue;</span></span>
+<span class="tr"><span class="th" id="line749">749</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return TestScope(B, A);</span></span>
 <span class="tr"><span class="th" id="line750">750</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#worldmodel-touchability-relation">Touchability Relation.</h3><p><p> We use <span class="fixed"><a href="./Light.i6t.html#line268">ObjectIsUntouchable</a></span> to decide whether there is physical access from A to B; it&#39;s a relation which cannot be asserted true or false.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line757">757</span><span class="td">[ TestTouchability A B rv;</span></span>
-<span class="tr"><span class="th" id="line758">758</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (A ofclass K4_door or K7_backdrop) MoveFloatingObjects(LocationOf(B));</span></span>
-<span class="tr"><span class="th" id="line759">759</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (B ofclass K4_door or K7_backdrop) MoveFloatingObjects(LocationOf(A));</span></span>
-<span class="tr"><span class="th" id="line760">760</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (TestScope(B,A) == false) rv = true;</span></span>
-<span class="tr"><span class="th" id="line761">761</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    else rv = ObjectIsUntouchable(B, true, A);</span></span>
-<span class="tr"><span class="th" id="line762">762</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (A ofclass K4_door or K7_backdrop) MoveFloatingObjects();</span></span>
-<span class="tr"><span class="th" id="line763">763</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (rv) rfalse;</span></span>
-<span class="tr"><span class="th" id="line764">764</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rtrue;</span></span>
+<span class="tr"><span class="th" id="line758">758</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (A ofclass K4_door or K7_backdrop) MoveFloatingObjects(LocationOf(B));</span></span>
+<span class="tr"><span class="th" id="line759">759</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (B ofclass K4_door or K7_backdrop) MoveFloatingObjects(LocationOf(A));</span></span>
+<span class="tr"><span class="th" id="line760">760</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (TestScope(B,A) == false) rv = true;</span></span>
+<span class="tr"><span class="th" id="line761">761</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;else rv = ObjectIsUntouchable(B, true, A);</span></span>
+<span class="tr"><span class="th" id="line762">762</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (A ofclass K4_door or K7_backdrop) MoveFloatingObjects();</span></span>
+<span class="tr"><span class="th" id="line763">763</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (rv) rfalse;</span></span>
+<span class="tr"><span class="th" id="line764">764</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;rtrue;</span></span>
 <span class="tr"><span class="th" id="line765">765</span><span class="td">];</span></span>
 </div><div class='text'>
 <h3 id="#worldmodel-concealment-relation">Concealment Relation.</h3><p><p> An activity determines whether one object conceals another; it&#39;s a relation which cannot be asserted true or false.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line772">772</span><span class="td">[ TestConcealment A B;</span></span>
-<span class="tr"><span class="th" id="line773">773</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    if (A ofclass K2_thing &amp;&amp; B ofclass K2_thing) {</span></span>
-<span class="tr"><span class="th" id="line774">774</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        particular_possession = B;</span></span>
-<span class="tr"><span class="th" id="line775">775</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        if (CarryOutActivity(DECIDING_CONCEALED_POSSESS_ACT, A)) rtrue;</span></span>
-<span class="tr"><span class="th" id="line776">776</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    }</span></span>
-<span class="tr"><span class="th" id="line777">777</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;    rfalse;</span></span>
+<span class="tr"><span class="th" id="line773">773</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (A ofclass K2_thing &amp;&amp; B ofclass K2_thing) {</span></span>
+<span class="tr"><span class="th" id="line774">774</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;particular_possession = B;</span></span>
+<span class="tr"><span class="th" id="line775">775</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (CarryOutActivity(DECIDING_CONCEALED_POSSESS_ACT, A)) rtrue;</span></span>
+<span class="tr"><span class="th" id="line776">776</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
+<span class="tr"><span class="th" id="line777">777</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;rfalse;</span></span>
 <span class="tr"><span class="th" id="line778">778</span><span class="td">];</span></span>
 </div><footer><p><em>From I6T lib 6/12N &copy; Graham Nelson and published under the <a href="https://github.com/zedlopez/standard_rules/blob/main/LICENSE.md">Artistic License 2.0</a>. Distributed with <a href="http://inform7.com/">Inform 7 6M62</a>.</em></p></footer></body></html>

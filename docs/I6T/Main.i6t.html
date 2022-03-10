@@ -27,12 +27,21 @@ h1 { margin: 0; }
 padding-bottom: .5rem; margin-bottom: 1.5rem; margin-top: 1.75rem; padding-top: .25rem;}
 footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; margin-bottom: 0;}
 /*.subtitle { font-weight: bold; font-size: 1.2rem; }*/
+.dstring { font-weight: bold;
+  color: #095097; }
+.sstring { font-weight: bold;
+  color: #095097; }
+.comment {  
+  color: #156D15; } /* #207D20; */
     </style>
 </head>
 <body>
 <header>
 <h1>I6 Template Layer</h1>
-<div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Index</a> &bull; <a href="./Introduction.i6t.html">Introduction</a></div><hr></header>
+<div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Index</a> &bull; <a href="./Introduction.i6t.html">Introduction</a> 
+&bull; <a href="fn_index.html">Function Index</a> 
+&bull; <a href="rules_index.html">Rules Index</a> 
+</div><hr></header>
 <div id="front_matter">
 <h2><a href="./Main.i6t.txt">Main.i6t</a></h2><h3 id="#main-startup">Startup.</h3><p><p> This segment of the template is not like any other. It contains almost the complete logical sequence of operations followed by NI &ndash; indeed, NI essentially works by parsing some command-line arguments to set switches and then asking the template interpreter to run through <a href="./Main.i6t.html">Main.i6t</a>, the only template file which must always exist. (The other template files are only ever involved when called on by the <span class="fixed">{-segment:...}</span> command from a template file already running.) Whereas most template segments contain I6 code to pass through into NI&#39;s output, this one runs both before and after NI&#39;s output file is being written, and contains only commands.<p></p><p> The Startup paragraph is not in fact modifiable in any easy way, because of course &quot;Include...&quot; sentences &ndash; used to tell the template interpreter to override the template files &ndash; will not be understood until long after this paragraph has been fully dealt with. But perhaps that&#39;s no bad thing.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line26">26</span><span class="td">{-callv:Lexer::start}</span></span>
@@ -51,9 +60,9 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <h3 id="#main-semantic-analysis">Semantic Analysis.</h3><p><p> Similarly: Include... sentences are not read until this paragraph is long forgotten.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line44">44</span><span class="td">{-progress-stage:1}</span></span>
 <span class="tr"><span class="th" id="line45">45</span><span class="td">{-log-phase:Semantic analysis Ia}</span></span>
-<span class="tr"><span class="th" id="line46">46</span><span class="td">{-callv:ParseTree::plant_parse_tree} ! Initialise the parse tree</span></span>
-<span class="tr"><span class="th" id="line47">47</span><span class="td">{-callv:Sentences::break_source} ! Build first tranche of sentences</span></span>
-<span class="tr"><span class="th" id="line48">48</span><span class="td">{-callv:Extensions::Inclusion::traverse} ! Expand extension inclusions and build sentences</span></span>
+<span class="tr"><span class="th" id="line46">46</span><span class="td">{-callv:ParseTree::plant_parse_tree} <span class="comment">! Initialise the parse tree</span></span></span>
+<span class="tr"><span class="th" id="line47">47</span><span class="td">{-callv:Sentences::break_source} <span class="comment">! Build first tranche of sentences</span></span></span>
+<span class="tr"><span class="th" id="line48">48</span><span class="td">{-callv:Extensions::Inclusion::traverse} <span class="comment">! Expand extension inclusions and build sentences</span></span></span>
 <span class="tr"><span class="th" id="line49">49</span><span class="td">{-callv:Sentences::Headings::satisfy_dependencies}</span></span>
 <span class="tr"><span class="th" id="line50">50</span><span class="td"></span></span>
 <span class="tr"><span class="th" id="line51">51</span><span class="td">{-log-phase:Initialise language semantics}</span></span>
@@ -63,18 +72,18 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line55">55</span><span class="td">{-callv:Quantifiers::make_built_in}</span></span>
 <span class="tr"><span class="th" id="line56">56</span><span class="td"></span></span>
 <span class="tr"><span class="th" id="line57">57</span><span class="td">{-log-phase:Semantic analysis Ib}</span></span>
-<span class="tr"><span class="th" id="line58">58</span><span class="td">{-callv:Sentences::VPs::traverse} ! Find verbs in the assertion sentences</span></span>
-<span class="tr"><span class="th" id="line59">59</span><span class="td">{-callv:Plurals::traverse_for_definitions} ! Build irregular plurals dictionary</span></span>
-<span class="tr"><span class="th" id="line60">60</span><span class="td">{-callv:Sentences::Rearrangement::tidy_up_ofs_and_froms} ! More &quot;of&quot; wrangling</span></span>
-<span class="tr"><span class="th" id="line61">61</span><span class="td">{-callv:Sentences::RuleSubtrees::register_recently_lexed_phrases} ! To make commands children of their routines</span></span>
+<span class="tr"><span class="th" id="line58">58</span><span class="td">{-callv:Sentences::VPs::traverse} <span class="comment">! Find verbs in the assertion sentences</span></span></span>
+<span class="tr"><span class="th" id="line59">59</span><span class="td">{-callv:Plurals::traverse_for_definitions} <span class="comment">! Build irregular plurals dictionary</span></span></span>
+<span class="tr"><span class="th" id="line60">60</span><span class="td">{-callv:Sentences::Rearrangement::tidy_up_ofs_and_froms} <span class="comment">! More &quot;of&quot; wrangling</span></span></span>
+<span class="tr"><span class="th" id="line61">61</span><span class="td">{-callv:Sentences::RuleSubtrees::register_recently_lexed_phrases} <span class="comment">! To make commands children of their routines</span></span></span>
 <span class="tr"><span class="th" id="line62">62</span><span class="td">{-callv:Sentences::declare_source_loaded}</span></span>
 <span class="tr"><span class="th" id="line63">63</span><span class="td">{-callv:Kinds::Interpreter::include_templates_for_kinds}</span></span>
 <span class="tr"><span class="th" id="line64">64</span><span class="td"></span></span>
 <span class="tr"><span class="th" id="line65">65</span><span class="td">{-log-phase:Semantic analysis II}</span></span>
-<span class="tr"><span class="th" id="line66">66</span><span class="td">{-callv:ParseTree::verify} ! Purely to check that NI is running correctly</span></span>
-<span class="tr"><span class="th" id="line67">67</span><span class="td">{-callv:Extensions::Files::check_versions} ! Do the extension version numbers meet needs?</span></span>
-<span class="tr"><span class="th" id="line68">68</span><span class="td">{-callv:Sentences::Headings::make_tree} ! Stratify headings and subheadings</span></span>
-<span class="tr"><span class="th" id="line69">69</span><span class="td">{-callv:Sentences::Headings::write_as_xml} ! Dump them to a file for the GUI to use</span></span>
+<span class="tr"><span class="th" id="line66">66</span><span class="td">{-callv:ParseTree::verify} <span class="comment">! Purely to check that NI is running correctly</span></span></span>
+<span class="tr"><span class="th" id="line67">67</span><span class="td">{-callv:Extensions::Files::check_versions} <span class="comment">! Do the extension version numbers meet needs?</span></span></span>
+<span class="tr"><span class="th" id="line68">68</span><span class="td">{-callv:Sentences::Headings::make_tree} <span class="comment">! Stratify headings and subheadings</span></span></span>
+<span class="tr"><span class="th" id="line69">69</span><span class="td">{-callv:Sentences::Headings::write_as_xml} <span class="comment">! Dump them to a file for the GUI to use</span></span></span>
 <span class="tr"><span class="th" id="line70">70</span><span class="td"></span></span>
 <span class="tr"><span class="th" id="line71">71</span><span class="td">{-log-phase:Semantic analysis III}</span></span>
 <span class="tr"><span class="th" id="line72">72</span><span class="td">{-callv:Phrases::Adjectives::traverse}</span></span>
@@ -154,7 +163,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line171">171</span><span class="td">{-index-element:Rl Relations=Relations give meaning to verbs|About relations&lt;RELATIONS&gt;}</span></span>
 <span class="tr"><span class="th" id="line172">172</span><span class="td">{-index-element:Vb Verbs=A table of verbs|About verbs&lt;VERBS&gt;}</span></span>
 <span class="tr"><span class="th" id="line173">173</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line174">174</span><span class="td">{-index-page:1d31b4=Rules Index=Inform&#39;s general workings}</span></span>
+<span class="tr"><span class="th" id="line174">174</span><span class="td">{-index-page:1d31b4=Rules Index=Inform<span class="sstring">&#39;s general workings}</span></span></span>
 <span class="tr"><span class="th" id="line175">175</span><span class="td">{-index-element:St Standards=From the Standard Rules|About rulebooks&lt;RULEBOOKS&gt;; About activities&lt;ACTIVITIES&gt;; Moving or abolishing rules&lt;RLISTING&gt;}</span></span>
 <span class="tr"><span class="th" id="line176">176</span><span class="td">{-index-element:Xt Extras=Further rulebooks, from the source or extensions|About rulebooks&lt;RULEBOOKS&gt;; About activities&lt;ACTIVITIES&gt;; Moving or abolishing rules&lt;RLISTING&gt;}</span></span>
 <span class="tr"><span class="th" id="line177">177</span><span class="td"></span></span>
@@ -188,10 +197,10 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <h3 id="#main-shutdown">Shutdown.</h3><p><p> Making any final reports to the debugging log, and that&#39;s then it.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line209">209</span><span class="td">{-callv:TemplateFiles::report_unacted_upon_interventions}</span></span>
 <span class="tr"><span class="th" id="line210">210</span><span class="td"></span></span>
-<span class="tr"><span class="th" id="line211">211</span><span class="td">{! -callv:ParseTree::write_main_source_to_log}</span></span>
-<span class="tr"><span class="th" id="line212">212</span><span class="td">{! -callv:Memory::log_statistics}</span></span>
-<span class="tr"><span class="th" id="line213">213</span><span class="td">{! -callv:Preform::log_language}</span></span>
-<span class="tr"><span class="th" id="line214">214</span><span class="td">{! -callv:Index::DocReferences::log_statistics}</span></span>
-<span class="tr"><span class="th" id="line215">215</span><span class="td">{! -callv:Parser::SParser::debug_parser_statistics}</span></span>
-<span class="tr"><span class="th" id="line216">216</span><span class="td">{! -callv:Verbs::log_all}</span></span>
+<span class="tr"><span class="th" id="line211">211</span><span class="td">{ -callv:ParseTree::write_main_source_to_log}</span></span>
+<span class="tr"><span class="th" id="line212">212</span><span class="td">{ -callv:Memory::log_statistics}</span></span>
+<span class="tr"><span class="th" id="line213">213</span><span class="td">{ -callv:Preform::log_language}</span></span>
+<span class="tr"><span class="th" id="line214">214</span><span class="td">{ -callv:Index::DocReferences::log_statistics}</span></span>
+<span class="tr"><span class="th" id="line215">215</span><span class="td">{ -callv:Parser::SParser::debug_parser_statistics}</span></span>
+<span class="tr"><span class="th" id="line216">216</span><span class="td">{ -callv:Verbs::log_all}</span></span>
 </div><footer><p><em>From I6T lib 6/12N &copy; Graham Nelson and published under the <a href="https://github.com/zedlopez/standard_rules/blob/main/LICENSE.md">Artistic License 2.0</a>. Distributed with <a href="http://inform7.com/">Inform 7 6M62</a>.</em></p></footer></body></html>
