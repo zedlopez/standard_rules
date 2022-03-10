@@ -33,20 +33,21 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
   color: #095097; }
 .comment {  
   color: #156D15; } /* #207D20; */
+td.content { padding-right: 2rem; vertical-align: top;}
     </style>
 </head>
 <body>
 <header>
 <h1>I6 Template Layer</h1>
-<div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Index</a> &bull; <a href="./Introduction.i6t.html">Introduction</a> 
+<div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Contents</a> &bull; <a href="./Introduction.i6t.html">Introduction</a> 
 &bull; <a href="fn_index.html">Function Index</a> 
 &bull; <a href="rules_index.html">Rules Index</a> 
 </div><hr></header>
 <div id="front_matter">
-<h2><a href="./FileIO.i6t.txt">FileIO.i6t</a></h2><h3 id="#fileio-language">Language.</h3><p><p> This whole template contains material used only if the &quot;Glulx external files&quot; element is part of Inform&#39;s current definition, so:<p></p><p></div><div class="pre">
+<h2><a href="./FileIO.i6t.txt">FileIO.i6t</a></h2><h3 id="fileio-language">Language.</h3><p><p> This whole template contains material used only if the &quot;Glulx external files&quot; element is part of Inform&#39;s current definition, so:<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line12">12</span><span class="td">#IFDEF PLUGIN_FILES;</span></span>
 </div><div class='text'>
-<h3 id="#fileio-structure">Structure.</h3><p><p> The I7 kind of value &quot;auxiliary-file&quot; is an <span class="fixed">--&gt;</span> array, holding a memory structure containing information about external files. The following constants specify memory offsets and values. Note the safety value stored as the first word of the structure: this helps protect the routines below from accidents. (16339, besides being prime, is a number interesting to the author of Inform since it was the examination board identifying number of his school, and so had to be filled in on all of the many papers he sat during his formative years.)<p></p><p></div><div class="pre">
+<h3 id="fileio-structure">Structure.</h3><p><p> The I7 kind of value &quot;auxiliary-file&quot; is an <span class="fixed">--&gt;</span> array, holding a memory structure containing information about external files. The following constants specify memory offsets and values. Note the safety value stored as the first word of the structure: this helps protect the routines below from accidents. (16339, besides being prime, is a number interesting to the author of Inform since it was the examination board identifying number of his school, and so had to be filled in on all of the many papers he sat during his formative years.)<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line25">25</span><span class="td">Constant AUXF_MAGIC = 0; <span class="comment">! First word holds a safety constant</span></span></span>
 <span class="tr"><span class="th" id="line26">26</span><span class="td">Constant AUXF_MAGIC_VALUE = 16339; <span class="comment">! Should be first word of any valid file structure</span></span></span>
 <span class="tr"><span class="th" id="line27">27</span><span class="td">Constant AUXF_STATUS = 1; <span class="comment">! One of the following:</span></span></span>
@@ -60,10 +61,10 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line35">35</span><span class="td">Constant AUXF_IFID_OF_OWNER = 5; <span class="comment">! UUID_ARRAY if owned by this project, or</span></span></span>
 <span class="tr"><span class="th" id="line36">36</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">! string array of IFID of owner wrapped in //...//, or NULL to leave open</span></span></span>
 </div><div class='text'>
-<h3 id="#fileio-instances">Instances.</h3><p><p> These structures are not dynamically created: they are precompiled by the NI compiler, already filled in with the necessary values. The following command generates them.<p></p><p></div><div class="pre">
+<h3 id="fileio-instances">Instances.</h3><p><p> These structures are not dynamically created: they are precompiled by the NI compiler, already filled in with the necessary values. The following command generates them.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line44">44</span><span class="td">{-call:PL::Files::arrays}</span></span>
 </div><div class='text'>
-<h3 id="#fileio-errors">Errors.</h3><p><p> This is used for I/O errors of all kinds: it isn&#39;t within the Glulx-only code because one of the errors is to try to use these routines on the Z-machine.<p></p><p></div><div class="pre">
+<h3 id="fileio-errors">Errors.</h3><p><p> This is used for I/O errors of all kinds: it isn&#39;t within the Glulx-only code because one of the errors is to try to use these routines on the Z-machine.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line52">52</span><span class="td">[ FileIO_Error extf err_text  struc;</span></span>
 <span class="tr"><span class="th" id="line53">53</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if ((extf &lt; 1) || (extf &gt; NO_EXTERNAL_FILES)) {</span></span>
 <span class="tr"><span class="th" id="line54">54</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print <span class="dstring">&quot;^*** Error on unknown file: &quot;</span>, (string) err_text, <span class="dstring">&quot; ***^&quot;</span>;</span></span>
@@ -77,10 +78,10 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line62">62</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return 0;</span></span>
 <span class="tr"><span class="th" id="line63">63</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#fileio-glulx-material">Glulx Material.</h3><p><p></p><p></div><div class="pre">
+<h3 id="fileio-glulx-material">Glulx Material.</h3><p><p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line68">68</span><span class="td">#IFDEF TARGET_GLULX;</span></span>
 </div><div class='text'>
-<h3 id="#fileio-existence">Existence.</h3><p><p> Determine whether a file exists on disc. Note that we have no concept of directories, or the file system structure on the host machine: indeed, it is entirely up to the Glulx VM what it does when asked to look for a file. By convention, though, files for a project are stored in the same folder as the story file when out in the wild; when a project is developed within the Inform user interface, they are either (for preference) stored in a <span class="fixed">Files</span> subfolder of the <span class="fixed">Materials</span> folder for a project, or else stored alongside the Inform project file.<p></p><p></div><div class="pre">
+<h3 id="fileio-existence">Existence.</h3><p><p> Determine whether a file exists on disc. Note that we have no concept of directories, or the file system structure on the host machine: indeed, it is entirely up to the Glulx VM what it does when asked to look for a file. By convention, though, files for a project are stored in the same folder as the story file when out in the wild; when a project is developed within the Inform user interface, they are either (for preference) stored in a <span class="fixed">Files</span> subfolder of the <span class="fixed">Materials</span> folder for a project, or else stored alongside the Inform project file.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line81">81</span><span class="td">[ FileIO_Exists extf  fref struc rv usage;</span></span>
 <span class="tr"><span class="th" id="line82">82</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if ((extf &lt; 1) || (extf &gt; NO_EXTERNAL_FILES)) rfalse;</span></span>
 <span class="tr"><span class="th" id="line83">83</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;struc = TableOfExternalFiles--&gt;extf;</span></span>
@@ -94,7 +95,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line91">91</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return rv;</span></span>
 <span class="tr"><span class="th" id="line92">92</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#fileio-readiness">Readiness.</h3><p><p> One of our problems is that a file might be being used by another application: perhaps even by another story file running in a second incarnation of Glulx, like a parallel world of which we can know nothing. We actually want to allow for this sort of thing, because one use for external files in I7 is as a sort of communications conduit for assisting applications.<p></p><p> Most operating systems solve this problem by means of locking a file, or by creating a second lock-file, the existence of which indicates ownership of the original. We haven&#39;t got much access to the file-system, though: what we do is to set the first character of the file to an asterisk to mark it as complete and ready for reading, or to a hyphen to mark it as a work in progress.<p></p><p> <span class="fixed"><a href="./FileIO.i6t.html#line402">FileIO_Ready</a></span> determines whether or not a file is ready to be read from: it has to exist on disc, and to be openable, and also to be ready in having this marker asterisk.<p></p><p> <span class="fixed"><a href="./FileIO.i6t.html#line407">FileIO_MarkReady</a></span> changes the readiness state of a file, writing the asterisk or hyphen into the initial character as needed.<p></p><p></div><div class="pre">
+<h3 id="fileio-readiness">Readiness.</h3><p><p> One of our problems is that a file might be being used by another application: perhaps even by another story file running in a second incarnation of Glulx, like a parallel world of which we can know nothing. We actually want to allow for this sort of thing, because one use for external files in I7 is as a sort of communications conduit for assisting applications.<p></p><p> Most operating systems solve this problem by means of locking a file, or by creating a second lock-file, the existence of which indicates ownership of the original. We haven&#39;t got much access to the file-system, though: what we do is to set the first character of the file to an asterisk to mark it as complete and ready for reading, or to a hyphen to mark it as a work in progress.<p></p><p> <span class="fixed"><a href="./FileIO.i6t.html#line402">FileIO_Ready</a></span> determines whether or not a file is ready to be read from: it has to exist on disc, and to be openable, and also to be ready in having this marker asterisk.<p></p><p> <span class="fixed"><a href="./FileIO.i6t.html#line407">FileIO_MarkReady</a></span> changes the readiness state of a file, writing the asterisk or hyphen into the initial character as needed.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line116">116</span><span class="td">[ FileIO_Ready extf  struc fref usage str ch;</span></span>
 <span class="tr"><span class="th" id="line117">117</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if ((extf &lt; 1) || (extf &gt; NO_EXTERNAL_FILES)) rfalse;</span></span>
 <span class="tr"><span class="th" id="line118">118</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;struc = TableOfExternalFiles--&gt;extf;</span></span>
@@ -140,7 +141,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line158">158</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;glk_fileref_destroy(fref);</span></span>
 <span class="tr"><span class="th" id="line159">159</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#fileio-open-file">Open File.</h3><p><p></p><p></div><div class="pre">
+<h3 id="fileio-open-file">Open File.</h3><p><p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line164">164</span><span class="td">[ FileIO_Open extf write_flag append_flag</span></span>
 <span class="tr"><span class="th" id="line165">165</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;struc fref str mode ix ch not_this_ifid owner force_header usage;</span></span>
 <span class="tr"><span class="th" id="line166">166</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if ((extf &lt; 1) || (extf &gt; NO_EXTERNAL_FILES))</span></span>
@@ -227,7 +228,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line247">247</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return FileIO_Error(extf, <span class="dstring">&quot;tried to open a file which seems to be malformed&quot;</span>);</span></span>
 <span class="tr"><span class="th" id="line248">248</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#fileio-close-file">Close File.</h3><p><p> Note that a call to the following, in write mode, must be followed by a <span class="fixed"><a href="./Glulx.i6t.html#line351">glk_stream_set_current()</a></span>, or else the next print statement will run into Glk errors.<p></p><p></div><div class="pre">
+<h3 id="fileio-close-file">Close File.</h3><p><p> Note that a call to the following, in write mode, must be followed by a <span class="fixed"><a href="./Glulx.i6t.html#line351">glk_stream_set_current()</a></span>, or else the next print statement will run into Glk errors.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line256">256</span><span class="td">[ FileIO_Close extf  struc;</span></span>
 <span class="tr"><span class="th" id="line257">257</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if ((extf &lt; 1) || (extf &gt; NO_EXTERNAL_FILES))</span></span>
 <span class="tr"><span class="th" id="line258">258</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return FileIO_Error(extf, <span class="dstring">&quot;tried to open a non-file&quot;</span>);</span></span>
@@ -247,7 +248,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line272">272</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;struc--&gt;AUXF_STATUS = AUXF_STATUS_IS_CLOSED;</span></span>
 <span class="tr"><span class="th" id="line273">273</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#fileio-get-character">Get Character.</h3><p><p></p><p></div><div class="pre">
+<h3 id="fileio-get-character">Get Character.</h3><p><p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line278">278</span><span class="td">[ FileIO_GetC extf  struc;</span></span>
 <span class="tr"><span class="th" id="line279">279</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if ((extf &lt; 1) || (extf &gt; NO_EXTERNAL_FILES)) return -1;</span></span>
 <span class="tr"><span class="th" id="line280">280</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;struc = TableOfExternalFiles--&gt;extf;</span></span>
@@ -255,7 +256,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line282">282</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return glk_get_char_stream(struc--&gt;AUXF_STREAM);</span></span>
 <span class="tr"><span class="th" id="line283">283</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#fileio-put-character">Put Character.</h3><p><p></p><p></div><div class="pre">
+<h3 id="fileio-put-character">Put Character.</h3><p><p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line288">288</span><span class="td">[ FileIO_PutC extf char  struc;</span></span>
 <span class="tr"><span class="th" id="line289">289</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if ((extf &lt; 1) || (extf &gt; NO_EXTERNAL_FILES)) return -1;</span></span>
 <span class="tr"><span class="th" id="line290">290</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return FileIO_Error(extf, <span class="dstring">&quot;tried to write to a non-file&quot;</span>);</span></span>
@@ -268,7 +269,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line297">297</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return glk_put_char_stream(struc--&gt;AUXF_STREAM, char);</span></span>
 <span class="tr"><span class="th" id="line298">298</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#fileio-print-line">Print Line.</h3><p><p> We read characters from the supplied file until the next newline character. (We allow for that to be encoded as either a single <span class="fixed">0a</span> or a single <span class="fixed">0d</span>.) Each character is printed, and at the end we print a newline.<p></p><p></div><div class="pre">
+<h3 id="fileio-print-line">Print Line.</h3><p><p> We read characters from the supplied file until the next newline character. (We allow for that to be encoded as either a single <span class="fixed">0a</span> or a single <span class="fixed">0d</span>.) Each character is printed, and at the end we print a newline.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line306">306</span><span class="td">[ FileIO_PrintLine extf ch  struc;</span></span>
 <span class="tr"><span class="th" id="line307">307</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if ((extf &lt; 1) || (extf &gt; NO_EXTERNAL_FILES))</span></span>
 <span class="tr"><span class="th" id="line308">308</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return FileIO_Error(extf, <span class="dstring">&quot;tried to write to a non-file&quot;</span>);</span></span>
@@ -281,7 +282,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line315">315</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
 <span class="tr"><span class="th" id="line316">316</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#fileio-print-contents">Print Contents.</h3><p><p> Repeating this until the file runs out is equivalent to the Unix command <span class="fixed">cat</span>, that is, it copies the stream of characters from the file to the output stream. (This might well be another file, just as with <span class="fixed">cat</span>, in which case we have a copy utility.)<p></p><p></div><div class="pre">
+<h3 id="fileio-print-contents">Print Contents.</h3><p><p> Repeating this until the file runs out is equivalent to the Unix command <span class="fixed">cat</span>, that is, it copies the stream of characters from the file to the output stream. (This might well be another file, just as with <span class="fixed">cat</span>, in which case we have a copy utility.)<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line325">325</span><span class="td">[ FileIO_PrintContents extf tab  struc;</span></span>
 <span class="tr"><span class="th" id="line326">326</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if ((extf &lt; 1) || (extf &gt; NO_EXTERNAL_FILES))</span></span>
 <span class="tr"><span class="th" id="line327">327</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return FileIO_Error(extf, <span class="dstring">&quot;tried to access a non-file&quot;</span>);</span></span>
@@ -294,7 +295,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line334">334</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;rtrue;</span></span>
 <span class="tr"><span class="th" id="line335">335</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#fileio-print-text">Print Text.</h3><p><p> The following writes a given piece of text as the new content of the file, either as the whole file (if <span class="fixed">append_flag</span> is false) or adding only to the end (if true).<p></p><p></div><div class="pre">
+<h3 id="fileio-print-text">Print Text.</h3><p><p> The following writes a given piece of text as the new content of the file, either as the whole file (if <span class="fixed">append_flag</span> is false) or adding only to the end (if true).<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line343">343</span><span class="td">[ FileIO_PutContents extf text append_flag  struc str ch oldstream;</span></span>
 <span class="tr"><span class="th" id="line344">344</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if ((extf &lt; 1) || (extf &gt; NO_EXTERNAL_FILES))</span></span>
 <span class="tr"><span class="th" id="line345">345</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return FileIO_Error(extf, <span class="dstring">&quot;tried to access a non-file&quot;</span>);</span></span>
@@ -313,7 +314,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line358">358</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;rfalse;</span></span>
 <span class="tr"><span class="th" id="line359">359</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#fileio-serialising-tables">Serialising Tables.</h3><p><p> The most important data structures to &quot;serialise&quot; &ndash; that is, to convert from their binary representations in memory into text representations in an external file &ndash; are Tables. Here we only carry out the file-handling; the actual translations are in <a href="./Tables.i6t.html">Tables.i6t</a>.<p></p><p></div><div class="pre">
+<h3 id="fileio-serialising-tables">Serialising Tables.</h3><p><p> The most important data structures to &quot;serialise&quot; &ndash; that is, to convert from their binary representations in memory into text representations in an external file &ndash; are Tables. Here we only carry out the file-handling; the actual translations are in <a href="./Tables.i6t.html">Tables.i6t</a>.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line368">368</span><span class="td">[ FileIO_PutTable extf tab rv  struc oldstream;</span></span>
 <span class="tr"><span class="th" id="line369">369</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if ((extf &lt; 1) || (extf &gt; NO_EXTERNAL_FILES))</span></span>
 <span class="tr"><span class="th" id="line370">370</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return FileIO_Error(extf, <span class="dstring">&quot;tried to write table to a non-file&quot;</span>);</span></span>
@@ -341,7 +342,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line392">392</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;rtrue;</span></span>
 <span class="tr"><span class="th" id="line393">393</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#fileio-z-machine-stubs">Z-Machine Stubs.</h3><p><p> These routines do the minimum possible, but equally, they only generate a run-time problem when there is no alternative.<p></p><p></div><div class="pre">
+<h3 id="fileio-z-machine-stubs">Z-Machine Stubs.</h3><p><p> These routines do the minimum possible, but equally, they only generate a run-time problem when there is no alternative.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line400">400</span><span class="td">#IFNOT; <span class="comment">! TARGET_GLULX</span></span></span>
 <span class="tr"><span class="th" id="line401">401</span><span class="td">[ FileIO_Exists extf; rfalse; ];</span></span>
 <span class="tr"><span class="th" id="line402">402</span><span class="td">[ FileIO_Ready extf; rfalse; ];</span></span>
@@ -355,7 +356,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line410">410</span><span class="td">[ FileIO_PutContents extf; FileIO_PutTable(extf); ];</span></span>
 <span class="tr"><span class="th" id="line411">411</span><span class="td">#ENDIF; <span class="comment">! TARGET_GLULX</span></span></span>
 </div><div class='text'>
-<h3 id="#fileio-back-to-core">Back To Core.</h3><p><p></p><p></div><div class="pre">
+<h3 id="fileio-back-to-core">Back To Core.</h3><p><p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line416">416</span><span class="td">#IFNOT; <span class="comment">! PLUGIN_FILES</span></span></span>
 <span class="tr"><span class="th" id="line417">417</span><span class="td">[ FileIO_GetC extf; return -1; ];</span></span>
 <span class="tr"><span class="th" id="line418">418</span><span class="td">#ENDIF; <span class="comment">! PLUGIN_FILES</span></span></span>

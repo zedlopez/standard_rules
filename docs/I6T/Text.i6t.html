@@ -33,30 +33,31 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
   color: #095097; }
 .comment {  
   color: #156D15; } /* #207D20; */
+td.content { padding-right: 2rem; vertical-align: top;}
     </style>
 </head>
 <body>
 <header>
 <h1>I6 Template Layer</h1>
-<div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Index</a> &bull; <a href="./Introduction.i6t.html">Introduction</a> 
+<div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Contents</a> &bull; <a href="./Introduction.i6t.html">Introduction</a> 
 &bull; <a href="fn_index.html">Function Index</a> 
 &bull; <a href="rules_index.html">Rules Index</a> 
 </div><hr></header>
 <div id="front_matter">
-<h2><a href="./Text.i6t.txt">Text.i6t</a></h2><h3 id="#text-block-format">Block Format.</h3><p><p> The short block for a text is two words long: the first word selects which form of storage will be used to represent the content, and the second word is a reference to that content. This reference is an I6 String or Routine in all cases except one, when it&#39;s a pointer to a long block containing a null-terminated array of characters, like a C string.<p></p><p> Clearly we need <span class="fixed"><a href="./Text.i6t.html#line35">PACKED_TEXT_STORAGE</a></span> and <span class="fixed"><a href="./Text.i6t.html#line36">UNPACKED_TEXT_STORAGE</a></span> to distinguish between the two basic methods of text storage, roughly equivalent to the pre-2013 kinds &quot;text&quot; and &quot;indexed text&quot;. But why do we need four?<p></p><p> <span class="fixed"><a href="./Text.i6t.html#line33">CONSTANT_PACKED_TEXT_STORAGE</a></span> is easy to explain: the BlkValue routines normally detect constants using metadata in their long blocks, but of course that won&#39;t work for values which haven&#39;t got any long blocks. We use this instead. We don&#39;t need a <span class="fixed">CONSTANT_UNPACKED_TEXT_STORAGE</span> because I7 never compiles constant text in unpacked form.<p></p><p> The surprising one is <span class="fixed"><a href="./Text.i6t.html#line34">CONSTANT_PERISHABLE_TEXT_STORAGE</a></span>. This is a constant created by the I7 compiler which is marked as being tricky because its value is a text substitution containing references to local variables. Unlike other text substitutions, this can&#39;t meaningfully be stored away to be expanded later: it must be expanded into unpacked text before it perishes.<p></p><p></div><div class="pre">
+<h2><a href="./Text.i6t.txt">Text.i6t</a></h2><h3 id="text-block-format">Block Format.</h3><p><p> The short block for a text is two words long: the first word selects which form of storage will be used to represent the content, and the second word is a reference to that content. This reference is an I6 String or Routine in all cases except one, when it&#39;s a pointer to a long block containing a null-terminated array of characters, like a C string.<p></p><p> Clearly we need <span class="fixed"><a href="./Text.i6t.html#line35">PACKED_TEXT_STORAGE</a></span> and <span class="fixed"><a href="./Text.i6t.html#line36">UNPACKED_TEXT_STORAGE</a></span> to distinguish between the two basic methods of text storage, roughly equivalent to the pre-2013 kinds &quot;text&quot; and &quot;indexed text&quot;. But why do we need four?<p></p><p> <span class="fixed"><a href="./Text.i6t.html#line33">CONSTANT_PACKED_TEXT_STORAGE</a></span> is easy to explain: the BlkValue routines normally detect constants using metadata in their long blocks, but of course that won&#39;t work for values which haven&#39;t got any long blocks. We use this instead. We don&#39;t need a <span class="fixed">CONSTANT_UNPACKED_TEXT_STORAGE</span> because I7 never compiles constant text in unpacked form.<p></p><p> The surprising one is <span class="fixed"><a href="./Text.i6t.html#line34">CONSTANT_PERISHABLE_TEXT_STORAGE</a></span>. This is a constant created by the I7 compiler which is marked as being tricky because its value is a text substitution containing references to local variables. Unlike other text substitutions, this can&#39;t meaningfully be stored away to be expanded later: it must be expanded into unpacked text before it perishes.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line33">33</span><span class="td">Constant CONSTANT_PACKED_TEXT_STORAGE     = BLK_BVBITMAP_TEXT + BLK_BVBITMAP_CONSTANT + 1;</span></span>
 <span class="tr"><span class="th" id="line34">34</span><span class="td">Constant CONSTANT_PERISHABLE_TEXT_STORAGE = BLK_BVBITMAP_TEXT + BLK_BVBITMAP_CONSTANT + 2;</span></span>
 <span class="tr"><span class="th" id="line35">35</span><span class="td">Constant PACKED_TEXT_STORAGE              = BLK_BVBITMAP_TEXT + 3;</span></span>
 <span class="tr"><span class="th" id="line36">36</span><span class="td">Constant UNPACKED_TEXT_STORAGE            = BLK_BVBITMAP_TEXT + BLK_BVBITMAP_LONGBLOCK + 4;</span></span>
 </div><div class='text'>
-<h3 id="#text-extent-of-long-block">Extent Of Long Block.</h3><p><p> When there&#39;s a long block, we need enough of the entries to store the number of characters, plus one for the null terminator.<p></p><p></div><div class="pre">
+<h3 id="text-extent-of-long-block">Extent Of Long Block.</h3><p><p> When there&#39;s a long block, we need enough of the entries to store the number of characters, plus one for the null terminator.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line43">43</span><span class="td">[ TEXT_TY_Extent arg1 x;</span></span>
 <span class="tr"><span class="th" id="line44">44</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;x = BlkValueSeekZeroEntry(arg1);</span></span>
 <span class="tr"><span class="th" id="line45">45</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (x &lt; 0) return -1; <span class="comment">! should not happen, of course</span></span></span>
 <span class="tr"><span class="th" id="line46">46</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return x+1;</span></span>
 <span class="tr"><span class="th" id="line47">47</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#text-character-set">Character Set.</h3><p><p> On the Z-machine, we use the 8-bit ZSCII character set, stored in bytes; on Glulx, we use the opening 16-bit subset of Unicode (which though only a subset covers almost all letter forms used on Earth), stored in half-words.<p></p><p> The Z-machine does have very partial Unicode support, but not in a way that can help us here. It is capable of printing a wide range of Unicode characters, and on a good interpreter with a good font (such as Zoom for Mac OS X, using the Lucida Grande font) can produce many thousands of glyphs. But it is not capable of printing those characters into memory rather than the screen, an essential technique for texts: it can only write each character to a single byte, and it does so in ZSCII. That forces our hand when it comes to choosing the indexed-text character set.<p></p><p></div><div class="pre">
+<h3 id="text-character-set">Character Set.</h3><p><p> On the Z-machine, we use the 8-bit ZSCII character set, stored in bytes; on Glulx, we use the opening 16-bit subset of Unicode (which though only a subset covers almost all letter forms used on Earth), stored in half-words.<p></p><p> The Z-machine does have very partial Unicode support, but not in a way that can help us here. It is capable of printing a wide range of Unicode characters, and on a good interpreter with a good font (such as Zoom for Mac OS X, using the Lucida Grande font) can produce many thousands of glyphs. But it is not capable of printing those characters into memory rather than the screen, an essential technique for texts: it can only write each character to a single byte, and it does so in ZSCII. That forces our hand when it comes to choosing the indexed-text character set.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line64">64</span><span class="td">#IFDEF TARGET_ZCODE;</span></span>
 <span class="tr"><span class="th" id="line65">65</span><span class="td">Constant TEXT_TY_Storage_Flags = BLK_FLAG_MULTIPLE;</span></span>
 <span class="tr"><span class="th" id="line66">66</span><span class="td">Constant ZSCII_Tables;</span></span>
@@ -68,7 +69,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line72">72</span><span class="td">{-segment:<a href="./UnicodeData.i6t.html">UnicodeData.i6t</a>}</span></span>
 <span class="tr"><span class="th" id="line73">73</span><span class="td">{-segment:<a href="./Char.i6t.html">Char.i6t</a>}</span></span>
 </div><div class='text'>
-<h3 id="#text-kov-support">KOV Support.</h3><p><p> See the <a href="./BlockValues.i6t.html">BlockValues.i6t</a> segment for the specification of the following routines. Because no block values are ever stored in a text, they can freely be bitwise copied or forgotten, which is why we need do nothing special to copy or destroy a text.<p></p><p></div><div class="pre">
+<h3 id="text-kov-support">KOV Support.</h3><p><p> See the <a href="./BlockValues.i6t.html">BlockValues.i6t</a> segment for the specification of the following routines. Because no block values are ever stored in a text, they can freely be bitwise copied or forgotten, which is why we need do nothing special to copy or destroy a text.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line82">82</span><span class="td">[ TEXT_TY_Support task arg1 arg2 arg3;</span></span>
 <span class="tr"><span class="th" id="line83">83</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;switch(task) {</span></span>
 <span class="tr"><span class="th" id="line84">84</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CREATE_KOVS:      return TEXT_TY_Create(arg2);</span></span>
@@ -89,7 +90,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line99">99</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;rfalse;</span></span>
 <span class="tr"><span class="th" id="line100">100</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#text-debugging">Debugging.</h3><p><p> This shows the various forms a text&#39;s short block can take:<p></p><p></div><div class="pre">
+<h3 id="text-debugging">Debugging.</h3><p><p> This shows the various forms a text&#39;s short block can take:<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line106">106</span><span class="td">[ TEXT_TY_Debug txt;</span></span>
 <span class="tr"><span class="th" id="line107">107</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;switch (txt--&gt;0) {</span></span>
 <span class="tr"><span class="th" id="line108">108</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CONSTANT_PACKED_TEXT_STORAGE:     print <span class="dstring">&quot; = cp~&quot;</span>, (PrintI6Text) txt--&gt;1, <span class="dstring">&quot;~&quot;</span>;</span></span>
@@ -100,18 +101,18 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line113">113</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;}</span></span>
 <span class="tr"><span class="th" id="line114">114</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#text-creation">Creation.</h3><p><p> A newly created text is a two-word short block with no long block, like this:<p></p><p><div class="pre-lines">Array ThisIsAText --&gt; PACKED_TEXT_STORAGE EMPTY_TEXT_PACKED;</div><p></p><p></div><div class="pre">
+<h3 id="text-creation">Creation.</h3><p><p> A newly created text is a two-word short block with no long block, like this:<p></p><p><div class="pre-lines">Array ThisIsAText --&gt; PACKED_TEXT_STORAGE EMPTY_TEXT_PACKED;</div><p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line122">122</span><span class="td">[ TEXT_TY_Create short_block x;</span></span>
 <span class="tr"><span class="th" id="line123">123</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return BlkValueCreateSB2(short_block, PACKED_TEXT_STORAGE, EMPTY_TEXT_PACKED);</span></span>
 <span class="tr"><span class="th" id="line124">124</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#text-copy-short-block">Copy Short Block.</h3><p><p> When a short block for a constant is copied, the new copy isn&#39;t a constant any more.<p></p><p></div><div class="pre">
+<h3 id="text-copy-short-block">Copy Short Block.</h3><p><p> When a short block for a constant is copied, the new copy isn&#39;t a constant any more.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line131">131</span><span class="td">[ TEXT_TY_CopySB to_bv from_bv;</span></span>
 <span class="tr"><span class="th" id="line132">132</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;BlkValueCopySB2(to_bv, from_bv);</span></span>
 <span class="tr"><span class="th" id="line133">133</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (to_bv--&gt;0 &amp; BLK_BVBITMAP_CONSTANTMASK) to_bv--&gt;0 = PACKED_TEXT_STORAGE;</span></span>
 <span class="tr"><span class="th" id="line134">134</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#text-transmutation">Transmutation.</h3><p><p> What happens if a text is stored in packed form, but we need to access or change its individual characters? The answer is that we have to &quot;transmute&quot; it into long block form. Sometimes this is a permanent change, but often it&#39;s only temporary, and will soon be followed by an un-transmutation.<p></p><p></div><div class="pre">
+<h3 id="text-transmutation">Transmutation.</h3><p><p> What happens if a text is stored in packed form, but we need to access or change its individual characters? The answer is that we have to &quot;transmute&quot; it into long block form. Sometimes this is a permanent change, but often it&#39;s only temporary, and will soon be followed by an un-transmutation.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line143">143</span><span class="td">[ TEXT_TY_Transmute txt;</span></span>
 <span class="tr"><span class="th" id="line144">144</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;TEXT_TY_Temporarily_Transmute(txt);</span></span>
 <span class="tr"><span class="th" id="line145">145</span><span class="td">];</span></span>
@@ -139,7 +140,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line167">167</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return txt;</span></span>
 <span class="tr"><span class="th" id="line168">168</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#text-mutability">Mutability.</h3><p><p> That neatly handles the question of how to make a text mutable. (Note that constants are never created in unpacked form.)<p></p><p></div><div class="pre">
+<h3 id="text-mutability">Mutability.</h3><p><p> That neatly handles the question of how to make a text mutable. (Note that constants are never created in unpacked form.)<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line175">175</span><span class="td">[ TEXT_TY_Mutable txt;</span></span>
 <span class="tr"><span class="th" id="line176">176</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (txt--&gt;0 &amp; BLK_BVBITMAP_LONGBLOCKMASK == 0) {</span></span>
 <span class="tr"><span class="th" id="line177">177</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TEXT_TY_Transmute(txt);</span></span>
@@ -148,7 +149,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line180">180</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return 2; <span class="comment">! Tell BlockValue there&#39;s a long block pointer</span></span></span>
 <span class="tr"><span class="th" id="line181">181</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#text-casting">Casting.</h3><p><p> In general computing, &quot;casting&quot; is the process of translating data in one type into semantically equivalent data in another: the only interesting cast here is that a snippet can be turned into a text.<p></p><p></div><div class="pre">
+<h3 id="text-casting">Casting.</h3><p><p> In general computing, &quot;casting&quot; is the process of translating data in one type into semantically equivalent data in another: the only interesting cast here is that a snippet can be turned into a text.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line189">189</span><span class="td">[ TEXT_TY_Cast to_txt from_kind from_value;</span></span>
 <span class="tr"><span class="th" id="line190">190</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (from_kind == TEXT_TY) {</span></span>
 <span class="tr"><span class="th" id="line191">191</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BlkValueCopy(to_txt, from_value);</span></span>
@@ -162,7 +163,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line199">199</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return BlkValueCast(to_txt, SNIPPET_TY, snippet);</span></span>
 <span class="tr"><span class="th" id="line200">200</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#text-data-conversion">Data Conversion.</h3><p><p> We use a single routine to handle two kinds of format translation: a packed I6 string into an unpacked text, or a snippet into an unpacked text.<p></p><p> In each case, what we do is simply to print out the value we have, but with the output stream set to memory rather than the screen. That gives us the character by character version, neatly laid out in an array, and all we have to do is to copy it into the text and add a null termination byte.<p></p><p> What complicates things is that the two virtual machines handle printing to memory quite differently, and that the original text has unpredictable length. We are going to try printing it into the array <span class="fixed">TEXT_TY_Buffers</span>, but what if the text is too big? Disastrously, the Z-machine simply writes on in memory, corrupting all subsequent arrays and almost certainly causing the story file to crash soon after. There is nothing we can do to predict or avoid this, or to repair the damage: this is why the Inform documentation warns users to be wary of using text with large strings in the Z-machine, and advises the use of Glulx instead. Glulx does handle overruns safely, and indeed allows us to dynamically allocate memory as necessary so that we can always avoid overruns entirely.<p></p><p> In either case, though, it&#39;s useful to have <span class="fixed"><a href="./Text.i6t.html#line230">TEXT_TY_BufferSize</a></span>, the size of the temporary buffer, large enough that it will never be overrun in ordinary use. This is controllable with the use option &quot;maximum indexed text length&quot;.<p></p><p></div><div class="pre">
+<h3 id="text-data-conversion">Data Conversion.</h3><p><p> We use a single routine to handle two kinds of format translation: a packed I6 string into an unpacked text, or a snippet into an unpacked text.<p></p><p> In each case, what we do is simply to print out the value we have, but with the output stream set to memory rather than the screen. That gives us the character by character version, neatly laid out in an array, and all we have to do is to copy it into the text and add a null termination byte.<p></p><p> What complicates things is that the two virtual machines handle printing to memory quite differently, and that the original text has unpredictable length. We are going to try printing it into the array <span class="fixed">TEXT_TY_Buffers</span>, but what if the text is too big? Disastrously, the Z-machine simply writes on in memory, corrupting all subsequent arrays and almost certainly causing the story file to crash soon after. There is nothing we can do to predict or avoid this, or to repair the damage: this is why the Inform documentation warns users to be wary of using text with large strings in the Z-machine, and advises the use of Glulx instead. Glulx does handle overruns safely, and indeed allows us to dynamically allocate memory as necessary so that we can always avoid overruns entirely.<p></p><p> In either case, though, it&#39;s useful to have <span class="fixed"><a href="./Text.i6t.html#line230">TEXT_TY_BufferSize</a></span>, the size of the temporary buffer, large enough that it will never be overrun in ordinary use. This is controllable with the use option &quot;maximum indexed text length&quot;.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line229">229</span><span class="td">#ifndef TEXT_TY_BufferSize;</span></span>
 <span class="tr"><span class="th" id="line230">230</span><span class="td">Constant TEXT_TY_BufferSize = 512;</span></span>
 <span class="tr"><span class="th" id="line231">231</span><span class="td">#endif;</span></span>
@@ -179,7 +180,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line242">242</span><span class="td"></span></span>
 <span class="tr"><span class="th" id="line243">243</span><span class="td">Global TEXT_TY_CastPrimitiveNesting = 0;</span></span>
 </div><div class='text'>
-<h3 id="#text-z-version">Z Version.</h3><p><p> The two versions of this routine, one for each virtual machine, are in all important respects the same, but there are enough fiddly differences that it&#39;s clearer to give two definitions, so:<p></p><p></div><div class="pre">
+<h3 id="text-z-version">Z Version.</h3><p><p> The two versions of this routine, one for each virtual machine, are in all important respects the same, but there are enough fiddly differences that it&#39;s clearer to give two definitions, so:<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line251">251</span><span class="td">#ifdef TARGET_ZCODE;</span></span>
 <span class="tr"><span class="th" id="line252">252</span><span class="td">[ TEXT_TY_CastPrimitive to_txt from_snippet from_value  len news buffer;</span></span>
 <span class="tr"><span class="th" id="line253">253</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (to_txt == 0) BlkValueError(<span class="dstring">&quot;no destination for cast&quot;</span>);</span></span>
@@ -208,7 +209,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line276">276</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;BlkValueMassCopyFromArray(to_txt, buffer+2, 1, len+1);</span></span>
 <span class="tr"><span class="th" id="line277">277</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#text-glulx-version">Glulx Version.</h3><p><p></p><p></div><div class="pre">
+<h3 id="text-glulx-version">Glulx Version.</h3><p><p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line282">282</span><span class="td">#ifnot; <span class="comment">! TARGET_ZCODE</span></span></span>
 <span class="tr"><span class="th" id="line283">283</span><span class="td">[ TEXT_TY_CastPrimitive to_txt from_snippet from_value</span></span>
 <span class="tr"><span class="th" id="line284">284</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;len i stream saved_stream news buffer buffer_size memory_to_free results;</span></span>
@@ -273,7 +274,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line343">343</span><span class="td">];</span></span>
 <span class="tr"><span class="th" id="line344">344</span><span class="td">#endif; </span></span>
 </div><div class='text'>
-<h3 id="#text-comparison">Comparison.</h3><p><p> This is more or less <span class="fixed">strcmp</span>, the traditional C library routine for comparing strings, but it does pose a few interesting questions. The answers are:<p></p><p> (a) Two different unexpanded texts with substitutions are never equal, so &quot;[X]&quot; and &quot;[Y]&quot; aren&#39;t equal as texts even if X and Y are equal. (b) Otherwise we test the current value of the text as expanded, so &quot;[X]&quot; and &quot;17&quot; can be equal as texts if X is 17.<p></p><p></div><div class="pre">
+<h3 id="text-comparison">Comparison.</h3><p><p> This is more or less <span class="fixed">strcmp</span>, the traditional C library routine for comparing strings, but it does pose a few interesting questions. The answers are:<p></p><p> (a) Two different unexpanded texts with substitutions are never equal, so &quot;[X]&quot; and &quot;[Y]&quot; aren&#39;t equal as texts even if X and Y are equal. (b) Otherwise we test the current value of the text as expanded, so &quot;[X]&quot; and &quot;17&quot; can be equal as texts if X is 17.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line356">356</span><span class="td">[ TEXT_TY_Compare left_txt right_txt rv;</span></span>
 <span class="tr"><span class="th" id="line357">357</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;@push say__comp;</span></span>
 <span class="tr"><span class="th" id="line358">358</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;say__comp = true;</span></span>
@@ -322,7 +323,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line401">401</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;rtrue;</span></span>
 <span class="tr"><span class="th" id="line402">402</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#text-hashing">Hashing.</h3><p><p> This calculates a hash value for the string, using Bernstein&#39;s algorithm.<p></p><p></div><div class="pre">
+<h3 id="text-hashing">Hashing.</h3><p><p> This calculates a hash value for the string, using Bernstein&#39;s algorithm.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line408">408</span><span class="td">[ TEXT_TY_Hash txt  rv len i p cp;</span></span>
 <span class="tr"><span class="th" id="line409">409</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;cp = txt--&gt;0; p = TEXT_TY_Temporarily_Transmute(txt);</span></span>
 <span class="tr"><span class="th" id="line410">410</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;rv = 0;</span></span>
@@ -333,7 +334,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line415">415</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return rv;</span></span>
 <span class="tr"><span class="th" id="line416">416</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#text-printing">Printing.</h3><p><p> Unicode is not the native character set on Glulx: it came along as a late addition to Glulx&#39;s specification. The deal is that we have to explicitly tell the Glk interface layer to perform certain operations in a Unicode way; if we simply perform <span class="fixed">print (char) ch;</span> then the character <span class="fixed">ch</span> will be printed in ZSCII rather than Unicode.<p></p><p></div><div class="pre">
+<h3 id="text-printing">Printing.</h3><p><p> Unicode is not the native character set on Glulx: it came along as a late addition to Glulx&#39;s specification. The deal is that we have to explicitly tell the Glk interface layer to perform certain operations in a Unicode way; if we simply perform <span class="fixed">print (char) ch;</span> then the character <span class="fixed">ch</span> will be printed in ZSCII rather than Unicode.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line426">426</span><span class="td">[ TEXT_TY_Say txt  ch i dsize;</span></span>
 <span class="tr"><span class="th" id="line427">427</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (txt==0) rfalse;</span></span>
 <span class="tr"><span class="th" id="line428">428</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (txt--&gt;0 &amp; BLK_BVBITMAP_LONGBLOCKMASK == 0) return PrintI6Text(txt--&gt;1);</span></span>
@@ -351,7 +352,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line440">440</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;rtrue;</span></span>
 <span class="tr"><span class="th" id="line441">441</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#text-capitalised-printing">Capitalised printing.</h3><p><p> It turns out to be useful to have a variation on this:<p></p><p></div><div class="pre">
+<h3 id="text-capitalised-printing">Capitalised printing.</h3><p><p> It turns out to be useful to have a variation on this:<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line447">447</span><span class="td">[ TEXT_TY_Say_Capitalised txt mod rc;</span></span>
 <span class="tr"><span class="th" id="line448">448</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;mod = BlkValueCreate(TEXT_TY);</span></span>
 <span class="tr"><span class="th" id="line449">449</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;TEXT_TY_SubstitutedForm(mod, txt);</span></span>
@@ -365,7 +366,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line457">457</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return rc;</span></span>
 <span class="tr"><span class="th" id="line458">458</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#text-serialisation">Serialisation.</h3><p><p> Here we print a serialised form of a text which can later be used to reconstruct the original text. The printing is apparently to the screen, but in fact always takes place when the output stream is a file.<p></p><p> The format chosen is a letter &quot;S&quot; for string, then a comma-separated list of decimal character codes, ending with the null terminator, and followed by a semicolon: thus <span class="fixed">S65,66,67,0;</span> is the serialised form of the text &quot;ABC&quot;.<p></p><p></div><div class="pre">
+<h3 id="text-serialisation">Serialisation.</h3><p><p> Here we print a serialised form of a text which can later be used to reconstruct the original text. The printing is apparently to the screen, but in fact always takes place when the output stream is a file.<p></p><p> The format chosen is a letter &quot;S&quot; for string, then a comma-separated list of decimal character codes, ending with the null terminator, and followed by a semicolon: thus <span class="fixed">S65,66,67,0;</span> is the serialised form of the text &quot;ABC&quot;.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line470">470</span><span class="td">[ TEXT_TY_WriteFile txt len pos ch p cp;</span></span>
 <span class="tr"><span class="th" id="line471">471</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;cp = txt--&gt;0; p = TEXT_TY_Temporarily_Transmute(txt);</span></span>
 <span class="tr"><span class="th" id="line472">472</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;len = BlkValueLBCapacity(txt);</span></span>
@@ -381,7 +382,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line482">482</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;TEXT_TY_Untransmute(txt, p, cp);</span></span>
 <span class="tr"><span class="th" id="line483">483</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#text-unserialisation">Unserialisation.</h3><p><p> If that&#39;s the word: the reverse process, in which we read a stream of characters from a file and reconstruct the text which gave rise to them.<p></p><p></div><div class="pre">
+<h3 id="text-unserialisation">Unserialisation.</h3><p><p> If that&#39;s the word: the reverse process, in which we read a stream of characters from a file and reconstruct the text which gave rise to them.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line491">491</span><span class="td">[ TEXT_TY_ReadFile txt auxf ch i v dg pos tsize p;</span></span>
 <span class="tr"><span class="th" id="line492">492</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;TEXT_TY_Transmute(txt);</span></span>
 <span class="tr"><span class="th" id="line493">493</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;tsize = BlkValueLBCapacity(txt);</span></span>
@@ -404,7 +405,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line510">510</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return txt;</span></span>
 <span class="tr"><span class="th" id="line511">511</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#text-substitution">Substitution.</h3><p><p></p><p></div><div class="pre">
+<h3 id="text-substitution">Substitution.</h3><p><p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line516">516</span><span class="td">[ TEXT_TY_SubstitutedForm to txt;</span></span>
 <span class="tr"><span class="th" id="line517">517</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (txt) {</span></span>
 <span class="tr"><span class="th" id="line518">518</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BlkValueCopy(to, txt);</span></span>
@@ -420,14 +421,14 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line528">528</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;rtrue;</span></span>
 <span class="tr"><span class="th" id="line529">529</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#text-perishability">Perishability.</h3><p><p> As noted above, a perishable constant is one which must be expanded before the values it refers to vanish from existence.<p></p><p></div><div class="pre">
+<h3 id="text-perishability">Perishability.</h3><p><p> As noted above, a perishable constant is one which must be expanded before the values it refers to vanish from existence.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line536">536</span><span class="td">[ TEXT_TY_ExpandIfPerishable to from;</span></span>
 <span class="tr"><span class="th" id="line537">537</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if ((from) &amp;&amp; (from--&gt;0 == CONSTANT_PERISHABLE_TEXT_STORAGE))</span></span>
 <span class="tr"><span class="th" id="line538">538</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return TEXT_TY_SubstitutedForm(to, from);</span></span>
 <span class="tr"><span class="th" id="line539">539</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return from;</span></span>
 <span class="tr"><span class="th" id="line540">540</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#text-recognition-only-gpr">Recognition-only-GPR.</h3><p><p> An I6 general parsing routine to look at words from the position marker <span class="fixed"><a href="./Output.i6t.html#line283">wn</a></span> in the player&#39;s command to see if they match the contents of the text <span class="fixed">txt</span>, returning either <span class="fixed"><a href="./Definitions.i6t.html#line542">GPR_PREPOSITION</a></span> or <span class="fixed"><a href="./Definitions.i6t.html#line541">GPR_FAIL</a></span> according to whether a match could be made. This is used when the an object&#39;s name is set to include one of its properties, and the property in question is a text: &quot;A flowerpot is a kind of thing. A flowerpot has a text called pattern. Understand the pattern property as describing a flowerpot.&quot; When the player types EXAMINE STRIPED FLOWERPOT, and there is a flowerpot in scope, the following routine is called to test whether its pattern property &ndash; a text &ndash; matches any words at the position STRIPED FLOWERPOT. Assuming a pot does indeed have the pattern &quot;striped&quot;, the routine advances <span class="fixed"><a href="./Output.i6t.html#line283">wn</a></span> by 1 and returns <span class="fixed"><a href="./Definitions.i6t.html#line542">GPR_PREPOSITION</a></span> to indicate a match.<p></p><p> This kind of GPR is called a &quot;recognition-only-GPR&quot;, because it only recognises an existing value: it doesn&#39;t parse a new one.<p></p><p></div><div class="pre">
+<h3 id="text-recognition-only-gpr">Recognition-only-GPR.</h3><p><p> An I6 general parsing routine to look at words from the position marker <span class="fixed"><a href="./Output.i6t.html#line283">wn</a></span> in the player&#39;s command to see if they match the contents of the text <span class="fixed">txt</span>, returning either <span class="fixed"><a href="./Definitions.i6t.html#line542">GPR_PREPOSITION</a></span> or <span class="fixed"><a href="./Definitions.i6t.html#line541">GPR_FAIL</a></span> according to whether a match could be made. This is used when the an object&#39;s name is set to include one of its properties, and the property in question is a text: &quot;A flowerpot is a kind of thing. A flowerpot has a text called pattern. Understand the pattern property as describing a flowerpot.&quot; When the player types EXAMINE STRIPED FLOWERPOT, and there is a flowerpot in scope, the following routine is called to test whether its pattern property &ndash; a text &ndash; matches any words at the position STRIPED FLOWERPOT. Assuming a pot does indeed have the pattern &quot;striped&quot;, the routine advances <span class="fixed"><a href="./Output.i6t.html#line283">wn</a></span> by 1 and returns <span class="fixed"><a href="./Definitions.i6t.html#line542">GPR_PREPOSITION</a></span> to indicate a match.<p></p><p> This kind of GPR is called a &quot;recognition-only-GPR&quot;, because it only recognises an existing value: it doesn&#39;t parse a new one.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line561">561</span><span class="td">[ TEXT_TY_ROGPR txt p cp r;</span></span>
 <span class="tr"><span class="th" id="line562">562</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (txt == 0) return GPR_FAIL;</span></span>
 <span class="tr"><span class="th" id="line563">563</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;cp = txt--&gt;0; p = TEXT_TY_Temporarily_Transmute(txt);</span></span>
@@ -462,7 +463,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line592">592</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return GPR_PREPOSITION;</span></span>
 <span class="tr"><span class="th" id="line593">593</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#text-blobs">Blobs.</h3><p><p> That completes the compulsory services required for this KOV to function: from here on, the remaining routines provide definitions of text-related phrases in the Standard Rules.<p></p><p> What are the basic operations of text-handling? Clearly we want to be able to search, and replace, but that is left for the segment <a href="./RegExp.i6t.html">RegExp.i6t</a> to handle. More basically we would like to be able to read and write characters from the text. But texts in I7 tend to be of natural language, rather than containing arbitrary material &ndash; that&#39;s indeed why we call them texts rather than strings. This means they are likely to be punctuated sequences of words, divided up perhaps into sentences and even paragraphs.<p></p><p> So we provide facilities which regard a text as being an array of &quot;blobs&quot;, where a &quot;blob&quot; is a unit of text. The user can choose whether to see it as an array of characters, or words (of three different sorts: see the Inform documentation for details), or paragraphs, or lines. <p></p><p></div><div class="pre">
+<h3 id="text-blobs">Blobs.</h3><p><p> That completes the compulsory services required for this KOV to function: from here on, the remaining routines provide definitions of text-related phrases in the Standard Rules.<p></p><p> What are the basic operations of text-handling? Clearly we want to be able to search, and replace, but that is left for the segment <a href="./RegExp.i6t.html">RegExp.i6t</a> to handle. More basically we would like to be able to read and write characters from the text. But texts in I7 tend to be of natural language, rather than containing arbitrary material &ndash; that&#39;s indeed why we call them texts rather than strings. This means they are likely to be punctuated sequences of words, divided up perhaps into sentences and even paragraphs.<p></p><p> So we provide facilities which regard a text as being an array of &quot;blobs&quot;, where a &quot;blob&quot; is a unit of text. The user can choose whether to see it as an array of characters, or words (of three different sorts: see the Inform documentation for details), or paragraphs, or lines. <p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line614">614</span><span class="td">Constant CHR_BLOB = 1; <span class="comment">! Construe as an array of characters</span></span></span>
 <span class="tr"><span class="th" id="line615">615</span><span class="td">Constant WORD_BLOB = 2; <span class="comment">! Of words</span></span></span>
 <span class="tr"><span class="th" id="line616">616</span><span class="td">Constant PWORD_BLOB = 3; <span class="comment">! Of punctuated words</span></span></span>
@@ -472,7 +473,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line620">620</span><span class="td"></span></span>
 <span class="tr"><span class="th" id="line621">621</span><span class="td">Constant REGEXP_BLOB = 7; <span class="comment">! Not a blob type as such, but needed as a distinct value</span></span></span>
 </div><div class='text'>
-<h3 id="#text-blob-access">Blob Access.</h3><p><p> The following routine runs a small finite-state-machine to count the number of blobs in a text, using any of the above blob types (except <span class="fixed"><a href="./Text.i6t.html#line621">REGEXP_BLOB</a></span>, which is used for other purposes). If the optional arguments <span class="fixed">ctxt</span> and <span class="fixed">wanted</span> are supplied, it also copies the text of blob number <span class="fixed">wanted</span> (counting upwards from 1 at the start of the text) into the text <span class="fixed">ctxt</span>. If the further optional argument <span class="fixed">rtxt</span> is supplied, then <span class="fixed">ctxt</span> is instead written with the original text <span class="fixed">txt</span> as it would read if the blob in question were replaced with the text in <span class="fixed">rtxt</span>.<p></p><p></div><div class="pre">
+<h3 id="text-blob-access">Blob Access.</h3><p><p> The following routine runs a small finite-state-machine to count the number of blobs in a text, using any of the above blob types (except <span class="fixed"><a href="./Text.i6t.html#line621">REGEXP_BLOB</a></span>, which is used for other purposes). If the optional arguments <span class="fixed">ctxt</span> and <span class="fixed">wanted</span> are supplied, it also copies the text of blob number <span class="fixed">wanted</span> (counting upwards from 1 at the start of the text) into the text <span class="fixed">ctxt</span>. If the further optional argument <span class="fixed">rtxt</span> is supplied, then <span class="fixed">ctxt</span> is instead written with the original text <span class="fixed">txt</span> as it would read if the blob in question were replaced with the text in <span class="fixed">rtxt</span>.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line634">634</span><span class="td">Constant WS_BRM = 1;</span></span>
 <span class="tr"><span class="th" id="line635">635</span><span class="td">Constant SKIPPED_BRM = 2;</span></span>
 <span class="tr"><span class="th" id="line636">636</span><span class="td">Constant ACCEPTED_BRM = 3;</span></span>
@@ -613,7 +614,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line771">771</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return blobcount;</span></span>
 <span class="tr"><span class="th" id="line772">772</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#text-get-blob">Get Blob.</h3><p><p> The front end which uses the above routine to read a blob. (Note that, for efficiency&#39;s sake, we read characters more directly.)<p></p><p></div><div class="pre">
+<h3 id="text-get-blob">Get Blob.</h3><p><p> The front end which uses the above routine to read a blob. (Note that, for efficiency&#39;s sake, we read characters more directly.)<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line779">779</span><span class="td">[ TEXT_TY_GetBlob ctxt txt wanted blobtype;</span></span>
 <span class="tr"><span class="th" id="line780">780</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (txt==0) return;</span></span>
 <span class="tr"><span class="th" id="line781">781</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (blobtype == CHR_BLOB) return TEXT_TY_GetCharacter(ctxt, txt, wanted);</span></span>
@@ -621,7 +622,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line783">783</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return ctxt;</span></span>
 <span class="tr"><span class="th" id="line784">784</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#text-replace-blob">Replace Blob.</h3><p><p> The front end which uses the above routine to replace a blob. (Once again, characters are handled directly to avoid incurring all that overhead.)<p></p><p></div><div class="pre">
+<h3 id="text-replace-blob">Replace Blob.</h3><p><p> The front end which uses the above routine to replace a blob. (Once again, characters are handled directly to avoid incurring all that overhead.)<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line791">791</span><span class="td">[ TEXT_TY_ReplaceBlob blobtype txt wanted rtxt ctxt ilen rlen i p cp;</span></span>
 <span class="tr"><span class="th" id="line792">792</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;TEXT_TY_Transmute(txt);</span></span>
 <span class="tr"><span class="th" id="line793">793</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;cp = rtxt--&gt;0; p = TEXT_TY_Temporarily_Transmute(rtxt);</span></span>
@@ -657,7 +658,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line823">823</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;TEXT_TY_Untransmute(rtxt, p, cp);</span></span>
 <span class="tr"><span class="th" id="line824">824</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#text-replace-text">Replace Text.</h3><p><p> This is the general routine which searches for any instance of <span class="fixed">ftxt</span>, as a blob, in <span class="fixed">txt</span>, and replaces it with the text <span class="fixed">rtxt</span>. It works on any of the above blob-types, but two cases are special: first, if the blob-type is <span class="fixed"><a href="./Text.i6t.html#line614">CHR_BLOB</a></span>, then it can do more than search and replace for any instance of a single character: it can search and replace any instance of a substring, so that <span class="fixed">ftxt</span> is not required to be only a single character. Second, if the blob-type is the special value <span class="fixed"><a href="./Text.i6t.html#line621">REGEXP_BLOB</a></span> then <span class="fixed">ftxt</span> is interpreted as a regular expression rather than something literal to find: see <a href="./RegExp.i6t.html">RegExp.i6t</a> for what happens next.<p></p><p></div><div class="pre">
+<h3 id="text-replace-text">Replace Text.</h3><p><p> This is the general routine which searches for any instance of <span class="fixed">ftxt</span>, as a blob, in <span class="fixed">txt</span>, and replaces it with the text <span class="fixed">rtxt</span>. It works on any of the above blob-types, but two cases are special: first, if the blob-type is <span class="fixed"><a href="./Text.i6t.html#line614">CHR_BLOB</a></span>, then it can do more than search and replace for any instance of a single character: it can search and replace any instance of a substring, so that <span class="fixed">ftxt</span> is not required to be only a single character. Second, if the blob-type is the special value <span class="fixed"><a href="./Text.i6t.html#line621">REGEXP_BLOB</a></span> then <span class="fixed">ftxt</span> is interpreted as a regular expression rather than something literal to find: see <a href="./RegExp.i6t.html">RegExp.i6t</a> for what happens next.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line838">838</span><span class="td">[ TEXT_TY_ReplaceText blobtype txt ftxt rtxt</span></span>
 <span class="tr"><span class="th" id="line839">839</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;r p1 p2 cp1 cp2;</span></span>
 <span class="tr"><span class="th" id="line840">840</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;TEXT_TY_Transmute(txt);</span></span>
@@ -732,7 +733,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line909">909</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;BlkValueFree(ctxt);</span></span>
 <span class="tr"><span class="th" id="line910">910</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#text-character-length">Character Length.</h3><p><p> When accessing at the character-by-character level, things are much easier and we needn&#39;t go through any finite state machine palaver.<p></p><p></div><div class="pre">
+<h3 id="text-character-length">Character Length.</h3><p><p> When accessing at the character-by-character level, things are much easier and we needn&#39;t go through any finite state machine palaver.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line917">917</span><span class="td">[ TEXT_TY_CharacterLength txt ch i dsize p cp r;</span></span>
 <span class="tr"><span class="th" id="line918">918</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (txt==0) return 0;</span></span>
 <span class="tr"><span class="th" id="line919">919</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;cp = txt--&gt;0; p = TEXT_TY_Temporarily_Transmute(txt);</span></span>
@@ -755,7 +756,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line936">936</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;rfalse;</span></span>
 <span class="tr"><span class="th" id="line937">937</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#text-get-character">Get Character.</h3><p><p> Characters in a text are numbered upwards from 1 by the users of this routine: which is why we subtract 1 when reading the array in the block-value, which counts from 0.<p></p><p></div><div class="pre">
+<h3 id="text-get-character">Get Character.</h3><p><p> Characters in a text are numbered upwards from 1 by the users of this routine: which is why we subtract 1 when reading the array in the block-value, which counts from 0.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line945">945</span><span class="td">[ TEXT_TY_GetCharacter ctxt txt i ch p cp;</span></span>
 <span class="tr"><span class="th" id="line946">946</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (txt==0) return 0;</span></span>
 <span class="tr"><span class="th" id="line947">947</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;cp = txt--&gt;0; p = TEXT_TY_Temporarily_Transmute(txt);</span></span>
@@ -768,7 +769,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line954">954</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return ctxt;</span></span>
 <span class="tr"><span class="th" id="line955">955</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#text-casing">Casing.</h3><p><p> In many programming languages, characters are a distinct data type from strings, but not in I7. To I7, a character is simply a text which happens to have length 1 &ndash; this has its inefficiencies, but is conceptually easy for the user.<p></p><p> <span class="fixed"><a href="./Text.i6t.html#line972">TEXT_TY_CharactersOfCase(txt, case)</a></span> determines whether all the characters in <span class="fixed">txt</span> are letters of the given casing: 0 for lower case, 1 for upper case. In the case of ZSCII, this is done correctly handling all of the European accented letters; in the case of Unicode, it follows the Unicode standard.<p></p><p> Note that there is no requirement for <span class="fixed">txt</span> to be only a single character long.<p></p><p></div><div class="pre">
+<h3 id="text-casing">Casing.</h3><p><p> In many programming languages, characters are a distinct data type from strings, but not in I7. To I7, a character is simply a text which happens to have length 1 &ndash; this has its inefficiencies, but is conceptually easy for the user.<p></p><p> <span class="fixed"><a href="./Text.i6t.html#line972">TEXT_TY_CharactersOfCase(txt, case)</a></span> determines whether all the characters in <span class="fixed">txt</span> are letters of the given casing: 0 for lower case, 1 for upper case. In the case of ZSCII, this is done correctly handling all of the European accented letters; in the case of Unicode, it follows the Unicode standard.<p></p><p> Note that there is no requirement for <span class="fixed">txt</span> to be only a single character long.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line972">972</span><span class="td">[ TEXT_TY_CharactersOfCase txt case i ch len p cp r;</span></span>
 <span class="tr"><span class="th" id="line973">973</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (txt==0) return 0;</span></span>
 <span class="tr"><span class="th" id="line974">974</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;cp = txt--&gt;0; p = TEXT_TY_Temporarily_Transmute(txt);</span></span>
@@ -782,7 +783,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line982">982</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return r;</span></span>
 <span class="tr"><span class="th" id="line983">983</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#text-change-case">Change Case.</h3><p><p> We set <span class="fixed">ctxt</span> to the text in <span class="fixed">txt</span>, except that all the letters are converted to the <span class="fixed">case</span> given (0 for lower, 1 for upper). The definition of what is a &quot;letter&quot;, what case it has and what the other-case form is are as specified in the ZSCII and Unicode standards.<p></p><p></div><div class="pre">
+<h3 id="text-change-case">Change Case.</h3><p><p> We set <span class="fixed">ctxt</span> to the text in <span class="fixed">txt</span>, except that all the letters are converted to the <span class="fixed">case</span> given (0 for lower, 1 for upper). The definition of what is a &quot;letter&quot;, what case it has and what the other-case form is are as specified in the ZSCII and Unicode standards.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line992">992</span><span class="td">[ TEXT_TY_CharactersToCase ctxt txt case i ch len bnd pk cp;</span></span>
 <span class="tr"><span class="th" id="line993">993</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (txt==0) return 0;</span></span>
 <span class="tr"><span class="th" id="line994">994</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;cp = txt--&gt;0; pk = TEXT_TY_Temporarily_Transmute(txt);</span></span>
@@ -819,7 +820,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line1025">1025</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;return ctxt;</span></span>
 <span class="tr"><span class="th" id="line1026">1026</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#text-concatenation">Concatenation.</h3><p><p> To concatenate two texts is to place one after the other: thus &quot;green&quot; concatenated with &quot;horn&quot; makes &quot;greenhorn&quot;. In this routine, <span class="fixed">from_txt</span> would be &quot;horn&quot;, and is added at the end of <span class="fixed">to_txt</span>, which is returned in its expanded state.<p></p><p> When the blob type is <span class="fixed"><a href="./Text.i6t.html#line621">REGEXP_BLOB</a></span>, the routine is used not for simple concatenation but to handle the concatenations occurring when a regular expression search-and-replace is going on: see <a href="./RegExp.i6t.html">RegExp.i6t</a>.<p></p><p></div><div class="pre">
+<h3 id="text-concatenation">Concatenation.</h3><p><p> To concatenate two texts is to place one after the other: thus &quot;green&quot; concatenated with &quot;horn&quot; makes &quot;greenhorn&quot;. In this routine, <span class="fixed">from_txt</span> would be &quot;horn&quot;, and is added at the end of <span class="fixed">to_txt</span>, which is returned in its expanded state.<p></p><p> When the blob type is <span class="fixed"><a href="./Text.i6t.html#line621">REGEXP_BLOB</a></span>, the routine is used not for simple concatenation but to handle the concatenations occurring when a regular expression search-and-replace is going on: see <a href="./RegExp.i6t.html">RegExp.i6t</a>.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line1039">1039</span><span class="td">[ TEXT_TY_Concatenate to_txt from_txt blobtype ref_txt</span></span>
 <span class="tr"><span class="th" id="line1040">1040</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;p cp r;</span></span>
 <span class="tr"><span class="th" id="line1041">1041</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (to_txt==0) rfalse;</span></span>
@@ -851,7 +852,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 <span class="tr"><span class="th" id="line1067">1067</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;rfalse;</span></span>
 <span class="tr"><span class="th" id="line1068">1068</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#text-setting-the-players-command">Setting the Player's Command.</h3><p><p> In effect, the text typed most recently by the player is a sort of text already, though it isn&#39;t in text format, and doesn&#39;t live on the heap.<p></p><p></div><div class="pre">
+<h3 id="text-setting-the-players-command">Setting the Player's Command.</h3><p><p> In effect, the text typed most recently by the player is a sort of text already, though it isn&#39;t in text format, and doesn&#39;t live on the heap.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line1076">1076</span><span class="td">[ SetPlayersCommand from_txt i len at p cp;</span></span>
 <span class="tr"><span class="th" id="line1077">1077</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;cp = from_txt--&gt;0; p = TEXT_TY_Temporarily_Transmute(from_txt);</span></span>
 <span class="tr"><span class="th" id="line1078">1078</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;len = TEXT_TY_CharacterLength(from_txt);</span></span>

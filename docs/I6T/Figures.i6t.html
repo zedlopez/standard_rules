@@ -33,28 +33,29 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
   color: #095097; }
 .comment {  
   color: #156D15; } /* #207D20; */
+td.content { padding-right: 2rem; vertical-align: top;}
     </style>
 </head>
 <body>
 <header>
 <h1>I6 Template Layer</h1>
-<div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Index</a> &bull; <a href="./Introduction.i6t.html">Introduction</a> 
+<div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Contents</a> &bull; <a href="./Introduction.i6t.html">Introduction</a> 
 &bull; <a href="fn_index.html">Function Index</a> 
 &bull; <a href="rules_index.html">Rules Index</a> 
 </div><hr></header>
 <div id="front_matter">
-<h2><a href="./Figures.i6t.txt">Figures.i6t</a></h2><h3 id="#figures-resource-usage">Resource Usage.</h3><p><p> We record whether pictures or sounds have been used before by storing single byte flags in the following array. (The extra 5 values allow for the fact that it can be legal to use low undeclared sound effect resource numbers in the Z-machine for short beeps, though this is deprecated in I7.)<p></p><p> Pictures and sounds are identified within blorb archives by resource ID numbers which count upwards from 1 in order of creation, but can mix pictures and sounds freely. (For instance, 1 might be a picture, 2 and 3 sound effects, then 4 a picture again, etc.) ID number 1 is in fact always a picture: it means the cover art, and is the I6 representation of the value &quot;figure of cover&quot;.<p></p><p></div><div class="pre">
+<h2><a href="./Figures.i6t.txt">Figures.i6t</a></h2><h3 id="figures-resource-usage">Resource Usage.</h3><p><p> We record whether pictures or sounds have been used before by storing single byte flags in the following array. (The extra 5 values allow for the fact that it can be legal to use low undeclared sound effect resource numbers in the Z-machine for short beeps, though this is deprecated in I7.)<p></p><p> Pictures and sounds are identified within blorb archives by resource ID numbers which count upwards from 1 in order of creation, but can mix pictures and sounds freely. (For instance, 1 might be a picture, 2 and 3 sound effects, then 4 a picture again, etc.) ID number 1 is in fact always a picture: it means the cover art, and is the I6 representation of the value &quot;figure of cover&quot;.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line21">21</span><span class="td">Array ResourceUsageFlags -&gt;</span></span>
 <span class="tr"><span class="th" id="line22">22</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;({-value:NUMBER_CREATED(blorb_figure)}+{-value:NUMBER_CREATED(blorb_sound)}+5);</span></span>
 </div><div class='text'>
-<h3 id="#figures-figures">Figures.</h3><p><p></p><p></div><div class="pre">
+<h3 id="figures-figures">Figures.</h3><p><p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line27">27</span><span class="td">[ DisplayFigure resource_ID one_time;</span></span>
 <span class="tr"><span class="th" id="line28">28</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if ((one_time) &amp;&amp; (ResourceUsageFlags-&gt;resource_ID)) return;</span></span>
 <span class="tr"><span class="th" id="line29">29</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;ResourceUsageFlags-&gt;resource_ID = true;</span></span>
 <span class="tr"><span class="th" id="line30">30</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;print <span class="dstring">&quot;^&quot;</span>; VM_Picture(resource_ID); print <span class="dstring">&quot;^&quot;</span>;</span></span>
 <span class="tr"><span class="th" id="line31">31</span><span class="td">];</span></span>
 </div><div class='text'>
-<h3 id="#figures-sound-effects">Sound Effects.</h3><p><p></p><p></div><div class="pre">
+<h3 id="figures-sound-effects">Sound Effects.</h3><p><p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line36">36</span><span class="td">[ PlaySound resource_ID one_time;</span></span>
 <span class="tr"><span class="th" id="line37">37</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (resource_ID == 0) return; <span class="comment">! The &quot;silence&quot; non-sound effect</span></span></span>
 <span class="tr"><span class="th" id="line38">38</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if ((one_time) &amp;&amp; (ResourceUsageFlags-&gt;resource_ID)) return;</span></span>
