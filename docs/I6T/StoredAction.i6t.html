@@ -3,23 +3,26 @@
 <meta charset="utf-8">
 <head><title>StoredAction</title>
   <style>
+li { padding-bottom: .16rem; padding-top: .16rem; }
+ul.unloaded { list-style-type: none; margin-top: 0; margin-bottom: 0; padding-left: 1rem; }
+details summary { 
+  cursor: pointer;
+}
+a { text-decoration: none;
+padding-bottom: .5px;
+border-bottom: 1px dotted black;
+}
 span.th, span.td { display: table-cell; }
-span.td { padding-left: 2rem; }
+span.td { padding-left: 2rem; padding-top: .1rem; padding-bottom: .1rem; }
 span.th { width:4rem; text-align: right; }
-span.tr { display: table-row;     counter-increment: linenum; }
+td { padding-bottom: .16rem; padding-top: .16rem; }
+span.tr { display: table-row; }
 .pre-lines { font-family: monospace; margin-left: 3rem; line-height: 1.5rem; }
-/*span.line_no::before {
-    content: counter(linenum);
-    text-align: right;
-    display: block;
-    font-family: monospace;
-    font-weight: normal;
-}*/
 h1 { margin: 0; }
-.fixed { font-family: monospace }
+.fixed { font-family: monospace; background-color: #e7e7d7; }
 .em { font-style: italic; }
 .center { text-align: center; }
-    body { font-family: sans-serif; margin: 1.5rem 0 3rem 3rem; background-color: #fafaf0; width: 80rem; }
+    body { font-family: sans-serif; margin: .75rem 0 3rem 3rem; background-color: #fafaf0; width: 80rem; }
     .pre { font-family: monospace; margin: auto; width: 80rem; }
 #front_matter,.text { width: 48rem; }
 /* h3 { margin-top: 1.5rem; padding-top: 1.5rem; }*/
@@ -34,6 +37,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 .comment {  
   color: #156D15; } /* #207D20; */
 td.content { padding-right: 2rem; vertical-align: top;}
+header { border-bottom: 1px solid black; padding-top: .75rem; padding-bottom: .75rem; margin-bottom: 1rem;}
     </style>
 </head>
 <body>
@@ -42,9 +46,9 @@ td.content { padding-right: 2rem; vertical-align: top;}
 <div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Contents</a> &bull; <a href="./Introduction.i6t.html">Introduction</a> 
 &bull; <a href="fn_index.html">Function Index</a> 
 &bull; <a href="rules_index.html">Rules Index</a> 
-</div><hr></header>
+</div></header>
 <div id="front_matter">
-<h2><a href="./StoredAction.i6t.txt">StoredAction.i6t</a></h2><h3 id="storedaction-block-format">Block Format.</h3><p><p> The short block of a stored action is simply a pointer to a long block. The long block always has a length of 6 words.<p></p><p> An action which involves a topic &ndash; such as the one produced by the command LOOK UP JIM MCDIVITT IN ENCYCLOPAEDIA &ndash; cannot be tried without the text of that topic (JIM MCDIVITT) being available. That&#39;s no problem if the action is tried in the same turn in which it is generated, because the text will still be in the command buffer. But once we store actions up for future use it becomes an issue. So when we store an action involving a topic, we record the actual text typed at the time when it is stored, and this goes into array entry 5 of the block. Because that in turn is text, and therefore a block value on the heap in its own right, we have to be a little more careful about destroying and copying stored actions than we otherwise would be.<p></p><p> Note that entries 1 and 2 are values whose kind depends on the action in entry 0: but they are never block values, because actions are not allowed to apply to block values. This simplifies matters considerably.<p></p><p></div><div class="pre">
+<h2><a href="./StoredAction.i6t.txt">StoredAction.i6t</a></h2><details><summary>StoredAction contents</summary><ul class="unloaded"><li><a href="./StoredAction.i6t.html#storedaction-block-format">Block Format</a></li><li><a href="./StoredAction.i6t.html#storedaction-kov-support">KOV Support</a></li><li><a href="./StoredAction.i6t.html#storedaction-creation">Creation</a></li><li><a href="./StoredAction.i6t.html#storedaction-setting-up">Setting Up</a></li><li><a href="./StoredAction.i6t.html#storedaction-destruction">Destruction</a></li><li><a href="./StoredAction.i6t.html#storedaction-copying">Copying</a></li><li><a href="./StoredAction.i6t.html#storedaction-comparison">Comparison</a></li><li><a href="./StoredAction.i6t.html#storedaction-hashing">Hashing</a></li><li><a href="./StoredAction.i6t.html#storedaction-printing">Printing</a></li><li><a href="./StoredAction.i6t.html#storedaction-involvement">Involvement</a></li><li><a href="./StoredAction.i6t.html#storedaction-nouns">Nouns</a></li><li><a href="./StoredAction.i6t.html#storedaction-pattern-matching">Pattern Matching</a></li><li><a href="./StoredAction.i6t.html#storedaction-current-action">Current Action</a></li><li><a href="./StoredAction.i6t.html#storedaction-trying">Trying</a></li></ul></details><h3 id="storedaction-block-format">Block Format.</h3><p><p> The short block of a stored action is simply a pointer to a long block. The long block always has a length of 6 words.<p></p><p> An action which involves a topic &ndash; such as the one produced by the command LOOK UP JIM MCDIVITT IN ENCYCLOPAEDIA &ndash; cannot be tried without the text of that topic (JIM MCDIVITT) being available. That&#39;s no problem if the action is tried in the same turn in which it is generated, because the text will still be in the command buffer. But once we store actions up for future use it becomes an issue. So when we store an action involving a topic, we record the actual text typed at the time when it is stored, and this goes into array entry 5 of the block. Because that in turn is text, and therefore a block value on the heap in its own right, we have to be a little more careful about destroying and copying stored actions than we otherwise would be.<p></p><p> Note that entries 1 and 2 are values whose kind depends on the action in entry 0: but they are never block values, because actions are not allowed to apply to block values. This simplifies matters considerably.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line28">28</span><span class="td">Constant STORA_ACTION_F = 0;</span></span>
 <span class="tr"><span class="th" id="line29">29</span><span class="td">Constant STORA_NOUN_F = 1;</span></span>
 <span class="tr"><span class="th" id="line30">30</span><span class="td">Constant STORA_SECOND_F = 2;</span></span>

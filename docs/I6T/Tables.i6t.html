@@ -3,23 +3,26 @@
 <meta charset="utf-8">
 <head><title>Tables</title>
   <style>
+li { padding-bottom: .16rem; padding-top: .16rem; }
+ul.unloaded { list-style-type: none; margin-top: 0; margin-bottom: 0; padding-left: 1rem; }
+details summary { 
+  cursor: pointer;
+}
+a { text-decoration: none;
+padding-bottom: .5px;
+border-bottom: 1px dotted black;
+}
 span.th, span.td { display: table-cell; }
-span.td { padding-left: 2rem; }
+span.td { padding-left: 2rem; padding-top: .1rem; padding-bottom: .1rem; }
 span.th { width:4rem; text-align: right; }
-span.tr { display: table-row;     counter-increment: linenum; }
+td { padding-bottom: .16rem; padding-top: .16rem; }
+span.tr { display: table-row; }
 .pre-lines { font-family: monospace; margin-left: 3rem; line-height: 1.5rem; }
-/*span.line_no::before {
-    content: counter(linenum);
-    text-align: right;
-    display: block;
-    font-family: monospace;
-    font-weight: normal;
-}*/
 h1 { margin: 0; }
-.fixed { font-family: monospace }
+.fixed { font-family: monospace; background-color: #e7e7d7; }
 .em { font-style: italic; }
 .center { text-align: center; }
-    body { font-family: sans-serif; margin: 1.5rem 0 3rem 3rem; background-color: #fafaf0; width: 80rem; }
+    body { font-family: sans-serif; margin: .75rem 0 3rem 3rem; background-color: #fafaf0; width: 80rem; }
     .pre { font-family: monospace; margin: auto; width: 80rem; }
 #front_matter,.text { width: 48rem; }
 /* h3 { margin-top: 1.5rem; padding-top: 1.5rem; }*/
@@ -34,6 +37,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 .comment {  
   color: #156D15; } /* #207D20; */
 td.content { padding-right: 2rem; vertical-align: top;}
+header { border-bottom: 1px solid black; padding-top: .75rem; padding-bottom: .75rem; margin-bottom: 1rem;}
     </style>
 </head>
 <body>
@@ -42,9 +46,9 @@ td.content { padding-right: 2rem; vertical-align: top;}
 <div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Contents</a> &bull; <a href="./Introduction.i6t.html">Introduction</a> 
 &bull; <a href="fn_index.html">Function Index</a> 
 &bull; <a href="rules_index.html">Rules Index</a> 
-</div><hr></header>
+</div></header>
 <div id="front_matter">
-<h2><a href="./Tables.i6t.txt">Tables.i6t</a></h2><h3 id="tables-format">Format.</h3><p><p> The I7 Table structure is not to be confused with the I6 <span class="fixed">table</span> form of array: it is essentially a two-dimensional array which has some metadata at the top of each column.<p></p><p> The run-time representation for a Table is the address <span class="fixed">T</span> of an I6 <span class="fixed">table</span> array: that is, <span class="fixed">T--&gt;0</span> holds the number of columns (which is at most 99) and <span class="fixed">T--&gt;i</span> is the address of column number <span class="fixed">i</span>. Columns are therefore numbered from 1 to <span class="fixed">T--&gt;0</span>, but they are also identified by an ID number of 100 or more, with each different column name having its own ID number. (This is so that multiple tables can share columns with the same name, and correlate them: it also means that NI&#39;s type-checking machinery can know the kind of value of a table entry from the name of the column alone.)<p></p><p> Each column <span class="fixed">C</span> is also a <span class="fixed">table</span> array, with <span class="fixed">C--&gt;1</span> holding the unique ID number for the column&#39;s name, <span class="fixed">C--&gt;2</span> holding the blank entry flags offset and <span class="fixed">C--&gt;3</span> up to <span class="fixed">C--&gt;</span> holding the entries.<p></p><p> <span class="fixed">C--&gt;1</span> also contains seven upper bit flags. These are also defined in &quot;Tables.w&quot; in the NI source, and the values must agree.<p></p><p></div><div class="pre">
+<h2><a href="./Tables.i6t.txt">Tables.i6t</a></h2><details><summary>Tables contents</summary><ul class="unloaded"><li><a href="./Tables.i6t.html#tables-format">Format</a></li><li><a href="./Tables.i6t.html#tables-find-column">Find Column</a></li><li><a href="./Tables.i6t.html#tables-number-of-rows">Number of Rows</a></li><li><a href="./Tables.i6t.html#tables-blanks">Blanks</a></li><li><a href="./Tables.i6t.html#tables-masks">Masks</a></li><li><a href="./Tables.i6t.html#tables-testing-blankness">Testing Blankness</a></li><li><a href="./Tables.i6t.html#tables-force-entry-blank">Force Entry Blank</a></li><li><a href="./Tables.i6t.html#tables-force-entry-non-blank">Force Entry Non-Blank</a></li><li><a href="./Tables.i6t.html#tables-swapping-blank-bits">Swapping Blank Bits</a></li><li><a href="./Tables.i6t.html#tables-moving-blank-bits-down">Moving Blank Bits Down</a></li><li><a href="./Tables.i6t.html#tables-table-row-corresponding">Table Row Corresponding</a></li><li><a href="./Tables.i6t.html#tables-table-look-up-corresponding-row">Table Look Up Corresponding Row</a></li><li><a href="./Tables.i6t.html#tables-table-look-up-entry">Table Look Up Entry</a></li><li><a href="./Tables.i6t.html#tables-blank-rows">Blank Rows</a></li><li><a href="./Tables.i6t.html#tables-random-row">Random Row</a></li><li><a href="./Tables.i6t.html#tables-swap-rows">Swap Rows</a></li><li><a href="./Tables.i6t.html#tables-compare-rows">Compare Rows</a></li><li><a href="./Tables.i6t.html#tables-move-row-down">Move Row Down</a></li><li><a href="./Tables.i6t.html#tables-shuffle">Shuffle</a></li><li><a href="./Tables.i6t.html#tables-next-row">Next Row</a></li><li><a href="./Tables.i6t.html#tables-move-blanks-to-back">Move Blanks to Back</a></li><li><a href="./Tables.i6t.html#tables-sort">Sort</a></li><li><a href="./Tables.i6t.html#tables-print-table-name">Print Table Name</a></li><li><a href="./Tables.i6t.html#tables-print-table-to-file">Print Table to File</a></li><li><a href="./Tables.i6t.html#tables-read-table-from-file">Read Table from File</a></li><li><a href="./Tables.i6t.html#tables-print-rank">Print Rank</a></li><li><a href="./Tables.i6t.html#tables-debugging">Debugging</a></li></ul></details><h3 id="tables-format">Format.</h3><p><p> The I7 Table structure is not to be confused with the I6 <span class="fixed">table</span> form of array: it is essentially a two-dimensional array which has some metadata at the top of each column.<p></p><p> The run-time representation for a Table is the address <span class="fixed">T</span> of an I6 <span class="fixed">table</span> array: that is, <span class="fixed">T--&gt;0</span> holds the number of columns (which is at most 99) and <span class="fixed">T--&gt;i</span> is the address of column number <span class="fixed">i</span>. Columns are therefore numbered from 1 to <span class="fixed">T--&gt;0</span>, but they are also identified by an ID number of 100 or more, with each different column name having its own ID number. (This is so that multiple tables can share columns with the same name, and correlate them: it also means that NI&#39;s type-checking machinery can know the kind of value of a table entry from the name of the column alone.)<p></p><p> Each column <span class="fixed">C</span> is also a <span class="fixed">table</span> array, with <span class="fixed">C--&gt;1</span> holding the unique ID number for the column&#39;s name, <span class="fixed">C--&gt;2</span> holding the blank entry flags offset and <span class="fixed">C--&gt;3</span> up to <span class="fixed">C--&gt;</span> holding the entries.<p></p><p> <span class="fixed">C--&gt;1</span> also contains seven upper bit flags. These are also defined in &quot;Tables.w&quot; in the NI source, and the values must agree.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line29">29</span><span class="td">Constant TB_COLUMN_REAL        $8000;</span></span>
 <span class="tr"><span class="th" id="line30">30</span><span class="td">Constant TB_COLUMN_SIGNED      $4000;</span></span>
 <span class="tr"><span class="th" id="line31">31</span><span class="td">Constant TB_COLUMN_TOPIC       $2000;</span></span>

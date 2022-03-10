@@ -3,23 +3,26 @@
 <meta charset="utf-8">
 <head><title>WorldModel</title>
   <style>
+li { padding-bottom: .16rem; padding-top: .16rem; }
+ul.unloaded { list-style-type: none; margin-top: 0; margin-bottom: 0; padding-left: 1rem; }
+details summary { 
+  cursor: pointer;
+}
+a { text-decoration: none;
+padding-bottom: .5px;
+border-bottom: 1px dotted black;
+}
 span.th, span.td { display: table-cell; }
-span.td { padding-left: 2rem; }
+span.td { padding-left: 2rem; padding-top: .1rem; padding-bottom: .1rem; }
 span.th { width:4rem; text-align: right; }
-span.tr { display: table-row;     counter-increment: linenum; }
+td { padding-bottom: .16rem; padding-top: .16rem; }
+span.tr { display: table-row; }
 .pre-lines { font-family: monospace; margin-left: 3rem; line-height: 1.5rem; }
-/*span.line_no::before {
-    content: counter(linenum);
-    text-align: right;
-    display: block;
-    font-family: monospace;
-    font-weight: normal;
-}*/
 h1 { margin: 0; }
-.fixed { font-family: monospace }
+.fixed { font-family: monospace; background-color: #e7e7d7; }
 .em { font-style: italic; }
 .center { text-align: center; }
-    body { font-family: sans-serif; margin: 1.5rem 0 3rem 3rem; background-color: #fafaf0; width: 80rem; }
+    body { font-family: sans-serif; margin: .75rem 0 3rem 3rem; background-color: #fafaf0; width: 80rem; }
     .pre { font-family: monospace; margin: auto; width: 80rem; }
 #front_matter,.text { width: 48rem; }
 /* h3 { margin-top: 1.5rem; padding-top: 1.5rem; }*/
@@ -34,6 +37,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 .comment {  
   color: #156D15; } /* #207D20; */
 td.content { padding-right: 2rem; vertical-align: top;}
+header { border-bottom: 1px solid black; padding-top: .75rem; padding-bottom: .75rem; margin-bottom: 1rem;}
     </style>
 </head>
 <body>
@@ -42,9 +46,9 @@ td.content { padding-right: 2rem; vertical-align: top;}
 <div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Contents</a> &bull; <a href="./Introduction.i6t.html">Introduction</a> 
 &bull; <a href="fn_index.html">Function Index</a> 
 &bull; <a href="rules_index.html">Rules Index</a> 
-</div><hr></header>
+</div></header>
 <div id="front_matter">
-<h2><a href="./WorldModel.i6t.txt">WorldModel.i6t</a></h2><h3 id="worldmodel-the-core-tree">The Core Tree.</h3><p><p> Whereas I6 traditionally has a simple object tree hierarchy for containment, support, carrying and so on, the I7 template also uses the <span class="fixed">component_*</span> properties to provide a second tree which defines the &quot;part of&quot; relation. These two trees interact in a subtle way, and it took a very long time to work out the simplest way to express this.<p></p><p> The <strong> core</strong> of an object is the root of its subtree in the component relation tree. So for a television set with a control panel which has a button on, the core for the button (and also for the panel and the set) will be the set. When X is a part of Y, it must be spatially in the same position as Y, and so the spatial location of X is determined by the position in the object tree of its core. (In effect, the spatial situation can be found by contracting together all nodes corresponding to objects which are parts of each other, but it would waste memory to construct such a tree: <span class="fixed"><a href="./WorldModel.i6t.html#line58">CoreOfParentOfCoreOf</a></span> simulates what the <span class="fixed">parent</span> operation would be in such a tree if it existed, wasting a little time instead.)<p></p><p> The <strong> holder</strong> of an object is its component parent, if it is part of something, or its object-tree parent if it has one. It is illegal for both of these to be non-<span class="fixed">nothing</span>, so this is unambiguous.<p></p><p> It is just possible for <span class="fixed"><a href="./WorldModel.i6t.html#line41">HolderOf</a></span> to be called before the player has been placed into the model world, in cases where Inform is checking a past tense condition in the opening pre-turn. We don&#39;t want to return <span class="fixed">nothing</span> then because that would make it true that<p></p><p><div class="pre-lines">HolderOf(player) == ContainerOf(player)</div><p></p><p> and similar conditions &ndash; thus, it would appear that in the immediate past the player had been on the holder of the player, which is not in fact the case. So we return <span class="fixed">thedark</span> as a typesafe but impossible value here.<p></p><p></div><div class="pre">
+<h2><a href="./WorldModel.i6t.txt">WorldModel.i6t</a></h2><details><summary>WorldModel contents</summary><ul class="unloaded"><li><a href="./WorldModel.i6t.html#worldmodel-the-core-tree">The Core Tree</a></li><li><a href="./WorldModel.i6t.html#worldmodel-climbing-the-core-tree">Climbing the Core Tree</a></li><li><a href="./WorldModel.i6t.html#worldmodel-to-decide-whether-in">To Decide Whether In</a></li><li><a href="./WorldModel.i6t.html#worldmodel-containment-relation">Containment Relation</a></li><li><a href="./WorldModel.i6t.html#worldmodel-support-relation">Support Relation</a></li><li><a href="./WorldModel.i6t.html#worldmodel-carrying-relation">Carrying Relation</a></li><li><a href="./WorldModel.i6t.html#worldmodel-wearing-relation">Wearing Relation</a></li><li><a href="./WorldModel.i6t.html#worldmodel-having-relation">Having Relation</a></li><li><a href="./WorldModel.i6t.html#worldmodel-making-parts">Making Parts</a></li><li><a href="./WorldModel.i6t.html#worldmodel-movements">Movements</a></li><li><a href="./WorldModel.i6t.html#worldmodel-on-stage">On Stage</a></li><li><a href="./WorldModel.i6t.html#worldmodel-moving-the-player">Moving the Player</a></li><li><a href="./WorldModel.i6t.html#worldmodel-move-during-going">Move During Going</a></li><li><a href="./WorldModel.i6t.html#worldmodel-being-everywhere">Being Everywhere</a></li><li><a href="./WorldModel.i6t.html#worldmodel-testing-everywhere">Testing Everywhere</a></li><li><a href="./WorldModel.i6t.html#worldmodel-changing-the-player">Changing the Player</a></li><li><a href="./WorldModel.i6t.html#worldmodel-floating-objects">Floating Objects</a></li><li><a href="./WorldModel.i6t.html#worldmodel-backdrop-location">Backdrop Location</a></li><li><a href="./WorldModel.i6t.html#worldmodel-wearing-clothes">Wearing Clothes</a></li><li><a href="./WorldModel.i6t.html#worldmodel-map-connections">Map Connections</a></li><li><a href="./WorldModel.i6t.html#worldmodel-adjacency-relation">Adjacency Relation</a></li><li><a href="./WorldModel.i6t.html#worldmodel-regional-containment-relation">Regional Containment Relation</a></li><li><a href="./WorldModel.i6t.html#worldmodel-doors">Doors</a></li><li><a href="./WorldModel.i6t.html#worldmodel-visibility-relation">Visibility Relation</a></li><li><a href="./WorldModel.i6t.html#worldmodel-touchability-relation">Touchability Relation</a></li><li><a href="./WorldModel.i6t.html#worldmodel-concealment-relation">Concealment Relation</a></li></ul></details><h3 id="worldmodel-the-core-tree">The Core Tree.</h3><p><p> Whereas I6 traditionally has a simple object tree hierarchy for containment, support, carrying and so on, the I7 template also uses the <span class="fixed">component_*</span> properties to provide a second tree which defines the &quot;part of&quot; relation. These two trees interact in a subtle way, and it took a very long time to work out the simplest way to express this.<p></p><p> The <strong> core</strong> of an object is the root of its subtree in the component relation tree. So for a television set with a control panel which has a button on, the core for the button (and also for the panel and the set) will be the set. When X is a part of Y, it must be spatially in the same position as Y, and so the spatial location of X is determined by the position in the object tree of its core. (In effect, the spatial situation can be found by contracting together all nodes corresponding to objects which are parts of each other, but it would waste memory to construct such a tree: <span class="fixed"><a href="./WorldModel.i6t.html#line58">CoreOfParentOfCoreOf</a></span> simulates what the <span class="fixed">parent</span> operation would be in such a tree if it existed, wasting a little time instead.)<p></p><p> The <strong> holder</strong> of an object is its component parent, if it is part of something, or its object-tree parent if it has one. It is illegal for both of these to be non-<span class="fixed">nothing</span>, so this is unambiguous.<p></p><p> It is just possible for <span class="fixed"><a href="./WorldModel.i6t.html#line41">HolderOf</a></span> to be called before the player has been placed into the model world, in cases where Inform is checking a past tense condition in the opening pre-turn. We don&#39;t want to return <span class="fixed">nothing</span> then because that would make it true that<p></p><p><div class="pre-lines">HolderOf(player) == ContainerOf(player)</div><p></p><p> and similar conditions &ndash; thus, it would appear that in the immediate past the player had been on the holder of the player, which is not in fact the case. So we return <span class="fixed">thedark</span> as a typesafe but impossible value here.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line41">41</span><span class="td">[ HolderOf o;</span></span>
 <span class="tr"><span class="th" id="line42">42</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (InitialSituation--&gt;DONE_INIS == false) return thedark;</span></span>
 <span class="tr"><span class="th" id="line43">43</span><span class="td">&nbsp;&nbsp;&nbsp;&nbsp;if (o &amp;&amp; (o.component_parent)) return o.component_parent;</span></span>

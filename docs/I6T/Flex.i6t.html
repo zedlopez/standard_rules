@@ -3,23 +3,26 @@
 <meta charset="utf-8">
 <head><title>Flex</title>
   <style>
+li { padding-bottom: .16rem; padding-top: .16rem; }
+ul.unloaded { list-style-type: none; margin-top: 0; margin-bottom: 0; padding-left: 1rem; }
+details summary { 
+  cursor: pointer;
+}
+a { text-decoration: none;
+padding-bottom: .5px;
+border-bottom: 1px dotted black;
+}
 span.th, span.td { display: table-cell; }
-span.td { padding-left: 2rem; }
+span.td { padding-left: 2rem; padding-top: .1rem; padding-bottom: .1rem; }
 span.th { width:4rem; text-align: right; }
-span.tr { display: table-row;     counter-increment: linenum; }
+td { padding-bottom: .16rem; padding-top: .16rem; }
+span.tr { display: table-row; }
 .pre-lines { font-family: monospace; margin-left: 3rem; line-height: 1.5rem; }
-/*span.line_no::before {
-    content: counter(linenum);
-    text-align: right;
-    display: block;
-    font-family: monospace;
-    font-weight: normal;
-}*/
 h1 { margin: 0; }
-.fixed { font-family: monospace }
+.fixed { font-family: monospace; background-color: #e7e7d7; }
 .em { font-style: italic; }
 .center { text-align: center; }
-    body { font-family: sans-serif; margin: 1.5rem 0 3rem 3rem; background-color: #fafaf0; width: 80rem; }
+    body { font-family: sans-serif; margin: .75rem 0 3rem 3rem; background-color: #fafaf0; width: 80rem; }
     .pre { font-family: monospace; margin: auto; width: 80rem; }
 #front_matter,.text { width: 48rem; }
 /* h3 { margin-top: 1.5rem; padding-top: 1.5rem; }*/
@@ -34,6 +37,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 .comment {  
   color: #156D15; } /* #207D20; */
 td.content { padding-right: 2rem; vertical-align: top;}
+header { border-bottom: 1px solid black; padding-top: .75rem; padding-bottom: .75rem; margin-bottom: 1rem;}
     </style>
 </head>
 <body>
@@ -42,9 +46,9 @@ td.content { padding-right: 2rem; vertical-align: top;}
 <div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Contents</a> &bull; <a href="./Introduction.i6t.html">Introduction</a> 
 &bull; <a href="fn_index.html">Function Index</a> 
 &bull; <a href="rules_index.html">Rules Index</a> 
-</div><hr></header>
+</div></header>
 <div id="front_matter">
-<h2><a href="./Flex.i6t.txt">Flex.i6t</a></h2><h3 id="flex-blocks">Blocks.</h3><p><p> The purpose of the Flex routines is to manage flexible-sized &quot;blocks&quot; of memory for any general-purpose use. The main customer for this service is the system for creating texts, lists, stored actions, and so on, which are collectively called &quot;block values&quot; because they store their data in blocks allocated by Flex. But in this section, we&#39;re just managing arrays of memory, and don&#39;t need to know what it&#39;s for.<p></p><p> A &quot;block&quot; is a continuous range of <em>2<sup>n</sup></em> bytes of memory, where <em>n &ge; 3</em> for a 16-bit VM (i.e., for the Z-machine) and <em>n &ge; 4</em> for a 32-bit VM (i.e., on Glulx). Internally, a block is divided into a header followed by a data section.<p></p><p> The header size depends on the word size and the kind of block (see below). It always begins with a byte specifying <em>n</em>, the binary logarithm of its size, except that if the top bit is set then we know this isn&#39;t a flex-allocated block, which turns out to be convenient. Thus the largest block representable is <em>2<sup>127</sup></em> bytes long, but somehow I think we can live with that. The second byte contains a bitmap of (at present) four flags, whose meanings will be explained below. The second <strong> word</strong> of the block, which might be at byte offset 2 or 4 from the start of the block depending on the word-size of the VM, is a number specifying the kind of value (if any) which the block contains data of.<p></p><p> The header also contains a weak kind ID and a reference count, but the Flex routines do nothing with either of these except to initialise them; they&#39;re provided for the benefit of the <span class="fixed">BlockValue</span> system.<p></p><p> The data section of a block begins at the byte offset <span class="fixed"><a href="./Flex.i6t.html#line54">BLK_DATA_OFFSET</a></span> from the address of the block: but see below for how multiple-blocks behave differently.<p></p><p> These definitions must not be altered without making matching changes to the compiler.<p></p><p></div><div class="pre">
+<h2><a href="./Flex.i6t.txt">Flex.i6t</a></h2><details><summary>Flex contents</summary><ul class="unloaded"><li><a href="./Flex.i6t.html#flex-blocks">Blocks</a></li><li><a href="./Flex.i6t.html#flex-multiple-blocks">Multiple Blocks</a></li><li><a href="./Flex.i6t.html#flex-the-heap">The Heap</a></li><li><a href="./Flex.i6t.html#flex-initialisation">Initialisation</a></li><li><a href="./Flex.i6t.html#flex-net-free-space">Net Free Space</a></li><li><a href="./Flex.i6t.html#flex-make-space">Make Space</a></li><li><a href="./Flex.i6t.html#flex-block-allocation">Block Allocation</a></li><li><a href="./Flex.i6t.html#flex-errors">Errors</a></li><li><a href="./Flex.i6t.html#flex-merging">Merging</a></li><li><a href="./Flex.i6t.html#flex-recutting">Recutting</a></li><li><a href="./Flex.i6t.html#flex-deallocation">Deallocation</a></li><li><a href="./Flex.i6t.html#flex-resizing">Resizing</a></li><li><a href="./Flex.i6t.html#flex-block-size">Block Size</a></li><li><a href="./Flex.i6t.html#flex-debugging-routines">Debugging Routines</a></li></ul></details><h3 id="flex-blocks">Blocks.</h3><p><p> The purpose of the Flex routines is to manage flexible-sized &quot;blocks&quot; of memory for any general-purpose use. The main customer for this service is the system for creating texts, lists, stored actions, and so on, which are collectively called &quot;block values&quot; because they store their data in blocks allocated by Flex. But in this section, we&#39;re just managing arrays of memory, and don&#39;t need to know what it&#39;s for.<p></p><p> A &quot;block&quot; is a continuous range of <em>2<sup>n</sup></em> bytes of memory, where <em>n &ge; 3</em> for a 16-bit VM (i.e., for the Z-machine) and <em>n &ge; 4</em> for a 32-bit VM (i.e., on Glulx). Internally, a block is divided into a header followed by a data section.<p></p><p> The header size depends on the word size and the kind of block (see below). It always begins with a byte specifying <em>n</em>, the binary logarithm of its size, except that if the top bit is set then we know this isn&#39;t a flex-allocated block, which turns out to be convenient. Thus the largest block representable is <em>2<sup>127</sup></em> bytes long, but somehow I think we can live with that. The second byte contains a bitmap of (at present) four flags, whose meanings will be explained below. The second <strong> word</strong> of the block, which might be at byte offset 2 or 4 from the start of the block depending on the word-size of the VM, is a number specifying the kind of value (if any) which the block contains data of.<p></p><p> The header also contains a weak kind ID and a reference count, but the Flex routines do nothing with either of these except to initialise them; they&#39;re provided for the benefit of the <span class="fixed">BlockValue</span> system.<p></p><p> The data section of a block begins at the byte offset <span class="fixed"><a href="./Flex.i6t.html#line54">BLK_DATA_OFFSET</a></span> from the address of the block: but see below for how multiple-blocks behave differently.<p></p><p> These definitions must not be altered without making matching changes to the compiler.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line44">44</span><span class="td">Constant BLK_HEADER_N = 0;</span></span>
 <span class="tr"><span class="th" id="line45">45</span><span class="td">Constant BLK_HEADER_FLAGS = 1;</span></span>
 <span class="tr"><span class="th" id="line46">46</span><span class="td">Constant BLK_FLAG_MULTIPLE = $$00000001;</span></span>

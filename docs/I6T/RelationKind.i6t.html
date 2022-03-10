@@ -3,23 +3,26 @@
 <meta charset="utf-8">
 <head><title>RelationKind</title>
   <style>
+li { padding-bottom: .16rem; padding-top: .16rem; }
+ul.unloaded { list-style-type: none; margin-top: 0; margin-bottom: 0; padding-left: 1rem; }
+details summary { 
+  cursor: pointer;
+}
+a { text-decoration: none;
+padding-bottom: .5px;
+border-bottom: 1px dotted black;
+}
 span.th, span.td { display: table-cell; }
-span.td { padding-left: 2rem; }
+span.td { padding-left: 2rem; padding-top: .1rem; padding-bottom: .1rem; }
 span.th { width:4rem; text-align: right; }
-span.tr { display: table-row;     counter-increment: linenum; }
+td { padding-bottom: .16rem; padding-top: .16rem; }
+span.tr { display: table-row; }
 .pre-lines { font-family: monospace; margin-left: 3rem; line-height: 1.5rem; }
-/*span.line_no::before {
-    content: counter(linenum);
-    text-align: right;
-    display: block;
-    font-family: monospace;
-    font-weight: normal;
-}*/
 h1 { margin: 0; }
-.fixed { font-family: monospace }
+.fixed { font-family: monospace; background-color: #e7e7d7; }
 .em { font-style: italic; }
 .center { text-align: center; }
-    body { font-family: sans-serif; margin: 1.5rem 0 3rem 3rem; background-color: #fafaf0; width: 80rem; }
+    body { font-family: sans-serif; margin: .75rem 0 3rem 3rem; background-color: #fafaf0; width: 80rem; }
     .pre { font-family: monospace; margin: auto; width: 80rem; }
 #front_matter,.text { width: 48rem; }
 /* h3 { margin-top: 1.5rem; padding-top: 1.5rem; }*/
@@ -34,6 +37,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 .comment {  
   color: #156D15; } /* #207D20; */
 td.content { padding-right: 2rem; vertical-align: top;}
+header { border-bottom: 1px solid black; padding-top: .75rem; padding-bottom: .75rem; margin-bottom: 1rem;}
     </style>
 </head>
 <body>
@@ -42,9 +46,9 @@ td.content { padding-right: 2rem; vertical-align: top;}
 <div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Contents</a> &bull; <a href="./Introduction.i6t.html">Introduction</a> 
 &bull; <a href="fn_index.html">Function Index</a> 
 &bull; <a href="rules_index.html">Rules Index</a> 
-</div><hr></header>
+</div></header>
 <div id="front_matter">
-<h2><a href="./RelationKind.i6t.txt">RelationKind.i6t</a></h2><h3 id="relationkind-block-format">Block Format.</h3><p><p> Inform uses a rich variety of relations, with many different data representations, but we aim to hide that complexity from the user. At run-time, a relation is represented by a block value. The short block of this BV is simply a pointer to a long block. This always begins with at least six words of metadata, but actual data sometimes follows on, and sometimes doesn&#39;t: and its format is something the customer needn&#39;t know about.<p></p><p> The low-level routines in <a href="./Relations.i6t.html">Relations.i6t</a> access this metadata by direct use of <span class="fixed">--&gt;</span>, for speed, and they use the offset constants <span class="fixed"><a href="./Relations.i6t.html#line12">RR_NAME</a></span> and so on; but we will use the <span class="fixed"><a href="./BlockValues.i6t.html#line250">BlkValueRead</a></span> and <span class="fixed"><a href="./BlockValues.i6t.html#line284">BlkValueWrite</a></span> routines in this section, which need offsets in the form <span class="fixed"><a href="./RelationKind.i6t.html#line22">RRV_NAME</a></span>. (The discrepancy of 5 is to allow for the five-word block header.)<p></p><p></div><div class="pre">
+<h2><a href="./RelationKind.i6t.txt">RelationKind.i6t</a></h2><details><summary>RelationKind contents</summary><ul class="unloaded"><li><a href="./RelationKind.i6t.html#relationkind-block-format">Block Format</a></li><li><a href="./RelationKind.i6t.html#relationkind-kov-support">KOV Support</a></li><li><a href="./RelationKind.i6t.html#relationkind-other-definitions">Other Definitions</a></li><li><a href="./RelationKind.i6t.html#relationkind-tunable-parameters">Tunable Parameters</a></li><li><a href="./RelationKind.i6t.html#relationkind-abstract-relations">Abstract Relations</a></li><li><a href="./RelationKind.i6t.html#relationkind-empty-relations">Empty Relations</a></li><li><a href="./RelationKind.i6t.html#relationkind-creation">Creation</a></li><li><a href="./RelationKind.i6t.html#relationkind-destruction">Destruction</a></li><li><a href="./RelationKind.i6t.html#relationkind-copying">Copying</a></li><li><a href="./RelationKind.i6t.html#relationkind-comparison">Comparison</a></li><li><a href="./RelationKind.i6t.html#relationkind-printing">Printing</a></li><li><a href="./RelationKind.i6t.html#relationkind-naming">Naming</a></li><li><a href="./RelationKind.i6t.html#relationkind-choose-relation-handler">Choose Relation Handler</a></li><li><a href="./RelationKind.i6t.html#relationkind-valency">Valency</a></li><li><a href="./RelationKind.i6t.html#relationkind-double-hash-set-relation-handler">Double Hash Set Relation Handler</a></li><li><a href="./RelationKind.i6t.html#relationkind-hash-list-relation-handler">Hash List Relation Handler</a></li><li><a href="./RelationKind.i6t.html#relationkind-hash-table-relation-handler">Hash Table Relation Handler</a></li><li><a href="./RelationKind.i6t.html#relationkind-reversed-hash-table-relation-handler">Reversed Hash Table Relation Handler</a></li><li><a href="./RelationKind.i6t.html#relationkind-symmetric-relation-handlers">Symmetric Relation Handlers</a></li><li><a href="./RelationKind.i6t.html#relationkind-hash-core-relation-handler">Hash Core Relation Handler</a></li><li><a href="./RelationKind.i6t.html#relationkind-equivalence-hash-table-relation-handler">Equivalence Hash Table Relation Handler</a></li><li><a href="./RelationKind.i6t.html#relationkind-two-in-one-hash-table-relation-handler">Two-In-One Hash Table Relation Handler</a></li><li><a href="./RelationKind.i6t.html#relationkind-empty">Empty</a></li></ul></details><h3 id="relationkind-block-format">Block Format.</h3><p><p> Inform uses a rich variety of relations, with many different data representations, but we aim to hide that complexity from the user. At run-time, a relation is represented by a block value. The short block of this BV is simply a pointer to a long block. This always begins with at least six words of metadata, but actual data sometimes follows on, and sometimes doesn&#39;t: and its format is something the customer needn&#39;t know about.<p></p><p> The low-level routines in <a href="./Relations.i6t.html">Relations.i6t</a> access this metadata by direct use of <span class="fixed">--&gt;</span>, for speed, and they use the offset constants <span class="fixed"><a href="./Relations.i6t.html#line12">RR_NAME</a></span> and so on; but we will use the <span class="fixed"><a href="./BlockValues.i6t.html#line250">BlkValueRead</a></span> and <span class="fixed"><a href="./BlockValues.i6t.html#line284">BlkValueWrite</a></span> routines in this section, which need offsets in the form <span class="fixed"><a href="./RelationKind.i6t.html#line22">RRV_NAME</a></span>. (The discrepancy of 5 is to allow for the five-word block header.)<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line22">22</span><span class="td">Constant RRV_NAME             RR_NAME-5;        <span class="comment">! Packed string, e.g. &quot;containment relation&quot;</span></span></span>
 <span class="tr"><span class="th" id="line23">23</span><span class="td">Constant RRV_PERMISSIONS    RR_PERMISSIONS-5; <span class="comment">! A bitmap of what operations this supports</span></span></span>
 <span class="tr"><span class="th" id="line24">24</span><span class="td">Constant RRV_STORAGE        RR_STORAGE-5;     <span class="comment">! Data location, depending on format</span></span></span>

@@ -3,23 +3,26 @@
 <meta charset="utf-8">
 <head><title>Parser</title>
   <style>
+li { padding-bottom: .16rem; padding-top: .16rem; }
+ul.unloaded { list-style-type: none; margin-top: 0; margin-bottom: 0; padding-left: 1rem; }
+details summary { 
+  cursor: pointer;
+}
+a { text-decoration: none;
+padding-bottom: .5px;
+border-bottom: 1px dotted black;
+}
 span.th, span.td { display: table-cell; }
-span.td { padding-left: 2rem; }
+span.td { padding-left: 2rem; padding-top: .1rem; padding-bottom: .1rem; }
 span.th { width:4rem; text-align: right; }
-span.tr { display: table-row;     counter-increment: linenum; }
+td { padding-bottom: .16rem; padding-top: .16rem; }
+span.tr { display: table-row; }
 .pre-lines { font-family: monospace; margin-left: 3rem; line-height: 1.5rem; }
-/*span.line_no::before {
-    content: counter(linenum);
-    text-align: right;
-    display: block;
-    font-family: monospace;
-    font-weight: normal;
-}*/
 h1 { margin: 0; }
-.fixed { font-family: monospace }
+.fixed { font-family: monospace; background-color: #e7e7d7; }
 .em { font-style: italic; }
 .center { text-align: center; }
-    body { font-family: sans-serif; margin: 1.5rem 0 3rem 3rem; background-color: #fafaf0; width: 80rem; }
+    body { font-family: sans-serif; margin: .75rem 0 3rem 3rem; background-color: #fafaf0; width: 80rem; }
     .pre { font-family: monospace; margin: auto; width: 80rem; }
 #front_matter,.text { width: 48rem; }
 /* h3 { margin-top: 1.5rem; padding-top: 1.5rem; }*/
@@ -34,6 +37,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 .comment {  
   color: #156D15; } /* #207D20; */
 td.content { padding-right: 2rem; vertical-align: top;}
+header { border-bottom: 1px solid black; padding-top: .75rem; padding-bottom: .75rem; margin-bottom: 1rem;}
     </style>
 </head>
 <body>
@@ -42,9 +46,9 @@ td.content { padding-right: 2rem; vertical-align: top;}
 <div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Contents</a> &bull; <a href="./Introduction.i6t.html">Introduction</a> 
 &bull; <a href="fn_index.html">Function Index</a> 
 &bull; <a href="rules_index.html">Rules Index</a> 
-</div><hr></header>
+</div></header>
 <div id="front_matter">
-<h2><a href="./Parser.i6t.txt">Parser.i6t</a></h2><h3 id="parser-grammar-line-variables">Grammar Line Variables.</h3><p><p> This is the I6 library parser in mostly untouched form: reformatted for template file use, and with paragraph divisions, but otherwise hardly changed at all. It is a complex algorithm but one which is known to produce good results for the most part, and it is well understood from (at time of writing) fifteen years of use. A few I7 additions have been made, but none disrupting the basic method. For instance, I7&#39;s system for resolving ambiguities is implemented by providing a <span class="fixed"><a href="./Parser.i6t.html#line3917">ChooseObjects</a></span> routine, just as a user of the I6 library would do.<p></p><p> The I6 parser uses a huge number of global variables, which is not to modern programming tastes: in the early days of Inform, the parser was essentially written in assembly-language only lightly structured by C-like syntaxes, and the Z-machine&#39;s 240 globals were more or less registers. The I6 library made no distinction between which were &quot;private&quot; to the parser and which allowed to be accessed by the user&#39;s code at large. The I7 template does impose that boundary, though not very strongly: the variables defined in <a href="./Output.i6t.html">Output.i6t</a> are for general access, while the ones below should only be read or written by the parser.<p></p><p></div><div class="pre">
+<h2><a href="./Parser.i6t.txt">Parser.i6t</a></h2><details><summary>Parser contents</summary><ul class="unloaded"><li><a href="./Parser.i6t.html#parser-grammar-line-variables">Grammar Line Variables</a></li><li><a href="./Parser.i6t.html#parser-grammar-token-variables">Grammar Token Variables</a></li><li><a href="./Parser.i6t.html#parser-match-list-variables">Match List Variables</a></li><li><a href="./Parser.i6t.html#parser-words">Words</a></li><li><a href="./Parser.i6t.html#parser-snippets">Snippets</a></li><li><a href="./Parser.i6t.html#parser-unpacking-grammar-lines">Unpacking Grammar Lines</a></li><li><a href="./Parser.i6t.html#parser-extracting-verb-numbers">Extracting Verb Numbers</a></li><li><a href="./Parser.i6t.html#parser-keyboard-primitive">Keyboard Primitive</a></li><li><a href="./Parser.i6t.html#parser-reading-the-command">Reading the Command</a></li><li><a href="./Parser.i6t.html#parser-parser-proper">Parser Proper</a></li><li><a href="./Parser.i6t.html#parser-parser-letter-a">Parser Letter A</a></li><li><a href="./Parser.i6t.html#parser-parser-letter-b">Parser Letter B</a></li><li><a href="./Parser.i6t.html#parser-parser-letter-c">Parser Letter C</a></li><li><a href="./Parser.i6t.html#parser-parser-letter-d">Parser Letter D</a></li><li><a href="./Parser.i6t.html#parser-parser-letter-e">Parser Letter E</a></li><li><a href="./Parser.i6t.html#parser-parser-letter-f">Parser Letter F</a></li><li><a href="./Parser.i6t.html#parser-parser-letter-g">Parser Letter G</a></li><li><a href="./Parser.i6t.html#parser-parser-letter-h">Parser Letter H</a></li><li><a href="./Parser.i6t.html#parser-parser-letter-i">Parser Letter I</a></li><li><a href="./Parser.i6t.html#parser-parser-letter-j">Parser Letter J</a></li><li><a href="./Parser.i6t.html#parser-parser-letter-k">Parser Letter K</a></li><li><a href="./Parser.i6t.html#parser-end-of-parser-proper">End of Parser Proper</a></li><li><a href="./Parser.i6t.html#parser-internal-rule">Internal Rule</a></li><li><a href="./Parser.i6t.html#parser-parse-token">Parse Token</a></li><li><a href="./Parser.i6t.html#parser-parse-token-letter-a">Parse Token Letter A</a></li><li><a href="./Parser.i6t.html#parser-parse-token-letter-b">Parse Token Letter B</a></li><li><a href="./Parser.i6t.html#parser-parse-token-letter-c">Parse Token Letter C</a></li><li><a href="./Parser.i6t.html#parser-parse-token-letter-d">Parse Token Letter D</a></li><li><a href="./Parser.i6t.html#parser-parse-token-letter-e">Parse Token Letter E</a></li><li><a href="./Parser.i6t.html#parser-parse-token-letter-f">Parse Token Letter F</a></li><li><a href="./Parser.i6t.html#parser-descriptors">Descriptors</a></li><li><a href="./Parser.i6t.html#parser-parsing-descriptors">Parsing Descriptors</a></li><li><a href="./Parser.i6t.html#parser-preposition-chain">Preposition Chain</a></li><li><a href="./Parser.i6t.html#parser-creature">Creature</a></li><li><a href="./Parser.i6t.html#parser-noun-domain">Noun Domain</a></li><li><a href="./Parser.i6t.html#parser-adjudicate">Adjudicate</a></li><li><a href="./Parser.i6t.html#parser-revisemulti">ReviseMulti</a></li><li><a href="./Parser.i6t.html#parser-match-list">Match List</a></li><li><a href="./Parser.i6t.html#parser-scorematchl">ScoreMatchL</a></li><li><a href="./Parser.i6t.html#parser-bestguess">BestGuess</a></li><li><a href="./Parser.i6t.html#parser-singlebestguess">SingleBestGuess</a></li><li><a href="./Parser.i6t.html#parser-identical">Identical</a></li><li><a href="./Parser.i6t.html#parser-print-command">Print Command</a></li><li><a href="./Parser.i6t.html#parser-cantsee">CantSee</a></li><li><a href="./Parser.i6t.html#parser-multiple-object-list">Multiple Object List</a></li><li><a href="./Parser.i6t.html#parser-scope">Scope</a></li><li><a href="./Parser.i6t.html#parser-scope-level-0">Scope Level 0</a></li><li><a href="./Parser.i6t.html#parser-searchscope">SearchScope</a></li><li><a href="./Parser.i6t.html#parser-scopewithin">ScopeWithin</a></li><li><a href="./Parser.i6t.html#parser-doscopeactionandrecurse">DoScopeActionAndRecurse</a></li><li><a href="./Parser.i6t.html#parser-doscopeaction">DoScopeAction</a></li><li><a href="./Parser.i6t.html#parser-parsing-object-names">Parsing Object Names</a></li><li><a href="./Parser.i6t.html#parser-trygivenobject">TryGivenObject</a></li><li><a href="./Parser.i6t.html#parser-refers">Refers</a></li><li><a href="./Parser.i6t.html#parser-nounword">NounWord</a></li><li><a href="./Parser.i6t.html#parser-trynumber">TryNumber</a></li><li><a href="./Parser.i6t.html#parser-gender">Gender</a></li><li><a href="./Parser.i6t.html#parser-noticing-plurals">Noticing Plurals</a></li><li><a href="./Parser.i6t.html#parser-pronoun-handling">Pronoun Handling</a></li><li><a href="./Parser.i6t.html#parser-yesno-questions">Yes/No Questions</a></li><li><a href="./Parser.i6t.html#parser-number-words">Number Words</a></li><li><a href="./Parser.i6t.html#parser-choose-objects">Choose Objects</a></li><li><a href="./Parser.i6t.html#parser-default-topic">Default Topic</a></li></ul></details><h3 id="parser-grammar-line-variables">Grammar Line Variables.</h3><p><p> This is the I6 library parser in mostly untouched form: reformatted for template file use, and with paragraph divisions, but otherwise hardly changed at all. It is a complex algorithm but one which is known to produce good results for the most part, and it is well understood from (at time of writing) fifteen years of use. A few I7 additions have been made, but none disrupting the basic method. For instance, I7&#39;s system for resolving ambiguities is implemented by providing a <span class="fixed"><a href="./Parser.i6t.html#line3917">ChooseObjects</a></span> routine, just as a user of the I6 library would do.<p></p><p> The I6 parser uses a huge number of global variables, which is not to modern programming tastes: in the early days of Inform, the parser was essentially written in assembly-language only lightly structured by C-like syntaxes, and the Z-machine&#39;s 240 globals were more or less registers. The I6 library made no distinction between which were &quot;private&quot; to the parser and which allowed to be accessed by the user&#39;s code at large. The I7 template does impose that boundary, though not very strongly: the variables defined in <a href="./Output.i6t.html">Output.i6t</a> are for general access, while the ones below should only be read or written by the parser.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line29">29</span><span class="td">Global best_etype;                  <span class="comment">! Preferred error number so far</span></span></span>
 <span class="tr"><span class="th" id="line30">30</span><span class="td">Global nextbest_etype;              <span class="comment">! Preferred one, if ASKSCOPE_PE disallowed</span></span></span>
 <span class="tr"><span class="th" id="line31">31</span><span class="td"></span></span>

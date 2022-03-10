@@ -3,23 +3,26 @@
 <meta charset="utf-8">
 <head><title>Text</title>
   <style>
+li { padding-bottom: .16rem; padding-top: .16rem; }
+ul.unloaded { list-style-type: none; margin-top: 0; margin-bottom: 0; padding-left: 1rem; }
+details summary { 
+  cursor: pointer;
+}
+a { text-decoration: none;
+padding-bottom: .5px;
+border-bottom: 1px dotted black;
+}
 span.th, span.td { display: table-cell; }
-span.td { padding-left: 2rem; }
+span.td { padding-left: 2rem; padding-top: .1rem; padding-bottom: .1rem; }
 span.th { width:4rem; text-align: right; }
-span.tr { display: table-row;     counter-increment: linenum; }
+td { padding-bottom: .16rem; padding-top: .16rem; }
+span.tr { display: table-row; }
 .pre-lines { font-family: monospace; margin-left: 3rem; line-height: 1.5rem; }
-/*span.line_no::before {
-    content: counter(linenum);
-    text-align: right;
-    display: block;
-    font-family: monospace;
-    font-weight: normal;
-}*/
 h1 { margin: 0; }
-.fixed { font-family: monospace }
+.fixed { font-family: monospace; background-color: #e7e7d7; }
 .em { font-style: italic; }
 .center { text-align: center; }
-    body { font-family: sans-serif; margin: 1.5rem 0 3rem 3rem; background-color: #fafaf0; width: 80rem; }
+    body { font-family: sans-serif; margin: .75rem 0 3rem 3rem; background-color: #fafaf0; width: 80rem; }
     .pre { font-family: monospace; margin: auto; width: 80rem; }
 #front_matter,.text { width: 48rem; }
 /* h3 { margin-top: 1.5rem; padding-top: 1.5rem; }*/
@@ -34,6 +37,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: .5px solid black; marg
 .comment {  
   color: #156D15; } /* #207D20; */
 td.content { padding-right: 2rem; vertical-align: top;}
+header { border-bottom: 1px solid black; padding-top: .75rem; padding-bottom: .75rem; margin-bottom: 1rem;}
     </style>
 </head>
 <body>
@@ -42,9 +46,9 @@ td.content { padding-right: 2rem; vertical-align: top;}
 <div class="subtitle"><a href="http://inform7.com/">Inform 7 6M62</a> &bull; <a href="./index.html">Contents</a> &bull; <a href="./Introduction.i6t.html">Introduction</a> 
 &bull; <a href="fn_index.html">Function Index</a> 
 &bull; <a href="rules_index.html">Rules Index</a> 
-</div><hr></header>
+</div></header>
 <div id="front_matter">
-<h2><a href="./Text.i6t.txt">Text.i6t</a></h2><h3 id="text-block-format">Block Format.</h3><p><p> The short block for a text is two words long: the first word selects which form of storage will be used to represent the content, and the second word is a reference to that content. This reference is an I6 String or Routine in all cases except one, when it&#39;s a pointer to a long block containing a null-terminated array of characters, like a C string.<p></p><p> Clearly we need <span class="fixed"><a href="./Text.i6t.html#line35">PACKED_TEXT_STORAGE</a></span> and <span class="fixed"><a href="./Text.i6t.html#line36">UNPACKED_TEXT_STORAGE</a></span> to distinguish between the two basic methods of text storage, roughly equivalent to the pre-2013 kinds &quot;text&quot; and &quot;indexed text&quot;. But why do we need four?<p></p><p> <span class="fixed"><a href="./Text.i6t.html#line33">CONSTANT_PACKED_TEXT_STORAGE</a></span> is easy to explain: the BlkValue routines normally detect constants using metadata in their long blocks, but of course that won&#39;t work for values which haven&#39;t got any long blocks. We use this instead. We don&#39;t need a <span class="fixed">CONSTANT_UNPACKED_TEXT_STORAGE</span> because I7 never compiles constant text in unpacked form.<p></p><p> The surprising one is <span class="fixed"><a href="./Text.i6t.html#line34">CONSTANT_PERISHABLE_TEXT_STORAGE</a></span>. This is a constant created by the I7 compiler which is marked as being tricky because its value is a text substitution containing references to local variables. Unlike other text substitutions, this can&#39;t meaningfully be stored away to be expanded later: it must be expanded into unpacked text before it perishes.<p></p><p></div><div class="pre">
+<h2><a href="./Text.i6t.txt">Text.i6t</a></h2><details><summary>Text contents</summary><ul class="unloaded"><li><a href="./Text.i6t.html#text-block-format">Block Format</a></li><li><a href="./Text.i6t.html#text-extent-of-long-block">Extent Of Long Block</a></li><li><a href="./Text.i6t.html#text-character-set">Character Set</a></li><li><a href="./Text.i6t.html#text-kov-support">KOV Support</a></li><li><a href="./Text.i6t.html#text-debugging">Debugging</a></li><li><a href="./Text.i6t.html#text-creation">Creation</a></li><li><a href="./Text.i6t.html#text-copy-short-block">Copy Short Block</a></li><li><a href="./Text.i6t.html#text-transmutation">Transmutation</a></li><li><a href="./Text.i6t.html#text-mutability">Mutability</a></li><li><a href="./Text.i6t.html#text-casting">Casting</a></li><li><a href="./Text.i6t.html#text-data-conversion">Data Conversion</a></li><li><a href="./Text.i6t.html#text-z-version">Z Version</a></li><li><a href="./Text.i6t.html#text-glulx-version">Glulx Version</a></li><li><a href="./Text.i6t.html#text-comparison">Comparison</a></li><li><a href="./Text.i6t.html#text-hashing">Hashing</a></li><li><a href="./Text.i6t.html#text-printing">Printing</a></li><li><a href="./Text.i6t.html#text-capitalised-printing">Capitalised printing</a></li><li><a href="./Text.i6t.html#text-serialisation">Serialisation</a></li><li><a href="./Text.i6t.html#text-unserialisation">Unserialisation</a></li><li><a href="./Text.i6t.html#text-substitution">Substitution</a></li><li><a href="./Text.i6t.html#text-perishability">Perishability</a></li><li><a href="./Text.i6t.html#text-recognition-only-gpr">Recognition-only-GPR</a></li><li><a href="./Text.i6t.html#text-blobs">Blobs</a></li><li><a href="./Text.i6t.html#text-blob-access">Blob Access</a></li><li><a href="./Text.i6t.html#text-get-blob">Get Blob</a></li><li><a href="./Text.i6t.html#text-replace-blob">Replace Blob</a></li><li><a href="./Text.i6t.html#text-replace-text">Replace Text</a></li><li><a href="./Text.i6t.html#text-character-length">Character Length</a></li><li><a href="./Text.i6t.html#text-get-character">Get Character</a></li><li><a href="./Text.i6t.html#text-casing">Casing</a></li><li><a href="./Text.i6t.html#text-change-case">Change Case</a></li><li><a href="./Text.i6t.html#text-concatenation">Concatenation</a></li><li><a href="./Text.i6t.html#text-setting-the-players-command">Setting the Player's Command</a></li></ul></details><h3 id="text-block-format">Block Format.</h3><p><p> The short block for a text is two words long: the first word selects which form of storage will be used to represent the content, and the second word is a reference to that content. This reference is an I6 String or Routine in all cases except one, when it&#39;s a pointer to a long block containing a null-terminated array of characters, like a C string.<p></p><p> Clearly we need <span class="fixed"><a href="./Text.i6t.html#line35">PACKED_TEXT_STORAGE</a></span> and <span class="fixed"><a href="./Text.i6t.html#line36">UNPACKED_TEXT_STORAGE</a></span> to distinguish between the two basic methods of text storage, roughly equivalent to the pre-2013 kinds &quot;text&quot; and &quot;indexed text&quot;. But why do we need four?<p></p><p> <span class="fixed"><a href="./Text.i6t.html#line33">CONSTANT_PACKED_TEXT_STORAGE</a></span> is easy to explain: the BlkValue routines normally detect constants using metadata in their long blocks, but of course that won&#39;t work for values which haven&#39;t got any long blocks. We use this instead. We don&#39;t need a <span class="fixed">CONSTANT_UNPACKED_TEXT_STORAGE</span> because I7 never compiles constant text in unpacked form.<p></p><p> The surprising one is <span class="fixed"><a href="./Text.i6t.html#line34">CONSTANT_PERISHABLE_TEXT_STORAGE</a></span>. This is a constant created by the I7 compiler which is marked as being tricky because its value is a text substitution containing references to local variables. Unlike other text substitutions, this can&#39;t meaningfully be stored away to be expanded later: it must be expanded into unpacked text before it perishes.<p></p><p></div><div class="pre">
 <span class="tr"><span class="th" id="line33">33</span><span class="td">Constant CONSTANT_PACKED_TEXT_STORAGE     = BLK_BVBITMAP_TEXT + BLK_BVBITMAP_CONSTANT + 1;</span></span>
 <span class="tr"><span class="th" id="line34">34</span><span class="td">Constant CONSTANT_PERISHABLE_TEXT_STORAGE = BLK_BVBITMAP_TEXT + BLK_BVBITMAP_CONSTANT + 2;</span></span>
 <span class="tr"><span class="th" id="line35">35</span><span class="td">Constant PACKED_TEXT_STORAGE              = BLK_BVBITMAP_TEXT + 3;</span></span>
