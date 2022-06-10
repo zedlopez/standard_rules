@@ -1,0 +1,237 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../style.css">
+<script>function toggle_details() {
+   var openness, toggle_link;
+   toggle_link = document.getElementById("toggle");
+   openness = toggle_link.classList.toggle("open");
+document.querySelectorAll("details.full-example").forEach(detail => { if (openness) { detail.setAttribute("open", true); } else { detail.removeAttribute("open");} });
+   toggle_link.innerText = (openness ? "Close" : "Open") + " all examples";
+   }
+
+
+function copyCode(text) { navigator.clipboard.writeText(text); }
+
+
+var links = document.getElementsByTagName('a');
+for (var i = 0; i < links.length; i++) {
+    if (links[i].href.match(/^#example-\d+/)) {
+	links[i].onClick = function() { links[i].href.match(/^#example-(\d+)$/); var example = document.getElementById($1).setAttribute('open'); return true; };
+    }
+}
+
+function add_bar(update) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let navbar = document.querySelector('div.index-navbar');
+
+    if (navbar && urlParams.has('project')) {
+        navbar.setAttribute('class', 'index-navbar'); // removes hidden
+        let project = decodeURIComponent(urlParams.get('project'));
+        let index_root = project + '/.index/';
+        let build = project + '/Build/';
+        let query_arg = "?project="+encodeURIComponent(project);
+
+        let links = [
+            { "General Index": document.getElementById('general_index').href },
+            { "Docs": document.getElementById('docs').href },
+            { "Extensions": index_root + 'doc/Extensions.html' },
+            { "Definitions": index_root + 'doc/ExtIndex.html' },
+            { "Debug Log": build + 'debug_log.html' },
+            { "Problems": build + 'problems.html' },
+            { "Source": index_root + 'story.html' },
+            { "Project Index": index_root + 'Index/Welcome.html' } ];
+        let sp = document.createTextNode(" ");
+        links.forEach(h => {
+            Object.entries(h).forEach(([text, url]) => {
+                let my_id = text.toLowerCase().replace(' ', '_');
+                let a = document.querySelector('#'+my_id);
+                let url_target = "file://"+url+query_arg;
+                if (a) {
+                    let parts = a.href.split('#');
+                    let qparts = parts[0].split('?');
+                    a.href = qparts[0] +  (qparts[1] ? ('?' + qparts[1]) : query_arg) + (parts[1] ? ('#' + parts[1]) : "");
+                }
+                else {
+                    a = document.createElement('a');
+                    let href = document.createAttribute("href");
+                    href.value = url_target;
+                    a.setAttributeNode(href);
+                    let elem_id = document.createAttribute("id");
+                    elem_id.value = my_id;
+                    a.setAttributeNode(elem_id);
+                    let linktext = document.createTextNode(text);
+                    a.appendChild(linktext);
+                    navbar.insertBefore(sp.cloneNode(), navbar.firstChild);
+                    navbar.insertBefore(a, navbar.firstChild);
+                }
+            })});
+        if (update) {
+            let main_links = document.querySelectorAll('main a');
+            main_links.forEach(a => {
+                if (!a.href.startsWith('javascript:') || (a.href.match(/[^:]+:\/\// && !a.href.startsWith('file:')))) {
+                    let parts = a.href.split('#')
+                    a.href = parts[0] + query_arg + (parts[1] ? ('#' + parts[1]) : "");
+                } });
+        }
+    }
+}
+
+
+
+document.addEventListener("DOMContentLoaded", add_bar);</script>
+<title>Example #354</title></head>
+<body class="inform7-source">
+
+<div class="inform7-source"><div class="pseudo">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;Air Conditioning is Standard&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7gh">Section 1 - The Garage</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A person has some text called current occupation. The current occupation of a person is usually <span class="i7sx">&quot;None&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Mood is a kind of value. The moods are bemused, bored, attentive, rapt, and blushing. A person has a mood. A person is usually attentive.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of examining a person:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now every thing is unmentioned;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	carry out the writing a paragraph about activity with the noun.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Rule for writing a paragraph about a person (called X):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	let the subsequent mention be <span class="i7sx">&quot;Name&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the current occupation of X is not <span class="i7sx">&quot;None&quot;</span>:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[current occupation of X]</span><span class="i7sx">. &quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	let the subsequent mention be <span class="i7sx">&quot;He&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if X is female, let the subsequent mention be <span class="i7sx">&quot;She&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if X wears something unmentioned:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if the subsequent mention is <span class="i7sx">&quot;Name&quot;</span>, say <span class="i7sx">&quot;</span><span class="i7si">[The X]</span><span class="i7sx"> &quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	otherwise say <span class="i7sx">&quot;</span><span class="i7si">[subsequent mention]</span><span class="i7sx"> &quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;is wearing </span><span class="i7si">[a list of unmentioned things worn by X]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if X carries something unmentioned, say <span class="i7sx">&quot; and carrying </span><span class="i7si">[a list of unmentioned things carried by X]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;.&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	otherwise:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if X carries something unmentioned:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	if the subsequent mention is <span class="i7sx">&quot;Name&quot;</span>, say <span class="i7sx">&quot;</span><span class="i7si">[The X]</span><span class="i7sx"> &quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	otherwise say <span class="i7sx">&quot;</span><span class="i7si">[subsequent mention]</span><span class="i7sx"> &quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot; is carrying </span><span class="i7si">[a list of unmentioned things carried by X]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Garage is a room. <span class="i7sx">&quot;Above the street door is a spectacular art nouveau fanlight, wherein a stained-glass Spirit of Progress bestows the gift of Transportation on mankind.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">The sun, gleaming through the hair of Progress, throws amber curls on the macadam floor.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The fanlight is scenery in the Garage. The description is <span class="i7sx">&quot;A semi-circle of stained glass as wide as the garage door, designed by Louis Comfort Tiffany himself. No expense has been spared.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The gift of Transportation is part of the fanlight. The description is <span class="i7sx">&quot;The gift of Transportation is envisioned as a cornucopia disgorging a steam locomotive. And that blue bit of glass might be the Montgolfier balloon.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Spirit of Progress is part of the fanlight. The description is <span class="i7sx">&quot;It is part of her character to have bare shoulders like that.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The machinist is a bored man. He is in the Garage. He is wearing a grimy pair of overalls. He carries a wrench and a screwdriver. The current occupation of the machinist is <span class="i7sx">&quot;</span><span class="i7si">[The machinist]</span><span class="i7sx"> is making some adjustments to </span><span class="i7si">[the random thing which is part of the Victorian Car]</span><span class="i7sx"> with his </span><span class="i7si">[random thing carried by the machinist]</span><span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Victorian Car is a device in the Garage. A cast-iron steering wheel, a leather bucket seat, a horn, and a combustion engine are part of the Victorian Car. The seat is an enterable supporter.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Rule for writing a paragraph about a device (called X):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	let the subsequent mention be <span class="i7sx">&quot;Name&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the X is unmentioned:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[The X]</span><span class="i7sx"> is here. &quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	let the subsequent mention be <span class="i7sx">&quot;It&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if something is part of X:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if the subsequent mention is <span class="i7sx">&quot;Name&quot;</span>, say <span class="i7sx">&quot;</span><span class="i7si">[The X]</span><span class="i7sx"> &quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	otherwise say <span class="i7sx">&quot;</span><span class="i7si">[subsequent mention]</span><span class="i7sx"> &quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[if a mentioned thing is part of X]</span><span class="i7sx">also </span><span class="i7si">[end if]</span><span class="i7sx">features</span><span class="i7si">[if a mentioned thing is part of X]</span><span class="i7sx">, in addition to </span><span class="i7si">[the list of mentioned things which are part of X]</span><span class="i7sx">,</span><span class="i7si">[end if]</span><span class="i7sx"> </span><span class="i7si">[a list of unmentioned things which are part of X]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;.&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Rule for printing the name of the steering wheel while writing a paragraph about a person:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;steering wheel&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A supporter has some text called position. The position of a supporter is usually <span class="i7sx">&quot;None&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Office is west of the Garage. The Office contains a desk. The desk has the position <span class="i7sx">&quot;A </span><span class="i7si">[desk]</span><span class="i7sx"> with several dozen drawers stands in the center of the room&quot;</span>. On the desk are some papers.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">After printing the name of a supporter (called X) which supports an unmentioned thing:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now X is unmentioned.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Rule for writing a paragraph about a supporter (called X):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	let the subsequent mention be <span class="i7sx">&quot;Name&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the position of X is not <span class="i7sx">&quot;None&quot;</span>:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[position of X]</span><span class="i7sx">. &quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	let the subsequent mention be <span class="i7sx">&quot;It&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if a mentioned thing is on X:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;Besides </span><span class="i7si">[the list of mentioned things which are on X]</span><span class="i7sx">, &quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	let the subsequent mention be <span class="i7sx">&quot;it&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the subsequent mention is <span class="i7sx">&quot;Name&quot;</span>, say <span class="i7sx">&quot;</span><span class="i7si">[The X]</span><span class="i7sx"> &quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	otherwise say <span class="i7sx">&quot;</span><span class="i7si">[subsequent mention]</span><span class="i7sx"> &quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;holds </span><span class="i7si">[a list of unmentioned things which are on X]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7gh">Section 2 - Schedule</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The time of day is 4:38 PM.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">At 4:42 PM:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	move the machinist to the Office;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;The machinist wanders into the Office to get some paperwork.&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now every thing carried by the machinist is on the desk;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the current occupation of the machinist is <span class="i7sx">&quot;</span><span class="i7si">[The machinist]</span><span class="i7sx"> rifles through </span><span class="i7si">[the papers]</span><span class="i7sx"> on </span><span class="i7si">[the desk]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">At 4:43 PM:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	move the young lady to the Garage;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the young lady can be seen by the player,</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;An attractive young lady walks in from the street, and glances around as though she has never been here before.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">At 4:45 PM:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the young lady can be seen by the player,</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;With a not-quite-convincing air of innocence, </span><span class="i7si">[the young lady]</span><span class="i7sx"> happens to lean upon </span><span class="i7si">[the horn]</span><span class="i7sx">, which bleats loudly.&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	otherwise say <span class="i7sx">&quot;There is a honk from the Garage</span><span class="i7si">[if the machinist can be seen by the player]</span><span class="i7sx">. The machinist looks up with a frown</span><span class="i7si">[end if]</span><span class="i7sx">.&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the horn is mentioned.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">At 4:46 PM:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	move the machinist to the Garage;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;The machinist strolls from the Office into the Garage to find out what is going on.&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the current occupation of the machinist is <span class="i7sx">&quot;</span><span class="i7si">[The machinist]</span><span class="i7sx"> is chatting with </span><span class="i7si">[the young lady]</span><span class="i7sx">. He seems to be demonstrating the various features of </span><span class="i7si">[the car]</span><span class="i7sx">, including </span><span class="i7si">[the random thing which is part of the car]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the current occupation of the young lady is <span class="i7sx">&quot;</span><span class="i7si">[The young lady]</span><span class="i7sx"> is asking </span><span class="i7si">[the machinist]</span><span class="i7sx"> a number of questions about </span><span class="i7si">[the car]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">At 4:49 PM:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the young lady can be seen by the player, say <span class="i7sx">&quot;</span><span class="i7si">[The machinist]</span><span class="i7sx"> gives </span><span class="i7si">[the young lady]</span><span class="i7sx"> his arm to climb into </span><span class="i7si">[the seat]</span><span class="i7sx">.&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	move the young lady to the seat;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the young lady is rapt;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the current occupation of the young lady is <span class="i7sx">&quot;</span><span class="i7si">[The young lady]</span><span class="i7sx"> is turning </span><span class="i7si">[the steering wheel]</span><span class="i7sx"> from side to side&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the current occupation of the machinist is <span class="i7sx">&quot;</span><span class="i7si">[The machinist]</span><span class="i7sx"> is leaning on the door of </span><span class="i7si">[the car]</span><span class="i7sx">, pointing out features to </span><span class="i7si">[the young lady]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	move the besotted expression to the machinist;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the machinist is wearing the besotted expression.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">At 4:52 PM:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the sober grey gown is unbuttoned at the neck;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the young lady can be seen by the player, say <span class="i7sx">&quot;</span><span class="i7si">[The young lady]</span><span class="i7sx"> murmurs something about the wilting heat, and undoes a button or two of her gown. The machinist&#39;s expression is comical, or would be, if you weren&#39;t annoyed.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Every turn when the player is in the Garage and young lady is on the seat:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;You are beginning to feel a little unnecessary in this scene.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Every turn when the player is in the Office and the young lady is on the seat:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;There&#39;s no sound at all from the other room, not even conversation.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Before going to the Garage when the young lady is on the seat:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the sober grey gown is tellingly dishevelled;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	move the young lady to the Garage;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the young lady is blushing;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;There is a flurry of movement as you enter the room.&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the current occupation of the young lady is <span class="i7sx">&quot;</span><span class="i7si">[The young lady]</span><span class="i7sx"> stands near the door, tapping her foot nervously&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the besotted expression is nowhere;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the current occupation of the machinist is <span class="i7sx">&quot;</span><span class="i7si">[The machinist]</span><span class="i7sx"> is leaning against </span><span class="i7si">[the car]</span><span class="i7sx">, looking smug&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7gh">Section 3 - Initially Out of Play</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The besotted expression is a wearable thing. The description is <span class="i7sx">&quot;It looks foolish, doesn&#39;t it?&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The young lady is a bemused woman. She is wearing a sober grey gown and a pair of black boots. The current occupation of the young lady is <span class="i7sx">&quot;</span><span class="i7si">[The young lady]</span><span class="i7sx"> is running a gloved finger along the chassis of </span><span class="i7si">[the victorian car]</span><span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Before printing the name of the young lady while writing a paragraph about a person:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[mood of the young lady]</span><span class="i7sx"> &quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The description of the grey gown is <span class="i7sx">&quot;Something about the perfect row of tiny buttons has the wrong effect -- at any rate, it is natural to wonder how long they take to undo.&quot;</span> The gown can be buttoned almost to the chin, unbuttoned at the neck, or tellingly dishevelled.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Rule for printing the name of the gown when writing a paragraph about a person:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;sober grey gown (</span><span class="i7si">[sober grey gown condition]</span><span class="i7sx">)&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Test me with <span class="i7sx">&quot;z / look / look / z / look / west / east / z  / look / z / look / z / look / west / east&quot;</span>.</span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

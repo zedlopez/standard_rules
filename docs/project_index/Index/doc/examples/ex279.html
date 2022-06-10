@@ -1,0 +1,142 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../style.css">
+<script>function toggle_details() {
+   var openness, toggle_link;
+   toggle_link = document.getElementById("toggle");
+   openness = toggle_link.classList.toggle("open");
+document.querySelectorAll("details.full-example").forEach(detail => { if (openness) { detail.setAttribute("open", true); } else { detail.removeAttribute("open");} });
+   toggle_link.innerText = (openness ? "Close" : "Open") + " all examples";
+   }
+
+
+function copyCode(text) { navigator.clipboard.writeText(text); }
+
+
+var links = document.getElementsByTagName('a');
+for (var i = 0; i < links.length; i++) {
+    if (links[i].href.match(/^#example-\d+/)) {
+	links[i].onClick = function() { links[i].href.match(/^#example-(\d+)$/); var example = document.getElementById($1).setAttribute('open'); return true; };
+    }
+}
+
+function add_bar(update) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let navbar = document.querySelector('div.index-navbar');
+
+    if (navbar && urlParams.has('project')) {
+        navbar.setAttribute('class', 'index-navbar'); // removes hidden
+        let project = decodeURIComponent(urlParams.get('project'));
+        let index_root = project + '/.index/';
+        let build = project + '/Build/';
+        let query_arg = "?project="+encodeURIComponent(project);
+
+        let links = [
+            { "General Index": document.getElementById('general_index').href },
+            { "Docs": document.getElementById('docs').href },
+            { "Extensions": index_root + 'doc/Extensions.html' },
+            { "Definitions": index_root + 'doc/ExtIndex.html' },
+            { "Debug Log": build + 'debug_log.html' },
+            { "Problems": build + 'problems.html' },
+            { "Source": index_root + 'story.html' },
+            { "Project Index": index_root + 'Index/Welcome.html' } ];
+        let sp = document.createTextNode(" ");
+        links.forEach(h => {
+            Object.entries(h).forEach(([text, url]) => {
+                let my_id = text.toLowerCase().replace(' ', '_');
+                let a = document.querySelector('#'+my_id);
+                let url_target = "file://"+url+query_arg;
+                if (a) {
+                    let parts = a.href.split('#');
+                    let qparts = parts[0].split('?');
+                    a.href = qparts[0] +  (qparts[1] ? ('?' + qparts[1]) : query_arg) + (parts[1] ? ('#' + parts[1]) : "");
+                }
+                else {
+                    a = document.createElement('a');
+                    let href = document.createAttribute("href");
+                    href.value = url_target;
+                    a.setAttributeNode(href);
+                    let elem_id = document.createAttribute("id");
+                    elem_id.value = my_id;
+                    a.setAttributeNode(elem_id);
+                    let linktext = document.createTextNode(text);
+                    a.appendChild(linktext);
+                    navbar.insertBefore(sp.cloneNode(), navbar.firstChild);
+                    navbar.insertBefore(a, navbar.firstChild);
+                }
+            })});
+        if (update) {
+            let main_links = document.querySelectorAll('main a');
+            main_links.forEach(a => {
+                if (!a.href.startsWith('javascript:') || (a.href.match(/[^:]+:\/\// && !a.href.startsWith('file:')))) {
+                    let parts = a.href.split('#')
+                    a.href = parts[0] + query_arg + (parts[1] ? ('#' + parts[1]) : "");
+                } });
+        }
+    }
+}
+
+
+
+document.addEventListener("DOMContentLoaded", add_bar);</script>
+<title>Example #279</title></head>
+<body class="inform7-source">
+
+<div class="inform7-source"><div class="pseudo">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;The Queen of Sheba&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Interrogative is a kind of value. The interrogatives are who, what, when, where, how, and why.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Current question is an interrogative that varies.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">After asking someone about something: respond to the question. After answering someone that something: respond to the question.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">After telling someone about something: say <span class="i7sx">&quot;You&#39;re here to ask questions and test Solomon&#39;s wisdom, not to give him a sample of your own.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line">Table of Wise Answers</span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">topic</span><span class="td">question type</span><span class="td">reply</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;rain/weather/clouds/cloud/rains&quot;</span></span><span class="td">what</span><span class="td"><span class="i7sx">&quot;&#39;Clouds are a disturbance made by the paths of birds,&#39; Solomon replies. &#39;The air beaten by their wings becomes agitated, as when a river is stirred and the mud churns up.&#39;&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;rain/weather/clouds/cloud/rains&quot;</span></span><span class="td">where</span><span class="td"><span class="i7sx">&quot;&#39;Weather is contained in a great silk bag which holds in the heavens,&#39; replies Solomon.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;hunger/food/eating&quot;</span></span><span class="td">when</span><span class="td"><span class="i7sx">&quot;&#39;Sorry, are you getting hungry?&#39; he says, and rings a bell to summon servants.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;hunger/food/eating&quot;</span></span><span class="td">why</span><span class="td"><span class="i7sx">&quot;&#39;Men were made to need food in order that they must farm and cook and dine together,&#39; Solomon replies. &#39;Otherwise, they might live apart, each sufficient in himself. But no man can feed himself alone all through his life.&#39;&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;Solomon/he/himself&quot;</span></span><span class="td">who</span><span class="td"><span class="i7sx">&quot;&#39;As you see,&#39; he says, holding out his arms to each side.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;Solomon/he/himself&quot;</span></span><span class="td">what</span><span class="td"><span class="i7sx">&quot;&#39;I am an ordinary man,&#39; he answers.&quot;</span></span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[One of the nice things about this system is that it only resets the &quot;current question&quot; when we get a new question word. For instance, this test will produce different replies to the question about Solomon himself, because the second time he is still in the mode of answering &quot;what&quot; questions:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Test me with <span class="i7sx">&quot;ask solomon about himself / ask solomon what rain is / ask solomon about himself&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[If Solomon is to live up to his reputation at all, his wisdom table will have to be quite a bit longer - though one also would want to be careful, because forcing the game to cycle through a really immense table could be quite time-consuming. In fact, for the sake of this example, let&#39;s reward the player for managing to stay within the (narrow) range of Solomon&#39;s knowledge:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Hall of Almug Tree Pillars is a room. <span class="i7sx">&quot;The pillars of the room are made of almug tree, the ceiling made of silk and the floor of glass.&quot;</span> Solomon is a man in the Hall of Almug Tree Pillars. Solomon has a number called wisdom. The wisdom of Solomon is 0.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Every turn:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the wisdom of Solomon is 3:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;Truly, Solomon has answered all your questions, and his wisdom is even as great as you had heard!&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	end the story saying <span class="i7sx">&quot;Your heart beats strangely fast&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">When play begins, say <span class="i7sx">&quot;&#39;Oh, you&#39;ve arrived,&#39; says Solomon.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[In a real game we&#39;d need to be a great deal subtler. All the same, if we have a character of quite limited resources to present to the player, it&#39;s a good idea to give the player some incentive to stay on topic, ask questions the character can answer, and generally interact within the parameters we&#39;re prepared for.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Now, this last bit requires some trickery from later chapters, particularly those on Understanding and Activities, to pull the question words out of the player&#39;s command:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">After reading a command:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the player&#39;s command includes <span class="i7sx">&quot;</span><span class="i7si">[interrogative]</span><span class="i7sx">&quot;</span>, now the current question is the interrogative understood.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To respond to the question:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	repeat through the Table of Wise Answers:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if the topic understood includes topic entry:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	if the current question is the question type entry:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[reply entry][paragraph break]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	increment the wisdom of Solomon;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	rule succeeds;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;Solomon looks blank, appalled by a question for which he was not prepared.&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	end the story saying <span class="i7sx">&quot;You have befuddled Solomon!&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;ask </span><span class="i7si">[someone]</span><span class="i7sx"> </span><span class="i7si">[text]</span><span class="i7sx">&quot;</span> as asking it about.</span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

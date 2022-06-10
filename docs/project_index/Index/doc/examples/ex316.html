@@ -1,0 +1,218 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../style.css">
+<script>function toggle_details() {
+   var openness, toggle_link;
+   toggle_link = document.getElementById("toggle");
+   openness = toggle_link.classList.toggle("open");
+document.querySelectorAll("details.full-example").forEach(detail => { if (openness) { detail.setAttribute("open", true); } else { detail.removeAttribute("open");} });
+   toggle_link.innerText = (openness ? "Close" : "Open") + " all examples";
+   }
+
+
+function copyCode(text) { navigator.clipboard.writeText(text); }
+
+
+var links = document.getElementsByTagName('a');
+for (var i = 0; i < links.length; i++) {
+    if (links[i].href.match(/^#example-\d+/)) {
+	links[i].onClick = function() { links[i].href.match(/^#example-(\d+)$/); var example = document.getElementById($1).setAttribute('open'); return true; };
+    }
+}
+
+function add_bar(update) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let navbar = document.querySelector('div.index-navbar');
+
+    if (navbar && urlParams.has('project')) {
+        navbar.setAttribute('class', 'index-navbar'); // removes hidden
+        let project = decodeURIComponent(urlParams.get('project'));
+        let index_root = project + '/.index/';
+        let build = project + '/Build/';
+        let query_arg = "?project="+encodeURIComponent(project);
+
+        let links = [
+            { "General Index": document.getElementById('general_index').href },
+            { "Docs": document.getElementById('docs').href },
+            { "Extensions": index_root + 'doc/Extensions.html' },
+            { "Definitions": index_root + 'doc/ExtIndex.html' },
+            { "Debug Log": build + 'debug_log.html' },
+            { "Problems": build + 'problems.html' },
+            { "Source": index_root + 'story.html' },
+            { "Project Index": index_root + 'Index/Welcome.html' } ];
+        let sp = document.createTextNode(" ");
+        links.forEach(h => {
+            Object.entries(h).forEach(([text, url]) => {
+                let my_id = text.toLowerCase().replace(' ', '_');
+                let a = document.querySelector('#'+my_id);
+                let url_target = "file://"+url+query_arg;
+                if (a) {
+                    let parts = a.href.split('#');
+                    let qparts = parts[0].split('?');
+                    a.href = qparts[0] +  (qparts[1] ? ('?' + qparts[1]) : query_arg) + (parts[1] ? ('#' + parts[1]) : "");
+                }
+                else {
+                    a = document.createElement('a');
+                    let href = document.createAttribute("href");
+                    href.value = url_target;
+                    a.setAttributeNode(href);
+                    let elem_id = document.createAttribute("id");
+                    elem_id.value = my_id;
+                    a.setAttributeNode(elem_id);
+                    let linktext = document.createTextNode(text);
+                    a.appendChild(linktext);
+                    navbar.insertBefore(sp.cloneNode(), navbar.firstChild);
+                    navbar.insertBefore(a, navbar.firstChild);
+                }
+            })});
+        if (update) {
+            let main_links = document.querySelectorAll('main a');
+            main_links.forEach(a => {
+                if (!a.href.startsWith('javascript:') || (a.href.match(/[^:]+:\/\// && !a.href.startsWith('file:')))) {
+                    let parts = a.href.split('#')
+                    a.href = parts[0] + query_arg + (parts[1] ? ('#' + parts[1]) : "");
+                } });
+        }
+    }
+}
+
+
+
+document.addEventListener("DOMContentLoaded", add_bar);</script>
+<title>Example #316</title></head>
+<body class="inform7-source">
+
+<div class="inform7-source"><div class="pseudo">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;Tilt&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7gh">Section 1 - Cards</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Suit is a kind of value. The suits are hearts, clubs, diamonds, and spades. Understand <span class="i7sx">&quot;heart&quot;</span> as hearts. Understand <span class="i7sx">&quot;club&quot;</span> as clubs. Understand <span class="i7sx">&quot;diamond&quot;</span> as diamonds. Understand <span class="i7sx">&quot;spade&quot;</span> as spades. <span class="i7cm">[Providing the singular forms means that Inform will also understand &gt;EXAMINE SPADE, &gt;DISCARD CLUB, and so on.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A card is a kind of thing.  A card has a suit. A card has a number called rank. Understand the suit property as describing a card. Understand the rank property as describing a card.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">52 cards are in the card repository.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Now, we&#39;re going to describe the higher numbers as face cards, so it helps to write a new &quot;to say&quot; phrase, just as we did in Jokers Wild. (A subsequent version of this example shows how to print card values with red and black symbols representing the different suits; see &quot;Tilt 3&quot;.)]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To say (count - a number) as a card value:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	choose row count in the Table of Value Names;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[term entry]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Rule for printing the name of a card (called target):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[rank of the target as a card value]</span><span class="i7sx"> of </span><span class="i7si">[suit of the target]</span><span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line">Table of Value Names</span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">term</span><span class="td">value</span><span class="td">topic</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;ace&quot;</span></span><span class="td"><span class="i7sx">&quot;1&quot;</span></span><span class="td"><span class="i7sx">&quot;ace/A/one&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;deuce&quot;</span></span><span class="td"><span class="i7sx">&quot;2&quot;</span></span><span class="td"><span class="i7sx">&quot;deuce/two&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;three&quot;</span></span><span class="td"><span class="i7sx">&quot;3&quot;</span></span><span class="td"><span class="i7sx">&quot;three&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;four&quot;</span></span><span class="td"><span class="i7sx">&quot;4&quot;</span></span><span class="td"><span class="i7sx">&quot;four&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;five&quot;</span></span><span class="td"><span class="i7sx">&quot;5&quot;</span></span><span class="td"><span class="i7sx">&quot;five&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;six&quot;</span></span><span class="td"><span class="i7sx">&quot;6&quot;</span></span><span class="td"><span class="i7sx">&quot;six&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;seven&quot;</span></span><span class="td"><span class="i7sx">&quot;7&quot;</span></span><span class="td"><span class="i7sx">&quot;seven&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;eight&quot;</span></span><span class="td"><span class="i7sx">&quot;8&quot;</span></span><span class="td"><span class="i7sx">&quot;eight&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;nine&quot;</span></span><span class="td"><span class="i7sx">&quot;9&quot;</span></span><span class="td"><span class="i7sx">&quot;nine&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;ten&quot;</span></span><span class="td"><span class="i7sx">&quot;10&quot;</span></span><span class="td"><span class="i7sx">&quot;ten&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;jack&quot;</span></span><span class="td"><span class="i7sx">&quot;11&quot;</span></span><span class="td"><span class="i7sx">&quot;jack/knave/J&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;queen&quot;</span></span><span class="td"><span class="i7sx">&quot;12&quot;</span></span><span class="td"><span class="i7sx">&quot;queen/Q&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;king&quot;</span></span><span class="td"><span class="i7sx">&quot;13&quot;</span></span><span class="td"><span class="i7sx">&quot;king/K&quot;</span></span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[This is enough already to let inform understand things like &quot;ten clubs&quot;, but we want to add a couple of refinements. For one thing, we&#39;d like to accept &quot;of&quot; when it appears in phrases such as &quot;ten of clubs&quot; (but not generically otherwise); for another, we&#39;d like the player to be able to use various names for ranks. To this end, we need to borrow from the Activities chapter and modify the player&#39;s command before attempting to understand it:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">After reading a command:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the player&#39;s command includes <span class="i7sx">&quot;of </span><span class="i7si">[suit]</span><span class="i7sx">&quot;</span>:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	while the player&#39;s command includes <span class="i7sx">&quot;of&quot;</span>:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	cut the matched text;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	repeat through the Table of Value Names:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	while the player&#39;s command includes topic entry:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	replace the matched text with value entry.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	<span class="i7cm">[This allows Inform to understand &quot;ace&quot;, &quot;deuce&quot;, &quot;king&quot;, etc., as numerical ranks.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[It may be a bit confusing that the Table of Value Names has both a topic column and a term column, to all appearances essentially identical. But items in the topic column can be matched against the player&#39;s input, whereas items in other kinds of text column can be printed out; the two kinds of text are not treated identically by Inform, so we need to have both. Notice that the topic column contains entries like &quot;jack/knave,&quot; which will match either &quot;jack&quot; or &quot;knave&quot; in the player&#39;s input.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Now to set up the deck at the outset. With some intelligent looping, we avoid having to declare every combination of suit and number individually:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">When play begins:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	reconstitute deck.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To reconstitute deck:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	let current suit be hearts;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now every card is in the card repository;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	while a card is in the card repository:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	repeat with current rank running from 1 to 13:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	let item be a random card in card repository;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	now rank of item is current rank;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	now suit of item is current suit;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	now item is in the deck of cards;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	now current suit is the suit after the current suit.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[And now we need a simple setting and some actions to manipulate the deck with:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7gh">Section 2 - The Deck and the Discard Pile</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Empty Room is a room. <span class="i7sx">&quot;Nothing to see here.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The deck of cards is in the Empty Room. It is a closed unopenable container. The description is <span class="i7sx">&quot;A standard poker deck.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The discard pile is a closed unopenable container. The description is <span class="i7sx">&quot;Cards in this game are discarded face-down, so the discard pile is not very interesting to see. All you can observe is that it currently contains </span><span class="i7si">[if the number of cards which are in the discard pile is less than ten][the number of cards which are in the discard pile in words][otherwise]</span><span class="i7sx">about </span><span class="i7si">[the rounded number of cards which are in the discard pile in words][end if]</span><span class="i7sx"> card</span><span class="i7si">[s]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To decide what number is the rounded number of (described set - a description of objects):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	let N be the number of members of the described set;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	let R be N divided by 5;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	let total be R times 5;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	decide on total.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[The above phrase rounds a number to the nearest five, so that the player is not autistically able to count a large number of cards in the discard pile at a single glance.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[This next bit is an optional borrowing from the Activities chapter: we want to prevent Inform printing things like &quot;You can see a discard pile (closed) here.&quot;, since we don&#39;t want the player to think of the piles as containers, even though Inform thinks of them in those terms.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Rule for printing room description details of something: do nothing instead.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Finally, we want the player to use &quot;draw&quot; and &quot;discard&quot; to manipulate his hand of cards:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7gh">Section 3 - Drawing and Discarding Actions</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand the commands <span class="i7sx">&quot;take&quot;</span> and <span class="i7sx">&quot;carry&quot;</span> and <span class="i7sx">&quot;hold&quot;</span> and <span class="i7sx">&quot;get&quot;</span> and <span class="i7sx">&quot;drop&quot;</span> and <span class="i7sx">&quot;throw&quot;</span> and <span class="i7sx">&quot;discard&quot;</span> as something new.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;take </span><span class="i7si">[text]</span><span class="i7sx">&quot;</span> or <span class="i7sx">&quot;get </span><span class="i7si">[text]</span><span class="i7sx">&quot;</span> or <span class="i7sx">&quot;drop </span><span class="i7si">[text]</span><span class="i7sx">&quot;</span> as a mistake (&quot;Here, you only draw and discard. Nothing else matters at the moment.<span class="i7sx">&quot;).</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Understand &quot;</span>draw<span class="i7sx">&quot; or &quot;</span>draw card<span class="i7sx">&quot; or &quot;</span>draw a card<span class="i7sx">&quot; as drawing. Drawing is an action applying to nothing. The drawing action has an object called the card drawn.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Setting action variables for drawing:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;now the card drawn is a random card which is in the deck of cards.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Check drawing:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;if the card drawn is nothing, say &quot;</span>The deck is completely depleted.<span class="i7sx">&quot; instead.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Check drawing:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;if the number of cards carried by the player is greater than four,</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;&emsp;&emsp;&emsp;say &quot;</span>This is a five-card game; you must discard something before drawing anything further.<span class="i7sx">&quot; instead.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Carry out drawing:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;move the card drawn to the player.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Report drawing:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;say &quot;</span>You draw <span class="i7cm">[a card drawn]</span>.<span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Understand &quot;</span>discard <span class="i7cm">[card]</span><span class="i7sx">&quot; as discarding. Discarding is an action applying to one thing.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Check discarding:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;if the player does not carry the noun, say &quot;</span>You can only discard cards from your own hand.<span class="i7sx">&quot; instead.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Carry out discarding:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;now the noun is in the discard pile;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;if the discard pile is not visible, move the discard pile to the location.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Report discarding:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;say &quot;</span>You toss <span class="i7cm">[the noun]</span> nonchalantly onto the discard pile.<span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Seeding is an action out of world. Understand &quot;</span>seed<span class="i7sx">&quot; as seeding. Carry out seeding: seed the random-number generator with 5681.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Test me with &quot;</span>seed / draw / g / g / g / g / i / discard seven of spades / draw / discard six / draw / i / discard hearts / discard six of diamonds card / draw / draw / i / discard spades card / draw / discard king card<span class="i7sx">&quot;.</span></span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

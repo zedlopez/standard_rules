@@ -1,0 +1,129 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../style.css">
+<script>function toggle_details() {
+   var openness, toggle_link;
+   toggle_link = document.getElementById("toggle");
+   openness = toggle_link.classList.toggle("open");
+document.querySelectorAll("details.full-example").forEach(detail => { if (openness) { detail.setAttribute("open", true); } else { detail.removeAttribute("open");} });
+   toggle_link.innerText = (openness ? "Close" : "Open") + " all examples";
+   }
+
+
+function copyCode(text) { navigator.clipboard.writeText(text); }
+
+
+var links = document.getElementsByTagName('a');
+for (var i = 0; i < links.length; i++) {
+    if (links[i].href.match(/^#example-\d+/)) {
+	links[i].onClick = function() { links[i].href.match(/^#example-(\d+)$/); var example = document.getElementById($1).setAttribute('open'); return true; };
+    }
+}
+
+function add_bar(update) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let navbar = document.querySelector('div.index-navbar');
+
+    if (navbar && urlParams.has('project')) {
+        navbar.setAttribute('class', 'index-navbar'); // removes hidden
+        let project = decodeURIComponent(urlParams.get('project'));
+        let index_root = project + '/.index/';
+        let build = project + '/Build/';
+        let query_arg = "?project="+encodeURIComponent(project);
+
+        let links = [
+            { "General Index": document.getElementById('general_index').href },
+            { "Docs": document.getElementById('docs').href },
+            { "Extensions": index_root + 'doc/Extensions.html' },
+            { "Definitions": index_root + 'doc/ExtIndex.html' },
+            { "Debug Log": build + 'debug_log.html' },
+            { "Problems": build + 'problems.html' },
+            { "Source": index_root + 'story.html' },
+            { "Project Index": index_root + 'Index/Welcome.html' } ];
+        let sp = document.createTextNode(" ");
+        links.forEach(h => {
+            Object.entries(h).forEach(([text, url]) => {
+                let my_id = text.toLowerCase().replace(' ', '_');
+                let a = document.querySelector('#'+my_id);
+                let url_target = "file://"+url+query_arg;
+                if (a) {
+                    let parts = a.href.split('#');
+                    let qparts = parts[0].split('?');
+                    a.href = qparts[0] +  (qparts[1] ? ('?' + qparts[1]) : query_arg) + (parts[1] ? ('#' + parts[1]) : "");
+                }
+                else {
+                    a = document.createElement('a');
+                    let href = document.createAttribute("href");
+                    href.value = url_target;
+                    a.setAttributeNode(href);
+                    let elem_id = document.createAttribute("id");
+                    elem_id.value = my_id;
+                    a.setAttributeNode(elem_id);
+                    let linktext = document.createTextNode(text);
+                    a.appendChild(linktext);
+                    navbar.insertBefore(sp.cloneNode(), navbar.firstChild);
+                    navbar.insertBefore(a, navbar.firstChild);
+                }
+            })});
+        if (update) {
+            let main_links = document.querySelectorAll('main a');
+            main_links.forEach(a => {
+                if (!a.href.startsWith('javascript:') || (a.href.match(/[^:]+:\/\// && !a.href.startsWith('file:')))) {
+                    let parts = a.href.split('#')
+                    a.href = parts[0] + query_arg + (parts[1] ? ('#' + parts[1]) : "");
+                } });
+        }
+    }
+}
+
+
+
+document.addEventListener("DOMContentLoaded", add_bar);</script>
+<title>Example #359</title></head>
+<body class="inform7-source">
+
+<div class="inform7-source"><div class="pseudo">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;Low Light&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[First we make our environment and its light:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Workroom is a room. The desk is in the Workroom. The brilliant lamp is a device on the desk.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To decide whether the light level is high:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the brilliant lamp is switched off, no;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the player cannot see the brilliant lamp, no;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	yes.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To decide whether the light level is low:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the light level is high, no;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	yes.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Now we make a shadow so that the player can only refer to it if the shadow is in inventory or the light is on:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The shadow is a privately-named thing on the desk.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;barely-visible&quot;</span> or <span class="i7sx">&quot;barely visible&quot;</span> or <span class="i7sx">&quot;shadow&quot;</span> as the shadow when the light level is high. Understand <span class="i7sx">&quot;invisible&quot;</span> or <span class="i7sx">&quot;shadow&quot;</span> as the shadow when the player encloses the shadow.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[And finally a couple of extra touches to make it clear why we&#39;re able to interact with the shadow when it&#39;s in inventory, even if the light is low:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Before printing the name of the shadow:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the light level is high:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;barely-visible &quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	otherwise if the player encloses the shadow:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;invisible (but tangible) &quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">After dropping the shadow when the light level is low:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;You let it go and it fades into the ambient gloom.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[To handle the appearance of the object, we want to set its locale priority to 0: that will prevent it being named in room descriptions.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">After choosing notable locale objects:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	unless the light level is high:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	set locale priority of the shadow to 0.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Test me with <span class="i7sx">&quot;look / get shadow / turn on lamp / look / get shadow / i / turn off lamp / i / drop shadow / look / get shadow / turn on lamp / look&quot;</span>.</span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

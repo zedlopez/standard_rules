@@ -1,0 +1,200 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../style.css">
+<script>function toggle_details() {
+   var openness, toggle_link;
+   toggle_link = document.getElementById("toggle");
+   openness = toggle_link.classList.toggle("open");
+document.querySelectorAll("details.full-example").forEach(detail => { if (openness) { detail.setAttribute("open", true); } else { detail.removeAttribute("open");} });
+   toggle_link.innerText = (openness ? "Close" : "Open") + " all examples";
+   }
+
+
+function copyCode(text) { navigator.clipboard.writeText(text); }
+
+
+var links = document.getElementsByTagName('a');
+for (var i = 0; i < links.length; i++) {
+    if (links[i].href.match(/^#example-\d+/)) {
+	links[i].onClick = function() { links[i].href.match(/^#example-(\d+)$/); var example = document.getElementById($1).setAttribute('open'); return true; };
+    }
+}
+
+function add_bar(update) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let navbar = document.querySelector('div.index-navbar');
+
+    if (navbar && urlParams.has('project')) {
+        navbar.setAttribute('class', 'index-navbar'); // removes hidden
+        let project = decodeURIComponent(urlParams.get('project'));
+        let index_root = project + '/.index/';
+        let build = project + '/Build/';
+        let query_arg = "?project="+encodeURIComponent(project);
+
+        let links = [
+            { "General Index": document.getElementById('general_index').href },
+            { "Docs": document.getElementById('docs').href },
+            { "Extensions": index_root + 'doc/Extensions.html' },
+            { "Definitions": index_root + 'doc/ExtIndex.html' },
+            { "Debug Log": build + 'debug_log.html' },
+            { "Problems": build + 'problems.html' },
+            { "Source": index_root + 'story.html' },
+            { "Project Index": index_root + 'Index/Welcome.html' } ];
+        let sp = document.createTextNode(" ");
+        links.forEach(h => {
+            Object.entries(h).forEach(([text, url]) => {
+                let my_id = text.toLowerCase().replace(' ', '_');
+                let a = document.querySelector('#'+my_id);
+                let url_target = "file://"+url+query_arg;
+                if (a) {
+                    let parts = a.href.split('#');
+                    let qparts = parts[0].split('?');
+                    a.href = qparts[0] +  (qparts[1] ? ('?' + qparts[1]) : query_arg) + (parts[1] ? ('#' + parts[1]) : "");
+                }
+                else {
+                    a = document.createElement('a');
+                    let href = document.createAttribute("href");
+                    href.value = url_target;
+                    a.setAttributeNode(href);
+                    let elem_id = document.createAttribute("id");
+                    elem_id.value = my_id;
+                    a.setAttributeNode(elem_id);
+                    let linktext = document.createTextNode(text);
+                    a.appendChild(linktext);
+                    navbar.insertBefore(sp.cloneNode(), navbar.firstChild);
+                    navbar.insertBefore(a, navbar.firstChild);
+                }
+            })});
+        if (update) {
+            let main_links = document.querySelectorAll('main a');
+            main_links.forEach(a => {
+                if (!a.href.startsWith('javascript:') || (a.href.match(/[^:]+:\/\// && !a.href.startsWith('file:')))) {
+                    let parts = a.href.split('#')
+                    a.href = parts[0] + query_arg + (parts[1] ? ('#' + parts[1]) : "");
+                } });
+        }
+    }
+}
+
+
+
+document.addEventListener("DOMContentLoaded", add_bar);</script>
+<title>Example #139</title></head>
+<body class="inform7-source">
+
+<div class="inform7-source"><div class="pseudo">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;Witnessed&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A battery is a kind of thing. A battery has a number called charge. The charge of a battery is usually 15.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Every turn:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	repeat with hollow running through battery compartments:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if the hollow is part of a switched on device (called the machine):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	if a battery (called cell) is in the hollow:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	decrement the charge of the cell;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	carry out the warning about failure activity with the machine;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	if the cell is discharged, carry out the putting out activity with the machine;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	otherwise:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	carry out the putting out activity with the machine.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Warning about failure of something is an activity.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Rule for warning about failure of a device (called the machine):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if a random battery compartment which is part of the machine contains a battery (called the power source):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if the charge of the power source is 2, say <span class="i7sx">&quot;</span><span class="i7si">[The machine]</span><span class="i7sx"> is obviously going to go out quite soon.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Putting out something is an activity.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Rule for putting out a device (called the machine):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[The machine]</span><span class="i7sx"> loses power and switches off!</span><span class="i7si">[line break]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	silently try switching off the machine.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A battery compartment is a kind of container. A battery compartment is usually closed and openable. One battery compartment is part of every device. Instead of inserting something which is not a battery into a battery compartment, say <span class="i7sx">&quot;Only batteries should go in a battery compartment.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[And to get rid of annoying messages like &quot;Which would you like to close, the flashlight or the flashlight&#39;s battery compartment?&quot; when only the compartment is closable, we might add some understanding instructions:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;turn on </span><span class="i7si">[device]</span><span class="i7sx">&quot;</span> as switching on.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;turn off </span><span class="i7si">[device]</span><span class="i7sx">&quot;</span> as switching off.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;open </span><span class="i7si">[openable closed thing]</span><span class="i7sx">&quot;</span> as opening.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;close </span><span class="i7si">[openable open thing]</span><span class="i7sx">&quot;</span> as closing.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;put </span><span class="i7si">[something]</span><span class="i7sx"> in </span><span class="i7si">[container]</span><span class="i7sx">&quot;</span> as inserting it into.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of opening a device, try opening a random battery compartment which is part of the noun. Instead of closing a device, try closing a random battery compartment which is part of the noun. Instead of inserting a battery into a device, try inserting the noun into a random battery compartment which is part of the second noun.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of switching on an empty device:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;Nothing happens, perhaps because there isn&#39;t a charged battery in </span><span class="i7si">[the noun]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of switching on a battery compartment which is part of a device (called the power user), try switching on the power user.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Definition: a device is empty:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if a random battery compartment which is part of it contains a battery (called the power source):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if the power source is discharged, yes;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	no;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	yes.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Definition: a battery is discharged if its charge &lt; 1.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A light source is a kind of device. Carry out switching on a light source: now the noun is lit. Carry out switching off a light source: now the noun is unlit.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The flashlight is a light source. A D battery is a battery carried by the player.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The cassette recorder is a device. Every turn: if the cassette recorder is switched on, say <span class="i7sx">&quot;The cassette recorder hisses faintly.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Rule for warning about failure of the cassette recorder:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if a random battery compartment which is part of the cassette recorder contains a battery (called the power source):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if the charge of the power source is 2, say <span class="i7sx">&quot;The hiss from </span><span class="i7si">[the cassette recorder]</span><span class="i7sx"> begins to warble ominously.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The player wears a backpack. The backpack is openable. In the backpack is the flashlight and the cassette recorder.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The description of the cassette recorder is <span class="i7sx">&quot;Useful both for recording your notes and for capturing any odd ghostly sounds you may hear.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The description of the backpack is <span class="i7sx">&quot;An old familiar pack, which you know so well that you can find all its pockets and take things in and out of it in pitch darkness. To avoid it showing up oddly in photographs, it is entirely black, with no shiny or metallic attachments.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The description of the flashlight is <span class="i7sx">&quot;You bought a new one just for this occasion, because you were worried about bringing something too small or light. This is a heavy-duty flashlight with an adjustable-focus beam. The case is made of metal, rather than plastic, and there is a spare light-bulb inside as well. You&#39;ve put a band of masking tape around the handle and written in your initials in red marker.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">There is a piece of red cellophane attached to the business end of the flashlight to keep it from being overly bright.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The red cellophane is part of the flashlight.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of doing something to the red cellophane: say <span class="i7sx">&quot;You need the cellophane on the flashlight so that using it does not completely destroy your night vision.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Thirtieth Street Station is a room. <span class="i7sx">&quot;A huge, high, rectangular room with coffered ceilings, which looks grand but mostly makes you feel lonely and small. There are long benches in rows down the middle of the room, and an information desk with the train times, and a series of ticket windows, none of which matters very much at the moment.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The benches are an enterable supporter. They are scenery in the Station. The information desk is scenery in the Station. Some ticket windows are scenery in the Station. Instead of examining scenery in the Station: say <span class="i7sx">&quot;You&#39;re fairly sure that whatever is going on here has nothing to do with </span><span class="i7si">[the noun]</span><span class="i7sx">.&quot;</span> Understand <span class="i7sx">&quot;window&quot;</span> as ticket windows.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The mural is fixed in place in Thirtieth Street. <span class="i7sx">&quot;At the north side of the station is a particularly pointless and empty annex to the main room. It is dominated by a huge relief of sorts, and this is what you remember.&quot;</span> Understand <span class="i7sx">&quot;metal&quot;</span> or <span class="i7sx">&quot;relief&quot;</span> or <span class="i7sx">&quot;huge&quot;</span> as the mural. The description of the mural is <span class="i7sx">&quot;It is both stylized and confusing, but you think it might be supposed to represent the various tasks and occupations of Philadelphia&#39;s population. The portions closer to the ground look as though they have recently been subjected to a light dusting of talcum powder. No unusual prints are evident.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The wind chimes are fixed in place in Thirtieth Street. <span class="i7sx">&quot;Carefully attached to the wall with a piece of duct tape and a hook is a light-weight set of wind chimes. Someone else has been here before you, it seems.&quot;</span> The description is <span class="i7sx">&quot;Several of your friends use wind chimes as a sort of ghost alarm, since ghosts sometimes cause very localized movements of air when there is no natural breeze.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[And this last bit, borrowed from the chapter on Understanding, adds some special instructions to help Inform decide when the player is likely to be referring to a compartment and when he&#39;s likely to be referring to the device itself.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Does the player mean doing something other than searching to a battery compartment: it is unlikely. <span class="i7cm">[We discourage Inform from choosing a compartment when the player uses just the name of a device or the word &#39;battery&#39;.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[We also need to deal with commands like PUT BATTERY IN FLASHLIGHT, where Inform might construe BATTERY as the D battery, the flashlight&#39;s battery compartment, or the cassette recorder&#39;s battery compartment -- and might also construe FLASHLIGHT as either the flashlight&#39;s battery compartment or the flashlight itself.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Does the player mean inserting into a battery compartment:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the noun is nothing:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	it is very likely;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	otherwise:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	make no decision.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Does the player mean inserting a battery compartment into: it is very unlikely.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Does the player mean inserting something into a device: it is unlikely.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Does the player mean searching a battery compartment: it is very likely.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Test me with <span class="i7sx">&quot;test first / test second&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Test first with <span class="i7sx">&quot;i / open flashlight compartment / put battery in it / turn on flashlight / take d battery / open cassette compartment / turn on cassette / put battery in cassette compartment / turn on cassette / z / z / z / z&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Test second with <span class="i7sx">&quot;get d battery / put d battery in flashlight compartment / turn on flashlight / z / z / z / z / z / z / turn off flashlight / z / z / turn on flashlight / z&quot;</span>.</span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

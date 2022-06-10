@@ -1,0 +1,119 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../style.css">
+<script>function toggle_details() {
+   var openness, toggle_link;
+   toggle_link = document.getElementById("toggle");
+   openness = toggle_link.classList.toggle("open");
+document.querySelectorAll("details.full-example").forEach(detail => { if (openness) { detail.setAttribute("open", true); } else { detail.removeAttribute("open");} });
+   toggle_link.innerText = (openness ? "Close" : "Open") + " all examples";
+   }
+
+
+function copyCode(text) { navigator.clipboard.writeText(text); }
+
+
+var links = document.getElementsByTagName('a');
+for (var i = 0; i < links.length; i++) {
+    if (links[i].href.match(/^#example-\d+/)) {
+	links[i].onClick = function() { links[i].href.match(/^#example-(\d+)$/); var example = document.getElementById($1).setAttribute('open'); return true; };
+    }
+}
+
+function add_bar(update) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let navbar = document.querySelector('div.index-navbar');
+
+    if (navbar && urlParams.has('project')) {
+        navbar.setAttribute('class', 'index-navbar'); // removes hidden
+        let project = decodeURIComponent(urlParams.get('project'));
+        let index_root = project + '/.index/';
+        let build = project + '/Build/';
+        let query_arg = "?project="+encodeURIComponent(project);
+
+        let links = [
+            { "General Index": document.getElementById('general_index').href },
+            { "Docs": document.getElementById('docs').href },
+            { "Extensions": index_root + 'doc/Extensions.html' },
+            { "Definitions": index_root + 'doc/ExtIndex.html' },
+            { "Debug Log": build + 'debug_log.html' },
+            { "Problems": build + 'problems.html' },
+            { "Source": index_root + 'story.html' },
+            { "Project Index": index_root + 'Index/Welcome.html' } ];
+        let sp = document.createTextNode(" ");
+        links.forEach(h => {
+            Object.entries(h).forEach(([text, url]) => {
+                let my_id = text.toLowerCase().replace(' ', '_');
+                let a = document.querySelector('#'+my_id);
+                let url_target = "file://"+url+query_arg;
+                if (a) {
+                    let parts = a.href.split('#');
+                    let qparts = parts[0].split('?');
+                    a.href = qparts[0] +  (qparts[1] ? ('?' + qparts[1]) : query_arg) + (parts[1] ? ('#' + parts[1]) : "");
+                }
+                else {
+                    a = document.createElement('a');
+                    let href = document.createAttribute("href");
+                    href.value = url_target;
+                    a.setAttributeNode(href);
+                    let elem_id = document.createAttribute("id");
+                    elem_id.value = my_id;
+                    a.setAttributeNode(elem_id);
+                    let linktext = document.createTextNode(text);
+                    a.appendChild(linktext);
+                    navbar.insertBefore(sp.cloneNode(), navbar.firstChild);
+                    navbar.insertBefore(a, navbar.firstChild);
+                }
+            })});
+        if (update) {
+            let main_links = document.querySelectorAll('main a');
+            main_links.forEach(a => {
+                if (!a.href.startsWith('javascript:') || (a.href.match(/[^:]+:\/\// && !a.href.startsWith('file:')))) {
+                    let parts = a.href.split('#')
+                    a.href = parts[0] + query_arg + (parts[1] ? ('#' + parts[1]) : "");
+                } });
+        }
+    }
+}
+
+
+
+document.addEventListener("DOMContentLoaded", add_bar);</script>
+<title>Example #60</title></head>
+<body class="inform7-source">
+
+<div class="inform7-source"><div class="pseudo">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;Ballpark&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To say (count - a number) in round numbers:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	repeat through the Table of Numerical Approximation:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if count is less than threshold entry:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[approximation entry]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	rule succeeds.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Phrases will be explained more thoroughly in a later chapter, but as we have already seen in the examples, we can make a &quot;To say...&quot; phrase that will allow us to create our own text substitutions. In this case, we are going to replace the specific number with a vaguer one chosen from a chart, so:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line">Table of Numerical Approximation</span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">threshold</span><span class="td">approximation</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">1</span><span class="td"><span class="i7sx">&quot;no&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">2</span><span class="td"><span class="i7sx">&quot;one&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">3</span><span class="td"><span class="i7sx">&quot;a couple of&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">6</span><span class="td"><span class="i7sx">&quot;a few&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">11</span><span class="td"><span class="i7sx">&quot;some&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">21</span><span class="td"><span class="i7sx">&quot;many&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">1000</span><span class="td"><span class="i7sx">&quot;lots and lots of&quot;</span></span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[The idea here is that we will work our way through the table until we hit a line where the threshold number is higher than the number we want to express, and then print that output: so if we have less than one item, we&#39;ll print &quot;no&quot;; if we have more than none but less than two, we&#39;ll print &quot;one&quot;; if we have less than three, we&#39;ll print &quot;a couple of&quot;; if we have three, four, or five (but not six), we&#39;ll print &quot;a few.&quot;]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A room has a number called the population. The population of a room is usually 0. The description of a room is usually <span class="i7sx">&quot;You observe </span><span class="i7si">[population of the location in round numbers]</span><span class="i7sx"> </span><span class="i7si">[if population of the location is 1]</span><span class="i7sx">person </span><span class="i7si">[otherwise]</span><span class="i7sx">people </span><span class="i7si">[end if]</span><span class="i7sx">here.&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Stadium is a room. The Hot Dog Stand is west of the Stadium. The Women&#39;s Restroom is south of the Stadium.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The population of the Stadium is 500. The population of the Hot Dog Stand is 3. The population of the Restroom is 750.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Test me with <span class="i7sx">&quot;w / e / s&quot;</span>.</span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

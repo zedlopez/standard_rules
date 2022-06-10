@@ -1,0 +1,1103 @@
+<!doctype html>
+<meta charset="utf-8"><html lang="en"><head><title>Writing in Inform 8. Change</title><link rel="stylesheet" href="style.css"><script src="chapter.js"></script></head><body>
+<nav><div class="index-navbar hidden">
+<a id="project_index" href="../Welcome.html"> Project Index</a><a id="source" href="../../story.html"> Source</a><a id="problems" href="../../Build/problems.html"> Problems</a><a id="debug_log" href="../../Build/debug_log.html"> Debug Log</a><a id="definitions" href="./ExtIndex.html"> Definitions</a><a id="extensions" href="./Extensions.html"> Extensions</a><a id="docs" href="./index.html"> Docs</a><a id="general_index" href="./index.html#general-index"> General Index</a>
+
+</div>
+</nav>
+<main>
+<header>
+
+<div class="toc">
+<h1>Writing in Inform</h1>
+<div class="doc-navbar">
+<div>
+<div class="doc-navbar-left"><a class="nav-left" href="wi_7.html#wi-chapter-7-basic-actions">7. Basic Actions</a></div>
+<div class="doc-navbar-right"><a class="nav-right" href="wi_9.html#wi-chapter-9-time">9. Time</a></div>
+</div>
+<div>
+<div class="doc-navbar-left"><a href="index.html">Table of Contents</a></div>
+<div class="doc-navbar-right"><a href="index.html#general-index">General Index</a></div>
+</div>
+</div>
+
+<div><a id="toggle" href="javascript:toggle_details('examples')">Open all examples</a></div>
+<h2>8. Change</h2>
+<div class="toc-section">8.1 <a href="wi_8.html#wi-8.1">Change of values that vary</a></div>
+<div class="toc-section">8.2 <a href="wi_8.html#wi-8.2">Changing the command prompt</a></div>
+<div class="toc-section">8.3 <a href="wi_8.html#wi-8.3">Changing the status line</a></div>
+<div class="toc-section">8.4 <a href="wi_8.html#wi-8.4">Change of either/or properties</a></div>
+<div class="toc-section">8.5 <a href="wi_8.html#wi-8.5">Change of properties with values</a></div>
+<div class="toc-section">8.6 <a href="wi_8.html#wi-8.6">Whose property?</a></div>
+<div class="toc-section">8.7 <a href="wi_8.html#wi-8.7">Moving things</a></div>
+<div class="toc-section">8.8 <a href="wi_8.html#wi-8.8">Moving backdrops</a></div>
+<div class="toc-section">8.9 <a href="wi_8.html#wi-8.9">Moving the player</a></div>
+<div class="toc-section">8.10 <a href="wi_8.html#wi-8.10">Removing things from play</a></div>
+<div class="toc-section">8.11 <a href="wi_8.html#wi-8.11">Now...</a></div>
+<div class="toc-section">8.12 <a href="wi_8.html#wi-8.12">Increasing and decreasing</a></div>
+<div class="toc-section">8.13 <a href="wi_8.html#wi-8.13">Checking on whereabouts</a></div>
+<div class="toc-section">8.14 <a href="wi_8.html#wi-8.14">More flexible descriptions of whereabouts</a></div>
+<div class="toc-section">8.15 <a href="wi_8.html#wi-8.15">Calling names</a></div>
+<div class="toc-section">8.16 <a href="wi_8.html#wi-8.16">Counting the number of things</a></div>
+<div class="toc-section">8.17 <a href="wi_8.html#wi-8.17">Looking at containment by hand</a></div>
+<div class="toc-section">8.18 <a href="wi_8.html#wi-8.18">Randomness</a></div>
+<div class="toc-section">8.19 <a href="wi_8.html#wi-8.19">Random choices of things</a></div>
+</header>
+<main>
+<section class="chapter" id="wi-chapter-8-change">
+<section class="section" id="wi-8.1"><div>
+
+
+
+<h3>WI §8.1. Change of values that vary</h3>
+<p>So far, what we have done in response to the player's commands amounts to little more than a few ripostes. The simulated world does change during play, as the player moves from room to room or picks up things, but all of this is happening automatically, not at our direct instruction. How then can we make the world change?</p>
+<p>Recall that the world consists of rooms, in which are things, and that all of these have properties appropriate to their kinds. Some properties are either/or ("open" or "closed" but not both and not neither), while others have values (the "matching key" of a lockable door, for instance). Finally, we may also have created some free-standing values or "variables".</p>
+<p>We take the last example first, as it is the simplest. Suppose we have:</p>
+
+<div class="code">
+<p class="quoted">
+ "Winds of Change"
+</p>
+<p class="quoted">
+The prevailing wind is a direction that varies. The prevailing wind is northwest.
+</p>
+<p class="quoted">
+The Blasted Heath is a room. "Merely an arena for the play of witches and kings, my dear, where the [prevailing wind] wind blows."
+</p>
+<p class="quoted">
+Instead of waiting when the prevailing wind is northwest:
+<br>    say "A fresh gust of wind bowls you over.";
+<br>    now the prevailing wind is east.
+</p>
+</div>
+<p>The new phrase here is "now". This automatically checks that the new value is one which makes sense in the given context, so for instance it would not allow either of these:</p>
+
+<div class="code"><p class="quoted">
+now the prevailing wind is 25;
+<br>now the prevailing wind is the Heath;
+</p></div>
+<p>the former being a number, and the latter a room, so that neither is a direction. Similarly, "now" will not allow constant values to be changed. So</p>
+
+<div class="code">
+<p class="quoted">
+Colour is a kind of value. The colours are blue, red and mauve.
+</p>
+<p class="quoted">
+After pulling the psychedelic lever:
+<br>    now blue is mauve.
+</p>
+</div>
+<p>...will result in a problem message; it's like writing "now 1 is 2". The difference between "the prevailing wind" and "blue" is that the wind was declared to be a "direction that varies", whereas blue wasn't.</p>
+
+
+</div></section>
+<section class="section" id="wi-8.2"><div>
+
+
+
+
+
+<h3>WI §8.2. Changing the command prompt</h3>
+<p>The command prompt is the text printed by Inform to ask the player for another command. Ordinarily this is simply a greater-than-sign, "&gt;", so we tend not to notice it as text at all. Internally, though, it is a variable value called "command prompt", which means we can change it.</p>
+<p>For example, this will be a more conversational sort of prompt:</p>
+
+<div class="code"><p class="quoted">
+When play begins: now the command prompt is "What now? ".
+</p></div>
+<p>Whereas this will be more up-to-the-minute and demanding:</p>
+
+<div class="code"><p class="quoted">
+When play begins: now the command prompt is "[time of day] &gt;".
+</p></div>
+<p>("Time of day" is another variable value, which is fairly self-explanatory, but will be covered in detail later on.) The prompt can be changed at any point, so can be used to indicate the current situation, or even as a sly way to introduce a sort of conversation between computer and player.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-113"><p class="example-p"><span class="example-short-start">113. <a href="rb_7.html#example-113" class="example-link" onClick="(function() { document.getElementById('example-113').setAttribute('open','open'); return true; })();">Don Pedro's Revenge</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">Combat scenario in which the player's footing and position changes from move to move, and the command prompt also changes to reflect that.</span> (c.f. <a href="rb_7.html#rb-7.5">RB §7.5. Combat and Death</a>)</p></div>
+</div></section>
+<section class="section" id="wi-8.3"><div>
+
+
+
+
+
+<h3>WI §8.3. Changing the status line</h3>
+<p>The status line is the black bar along the top of a story being played, which ordinarily displays the current position; in a story with scoring, it also usually shows the score and number of moves taken. Like the command prompt, it is not fixed but results from values which can be changed: the "left hand status line" and "right hand status line".</p>
+<p>The default values are "[the player's surroundings]" for the left hand status line and "[score]/[turn count]" for the right hand status line (if there's scoring; it's blank otherwise). Score and turn count are numbers which vary in play (more about scoring later); "[the player's surroundings]" is a text substitution really intended for just this purpose:</p>
+
+<div class="definition" id="defn71">
+<p class="defnprototype"><strong>say "[the</strong>/--<strong> player's surroundings]"</strong></p>
+
+
+
+<p>This text substitution produces a succinct description of where the player is, be this in darkness, in a lighted room or inside an opaque container such as a large packing case. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+now the left hand status line is "You: [the player's surroundings]";
+</p></blockquote>
+
+
+
+</div>
+
+<p>These make useful elements to juggle in redesigning the status line, as in the following example:</p>
+
+<div class="code"><p class="quoted">
+ When play begins:
+<br>    now the left hand status line is
+<br>        "[the player's surroundings] / [turn count] / [score]";
+<br>    now the right hand status line is "Time: [time of day]".
+</p></div>
+<p>The text in the right hand status line should be kept no more than 14 letters long, including any spaces. The left hand status line has more leeway, but should still be kept brief.</p>
+
+
+
+</div>
+<div class="crossreferences">
+<h4>See also</h4>
+<div class="crossreference">
+<a href="wi_9.html#wi-9.2" class="crossreference_link">Awarding points</a> for scoring</div>
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-114"><p class="example-p"><span class="example-short-start">114. <a href="rb_12.html#example-114" class="example-link" onClick="(function() { document.getElementById('example-114').setAttribute('open','open'); return true; })();">Politics as Usual</a></span> <span class="example-difficulty">★</span>  <span class="example-description">Have the status line indicate the current region of the map.</span> (c.f. <a href="rb_12.html#rb-12.2">RB §12.2. The Status Line</a>)</p></div>
+<div class="example-short" id="example-short-115"><p class="example-p"><span class="example-short-start">115. <a href="rb_12.html#example-115" class="example-link" onClick="(function() { document.getElementById('example-115').setAttribute('open','open'); return true; })();">Centered</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">Replacing the two-part status line with one that centers only the room name at the top of the screen.</span> (c.f. <a href="rb_12.html#rb-12.2">RB §12.2. The Status Line</a>)</p></div>
+</div></section>
+<section class="section" id="wi-8.4"><div>
+
+
+
+
+
+<h3>WI §8.4. Change of either/or properties</h3>
+<p>When we have an either/or property, we can set it like so:</p>
+
+<div class="code"><p class="quoted">
+Instead of waiting when the oaken door is closed:
+<br>    say "There is a slow, creaky click! sort of noise as the door swings open, apparently all by itself.";
+<br>    now the oaken door is open.
+</p></div>
+<p>If it is open already, nothing changes: in any case nothing is said to the player unless we give explicit instructions to that effect, as we've done here.</p>
+<p>Inform protects its model world from accidental damage in several ways, one of which is to ensure that things are not given properties which they are not allowed to have. So this, for instance, will not be accepted:</p>
+
+<div class="code"><p class="quoted">
+now the oaken door is unvisited
+</p></div>
+<p>More subtle problems arise if it is not possible to tell, when the story is being constructed, what the object in question will be: for instance, if we try to change a randomly chosen object to be "unvisited". Inform therefore makes additional checks during play, printing up a suitable message only if the rules are violated. The net effect is that it is impossible for the oaken door ever to have the "unvisited" property.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-116"><p class="example-p"><span class="example-short-start">116. <a href="rb_3.html#example-116" class="example-link" onClick="(function() { document.getElementById('example-116').setAttribute('open','open'); return true; })();">Vitrine</a></span> <span class="example-difficulty">★</span>  <span class="example-description">An electrochromic window that becomes transparent or opaque depending on whether it is currently turned on.</span> (c.f. <a href="rb_3.html#rb-3.6">RB §3.6. Windows</a>)</p></div>
+</div></section>
+<section class="section" id="wi-8.5"><div>
+
+
+
+
+
+<h3>WI §8.5. Change of properties with values</h3>
+<p>Changing properties with values is very similar:</p>
+
+<div class="code"><p class="quoted">
+now the printed name of the Closet is "Suddenly Spooky Closet"
+</p></div>
+<p>Inform checks three different things to ensure that this change is safe to perform. Firstly, the value must be the right kind for the property in question, so this for instance would be rejected:</p>
+
+<div class="code"><p class="quoted">
+now the printed name of the Closet is 7
+</p></div>
+<p>Secondly, the object in question has to be allowed to have the given property. This, for instance, would be disallowed:</p>
+
+<div class="code"><p class="quoted">
+now the initial appearance of the Closet is "Dusty"
+</p></div>
+<p>(since "initial appearance" is a property which only things can have, not rooms). Finally, the object has to actually have the property, not just have the right to have that property. Thus:</p>
+
+<div class="code"><p class="quoted">
+now the printed name of the Closet is "Suddenly Spooky Closet"
+</p></div>
+<p>...is only permitted if the Closet is designed with a "printed name". In fact this is certain to be true: all rooms and things automatically have a printed name, which is the short boldface description in the case of rooms, and the usual text briefly describing something in the case of things.</p>
+<p>"Now" is a simple way to change many things in Inform, but it's cumbersome to change the map of the model world using "now", because the map is such a complicated arrangement. (It's not a property: it's a sort of mesh of relations.) So a special phrase exists to change map connections:</p>
+
+<div class="definition" id="defn72">
+<p class="defnprototype"><strong>change </strong>(direction)<strong> exit of </strong>(room)<strong> to </strong>(room)<strong></strong></p>
+
+
+
+<p>This phrase alters the map so that the given map connection is made. Note that connections can be made to rooms, but not doors: the positions of doors are fixed. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+change the east exit of the Closet to the Tsar's Imperial Dining Salon
+</p></blockquote>
+
+<p>Since "nothing" is not a room, this doesn't allow us to change the exit to nothing, so there is a separate definition of:</p>
+
+<blockquote class="code"><p class="quoted">
+change the west exit of the Closet to nothing
+</p></blockquote>
+
+
+
+</div>
+
+
+<div class="definition" id="defn73">
+<p class="defnprototype"><strong>change </strong>(direction)<strong> exit of </strong>(room)<strong> to nothing</strong>/nowhere</p>
+
+
+
+<p>This phrase alters the map so that the given map connection is unmade. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+change the west exit of the Closet to nowhere
+</p></blockquote>
+
+
+
+</div>
+
+<p>Altering the map itself is not a very subtle way to adjust when and where the player can move - writing suitable rules is usually a cleaner solution - so this phrase is best avoided unless really needed.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-117"><p class="example-p"><span class="example-short-start">117. <a href="rb_10.html#example-117" class="example-link" onClick="(function() { document.getElementById('example-117').setAttribute('open','open'); return true; })();">Thirst 2</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A campfire added to the camp site, which can be lit using tinder.</span> (c.f. <a href="rb_10.html#rb-10.8">RB §10.8. Fire</a>)</p></div>
+<div class="example-short" id="example-short-118"><p class="example-p"><span class="example-short-start">118. <a href="rb_10.html#example-118" class="example-link" onClick="(function() { document.getElementById('example-118').setAttribute('open','open'); return true; })();">Thirst</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A waterskin that is depleted as the player drinks from it.</span> (c.f. <a href="rb_10.html#rb-10.2">RB §10.2. Liquids</a>)</p></div>
+</div></section>
+<section class="section" id="wi-8.6"><div>
+
+
+
+
+
+<h3>WI §8.6. Whose property?</h3>
+<p>This seems a useful point to clarify something already seen. We normally call a property with a value something like:</p>
+
+<div class="code"><p class="quoted">
+the printed name of the West Ballroom
+</p></div>
+<p>We are sometimes allowed to omit the "of the ..." part, and simply call it "the printed name", for the sake of brevity. For instance, the following room description:</p>
+
+<div class="code"><p class="quoted">
+The West Ballroom is a room. "A handsome sweep of chequered floor beckons the eye into the [printed name]."
+</p></div>
+<p>will result in "West Ballroom" being substituted for "[printed name]". Since the text belongs to the West Ballroom, that is assumed to be the owner of any properties named in its description. Similarly:</p>
+
+<div class="code"><p class="quoted">
+Instead of examining something, say "Hmm, let me see: [printed name]..."
+</p></div>
+<p>Here the owner of the "printed name" is assumed to be the noun referred to in the action - in other words, the "something" alluded to in the rule.</p>
+
+
+</div></section>
+<section class="section" id="wi-8.7"><div>
+
+
+
+
+
+<h3>WI §8.7. Moving things</h3>
+<p>We have now seen how to change the properties of rooms and things, and also any freestanding values which may have a bearing on the model world. We are not allowed to change the kind of anything during play. Our remaining freedom is to move things around. It would make no sense to move rooms around, because rooms are the fixed reference points in our geography, but anything else is mobile. This even includes things which are supposedly "fixed in place", for unlike the player, we have god-like powers. (There are minor restrictions: backdrops are trickier to move, since they are present in several rooms at once - see the next section. And doors, at the junction between two rooms, cannot be moved.)</p>
+<p>Here is how to move something:</p>
+
+<div class="definition" id="defn74">
+<p class="defnprototype"><strong>move </strong>(object)<strong> to </strong>(object)<strong></strong></p>
+
+
+
+<p>This phrase moves the first-named object to the second. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+move the genie's lamp to Aladdin's Cave;
+</p></blockquote>
+
+<p>The first object named has to be a thing; the destination must be a room, as here, a container, a supporter, or a person. When something is moved, all its parts and contents (and all their contents, and so on) move with it. If the thing being moved is a person, then the destination is required to be a room or an enterable container. (In particular, a person cannot be carried by another person.)</p>
+<p>Two options can be used if the object being moved is the player.</p>
+
+<blockquote class="code"><p class="quoted">
+move the player to Aladdin's Cave, without printing a room description
+</p></blockquote>
+
+<p>omits the description which would otherwise be produced. A compromise is to use:</p>
+
+<blockquote class="code"><p class="quoted">
+move the player to Aladdin's Cave, printing an abbreviated room description
+</p></blockquote>
+
+<p>which gives a full description if the player has never been here before, but only a brief one if it is a familiar scene. These options have no effect for any other objects being moved.</p>
+
+
+</div>
+
+<p>If the destination is a person, like so:</p>
+
+<div class="code"><p class="quoted">
+move the genie's turban to Aladdin;
+</p></div>
+<p>then it will be carried rather than worn. We could arrange for it to be worn instead by writing</p>
+
+<div class="code"><p class="quoted">
+now the genie's turban is worn by Aladdin;
+</p></div>
+<p>"Now..." is a much more flexible phrase than "move": more on this shortly.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-119"><p class="example-p"><span class="example-short-start">119. <a href="rb_4.html#example-119" class="example-link" onClick="(function() { document.getElementById('example-119').setAttribute('open','open'); return true; })();">Meteoric I and II</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">A meteor in the night sky which is visible from many rooms, so needs to be a backdrop, but which does not appear until 11:31 PM.</span> (c.f. <a href="rb_4.html#rb-4.4">RB §4.4. Scene Changes</a>)</p></div>
+</div></section>
+<section class="section" id="wi-8.8"><div>
+
+
+
+
+
+<h3>WI §8.8. Moving backdrops</h3>
+<p>A backdrop can be in several rooms at once. When created, its position can be given as any specific collection of rooms, or as a region, or even as "everywhere". For instance:</p>
+
+<div class="code">
+<p class="quoted">
+The Upper Cave is above the Rock Pool. The Ledge is east of the Pool.
+</p>
+<p class="quoted">
+The stream is a backdrop. It is in the Upper Cave and the Ledge.
+</p>
+</div>
+<p>Moving backdrops is not like moving other things, because there's no single destination. There are several possibilities:</p>
+<p>(a) A backdrop can be moved to a region. If we define:</p>
+
+<div class="code"><p class="quoted">
+Lower Level is a region. The Rock Pool and the Ledge are in the Lower Level.
+</p></div>
+<p>then we can write either of</p>
+
+<div class="code"><p class="quoted">
+move the stream to the Lower Level;
+<br>now the stream is in the Lower Level;
+</p></div>
+<p>and either way, the stream is now found in the Rock Pool and the Ledge but nowhere else.</p>
+<p>(b) A backdrop can be moved to a category of rooms:</p>
+
+<div class="definition" id="defn75">
+<p class="defnprototype"><strong>move </strong>(object)<strong> backdrop to all </strong>(description of objects)<strong></strong></p>
+
+
+
+<p>This phrase moves the backdrop so that it is now present in every room matching the given description. Example: If we define</p>
+
+<blockquote class="code"><p class="quoted">
+A room can be wet or dry. A room is usually dry. The Rock Pool is wet.
+</p></blockquote>
+
+<p>then we can write</p>
+
+<blockquote class="code"><p class="quoted">
+move the stream backdrop to all wet rooms;
+</p></blockquote>
+
+<p>This phrasing, "move the ... backdrop to all ..." is deliberately meant to look unlike the simpler "move ... to ...", to emphasise that this kind of movement is possible only for backdrops.</p>
+
+
+</div>
+
+<p>What then happens is that the stream is present in whichever rooms are currently wet. But the stream's position is ordinarily checked only after movements, for efficiency's sake. So if the player is in a room which suddenly changes from being dry to being wet, the stream will not magically appear (though it will be there if the player goes out and comes in again). If this is not good enough, the phrase "update backdrop positions" can be used to ensure the accuracy of all backdrop locations after a dramatic change:</p>
+
+<div class="definition" id="defn76">
+<p class="defnprototype"><strong>update backdrop positions</strong></p>
+
+
+
+<p>This phrase runs through all backdrops in the model world and makes sure they are correctly in, or not in, the current location, so that everything appears right from the player's point of view. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+The Upper Cave is above the Rock Pool. The Ledge is east of the Pool. The stream is a backdrop.
+</p></blockquote>
+
+
+<blockquote class="code"><p class="quoted">
+When play begins:
+<br>    move the stream backdrop to all wet rooms.
+</p></blockquote>
+
+
+<blockquote class="code"><p class="quoted">
+A lever is in the Cave. The lever is fixed in place.
+</p></blockquote>
+
+
+<blockquote class="code"><p class="quoted">
+Instead of pulling the lever when the Cave is dry:
+<br>    now the Cave is wet;
+<br>    now the lever is in the Rock Pool;
+<br>    now the lever is portable;
+<br>    update backdrop positions;
+<br>    say "The old rusty lever pulls away, and the thin cave wall goes with it, so that a stream bursts into the cave, falling to the pool below."
+</p></blockquote>
+
+
+
+</div>
+
+<p>(c) A backdrop can be moved to be either everywhere or nowhere:</p>
+
+<div class="code">
+<p class="quoted">
+After sleeping:
+<br>    say "It's a bright new day!";
+<br>    now the stars are nowhere.
+</p>
+<p class="quoted">
+After waiting:
+<br>    say "Darkness falls rapidly here.";
+<br>    now the stars are everywhere.
+</p>
+</div>
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-120"><p class="example-p"><span class="example-short-start">120. <a href="rb_3.html#example-120" class="example-link" onClick="(function() { document.getElementById('example-120').setAttribute('open','open'); return true; })();">Orange Cones</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">Creating a traffic backdrop that appears in all road rooms except the one in which the player has laid down orange cones.</span> (c.f. <a href="rb_3.html#rb-3.9">RB §3.9. Passers-By, Weather and Astronomical Events</a>)</p></div>
+</div></section>
+<section class="section" id="wi-8.9"><div>
+
+
+
+
+
+<h3>WI §8.9. Moving the player</h3>
+<p>The player is a thing, too, and can also be moved, which has the effect of instantaneous transportation, without the need for a suitable map connection to the new location. For instance, these are equivalent:</p>
+
+<div class="code"><p class="quoted">
+move the player to the Bodleian Library;
+<br>now the player is in the Bodleian Library;
+</p></div>
+<p>This will ordinarily result in a room description of the Bodleian Library being printed up, but that might not always be desirable. For instance:</p>
+
+<div class="code"><p class="quoted">
+Instead of waiting in the Schola Maleficorum:
+<br>    say "A bored demon catches your eye (they really do have very inquisitive fingers) and throws you back out into the Antechamber.";
+<br>    move the player to the Antechamber, without printing a room description.
+</p></div>
+<p>Thus tacking on the option "without printing a room description", remembering to add the comma, omits the description which would otherwise be produced. A compromise is to use the option "printing an abbreviated room description": this gives a full description if the player has never been here before, but only a brief one if it is a familiar scene.</p>
+<p>The player's point of view can also be moved by shifting to another character. Suppose the story features two people, Alice and Bob, and the player at the keyboard is giving commands to Alice, and seeing everything from her point of view. The phrase:</p>
+
+<div class="code"><p class="quoted">
+now the player is Bob
+</p></div>
+<p>switches the perspective so that now Bob is the one controlled by the human player, and it's Bob's point of view which counts. The human being at the keyboard may feel a sense of having jumped abruptly from place to place, but in fact neither Alice nor Bob has moved.</p>
+<p>A change of player can sometimes cause confusing things to happen, if it takes place as part of a successful action. Suppose there's an action called "possessing", which enables the player to possess somebody else's body; and suppose the player types POSSESS ADELE. The action succeeds, so that the player moves into the mind of Adele. But that means that at the end of the action, the player is no longer the actor - that is, no longer the person who began the action; and consequently, Inform won't use the report rulebook to say what has just happened. It's a strange business, moving into another body.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-121"><p class="example-p"><span class="example-short-start">121. <a href="rb_5.html#example-121" class="example-link" onClick="(function() { document.getElementById('example-121').setAttribute('open','open'); return true; })();">Terror of the Sierra Madre</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">Multiple player characters who take turns controlling the action.</span> (c.f. <a href="rb_5.html#rb-5.6">RB §5.6. Viewpoint</a>)</p></div>
+</div></section>
+<section class="section" id="wi-8.10"><div>
+
+
+
+
+
+<h3>WI §8.10. Removing things from play</h3>
+<p>Some things will occasionally be in a limbo state called being "off-stage": like actors or props not needed in Act II, but perhaps to be brought back on-stage later, they wait on the sidelines. Anything created with no apparent location will start the story off-stage, as in the case of the lamp here:</p>
+
+<div class="code"><p class="quoted">
+Aladdin's Cave is a room. The genie's lamp is a container.
+</p></div>
+<p>(Such things are easy to see in the World index because they are listed after all of the rooms and their contents, not belonging inside any room.) If we wanted to make this clearer to a human reader, we could add:</p>
+
+<div class="code"><p class="quoted">
+The lamp is nowhere.
+</p></div>
+<p>to emphasise the point. In this context, "nowhere" means "in no room". Moving the lamp onto the stage-set, so to speak, is easy:</p>
+
+<div class="code"><p class="quoted">
+now the lamp is in the Cave;
+</p></div>
+<p>or perhaps:</p>
+
+<div class="code"><p class="quoted">
+now the player is carrying the lamp;
+</p></div>
+<p>and we can whisk it away again like so:</p>
+
+<div class="code"><p class="quoted">
+now the lamp is nowhere;
+</p></div>
+<p>(We can't say "now the lamp is somewhere" because that's too vague about exactly where it is.) In older builds of Inform, the usual thing was to write "remove the lamp from play", but that's now a deprecated phrase: better to use "nowhere" instead.</p>
+
+<div class="definition" id="defn77">
+<p class="defnprototype"><strong>remove </strong>(object)<strong> from play</strong></p>
+
+
+
+<p>Removes the given object from play, so that it is not present in any room. We are not permitted to remove rooms, or doors, or the player, from play; but we are permitted to remove backdrops, making them disappear from all rooms in which they are present. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+remove the gold coin from play;
+</p></blockquote>
+
+
+
+</div>
+
+<p>We can test whether something is on-stage or off-stage with:</p>
+
+<div class="code"><p class="quoted">
+if the gold coin is somewhere, ...
+<br>if the gold coin is nowhere, ...
+</p></div>
+<p>Inform also understands two adjectives for this:</p>
+
+<div class="code"><p class="quoted">
+if the gold coin is on-stage, ...
+<br>if the gold coin is off-stage, ...
+</p></div>
+<p>Because these are adjectives, they can be used in a few ways which "nowhere" and "somewhere" can't, such as:</p>
+
+<div class="code"><p class="quoted">
+say "Ah, so many absent friends. Who now remembers [list of off-stage people]?"
+</p></div>
+<p>Note that "on-stage" and "off-stage" apply only to things. Rooms, directions and regions are the stage itself: so it makes no sense to ask the question of whether they are "on-" or "off-". Doors are always on-stage; a backdrop, say "the sky", is always on-stage unless it has been taken off by writing something like "now the sky is nowhere".</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-122"><p class="example-p"><span class="example-short-start">122. <a href="rb_10.html#example-122" class="example-link" onClick="(function() { document.getElementById('example-122').setAttribute('open','open'); return true; })();">Spring Cleaning</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A character who sulks over objects that the player has broken (and which are now off-stage).</span> (c.f. <a href="rb_10.html#rb-10.4">RB §10.4. Glass and Other Damage-Prone Substances</a>)</p></div>
+<div class="example-short" id="example-short-123"><p class="example-p"><span class="example-short-start">123. <a href="rb_10.html#example-123" class="example-link" onClick="(function() { document.getElementById('example-123').setAttribute('open','open'); return true; })();">Beverage Service</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A potion that the player can drink.</span> (c.f. <a href="rb_10.html#rb-10.2">RB §10.2. Liquids</a>)</p></div>
+<div class="example-short" id="example-short-124"><p class="example-p"><span class="example-short-start">124. <a href="rb_10.html#example-124" class="example-link" onClick="(function() { document.getElementById('example-124').setAttribute('open','open'); return true; })();">Extra Supplies</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">A supply of red pens from which the player can take another pen only if he doesn't already have one somewhere in the game world.</span> (c.f. <a href="rb_10.html#rb-10.3">RB §10.3. Dispensers and Supplies of Small Objects</a>)</p></div>
+</div></section>
+<section class="section" id="wi-8.11"><div>
+
+
+
+
+
+<h3>WI §8.11. Now...</h3>
+<p>"Now" has already appeared several times in this chapter, being used like a Swiss army knife to change values of all kinds:</p>
+
+<div class="code"><p class="quoted">
+now the score is 100;
+</p></div>
+<p>In fact, "now" is by far the most flexible phrase known to Inform.</p>
+
+<div class="definition" id="defn78">
+<p class="defnprototype"><strong>now </strong>(a condition)<strong></strong></p>
+
+
+
+<p>This phrase makes the condition become true. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+now the score is 100;
+<br>now the player is Kevin;
+<br>now the front door is open;
+<br>now Mr Darcy is wearing the top hat;
+<br>now all the doors are open;
+<br>now all of the things in the sack are in the box;
+</p></blockquote>
+
+<p>Inform issues a problem message if the condition asks to do the impossible ("now 3 is an even number") or is vague ("now the duck is not in the Lily Pond") or not in the present tense ("now the front door had been open").</p>
+
+
+</div>
+
+<p>We've now seen all three things which can be done with a condition S which describes the world:</p>
+
+<div class="code"><p class="quoted">
+S. - The relation holds at the start of play.
+<br>if S, ...; - Does the relation hold right now?
+<br>now S; - Make the relation hold from now on.
+</p></div>
+<p>For instance,</p>
+
+<div class="code"><p class="quoted">
+The apple is in the basket.
+<br>if the apple is in the basket, ...;
+<br>now the apple is in the basket;
+</p></div>
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-125"><p class="example-p"><span class="example-short-start">125. <a href="rb_3.html#example-125" class="example-link" onClick="(function() { document.getElementById('example-125').setAttribute('open','open'); return true; })();">Bee Chambers</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A maze with directions between rooms randomized at the start of play.</span> (c.f. <a href="rb_3.html#rb-3.2">RB §3.2. Map</a>)</p></div>
+<div class="example-short" id="example-short-126"><p class="example-p"><span class="example-short-start">126. <a href="rb_11.html#example-126" class="example-link" onClick="(function() { document.getElementById('example-126').setAttribute('open','open'); return true; })();">Hatless</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">It's tempting to use "now..." to distribute items randomly at the start of play, but we need to be a little cautious about how we do that.</span> (c.f. <a href="rb_11.html#rb-11.1">RB §11.1. Start-Up Features</a>)</p></div>
+<div class="example-short" id="example-short-127"><p class="example-p"><span class="example-short-start">127. <a href="rb_7.html#example-127" class="example-link" onClick="(function() { document.getElementById('example-127').setAttribute('open','open'); return true; })();">Technological Terror</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">A ray gun which destroys objects, leaving their component parts behind.</span> (c.f. <a href="rb_7.html#rb-7.5">RB §7.5. Combat and Death</a>)</p></div>
+</div></section>
+<section class="section" id="wi-8.12"><div>
+
+
+
+
+
+<h3>WI §8.12. Increasing and decreasing</h3>
+<p>Once we begin to deal with named values (or table entries, list entries or other ways to describe places where values are kept), we find that we often want to change them. We could if we wanted always use "now" for this, but it can be a little clumsily worded if we want to increase or decrease something:</p>
+
+<div class="code"><p class="quoted">
+now the score is the score plus six;
+</p></div>
+<p>Because of that, we have some convenient abbreviations which have the advantage that the value being changed only has to be named once:</p>
+
+<div class="definition" id="defn79">
+<p class="defnprototype"><strong>increase </strong>(a stored value)<strong> by </strong>(value)<strong></strong></p>
+
+
+
+<p>This phrase increases the variable, table entry, list entry, or property by the given amount, which must be of a compatible kind. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+increase the score by 8;
+<br>increase the time of day by 5 minutes;
+</p></blockquote>
+
+
+
+</div>
+
+
+<div class="definition" id="defn80">
+<p class="defnprototype"><strong>decrease </strong>(a stored value)<strong> by </strong>(value)<strong></strong></p>
+
+
+
+<p>This phrase decreases the variable, table entry, list entry, or property by the given amount, which must be of a compatible kind. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+decrease the score by 6;
+<br>decrease the carrying capacity of the player by 10;
+</p></blockquote>
+
+
+
+</div>
+
+<p>An even greater abbreviation can be made when we are changing a number by 1 either way:</p>
+
+<div class="definition" id="defn81">
+<p class="defnprototype"><strong>increment </strong>(a stored value)<strong></strong></p>
+
+
+
+<p>This phrase increases the variable, table entry, list entry, or property by 1. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+increment the score;
+</p></blockquote>
+
+
+
+</div>
+
+
+<div class="definition" id="defn82">
+<p class="defnprototype"><strong>decrement </strong>(a stored value)<strong></strong></p>
+
+
+
+<p>This phrase decreases the variable, table entry, list entry, or property by 1. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+decrement the score;
+</p></blockquote>
+
+
+
+</div>
+
+<p>"Increment" and "decrement" are traditional computing terms, though they have been used in engineering for at least a century and in finance for longer still.</p>
+
+
+</div></section>
+<section class="section" id="wi-8.13"><div>
+
+
+
+
+
+<h3>WI §8.13. Checking on whereabouts</h3>
+<p>We have seen that while rooms are fixed, their contents move around, so we will need ways to examine the current whereabouts of things. The following examples show the kind of conditions allowed:</p>
+
+<div class="code"><p class="quoted">
+if the genie's lamp <strong>is in</strong> Aladdin's Cave ...
+<br>if Aladdin <strong>is not in</strong> Aladdin's Cave ...
+<br>if Aladdin's Cave <strong>contains</strong> the genie's lamp ...
+<br>if the genie's lamp <strong>is carried by</strong> Aladdin ...
+<br>if Aladdin <strong>is carrying</strong> the genie's lamp ...
+<br>if Aladdin <strong>does not have</strong> the genie's lamp ...
+<br>if the table <strong>supports</strong> the genie's lamp ...
+<br>if the table <strong>is supporting</strong> the genie's lamp ...
+<br>if the genie's lamp <strong>is supported by</strong> the table ...
+<br>if the genie's lamp <strong>is on</strong> the table ...
+<br>if the genie's lamp <strong>is on top of</strong> the table ...
+<br>if the genie's lamp <strong>is in</strong> the cupboard ...
+<br>if the genie's lamp <strong>is contained in</strong> the cupboard ...
+<br>if the genie's lamp <strong>is inside</strong> the cupboard ...
+<br>if the genie's lamp <strong>is within</strong> the cupboard ...
+<br>if the wick <strong>is part of</strong> the genie's lamp ...
+</p></div>
+<p>These are exactly like the assertions which we use to set up the world, except that we make them questions by placing "if" in front. But we shall later see that we can also use three other tenses, not to mention plural forms, so that new verbal forms like "had not been inside" and "were not supported by" are legal here (which they would not be in assertions). What we are not allowed is to contract these verbs with apostrophes: "isn't", "hasn't" and "hadn't" are forbidden.</p>
+<p>Overwhelmingly the condition we check most is whether the player is carrying something. The following are therefore equivalent:</p>
+
+<div class="code"><p class="quoted">
+if the genie's lamp is carried by the player ...
+<br>if the genie's lamp is carried ...
+</p></div>
+<p>And similarly for "not carried", "worn" and "not worn". To be precise, if a form of <em>to be carried</em> or <em>to be worn</em> is not followed by any other description, then "the player" is assumed to be doing the carrying or wearing.</p>
+
+
+</div></section>
+<section class="section" id="wi-8.14"><div>
+
+
+
+
+
+<h3>WI §8.14. More flexible descriptions of whereabouts</h3>
+<p>The examples just given were all basically of the form "X <em>relation</em> Y" where X and Y were specific names of things. For example,</p>
+
+<div class="code"><p class="quoted">
+if the genie's lamp is carried by Cinderella ...
+<br>if the genie's lamp is inside the cupboard ...
+</p></div>
+<p>Just as actions could be described with patterns to be matched ("taking an open container", say), so can the positions of things. Giving subtler descriptions of our X and Y sometimes broadens the possibilities, sometimes narrows them:</p>
+
+<div class="code"><p class="quoted">
+if the genie's lamp is carried by a woman ...
+<br>if the genie's lamp is inside the closed cupboard ...
+</p></div>
+<p>In the first case, Y is allowed to be one of a whole range of things - any of the women existing in the world. This makes for a broader condition. In the second case, Y has not only to be the cupboard, but at a time when it is closed: which makes for a narrower condition. We can, of course, also vary X:</p>
+
+<div class="code"><p class="quoted">
+if an animal is inside the cupboard ...
+<br>if a container is carried ...
+</p></div>
+<p>And we can even vary both X and Y at once:</p>
+
+<div class="code"><p class="quoted">
+if a woman is holding an animal ...
+</p></div>
+<p>a condition which will be true if, anywhere in the story's world, any woman is holding any animal.</p>
+
+
+</div></section>
+<section class="section" id="wi-8.15"><div>
+
+
+
+
+
+<h3>WI §8.15. Calling names</h3>
+<p>Conditions like "if somebody is in an adjacent room" allow complicated tests to be performed with a minimum of fuss, but it's rare that we want to know only whether they are true: more likely we also want to know <em>which</em> person, and <em>which</em> room.</p>
+<p>For this purpose, we are allowed to supply a name for any such vaguely-described object which comes up, and then to use that name thereafter.</p>
+
+<div class="code"><p class="quoted">
+if somebody is in an adjacent room (called the Hiding Place), say "You hear distant breathing from [the Hiding Place]."
+</p></div>
+<p>We can even name more than one of the things discovered:</p>
+
+<div class="code"><p class="quoted">
+Instead of waiting when a woman (called the kidnapper) is holding an animal (called the pet), say "How can you think of rest when, somewhere out there, [pet] has been cruelly kidnapped by [the kidnapper]?"
+</p></div>
+<p>Note the brackets, which are essential. The result of typing "wait" is then</p>
+
+<div class="code"><p class="quoted">
+How can you think of rest when, somewhere out there, a lapdog has been cruelly kidnapped by Baroness Orczy?
+</p></div>
+<p>Of course, that might be just one of many animals held by women in the story. We shall later see ways to go through all of the possibilities found, performing some action with each in turn.</p>
+<p>A calling, if we can use that word, should be made immediately after the noun it refers to, and not left to hang back after any relative clauses. For instance,</p>
+
+<div class="code"><p class="quoted">
+if something (called the penitential object) held by the player is hot
+</p></div>
+<p>is allowed, but not</p>
+
+<div class="code"><p class="quoted">
+if something held by the player (called the penitential object) is hot
+</p></div>
+<p>because there is too much potential ambiguity - are we trying to call the player something?</p>
+
+
+
+</div>
+<div class="crossreferences">
+<h4>See also</h4>
+<div class="crossreference">
+<a href="wi_11.html#wi-11.11" class="crossreference_link">Repeat running through</a> for systematically working on everything matching a description</div>
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-128"><p class="example-p"><span class="example-short-start">128. <a href="rb_3.html#example-128" class="example-link" onClick="(function() { document.getElementById('example-128').setAttribute('open','open'); return true; })();">Higher Calling</a></span> <span class="example-difficulty">★</span>  <span class="example-description">All doors in the game automatically attempt to open if the player approaches them when they are closed.</span> (c.f. <a href="rb_3.html#rb-3.5">RB §3.5. Doors, Staircases, and Bridges</a>)</p></div>
+</div></section>
+<section class="section" id="wi-8.16"><div>
+
+
+
+
+
+<h3>WI §8.16. Counting the number of things</h3>
+<p>It is very often useful to know how many things are in a given situation, and for this purpose we have the "number of ..." construction. For instance:</p>
+
+<div class="code"><p class="quoted">
+the number of edible things carried
+<br>the number of things on the table
+<br>the number of people in the Dining Room
+</p></div>
+<p>Whereas "a woman is holding an animal" makes the same test as "an animal is held by a woman", getting the same result, counting is not so even-handed:</p>
+
+<div class="code"><p class="quoted">
+the number of women holding animals
+<br>the number of animals held by women
+</p></div>
+<p>are different questions and, unless the ration is strictly one lapdog per baroness, will have different answers. If Cruella de Vil has 101 dalmatians, they may be very different indeed.</p>
+<p>It can also be helpful to count things with no particular location, like so:</p>
+
+<div class="code"><p class="quoted">
+the number of rooms
+<br>the number of closed doors
+</p></div>
+<p>For instance:</p>
+
+<div class="code"><p class="quoted">
+When play begins, change the right hand status line to "Explored: [number of visited rooms]/[number of rooms]".
+</p></div>
+<p>Provided that the possible range is finite, we can also use "number of" to count values which match a description. For instance:</p>
+
+<div class="code"><p class="quoted">
+the number of non-recurring scenes
+</p></div>
+<p>or if we were to define</p>
+
+<div class="code"><p class="quoted">
+Colour is a kind of value. The colours are red, orange, yellow, green, blue, indigo and violet.
+</p></div>
+<p>then "the number of colours" would evaluate to 7. As with other ways of talking about whole ranges of values, this only works if the range is manageable. "The number of numbers" cannot sensibly be worked out: there are infinitely many, for all practical purposes, and similarly for "the number of texts".</p>
+
+
+</div></section>
+<section class="section" id="wi-8.17"><div>
+
+
+
+
+
+<h3>WI §8.17. Looking at containment by hand</h3>
+<p>The descriptions outlined in the last few sections are intended to deal with almost all of the routine questions we might have about what currently resides where. It should be a last resort to use the following more primitive way to inspect the world.</p>
+
+<div class="definition" id="defn83">
+<p class="defnprototype"><strong>holder of </strong>(object)<strong> ... object</strong></p>
+
+
+
+<p>This phrase produces the container, supporter, carrier, wearer or room in which the object resides.</p>
+
+
+</div>
+
+<p>It's sometimes useful to go the other way. When something has possessions, we can find them out one at a time by running through a list.</p>
+
+<div class="definition" id="defn84">
+<p class="defnprototype"><strong>first thing held by </strong>(object)<strong> ... object</strong></p>
+
+
+
+<p>This phrase produces the first of the list of things held by the object. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+first thing held by Baroness Orczy
+</p></blockquote>
+
+
+
+</div>
+
+
+<div class="definition" id="defn85">
+<p class="defnprototype"><strong>next thing held after </strong>(object)<strong> ... object</strong></p>
+
+
+
+<p>This phrase produces the next item of the list of things held by something. Example: suppose Baroness Orczy is carrying a lapdog and a string of pearls.</p>
+
+<blockquote class="code"><p class="quoted">
+next thing held after the lapdog
+</p></blockquote>
+
+<p>is then the string of pearls.</p>
+
+
+</div>
+
+
+
+</div></section>
+<section class="section" id="wi-8.18"><div>
+
+
+
+
+
+<h3>WI §8.18. Randomness</h3>
+<p>Sometimes we want to introduce random behaviour into play. We usually do this by generating random values, and then acting differently depending on what they are. The following:</p>
+
+<div class="code"><p class="quoted">
+a random number from 2 to 5
+</p></div>
+<p>produces, as it suggests, a random number drawn from the choices 2, 3, 4 or 5, each of which is equally likely to come up. In fact, this isn't limited to numbers:</p>
+
+<div class="definition" id="defn86">
+<p class="defnprototype"><strong>a random </strong>(name of kind)<strong> between </strong>(arithmetic value)<strong> and </strong>(arithmetic value)<strong> ... value</strong></p>
+<br><em>or:</em>   <p class="defnprototype"><strong>a random </strong>(name of kind)<strong> from </strong>(arithmetic value)<strong> to </strong>(arithmetic value)<strong> ... value</strong></p>
+<br><em>or:</em>   <p class="defnprototype"><strong>a random </strong>(name of kind)<strong> between </strong>(enumerated value)<strong> and </strong>(enumerated value)<strong> ... value</strong></p>
+<br><em>or:</em>   <p class="defnprototype"><strong>a random </strong>(name of kind)<strong> from </strong>(enumerated value)<strong> to </strong>(enumerated value)<strong> ... value</strong></p>
+
+
+
+<p>This phrase produces a uniformly random value in the range given. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+a random number from 10 to 99
+<br>a random time from 2:31 PM to 2:57 PM
+</p></blockquote>
+
+<p>If we make a new kind of value:</p>
+
+<blockquote class="code"><p class="quoted">
+A cloud pattern is a kind of value. The cloud patterns are cumulus, altocumulus, cumulonimbus, stratus, cirrus, nimbus, nimbostratus.
+</p></blockquote>
+
+<p>then we can also take random values from it:</p>
+
+<blockquote class="code"><p class="quoted">
+a random cloud pattern between stratus and nimbus
+</p></blockquote>
+
+<p>which has three possible outcomes, all equally likely.</p>
+
+
+</div>
+
+<p>We can also use random conditions:</p>
+
+<div class="definition" id="defn87">
+<p class="defnprototype"><strong>if a random chance of </strong>(number)<strong> in </strong>(number)<strong> succeeds:</strong></p>
+
+
+
+<p>This condition is true X/Yths of the time, where X and Y are the numbers. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+if a random chance of 2 in 3 succeeds, ...
+</p></blockquote>
+
+<p>Here is a rule which applies only 15% of the time:</p>
+
+<blockquote class="code"><p class="quoted">
+Instead of waiting when a random chance of 15 in 100 succeeds: ...
+</p></blockquote>
+
+
+
+</div>
+
+<p>Testing IF which makes random choices can be rather frustrating, because a problem showing up on one attempt may not show up on another. We can get around this by making use of the fact that computers do not actually generate true randomness, but instead make a sequence of apparently random numbers by applying a complicated formula to each one in order to make the next. The starting point is a number called the "seed", because the next choice grows out of it.</p>
+
+<div class="definition" id="defn88">
+<p class="defnprototype"><strong>seed the random-number generator with </strong>(number)<strong></strong></p>
+
+
+
+<p>This phrase changes the seed number as specified. Any random numbers generated after that depend only on the seed. Example: the following sentence will "fix" the process of generating these random numbers so that they are not random at all - the same sequence of random numbers will be produced on each run.</p>
+
+<blockquote class="code"><p class="quoted">
+When play begins, seed the random-number generator with 1234.
+</p></blockquote>
+
+<p>The seed value "1234" can be anything positive; a different sequence of random numbers will be produced for each different seed value. A seed value of 0 restores the RNG to properly random behaviour again.</p>
+
+
+</div>
+
+<p>Alternatively, it's possible the "fix" the RNG by clicking the "Make random outcomes predictable when testing" option on the Settings panel. This makes the behaviour predictable whenever the story is played within Inform, but (unlike the rule above) has no effect on the story file once released.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-129"><p class="example-p"><span class="example-short-start">129. <a href="rb_3.html#example-129" class="example-link" onClick="(function() { document.getElementById('example-129').setAttribute('open','open'); return true; })();">Weathering</a></span> <span class="example-difficulty">★</span>  <span class="example-description">The automatic weather station atop Mt. Pisgah shows randomly fluctuating temperature, pressure and cloud cover.</span> (c.f. <a href="rb_3.html#rb-3.9">RB §3.9. Passers-By, Weather and Astronomical Events</a>)</p></div>
+<div class="example-short" id="example-short-130"><p class="example-p"><span class="example-short-start">130. <a href="rb_9.html#example-130" class="example-link" onClick="(function() { document.getElementById('example-130').setAttribute('open','open'); return true; })();">Do Pass Go</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A pair of dice which can be rolled, and are described with their current total when not carried, and have individual scores when examined.</span> (c.f. <a href="rb_9.html#rb-9.5">RB §9.5. Dice and Playing Cards</a>)</p></div>
+<div class="example-short" id="example-short-131"><p class="example-p"><span class="example-short-start">131. <a href="rb_7.html#example-131" class="example-link" onClick="(function() { document.getElementById('example-131').setAttribute('open','open'); return true; })();">Lanista 1</a></span> <span class="example-difficulty">★</span>  <span class="example-description">Very simple randomized combat in which characters hit one another for a randomized amount of damage.</span> (c.f. <a href="rb_7.html#rb-7.5">RB §7.5. Combat and Death</a>)</p></div>
+<div class="example-short" id="example-short-132"><p class="example-p"><span class="example-short-start">132. <a href="rb_3.html#example-132" class="example-link" onClick="(function() { document.getElementById('example-132').setAttribute('open','open'); return true; })();">Uptown Girls</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">A stream of random pedestrians who go by the player.</span> (c.f. <a href="rb_3.html#rb-3.9">RB §3.9. Passers-By, Weather and Astronomical Events</a>)</p></div>
+</div></section>
+<section class="section" id="wi-8.19"><div>
+
+
+
+
+
+<h3>WI §8.19. Random choices of things</h3>
+<p>Writing "a random number" is not allowed, because the possible range is too large, but that was the only reason why not.</p>
+
+<div class="definition" id="defn89">
+<p class="defnprototype"><strong>a</strong>/--<strong> random </strong>(description of values)<strong> ... value</strong></p>
+
+
+
+<p>This phrase makes a uniformly random choice from values satisfying the description given. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+a random visited room
+<br>a random scene
+</p></blockquote>
+
+<p>A problem message is issued if the range is too large (for instance, "a random text"). Unexpected results may follow if no value fits the description, unless we are describing objects, in which case the result is the special value "nothing".</p>
+
+
+</div>
+
+<p>For instance:</p>
+
+<div class="code"><p class="quoted">
+say "You can see [number of adjacent rooms] way[s] from here; how about [random adjacent room]?"
+</p></div>
+<p>But it's important to worry about the possibility that nothing qualifies - here, that no adjacent rooms exist. The above would then say:</p>
+
+<div class="code"><p class="quoted">
+You can see 0 ways from here; how about nothing?
+</p></div>
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-133"><p class="example-p"><span class="example-short-start">133. <a href="rb_9.html#example-133" class="example-link" onClick="(function() { document.getElementById('example-133').setAttribute('open','open'); return true; })();">Candy</a></span> <span class="example-difficulty">★</span>  <span class="example-description">One of several identical candies chosen at the start of play to be poisonous.</span> (c.f. <a href="rb_9.html#rb-9.1">RB §9.1. Food</a>)</p></div>
+<div class="example-short" id="example-short-134"><p class="example-p"><span class="example-short-start">134. <a href="rb_3.html#example-134" class="example-link" onClick="(function() { document.getElementById('example-134').setAttribute('open','open'); return true; })();">Zork II</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A "Carousel Room", as in Zork II, where moving in any direction from the room leads (at random) to one of the eight rooms nearby.</span> (c.f. <a href="rb_3.html#rb-3.2">RB §3.2. Map</a>)</p></div>
+</div></section>
+</section>
+
+<footer>
+<div class="linkback"><a href="http://inform7.com/book/WI_8_1.html">WI Chapter 8 on inform7.com</a></div>
+<div class="doc-navbar">
+<div>
+<div class="doc-navbar-left"><a class="nav-left" href="wi_7.html#wi-chapter-7-basic-actions">7. Basic Actions</a></div>
+<div class="doc-navbar-right"><a class="nav-right" href="wi_9.html#wi-chapter-9-time">9. Time</a></div>
+</div>
+<div>
+<div class="doc-navbar-left"><a href="index.html">Table of Contents</a></div>
+<div class="doc-navbar-right"><a href="index.html#general-index">General Index</a></div>
+</div>
+</div>
+
+</footer>
+</main></body></html>
+

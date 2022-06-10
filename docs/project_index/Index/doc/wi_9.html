@@ -1,0 +1,919 @@
+<!doctype html>
+<meta charset="utf-8"><html lang="en"><head><title>Writing in Inform 9. Time</title><link rel="stylesheet" href="style.css"><script src="chapter.js"></script></head><body>
+<nav><div class="index-navbar hidden">
+<a id="project_index" href="../Welcome.html"> Project Index</a><a id="source" href="../../story.html"> Source</a><a id="problems" href="../../Build/problems.html"> Problems</a><a id="debug_log" href="../../Build/debug_log.html"> Debug Log</a><a id="definitions" href="./ExtIndex.html"> Definitions</a><a id="extensions" href="./Extensions.html"> Extensions</a><a id="docs" href="./index.html"> Docs</a><a id="general_index" href="./index.html#general-index"> General Index</a>
+
+</div>
+</nav>
+<main>
+<header>
+
+<div class="toc">
+<h1>Writing in Inform</h1>
+<div class="doc-navbar">
+<div>
+<div class="doc-navbar-left"><a class="nav-left" href="wi_8.html#wi-chapter-8-change">8. Change</a></div>
+<div class="doc-navbar-right"><a class="nav-right" href="wi_10.html#wi-chapter-10-scenes">10. Scenes</a></div>
+</div>
+<div>
+<div class="doc-navbar-left"><a href="index.html">Table of Contents</a></div>
+<div class="doc-navbar-right"><a href="index.html#general-index">General Index</a></div>
+</div>
+</div>
+
+<div><a id="toggle" href="javascript:toggle_details('examples')">Open all examples</a></div>
+<h2>9. Time</h2>
+<div class="toc-section">9.1 <a href="wi_9.html#wi-9.1">When play begins</a></div>
+<div class="toc-section">9.2 <a href="wi_9.html#wi-9.2">Awarding points</a></div>
+<div class="toc-section">9.3 <a href="wi_9.html#wi-9.3">Introducing tables: rankings</a></div>
+<div class="toc-section">9.4 <a href="wi_9.html#wi-9.4">When play ends</a></div>
+<div class="toc-section">9.5 <a href="wi_9.html#wi-9.5">Every turn</a></div>
+<div class="toc-section">9.6 <a href="wi_9.html#wi-9.6">The time of day</a></div>
+<div class="toc-section">9.7 <a href="wi_9.html#wi-9.7">Telling the time</a></div>
+<div class="toc-section">9.8 <a href="wi_9.html#wi-9.8">Approximate times, lengths of time</a></div>
+<div class="toc-section">9.9 <a href="wi_9.html#wi-9.9">Comparing and shifting times</a></div>
+<div class="toc-section">9.10 <a href="wi_9.html#wi-9.10">Calculating times</a></div>
+<div class="toc-section">9.11 <a href="wi_9.html#wi-9.11">Future events</a></div>
+<div class="toc-section">9.12 <a href="wi_9.html#wi-9.12">Actions as conditions</a></div>
+<div class="toc-section">9.13 <a href="wi_9.html#wi-9.13">The past and perfect tenses</a></div>
+<div class="toc-section">9.14 <a href="wi_9.html#wi-9.14">How many times?</a></div>
+<div class="toc-section">9.15 <a href="wi_9.html#wi-9.15">How many turns?</a></div>
+</header>
+<main>
+<section class="chapter" id="wi-chapter-9-time">
+<section class="section" id="wi-9.1"><div>
+
+
+
+<h3>WI §9.1. When play begins</h3>
+<p>With the material from previous chapters, we are now able to set up a simulated world, to respond to the player's actions within it, and to make it change in perhaps unexpected ways.</p>
+<p>The resulting experience can be as lively as we want to make it, but so far we have no very good ways to give it any structure: a beginning and an end, for instance, or a sense of plot. This next chapter is all about the passage of time, and it begins at the beginning.</p>
+<p>We have already seen an example of how to write a rule which applies just once, at the start of the story:</p>
+
+<div class="code"><p class="quoted">
+When play begins: say "../Welcome to Old Marston Grange, a country house cut off by fog."
+</p></div>
+<p>The "when play begins" rules are checked only at the start of a story, not when a saved session is restored from disc. What happens is that these rules are followed, then the story's banner is printed, then the initial room description is printed up, and then the player is asked for a first command.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-135"><p class="example-p"><span class="example-short-start">135. <a href="rb_7.html#example-135" class="example-link" onClick="(function() { document.getElementById('example-135').setAttribute('open','open'); return true; })();">Clueless</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A murderer for the mystery is selected randomly at the beginning of the game.</span> (c.f. <a href="rb_7.html#rb-7.1">RB §7.1. Getting Acquainted</a>)</p></div>
+</div></section>
+<section class="section" id="wi-9.2"><div>
+
+
+
+
+
+<h3>WI §9.2. Awarding points</h3>
+<p>Traditionally-written stories award points throughout play, as an indication of progress. If we want to be traditional, we must first write:</p>
+
+<div class="code"><p class="quoted">
+Use scoring.
+</p></div>
+<p>Without this, the SCORE, NOTIFY ON and NOTIFY OFF commands do not work; the final score is not shown at the end of a story; and the status line above the player's text area shows only the turn count, not (as is more usual) both the score and the turn count. Changing the "score" (see below) has no visible effect, though it is not actually illegal.</p>
+<p>With "Use scoring" in place, we can award points as follows:</p>
+
+<div class="code"><p class="quoted">
+increase the score by 5;
+</p></div>
+<p>substituting whatever number we feel is appropriate. We should be careful not to give out the same points over and over, that is, not to reward the same basic achievement many times over if the player simply repeats the same action. This, for instance, is open to abuse:</p>
+
+<div class="code"><p class="quoted">
+After taking the trophy:
+<br>    increase the score by 5;
+<br>    say "Well done!"
+</p></div>
+<p>The player may simply take the trophy, drop it again, take it again, ... and win five points every time around. We can prevent this by phrasing the rule more carefully:</p>
+
+<div class="code"><p class="quoted">
+After taking the trophy when the trophy is not handled:
+<br>    increase the score by 5;
+<br>    say "Well done!"
+</p></div>
+<p>Rather than being an open-ended scoring system, IF normally has a maximum possible score, which can be specified with a sentence like so:</p>
+
+<div class="code"><p class="quoted">
+The maximum score is 10.
+</p></div>
+<p>The score and maximum score are just numbers that vary, so we can freely change them:</p>
+
+<div class="code"><p class="quoted">
+After eating the poisoned mushroom:
+<br>    now the score is -100.
+</p></div>
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-136"><p class="example-p"><span class="example-short-start">136. <a href="rb_11.html#example-136" class="example-link" onClick="(function() { document.getElementById('example-136').setAttribute('open','open'); return true; })();">Mutt's Adventure</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">Awarding points for visiting a room for the first time.</span> (c.f. <a href="rb_11.html#rb-11.4">RB §11.4. Scoring</a>)</p></div>
+<div class="example-short" id="example-short-137"><p class="example-p"><span class="example-short-start">137. <a href="rb_11.html#example-137" class="example-link" onClick="(function() { document.getElementById('example-137').setAttribute('open','open'); return true; })();">No Place Like Home</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">Recording a whole table of scores for specific treasures.</span> (c.f. <a href="rb_11.html#rb-11.4">RB §11.4. Scoring</a>)</p></div>
+</div></section>
+<section class="section" id="wi-9.3"><div>
+
+
+
+
+
+<h3>WI §9.3. Introducing tables: rankings</h3>
+<p>Another tradition of interactive fiction is that the player has a current 'rank' according to how far his or her score has got. We can (but need not) choose to provide such rankings, and should do so by specifying a table like this:</p>
+
+<div class="code">
+<p class="quoted">
+ Table 1 - Rankings
+<br></p>
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">Score</p></td>
+<td class="quotedtablecell"><p class="quoted">Rank</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">0</p></td>
+<td class="quotedtablecell"><p class="quoted">"Beginner"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">25</p></td>
+<td class="quotedtablecell"><p class="quoted">"Amateur Adventurer"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">50</p></td>
+<td class="quotedtablecell"><p class="quoted">"Novice Adventurer"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">100</p></td>
+<td class="quotedtablecell"><p class="quoted">"Junior Adventurer"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">200</p></td>
+<td class="quotedtablecell"><p class="quoted">"Adventurer"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">300</p></td>
+<td class="quotedtablecell"><p class="quoted">"Master"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">330</p></td>
+<td class="quotedtablecell"><p class="quoted">"Wizard"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">350</p></td>
+<td class="quotedtablecell"><p class="quoted">"Master Adventurer"</p></td>
+</tr>
+</table>
+</div>
+<p>Typographically, tables in Inform look as much as possible like those found in non-fiction books: they can have many columns, so this is only a simple example (drawn from the actual rankings used by Infocom's <em>Zork I</em>, 1979). Each line in the source represents one row in the table, and the entries on a line must be separated by at least one tab character. (An entry might of course have several words with spaces in between, so a space is not enough to separate entries: this is the only context when Inform distinguishes between spaces and tabs.) The table must occupy a single whole paragraph, with no skipped lines or missing entries. We are free to use extra tabs to indent it if we like.</p>
+<p>Ordinarily we must explicitly ask to use the information presented in a table, but the table of rankings is a special case: Inform uses it automatically, if it is provided at all. To be recognised it must have the name "Rankings" and must have two columns named and arranged as shown. The scores should be given in ascending order. Customarily, the score in the final row should be the maximum possible achieved in the story - so that only a player with maximum possible score can be awarded the final ranking - and the value of "maximum score" is automatically set to this bottom-row value if it has not been explicitly set anywhere else in the source text.</p>
+
+
+</div></section>
+<section class="section" id="wi-9.4"><div>
+
+
+
+
+
+<h3>WI §9.4. When play ends</h3>
+<p>Short of something like a power cut, the story can only end when one of the two participants chooses to end it: either the player, by deciding that enough is enough, or us.</p>
+<p>In story-telling, there are many kinds of ending: happy, sad, decisive, bittersweet, surprise. Inform doesn't try to interfere in that kind of artistic choice, but it does need to know one thing about the ending: is it final, or not? Many authors like to make additional menu items available if the player has completed the story right through, but not if she has reached an early or wrong ending. (See the activity "amusing a victorious player", for example.)</p>
+
+<div class="definition" id="defn90">
+<p class="defnprototype"><strong>end the story</strong></p>
+
+
+
+<p>This phrase ends the story at the next opportunity (typically as soon as the current rule ends), with the closing message "The End." The end is not considered final.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn91">
+<p class="defnprototype"><strong>end the story finally</strong></p>
+
+
+
+<p>This phrase ends the story at the next opportunity (typically as soon as the current rule ends), with the closing message "The End." The end is considered final, and any hidden menu options will be revealed.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn92">
+<p class="defnprototype"><strong>end the story saying </strong>(text)<strong></strong></p>
+
+
+
+<p>This phrase ends the story at the next opportunity (typically as soon as the current rule ends), with the closing message given in the text. The end is not considered final. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+end the story saying "You have been stymied"
+</p></blockquote>
+
+
+
+</div>
+
+
+<div class="definition" id="defn93">
+<p class="defnprototype"><strong>end the story finally saying </strong>(text)<strong></strong></p>
+
+
+
+<p>This phrase ends the story at the next opportunity (typically as soon as the current rule ends), with the closing message given in the text. The end is considered final, and any hidden menu options will be revealed. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+end the story finally saying "You have defeated Sauron"
+</p></blockquote>
+
+
+
+</div>
+
+<p>The closing message is traditionally set out in asterisks:</p>
+
+<div class="code"><p class="quoted">
+*** The End ***
+</p></div>
+<p>This style is traditional in IF, and goes back to 1980 if not earlier.</p>
+<p>We can test the current state like so:</p>
+
+<div class="definition" id="defn94">
+<p class="defnprototype"><strong>if story has ended:</strong></p>
+
+
+
+<p>This condition is true if an end has been declared using one of the "end the story..." phrases.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn95">
+<p class="defnprototype"><strong>if story has not ended:</strong></p>
+
+
+
+<p>This condition is true if no end has been declared using one of the "end the story..." phrases.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn96">
+<p class="defnprototype"><strong>if story has ended finally:</strong></p>
+
+
+
+<p>This condition is true if an end has been declared using one of the "end the story finally..." phrases, so that an ending has been reached which the author feels is a completion of the player's experience.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn97">
+<p class="defnprototype"><strong>if story has not ended finally:</strong></p>
+
+
+
+<p>This condition is true if an end has been declared using one of the "end the story..." phrases, but not "finally", so the author feels that the player can get further experience by playing again and trying different approaches.</p>
+
+
+</div>
+
+<p>The rulebook "when play ends" is the matching bookend to "when play begins". It is followed when the story decides to end (not when the player simply gives up and quits), and before any epitaph like</p>
+
+<div class="code"><p class="quoted">
+*** You have been poisoned ***
+</p></div>
+<p>appears. For example:</p>
+
+<div class="code"><p class="quoted">
+When play ends, say "Oh dear."
+</p></div>
+<p>Surprisingly, the end is not always the end:</p>
+
+<div class="definition" id="defn98">
+<p class="defnprototype"><strong>resume the story</strong></p>
+
+
+
+<p>This phrase causes an ended story to resume exactly as if no "end the story..." phrase had been used. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+When play ends:
+<br>    if the story has not ended finally:
+<br>        say "Oh dear. Still, here's another chance.";
+<br>        resume the story.
+</p></blockquote>
+
+<p>The phrase is likely to be sensible only as part of a "when play ends" rule. Other traditional uses include giving the player three lives, as in an old-school arcade machine.</p>
+
+
+</div>
+
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-138"><p class="example-p"><span class="example-short-start">138. <a href="rb_11.html#example-138" class="example-link" onClick="(function() { document.getElementById('example-138').setAttribute('open','open'); return true; })();">Big Sky Country</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">Allowing the player to continue play after a fatal accident, but penalizing him by scattering his possessions around the game map.</span> (c.f. <a href="rb_11.html#rb-11.6">RB §11.6. Ending The Story</a>)</p></div>
+</div></section>
+<section class="section" id="wi-9.5"><div>
+
+
+
+
+
+<h3>WI §9.5. Every turn</h3>
+<p>The passage of time in interactive fiction is broken up into a succession of turns, in each of which the player types a request and is given a response. Usually each such request triggers one action, but sometimes a whole sequence are fired off, as when the player types "get all" in a cluttered room.</p>
+<p>As we've seen, the variable "turn count" holds the number of turns of play so far. By convention turn number 0 is the time when Inform prints up the banner and any initial text; it becomes turn number 1 when the player's first command is typed.</p>
+<p>One of the last things to happen in each turn is that Inform will apply any rules which have been set to occur "every turn", like so:</p>
+
+<div class="code"><p class="quoted">
+Every turn, say "The summer breeze shakes the apple-blossom."
+</p></div>
+<p>This is equivalent to writing:</p>
+
+<div class="code"><p class="quoted">
+An every turn rule: say "The summer breeze shakes the apple-blossom."
+</p></div>
+<p>Note that the text about blossom, which will quickly become tiresome, is said at the end of every turn, not at the beginning, and in particular not before the player's first opportunity to type a command.</p>
+<p>As usual when defining rules, we can add stipulations: any condition can be attached using "when".</p>
+
+<div class="code">
+<p class="quoted">
+Every turn when the location is the Orchard, say "The summer breeze shakes the apple-blossom."
+</p>
+<p class="quoted">
+Every turn when the player can see the rotting fish, say "Your nose twitches involuntarily."
+</p>
+</div>
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-139"><p class="example-p"><span class="example-short-start">139. <a href="rb_10.html#example-139" class="example-link" onClick="(function() { document.getElementById('example-139').setAttribute('open','open'); return true; })();">Witnessed 1</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">A kind of battery which can be put into different devices, and which will lose power after extended use.</span> (c.f. <a href="rb_10.html#rb-10.7">RB §10.7. Electricity and Magnetism</a>)</p></div>
+<div class="example-short" id="example-short-140"><p class="example-p"><span class="example-short-start">140. <a href="rb_7.html#example-140" class="example-link" onClick="(function() { document.getElementById('example-140').setAttribute('open','open'); return true; })();">Text Foosball</a></span> <span class="example-difficulty">★★★★</span>  <span class="example-description">A game of foosball which relies heavily on every-turn rules.</span> (c.f. <a href="rb_7.html#rb-7.2">RB §7.2. Liveliness</a>)</p></div>
+</div></section>
+<section class="section" id="wi-9.6"><div>
+
+
+
+
+
+<h3>WI §9.6. The time of day</h3>
+<p>Inform keeps track of the time of day automatically: play ordinarily begins at 9 AM and each turn takes one minute. In some works of interactive fiction, time of day is crucial: in others, it is irrelevant or even, by a sort of tacit convention, non-existent. So Inform does nothing to act upon the time, or to reveal it to the player, without instruction. Nevertheless it is there.</p>
+<p>A sentence like the following allows the initial time to be set up as something other than 9 AM:</p>
+
+<div class="code"><p class="quoted">
+The time of day is 3:13 PM.
+</p></div>
+<p>Here, "3:13 PM" is a constant value of a kind not seen before: it's a kind of value called "time", and the value "time of day" is a time that varies. After one turn it will be 3:14 PM, then 3:15 PM and so on.</p>
+<p>Note that the sentence above is an assertion (a statement about the initial state of affairs), not an instruction which can be part of a rule. It would be equivalent to write:</p>
+
+<div class="code"><p class="quoted">
+When play begins: now the time of day is 3:13 PM.
+</p></div>
+<p>We more often change "time of day" to take care of drastic events:</p>
+
+<div class="code"><p class="quoted">
+At the time when the player loses consciousness:
+<br>    now the time of day is 10:12 AM;
+<br>    say "A mist comes over your vision, and when you come to, it is morning and you are in bed."
+</p></div>
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-141"><p class="example-p"><span class="example-short-start">141. <a href="rb_4.html#example-141" class="example-link" onClick="(function() { document.getElementById('example-141').setAttribute('open','open'); return true; })();">IPA</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">Shops which each have opening and closing hours, so that it is impossible to go in at the wrong times, and the player is kicked out if he overstays his welcome.</span> (c.f. <a href="rb_4.html#rb-4.3">RB §4.3. Event Scheduling</a>)</p></div>
+</div></section>
+<section class="section" id="wi-9.7"><div>
+
+
+
+
+
+<h3>WI §9.7. Telling the time</h3>
+<p>Now that we have the time of day, we can of course use this value in room descriptions and the like:</p>
+
+<div class="code"><p class="quoted">
+The Clock Chamber is a room. "The dark chamber behind the clock face, a mill-room of gears which grind down the seconds. Through the glass you can see the reversed hands reading [the time of day]."
+</p></div>
+<p>It seems odd, though, to read a precise numerical description of the time here: after all, it isn't a digital clock. A friendlier version would use:</p>
+
+<div class="definition" id="defn99">
+<p class="defnprototype"><strong>say "[</strong>(time)<strong> in words]"</strong></p>
+
+
+
+<p>This text substitution produces the given time written out in English sentence form. For example:</p>
+
+<blockquote class="code"><p class="quoted">
+"Through the glass you can see the reversed hands reading [the time of day in words]."
+</p></blockquote>
+
+<p>might produce</p>
+
+<blockquote class="code"><p class="quoted">
+Through the glass you can see the reversed hands reading twenty to nine.
+</p></blockquote>
+
+
+
+</div>
+
+<p>To reiterate an example which came up earlier, we could even work the time of day into the command prompt, which would lend the proper sense of urgency to a story played out against the clock:</p>
+
+<div class="code"><p class="quoted">
+When play begins: now the command prompt is "[time of day] &gt;".
+</p></div>
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-142"><p class="example-p"><span class="example-short-start">142. <a href="rb_4.html#example-142" class="example-link" onClick="(function() { document.getElementById('example-142').setAttribute('open','open'); return true; })();">Situation Room</a></span> <span class="example-difficulty">★</span>  <span class="example-description">Printing the time of day in 24-hour time, as in military situations.</span> (c.f. <a href="rb_4.html#rb-4.1">RB §4.1. The Passage Of Time</a>)</p></div>
+</div></section>
+<section class="section" id="wi-9.8"><div>
+
+
+
+
+
+<h3>WI §9.8. Approximate times, lengths of time</h3>
+<p>Clocks and watches vary considerably in how much detail they show, and we tend not to report the time over-precisely: half-past ten is an elastic concept. The following room description for the Clock Chamber comes across much more naturally:</p>
+
+<div class="code"><p class="quoted">
+ The Clock Chamber is a room. "The dark chamber behind the clock face, a mill-room of gears which grind down the seconds. Through the glass you can see the reversed hands reading [the time of day to the nearest five minutes in words]."
+</p></div>
+<p>The phrase "... to the nearest ..." rounds off the given time, just as it sounds; as we'll see later, it can actually round off any arithmetic values, not just times. For instance, "9:58 PM to the nearest ten minutes" is 10:00 PM.</p>
+<p>In talking about lengths of time, rather than times of day, it's useful to have these:</p>
+
+<div class="definition" id="defn100">
+<p class="defnprototype"><strong></strong>(number)<strong> minutes ... time</strong></p>
+
+
+
+<p>This phrase converts numbers into lengths of time. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+15 minutes
+</p></blockquote>
+
+<p>Because it's a phrase, not just a notation for writing constants down, the number doesn't have to be given literally:</p>
+
+<blockquote class="code"><p class="quoted">
+let X be 5;
+<br>if the player is in the Slow Room, now X is 10;
+<br>let deadline be the time of day plus X minutes;
+</p></blockquote>
+
+<p>Note that lengths of time can't exceed 1440 minutes.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn101">
+<p class="defnprototype"><strong></strong>(number)<strong> hours ... time</strong></p>
+
+
+
+<p>This phrase converts numbers into lengths of time. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+10 hours
+</p></blockquote>
+
+<p>Note that lengths of time can't exceed 24 hours.</p>
+
+
+</div>
+
+
+
+</div></section>
+<section class="section" id="wi-9.9"><div>
+
+
+
+
+
+<h3>WI §9.9. Comparing and shifting times</h3>
+<p>Carrying out easy calculations with times is straightforward:</p>
+
+<div class="code"><p class="quoted">
+ The chronometer is in the Clock Chamber. "On one wall is a terribly self-important chronometer showing the time in major world cities. London: [time of day]. Paris: [one hour after the time of day]. Tokyo: [9 hours after the time of day]. Cupertino, California: [7 hours before the time of day]."
+</p></div>
+<p>Here we are using two phrases:</p>
+
+<div class="definition" id="defn102">
+<p class="defnprototype"><strong></strong>(time)<strong> before </strong>(time)<strong> ... time</strong></p>
+
+
+
+<p>This phrase produces a time earlier by the amount given, keeping within the 24 hour clock. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+7 hours before 5:30 AM
+</p></blockquote>
+
+<p>produces 10:30 PM.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn103">
+<p class="defnprototype"><strong></strong>(time)<strong> after </strong>(time)<strong> ... time</strong></p>
+
+
+
+<p>This phrase produces a time later by the amount given, keeping within the 24 hour clock. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+9 hours after 11 AM
+</p></blockquote>
+
+<p>produces 8 PM.</p>
+
+
+</div>
+
+<p>Similarly, we have conditions:</p>
+
+<div class="definition" id="defn104">
+<p class="defnprototype"><strong>if </strong>(time)<strong> is before </strong>(time)<strong>:</strong></p>
+
+
+
+<p>This condition is true if the first time occurs earlier in the day than the second. In recognition of the fact that very few stories begin before 4 AM, whereas many run on past midnight, the start of the day is taken to be 4 AM: thus 3:59 AM is after 11:10 PM, but 4:04 AM is before it.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn105">
+<p class="defnprototype"><strong>if </strong>(time)<strong> is after </strong>(time)<strong>:</strong></p>
+
+
+
+<p>This condition is true if the first time occurs later in the day than the second. In recognition of the fact that very few stories begin before 4 AM, whereas many run on past midnight, the start of the day is taken to be 4 AM: thus 3:59 AM is after 11:10 PM, but 4:04 AM is before it.</p>
+
+
+</div>
+
+
+
+</div></section>
+<section class="section" id="wi-9.10"><div>
+
+
+
+
+
+<h3>WI §9.10. Calculating times</h3>
+<p>We will occasionally need to perform more complex calculations with time, and in order to do that, we have a way to convert the time of day to numbers. Thus the phrase "the minutes part of ..." takes a time and produces a number from 0 to 59; similarly "the hours part of ..." extracts a number from 0 to 23, using the twenty-four hour clock.</p>
+
+<div class="definition" id="defn106">
+<p class="defnprototype"><strong>minutes part of </strong>(time)<strong> ... number</strong></p>
+
+
+
+<p>This phrase converts a time to a number, then takes the result mod 60, which in effect produces the number of minutes after the hours are thrown away. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+minutes part of 12:41 PM
+</p></blockquote>
+
+<p>produces 41.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn107">
+<p class="defnprototype"><strong>hours part of </strong>(time)<strong> ... number</strong></p>
+
+
+
+<p>This phrase converts a time to a number, then divides the result by 60, which in effect produces the number of hours after minutes are thrown away. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+hours part of 8:21 AM
+</p></blockquote>
+
+<p>produces 8.</p>
+
+
+</div>
+
+<p>To go the other way, we can convert any number to a duration by writing "minutes" or "hours" after it. For instance:</p>
+
+<div class="code">
+<p class="quoted">
+ The clock error is a number that varies. To thump the mechanism: now the clock error is a random number from -10 to 10.
+</p>
+<p class="quoted">
+The broken grandfather clock is in the Chamber. "An erratic grandfather clock seems to say it is [clock error minutes after the time of day]."
+</p>
+<p class="quoted">
+When play begins, thump the mechanism. Instead of attacking the broken clock: thump the mechanism; say "You thump the clock, which now reads [clock error minutes after the time of day].".
+</p>
+</div>
+<p>Note that "clock error" is a number, but "clock error minutes" is a time.</p>
+
+
+</div></section>
+<section class="section" id="wi-9.11"><div>
+
+
+
+
+
+<h3>WI §9.11. Future events</h3>
+<p>We often want to arrange for something to happen at some point in the future. Here is yet another timepiece:</p>
+
+<div class="code">
+<p class="quoted">
+ An egg-timer is in the Chamber. "A plastic egg timer in the shape of a chicken can be pressed to set it going."
+</p>
+<p class="quoted">
+Instead of pushing the egg-timer:
+<br>    say "It begins to mark time.";
+<br>    the egg-timer clucks in four turns from now.
+</p>
+<p class="quoted">
+At the time when the egg-timer clucks:
+<br>    say "Cluck! Cluck! Cluck! says the egg-timer."
+</p>
+</div>
+<p>The event here is called "the egg-timer clucks". It only happens if we instruct so, using one of the following phrases:</p>
+
+<div class="definition" id="defn108">
+<p class="defnprototype"><strong></strong>(rule)<strong> in </strong>(time)<strong> from now</strong></p>
+
+
+
+<p>This phrase causes the given rule to be run at a given time offset from the current time of day. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+the egg-timer clucks in 18 minutes from now;
+</p></blockquote>
+
+
+
+</div>
+
+
+<div class="definition" id="defn109">
+<p class="defnprototype"><strong></strong>(rule)<strong> in </strong>(number)<strong> turn</strong>/turns<strong> from now</strong></p>
+
+
+
+<p>This phrase causes the given rule to be run at a given number of turns after the current one. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+the egg-timer clucks in four turns from now;
+</p></blockquote>
+
+
+
+</div>
+
+
+<div class="definition" id="defn110">
+<p class="defnprototype"><strong></strong>(rule)<strong> at </strong>(time)<strong></strong></p>
+
+
+
+<p>This phrase causes the given rule to be run at a given time of day. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+the egg-timer clucks at 11:35 AM;
+</p></blockquote>
+
+
+
+</div>
+
+<p>If we know in advance what time we want something to happen, we can more simply write:</p>
+
+<div class="code"><p class="quoted">
+At 4 PM: say "The great bells of the clock tower chime four."
+</p></div>
+<p>(Note that in either case such rules begin with the word "at": they are the only rules allowed to begin with the word "at".)</p>
+<p>A small warning: timed events like these only have a chance to occur during the turn sequence, that is, once every turn. In most stories, one turn takes one minute, so there will in due course be a turn happening at exactly (say) 11:35 AM. But if the clock is being advanced faster than this, it's possible that there are turns at (say) 11:32 AM and then not until 11:37 AM. But an event set for 11:35 AM will nevertheless happen -- it will run at the first available turn after that time, which will be 11:37 AM. Events can thus happen up to half an hour late, though Inform cancels them if the elapsed time is greater than that.</p>
+<p>The Scenes panel of the Index can be a useful way to see what events have been set.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-143"><p class="example-p"><span class="example-short-start">143. <a href="rb_9.html#example-143" class="example-link" onClick="(function() { document.getElementById('example-143').setAttribute('open','open'); return true; })();">MRE</a></span> <span class="example-difficulty">★</span>  <span class="example-description">Hunger that eventually kills the player, and foodstuffs that can delay the inevitable by different amounts of time.</span> (c.f. <a href="rb_9.html#rb-9.1">RB §9.1. Food</a>)</p></div>
+<div class="example-short" id="example-short-144"><p class="example-p"><span class="example-short-start">144. <a href="rb_3.html#example-144" class="example-link" onClick="(function() { document.getElementById('example-144').setAttribute('open','open'); return true; })();">Totality</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">To schedule an eclipse of the sun, which involves a number of related events.</span> (c.f. <a href="rb_3.html#rb-3.9">RB §3.9. Passers-By, Weather and Astronomical Events</a>)</p></div>
+<div class="example-short" id="example-short-145"><p class="example-p"><span class="example-short-start">145. <a href="rb_8.html#example-145" class="example-link" onClick="(function() { document.getElementById('example-145').setAttribute('open','open'); return true; })();">Empire</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">A train which follows a schedule, stopping at a number of different locations.</span> (c.f. <a href="rb_8.html#rb-8.2">RB §8.2. Ships, Trains and Elevators</a>)</p></div>
+<div class="example-short" id="example-short-146"><p class="example-p"><span class="example-short-start">146. <a href="rb_4.html#example-146" class="example-link" onClick="(function() { document.getElementById('example-146').setAttribute('open','open'); return true; })();">Hour of the Wren</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">Allowing the player to make an appointment, which is then kept.</span> (c.f. <a href="rb_4.html#rb-4.3">RB §4.3. Event Scheduling</a>)</p></div>
+</div></section>
+<section class="section" id="wi-9.12"><div>
+
+
+
+
+
+<h3>WI §9.12. Actions as conditions</h3>
+<p>There are two ways that descriptions of actions can be used as conditions. First, we can simply describe an action, and then the condition will be true if that is what the player is trying to do, and not otherwise:</p>
+
+<div class="code"><p class="quoted">
+if taking a container, ...
+</p></div>
+<p>This is actually an abbreviation for the longer, some would say preferable form:</p>
+
+<div class="code"><p class="quoted">
+if we are taking a container, ...
+</p></div>
+<p>Secondly, we can talk about the past as well as the present, which is very useful since interactive fiction often contains situations which are changed by earlier events.</p>
+
+<div class="code"><p class="quoted">
+Instead of waiting when we have taken the lantern, say "No, your acquisitive nature is roused now, and simply waiting will no longer do."
+</p></div>
+<p>More on the past tense later follows in the next section: note that "we are taking" has become "we have taken". For the rule to apply, it is not enough that the action "taking the lantern" has been tried: it must have succeeded. Note also that it's enough for any actor in the story to have successfully taken the lantern: it doesn't have to be the player.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-147"><p class="example-p"><span class="example-short-start">147. <a href="rb_3.html#example-147" class="example-link" onClick="(function() { document.getElementById('example-147').setAttribute('open','open'); return true; })();">Night Sky</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A room which changes its description depending on whether an object has been examined.</span> (c.f. <a href="rb_3.html#rb-3.1">RB §3.1. Room Descriptions</a>)</p></div>
+<div class="example-short" id="example-short-148"><p class="example-p"><span class="example-short-start">148. <a href="rb_5.html#example-148" class="example-link" onClick="(function() { document.getElementById('example-148').setAttribute('open','open'); return true; })();">Zero</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">A box which called "horribly heavy box" after the player has tried to take it the first time.</span> (c.f. <a href="rb_5.html#rb-5.5">RB §5.5. Memory and Knowledge</a>)</p></div>
+</div></section>
+<section class="section" id="wi-9.13"><div>
+
+
+
+
+
+<h3>WI §9.13. The past and perfect tenses</h3>
+<p>The remaining sections of this chapter go into more technical ways to think about the progress of the story through time, and can be skipped at a first reading.</p>
+<p>Conditions are clauses which require Inform to make a decision: is such-and-such true, or not true? We have already seen conditions attached to rules using "when":</p>
+
+<div class="code"><p class="quoted">
+Instead of waiting when the Sorting Hat is in the Hall: ...
+</p></div>
+<p>and, as we shall later see, we will often want to write instructions like:</p>
+
+<div class="code"><p class="quoted">
+if the Sorting Hat is in the Hall, say "Hermione blinks apprehensively."
+</p></div>
+<p>The condition is "the Sorting Hat is in the Hall", and during play this will sometimes be true and sometimes false.</p>
+<p>A condition in the form "X is Y" is of course written in the present tense, and refers to the current state of affairs. Three other tenses are allowed. First, the present perfect:</p>
+
+<div class="code"><p class="quoted">
+if X has been Y ...
+</p></div>
+<p>is true if it has ever been the case that "X is Y" at the start of any turn (or any action). So, for instance,</p>
+
+<div class="code"><p class="quoted">
+if the gate has been open ...
+</p></div>
+<p>will be valid if and only if the gate has ever been made open by any action (even if it is closed now), or if it started out by being open when play began.</p>
+<p>Next is the past tense:</p>
+
+<div class="code"><p class="quoted">
+if X was Y ...
+</p></div>
+<p>holds if and only if "X is Y" was true at the start of the most recent action. This is convenient when trying to describe what has changed in the course of the action, but sometimes also when making the action itself happen. For instance:</p>
+
+<div class="code"><p class="quoted">
+if the lantern was switched on, now the lantern is switched off;
+<br>if the lantern was switched off, now the lantern is switched on;
+</p></div>
+<p>Completing the set is the past perfect:</p>
+
+<div class="code"><p class="quoted">
+if X had been Y ...
+</p></div>
+<p>which records whether "X has been Y" was true at the start of the most recent action. All these verbs can of course be negated (though "wasn't" and "hadn't" are disallowed as poor style: we use "was not" and "had not" instead). So for example,</p>
+
+<div class="code"><p class="quoted">
+if the player had not been in the Ballroom ...
+</p></div>
+<p>is true if the player hadn't visited the Ballroom at the start of the most recent action.</p>
+<p>Something we must watch out for is that variables might not have the same values in the past that they have now. As a result, writing conditions such as "if the noun has been open" is a bad idea, because in the past "the noun" very likely referred to something different. It is really only safe to talk in the past tense about definite, fixed things: "if the Great Gates of Kiev have been open" would be fine.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-149"><p class="example-p"><span class="example-short-start">149. <a href="rb_5.html#example-149" class="example-link" onClick="(function() { document.getElementById('example-149').setAttribute('open','open'); return true; })();">Tense Boxing</a></span> <span class="example-difficulty">★</span>  <span class="example-description">An overview of all the variations of past and present tenses, and how they might be used.</span> (c.f. <a href="rb_5.html#rb-5.5">RB §5.5. Memory and Knowledge</a>)</p></div>
+<div class="example-short" id="example-short-150"><p class="example-p"><span class="example-short-start">150. <a href="rb_10.html#example-150" class="example-link" onClick="(function() { document.getElementById('example-150').setAttribute('open','open'); return true; })();">Bruneseau's Journey</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">A candle which reacts to lighting and blowing actions differently depending on whether it has already been lit once.</span> (c.f. <a href="rb_10.html#rb-10.8">RB §10.8. Fire</a>)</p></div>
+<div class="example-short" id="example-short-151"><p class="example-p"><span class="example-short-start">151. <a href="rb_3.html#example-151" class="example-link" onClick="(function() { document.getElementById('example-151').setAttribute('open','open'); return true; })();">Elsie</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">A door that closes automatically one turn after the player opens it.</span> (c.f. <a href="rb_3.html#rb-3.5">RB §3.5. Doors, Staircases, and Bridges</a>)</p></div>
+</div></section>
+<section class="section" id="wi-9.14"><div>
+
+
+
+
+
+<h3>WI §9.14. How many times?</h3>
+<p>There are two further ways to examine the historical record. Given any condition, we can say</p>
+
+<div class="code"><p class="quoted">
+if (...condition...) for the second time ...
+<br>if (...condition...) twice ...
+<br>if (...condition...) 2 times...
+<br>if (...condition...) two times...
+</p></div>
+<p>(all of which are synonymous: the words once, twice, thrice, one, two, three, four, five, six, seven, eight, nine, ten, first, second, third, fourth, fifth, sixth, seventh, eighth, ninth and tenth all mean what they obviously should). The result is true if the condition holds now and has held for only one previous spell in the past. A condition holding for, say, fifteen consecutive turns without a break counts as only one "time" - so what we mean by "twice" here is that it is true now, was previously false for a while, and was previously true for a while before that, but no more. In effect, then,</p>
+
+<div class="code"><p class="quoted">
+if the player is in the Ballroom for the third time ...
+</p></div>
+<p>is true if this is the third visit to the Ballroom. We can also say</p>
+
+<div class="code"><p class="quoted">
+if the player is in the Ballroom for more than the third time ...
+</p></div>
+<p>or similarly "less than", "at least", "at most". It would be more natural, though, to say</p>
+
+<div class="code"><p class="quoted">
+if the player has been in the Ballroom three times ...
+</p></div>
+<p>The adjective "only" (or equivalently "exactly") can be added to obtain</p>
+
+<div class="code"><p class="quoted">
+if the player has been in the Ballroom only three times ...
+</p></div>
+<p>To recap, this means there have been exactly three visits to the Ballroom in history, whereas</p>
+
+<div class="code"><p class="quoted">
+if the player is in the Ballroom for the third time ...
+</p></div>
+<p>means there have been exactly three visits, the third of which is still going on - an important distinction.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-152"><p class="example-p"><span class="example-short-start">152. <a href="rb_3.html#example-152" class="example-link" onClick="(function() { document.getElementById('example-152').setAttribute('open','open'); return true; })();">Infiltration</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A room whose description changes depending on the number of times the player has visited.</span> (c.f. <a href="rb_3.html#rb-3.1">RB §3.1. Room Descriptions</a>)</p></div>
+</div></section>
+<section class="section" id="wi-9.15"><div>
+
+
+
+
+
+<h3>WI §9.15. How many turns?</h3>
+<p>So much for "times" - spells in which a condition is true. We can also test the length of time, in turns of play, that something has been true. Thus:</p>
+
+<div class="code"><p class="quoted">
+if ... for three turns;
+</p></div>
+<p>means that the condition holds now, and held at the start of this turn, at the start of last turn, and at the start of the turn before that. In particular:</p>
+
+<div class="code"><p class="quoted">
+if the floppy hat has been worn for three turns ...
+</p></div>
+<p>will be false if the hat is not currently worn (even if it has been often in the past) and, on the other hand, will be true if the hat has been worn for twenty turns. Here again we can be more specific. These are synonymous:</p>
+
+<div class="code"><p class="quoted">
+if the floppy hat is worn for the third turn ...
+<br>if the floppy hat has been worn for only 3 turns ...
+<br>if the floppy hat has been worn for exactly three turns ...
+</p></div>
+<p>all requiring that the hat wasn't worn four turns ago. As before, "more than", "less than", "at least" and "at most" so forth can also be used - say, "for at least 21 turns".</p>
+<p>A warning: we must be careful when writing something like</p>
+
+<div class="code"><p class="quoted">
+if the noun has been open ...
+</p></div>
+<p>since this tests whether it has ever been true that the noun of the then action was open: not whether the current noun-object has ever been open.</p>
+<p>Lastly, note that the beginning of play - when (usually) initial text and a banner is printed, followed by a room description - counts towards these counts. In effect, this is a turn: one in which the player compulsorily performs the looking action, rather than being asked for a command. (By convention it is numbered as turn number 0, and doesn't contribute towards the turn count.)</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-153"><p class="example-p"><span class="example-short-start">153. <a href="rb_7.html#example-153" class="example-link" onClick="(function() { document.getElementById('example-153').setAttribute('open','open'); return true; })();">Annoyotron Jr</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A child who after a certain period in the car starts asking annoying questions.</span> (c.f. <a href="rb_7.html#rb-7.2">RB §7.2. Liveliness</a>)</p></div>
+</div></section>
+</section>
+
+<footer>
+<div class="linkback"><a href="http://inform7.com/book/WI_9_1.html">WI Chapter 9 on inform7.com</a></div>
+<div class="doc-navbar">
+<div>
+<div class="doc-navbar-left"><a class="nav-left" href="wi_8.html#wi-chapter-8-change">8. Change</a></div>
+<div class="doc-navbar-right"><a class="nav-right" href="wi_10.html#wi-chapter-10-scenes">10. Scenes</a></div>
+</div>
+<div>
+<div class="doc-navbar-left"><a href="index.html">Table of Contents</a></div>
+<div class="doc-navbar-right"><a href="index.html#general-index">General Index</a></div>
+</div>
+</div>
+
+</footer>
+</main></body></html>
+

@@ -1,0 +1,380 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../style.css">
+<script>function toggle_details() {
+   var openness, toggle_link;
+   toggle_link = document.getElementById("toggle");
+   openness = toggle_link.classList.toggle("open");
+document.querySelectorAll("details.full-example").forEach(detail => { if (openness) { detail.setAttribute("open", true); } else { detail.removeAttribute("open");} });
+   toggle_link.innerText = (openness ? "Close" : "Open") + " all examples";
+   }
+
+
+function copyCode(text) { navigator.clipboard.writeText(text); }
+
+
+var links = document.getElementsByTagName('a');
+for (var i = 0; i < links.length; i++) {
+    if (links[i].href.match(/^#example-\d+/)) {
+	links[i].onClick = function() { links[i].href.match(/^#example-(\d+)$/); var example = document.getElementById($1).setAttribute('open'); return true; };
+    }
+}
+
+function add_bar(update) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let navbar = document.querySelector('div.index-navbar');
+
+    if (navbar && urlParams.has('project')) {
+        navbar.setAttribute('class', 'index-navbar'); // removes hidden
+        let project = decodeURIComponent(urlParams.get('project'));
+        let index_root = project + '/.index/';
+        let build = project + '/Build/';
+        let query_arg = "?project="+encodeURIComponent(project);
+
+        let links = [
+            { "General Index": document.getElementById('general_index').href },
+            { "Docs": document.getElementById('docs').href },
+            { "Extensions": index_root + 'doc/Extensions.html' },
+            { "Definitions": index_root + 'doc/ExtIndex.html' },
+            { "Debug Log": build + 'debug_log.html' },
+            { "Problems": build + 'problems.html' },
+            { "Source": index_root + 'story.html' },
+            { "Project Index": index_root + 'Index/Welcome.html' } ];
+        let sp = document.createTextNode(" ");
+        links.forEach(h => {
+            Object.entries(h).forEach(([text, url]) => {
+                let my_id = text.toLowerCase().replace(' ', '_');
+                let a = document.querySelector('#'+my_id);
+                let url_target = "file://"+url+query_arg;
+                if (a) {
+                    let parts = a.href.split('#');
+                    let qparts = parts[0].split('?');
+                    a.href = qparts[0] +  (qparts[1] ? ('?' + qparts[1]) : query_arg) + (parts[1] ? ('#' + parts[1]) : "");
+                }
+                else {
+                    a = document.createElement('a');
+                    let href = document.createAttribute("href");
+                    href.value = url_target;
+                    a.setAttributeNode(href);
+                    let elem_id = document.createAttribute("id");
+                    elem_id.value = my_id;
+                    a.setAttributeNode(elem_id);
+                    let linktext = document.createTextNode(text);
+                    a.appendChild(linktext);
+                    navbar.insertBefore(sp.cloneNode(), navbar.firstChild);
+                    navbar.insertBefore(a, navbar.firstChild);
+                }
+            })});
+        if (update) {
+            let main_links = document.querySelectorAll('main a');
+            main_links.forEach(a => {
+                if (!a.href.startsWith('javascript:') || (a.href.match(/[^:]+:\/\// && !a.href.startsWith('file:')))) {
+                    let parts = a.href.split('#')
+                    a.href = parts[0] + query_arg + (parts[1] ? ('#' + parts[1]) : "");
+                } });
+        }
+    }
+}
+
+
+
+document.addEventListener("DOMContentLoaded", add_bar);</script>
+<title>Example #367</title></head>
+<body class="inform7-source">
+
+<div class="inform7-source"><div class="pseudo">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;Stately Gardens&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7gh">Chapter 1 - Laying Out Rooms</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A room can be indoors or outdoors.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Use full-length room descriptions.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">After deciding the scope of the player:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	repeat with the way running through directions:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	let first step be the room the way from the location;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if the first step is a room:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	place the first step in scope;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	let second step be the room the way from the first step;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	if the second step is a room, place the second step in scope;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	place the obelisk in scope.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[The obelisk is so large that it can be seen from every room. If we had a number of such large monuments we might want to write a systematic routine to handle them, but this will do for now.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The room description heading rule is not listed in the carry out looking rules.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Now, we set things up so that the surrounding areas are described automatically as part of the room description:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Building description is a truth state that varies. Building description is false.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">After looking when the location is an outdoors room:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now count of sentences is 0;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now building description is true;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	repeat with way running through directions:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	let space be the room way from the location;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if space is an outdoors room, silently try looking toward space;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the obelisk is not in the location and the obelisk is unmentioned:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	let the way be the best route from location to the Upper Terrace;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if the way is a direction, say <span class="i7sx">&quot;</span><span class="i7si">[The obelisk]</span><span class="i7sx"> is proudly visible on </span><span class="i7si">[the way]</span><span class="i7sx"> horizon. </span><span class="i7si">[run paragraph on]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	increment the count of sentences;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now building description is false;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	unless the count of sentences is 0:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say paragraph break.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[But perhaps there are a few rooms where we do not wish that to happen, so we&#39;ll build in exceptions for those.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">After looking in the rose garden:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;Otherwise, you are quite cut off.&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">After looking in the Ha-ha:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	do nothing.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[And suppose we want to allow the player to look in any direction:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;look </span><span class="i7si">[direction]</span><span class="i7sx">&quot;</span> or <span class="i7sx">&quot;look to/toward </span><span class="i7si">[direction]</span><span class="i7sx">&quot;</span> as facing.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Facing is an action applying to one visible thing.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Carry out facing:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	let the viewed item be the room noun from the location;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the viewed item is not a room:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if the location is indoors, say <span class="i7sx">&quot;Your view is restricted by the lack of doors or windows in that direction.&quot;</span> instead;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	otherwise say <span class="i7sx">&quot;You can&#39;t see anything promising that way.&quot;</span> instead;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	try looking toward the viewed item.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of facing up:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;Above you is bright sky.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[We also need to tell distant rooms how to describe themselves.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;look toward </span><span class="i7si">[any adjacent room]</span><span class="i7sx">&quot;</span> as looking toward.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Looking toward is an action applying to one visible thing.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Check looking toward a room which does not contain something mentionable:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if building description is false:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;You can&#39;t make out anything of interest that way.&quot;</span> instead.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Carry out looking toward:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now every thing is unmentioned;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the chosen direction is the best route from the location to the noun;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the second noun is the room the chosen direction from the noun;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the noun contains something mentionable:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	repeat with item running through mentionable things in the noun:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	carry out the writing a distant paragraph about activity with the item;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the noun contains something mentionable:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	increment the count of sentences;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	choose row count of sentences in the Table of Distance Sentences;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if the second noun is an outdoors room and the second noun contains something mentionable, say <span class="i7sx">&quot;</span><span class="i7si">[both entry]</span><span class="i7sx"> </span><span class="i7si">[run paragraph on]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	otherwise say <span class="i7sx">&quot;</span><span class="i7si">[here entry]</span><span class="i7sx"> </span><span class="i7si">[run paragraph on]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	otherwise:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if the second noun is an outdoors room and the second noun contains something mentionable:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	increment the count of sentences;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	choose row count of sentences in the Table of Distance Sentences;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[there entry]</span><span class="i7sx"> </span><span class="i7si">[run paragraph on]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if building description is false:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say paragraph break.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[And again, some exception needs to be made for seeing what&#39;s in the dip in the ground:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of looking toward the Ha-ha:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the chosen direction is the best route from the location to the noun;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the second noun is the room the chosen direction from the noun;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the second noun is an outdoors room and the second noun contains something mentionable:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	increment the count of sentences;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	choose row count of sentences in the Table of Distance Sentences;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[there entry]</span><span class="i7sx"> </span><span class="i7si">[run paragraph on]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[The following is to account for cases where the player types &quot;look toward obelisk&quot; or similar, rather than looking toward a room:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;look toward </span><span class="i7si">[something]</span><span class="i7sx">&quot;</span> as examining.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[The following is arguably an unnecessary refinement, but the listing of items in the distance gets a bit repetitive unless we vary the sentence structure.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Chosen direction is a direction that varies.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Count of sentences is a number that varies.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line">Table of Distance Sentences</span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">both</span><span class="td">here</span><span class="td">there</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;From here, you make out </span></span><span class="td"><span class="i7si">[a list of mentionable things in the noun]</span></span><span class="td"><span class="i7sx"> a little way </span></span><span class="td"><span class="i7si">[chosen direction]</span></span><span class="td"><span class="i7sx">, and, further on, </span></span><span class="td"><span class="i7si">[a list of mentionable things in the second noun]</span></span><span class="td"><span class="i7sx">.&quot;</span></span><span class="td"><span class="i7sx">&quot;From here, you make out </span></span><span class="td"><span class="i7si">[a list of mentionable things in the noun]</span></span><span class="td"><span class="i7sx"> </span></span><span class="td"><span class="i7si">[if the noun is not adjacent to the location]</span></span><span class="td"><span class="i7sx">some distance </span></span><span class="td"><span class="i7si">[end if]</span></span><span class="td"><span class="i7sx">to </span></span><span class="td"><span class="i7si">[the chosen direction]</span></span><span class="td"><span class="i7sx">.&quot;</span></span><span class="td"><span class="i7sx">&quot;From here, you make out </span></span><span class="td"><span class="i7si">[a list of mentionable things in the second noun]</span></span><span class="td"><span class="i7sx"> some distance </span></span><span class="td"><span class="i7si">[chosen direction]</span></span><span class="td"><span class="i7sx">.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;To </span></span><span class="td"><span class="i7si">[the chosen direction]</span></span><span class="td"><span class="i7sx"> there </span></span><span class="td"><span class="i7si">[is-are a list of mentionable things in the noun]</span></span><span class="td"><span class="i7sx">, partly obscuring your further view of </span></span><span class="td"><span class="i7si">[a list of mentionable things in the second noun]</span></span><span class="td"><span class="i7sx">.&quot;</span></span><span class="td"><span class="i7sx">&quot;To </span></span><span class="td"><span class="i7si">[the chosen direction]</span></span><span class="td"><span class="i7sx"> there </span></span><span class="td"><span class="i7si">[is-are a list of mentionable things in the noun]</span></span><span class="td"><span class="i7sx">.&quot;</span></span><span class="td"><span class="i7sx">&quot;Quite a way </span></span><span class="td"><span class="i7si">[chosen direction]</span></span><span class="td"><span class="i7sx"> </span></span><span class="td"><span class="i7si">[is-are a list of mentionable things in the second noun]</span></span><span class="td"><span class="i7sx">.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;Then </span></span><span class="td"><span class="i7si">[chosen direction]</span></span><span class="td"><span class="i7sx"> </span></span><span class="td"><span class="i7si">[is-are a list of mentionable things in the noun]</span></span><span class="td"><span class="i7sx">, and beyond </span></span><span class="td"><span class="i7si">[a list of mentionable things in the second noun]</span></span><span class="td"><span class="i7sx">.&quot;</span></span><span class="td"><span class="i7sx">&quot;Meanwhile, to </span></span><span class="td"><span class="i7si">[the chosen direction]</span></span><span class="td"><span class="i7sx"> </span></span><span class="td"><span class="i7si">[is-are a list of mentionable things in the noun]</span></span><span class="td"><span class="i7sx">.&quot;</span></span><span class="td"><span class="i7sx">&quot;Meanwhile, </span></span><span class="td"><span class="i7si">[chosen direction]</span></span><span class="td"><span class="i7sx"> in the middle distance </span></span><span class="td"><span class="i7si">[is-are a list of mentionable things in the second noun]</span></span><span class="td"><span class="i7sx">.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;When you turn </span></span><span class="td"><span class="i7si">[chosen direction]</span></span><span class="td"><span class="i7sx">, you see </span></span><span class="td"><span class="i7si">[a list of mentionable things in the noun]</span></span><span class="td"><span class="i7sx">, and somewhat further on </span></span><span class="td"><span class="i7si">[a list of mentionable things in the second noun]</span></span><span class="td"><span class="i7sx">.&quot;</span></span><span class="td"><span class="i7sx">&quot;When you turn </span></span><span class="td"><span class="i7si">[chosen direction]</span></span><span class="td"><span class="i7sx">, you see </span></span><span class="td"><span class="i7si">[a list of mentionable things in the noun]</span></span><span class="td"><span class="i7sx">.&quot;</span></span><span class="td"><span class="i7sx">&quot;If you turn </span></span><span class="td"><span class="i7si">[chosen direction]</span></span><span class="td"><span class="i7sx">, you see </span></span><span class="td"><span class="i7si">[a list of mentionable things in the second noun]</span></span><span class="td"><span class="i7sx"> some way off.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;Somewhere generally </span></span><span class="td"><span class="i7si">[chosen direction]</span></span><span class="td"><span class="i7sx"> </span></span><span class="td"><span class="i7si">[is-are a list of mentionable things in the noun]</span></span><span class="td"><span class="i7sx">, beyond which, </span></span><span class="td"><span class="i7si">[a list of mentionable things in the second noun]</span></span><span class="td"><span class="i7sx">.&quot;</span></span><span class="td"><span class="i7sx">&quot;Roughly </span></span><span class="td"><span class="i7si">[chosen direction]</span></span><span class="td"><span class="i7sx"> </span></span><span class="td"><span class="i7si">[is-are a list of mentionable things in the noun]</span></span><span class="td"><span class="i7sx">.&quot;</span></span><span class="td"><span class="i7sx">&quot;Moreover, in the </span></span><span class="td"><span class="i7si">[chosen direction]</span></span><span class="td"><span class="i7sx"> distance </span></span><span class="td"><span class="i7si">[is-are a list of mentionable things in the second noun]</span></span><span class="td"><span class="i7sx">.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;</span></span><span class="td"><span class="i7si">[The chosen direction]</span></span><span class="td"><span class="i7sx"> shows </span></span><span class="td"><span class="i7si">[a list of mentionable things in the noun]</span></span><span class="td"><span class="i7sx"> and then </span></span><span class="td"><span class="i7si">[a list of mentionable things in the second noun]</span></span><span class="td"><span class="i7sx">.&quot;</span></span><span class="td"><span class="i7sx">&quot;And to </span></span><span class="td"><span class="i7si">[the chosen direction]</span></span><span class="td"><span class="i7sx"> </span></span><span class="td"><span class="i7si">[a list of mentionable things in the noun]</span></span><span class="td"><span class="i7sx">.&quot;</span></span><span class="td"><span class="i7sx">&quot;Meanwhile, </span></span><span class="td"><span class="i7si">[chosen direction]</span></span><span class="td"><span class="i7sx"> in the middle distance </span></span><span class="td"><span class="i7si">[is-are a list of mentionable things in the second noun]</span></span><span class="td"><span class="i7sx">.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;Then, </span></span><span class="td"><span class="i7si">[chosen direction]</span></span><span class="td"><span class="i7sx">, </span></span><span class="td"><span class="i7si">[is-are a list of mentionable things in the noun]</span></span><span class="td"><span class="i7sx">, and beyond </span></span><span class="td"><span class="i7si">[a list of mentionable things in the second noun]</span></span><span class="td"><span class="i7sx">.&quot;</span></span><span class="td"><span class="i7sx">&quot;Meanwhile, to </span></span><span class="td"><span class="i7si">[the chosen direction]</span></span><span class="td"><span class="i7sx"> </span></span><span class="td"><span class="i7si">[is-are a list of mentionable things in the noun]</span></span><span class="td"><span class="i7sx">.&quot;</span></span><span class="td"><span class="i7sx">&quot;Meanwhile, </span></span><span class="td"><span class="i7si">[chosen direction]</span></span><span class="td"><span class="i7sx"> in the middle distance </span></span><span class="td"><span class="i7si">[is-are a list of mentionable things in the second noun]</span></span><span class="td"><span class="i7sx">.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;Finally, </span></span><span class="td"><span class="i7si">[chosen direction]</span></span><span class="td"><span class="i7sx">, </span></span><span class="td"><span class="i7si">[is-are a list of mentionable things in the noun]</span></span><span class="td"><span class="i7sx">, somewhat nearer than </span></span><span class="td"><span class="i7si">[a list of mentionable things in the second noun]</span></span><span class="td"><span class="i7sx">.&quot;</span></span><span class="td"><span class="i7sx">&quot;Finally, to </span></span><span class="td"><span class="i7si">[the chosen direction]</span></span><span class="td"><span class="i7sx"> </span></span><span class="td"><span class="i7si">[is-are a list of mentionable things in the noun]</span></span><span class="td"><span class="i7sx">.&quot;</span></span><span class="td"><span class="i7sx">&quot;Finally, </span></span><span class="td"><span class="i7si">[chosen direction]</span></span><span class="td"><span class="i7sx"> in the middle distance </span></span><span class="td"><span class="i7si">[is-are a list of mentionable things in the second noun]</span></span><span class="td"><span class="i7sx">.&quot;</span></span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Now, our ability to view things at a distance should be determined by the size of the things we&#39;re trying to see:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7gh">Chapter 2 - Height</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A height is a kind of value. 10 feet 11 inches specifies a height. 10 feet 11 specifies a height. The verb to stand means the height property. The verb to measure means the height property. A thing has a height. The height of a thing is usually 3 feet 0.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Definition: a thing is tiny if its height is 0 feet 6 inches or less.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Definition: a thing is short if its height is 3 feet 0 or less.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Definition: a thing is tall if its height is 6 feet 0 or more.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The height of a man is usually 5 feet 10 inches. The height of a woman is usually 5 feet 6 inches.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Definition: a thing is monumental if it is taller than 25 feet 0 inches.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Definition: a thing is mentionable if it stands tall enough to see.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To decide whether (item - a thing) stands tall enough to see:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the item is in the Rose Garden and the item is shorter than the roses, no;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the item is mentioned, no;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the item is in an adjacent room and item is taller than 2 feet 0, yes;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the item is taller than 4 feet 0, yes;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	no.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of examining something which is within a room (called the space) which is not the location:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the location is adjacent to the space:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if the noun is tiny, say <span class="i7sx">&quot;It is too far from here for you to make out much detail about </span><span class="i7si">[the noun]</span><span class="i7sx">.&quot;</span> instead;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	let way be the best route from the location to the space;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if the way is a direction, say <span class="i7sx">&quot;You gaze off </span><span class="i7si">[way]</span><span class="i7sx"> at </span><span class="i7si">[the noun]</span><span class="i7sx">...&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	continue the action;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	otherwise:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if the noun is short, say <span class="i7sx">&quot;It is too far from here for you to make out much detail about </span><span class="i7si">[the noun]</span><span class="i7sx">.&quot;</span> instead;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	let way be the best route from the location to the space;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if the way is a direction, say <span class="i7sx">&quot;You gaze off </span><span class="i7si">[way]</span><span class="i7sx"> into the distance at </span><span class="i7si">[the noun]</span><span class="i7sx">...&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	continue the action.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[We might also want to be able to override, manually, the way distant things are described.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Writing a distant paragraph about something is an activity.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Rule for writing a distant paragraph about the lily pond:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the second noun is a room and something mentionable is in the second noun, say <span class="i7sx">&quot;A </span><span class="i7si">[lily pond]</span><span class="i7sx">, </span><span class="i7si">[chosen direction]</span><span class="i7sx">, patchily reflects </span><span class="i7si">[a list of mentionable things in the second noun]</span><span class="i7sx"> on the far side. </span><span class="i7si">[run paragraph on]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	otherwise say <span class="i7sx">&quot;To </span><span class="i7si">[the chosen direction]</span><span class="i7sx">, </span><span class="i7si">[a lily pond]</span><span class="i7sx"> shimmers in the sunlight. </span><span class="i7si">[run paragraph on]</span><span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Rule for writing a distant paragraph about the roses:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if something in the Rose Garden is taller than the roses,</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;Over the tops of </span><span class="i7si">[the roses]</span><span class="i7sx">, </span><span class="i7si">[chosen direction]</span><span class="i7sx">, you see </span><span class="i7si">[a list of mentionable things in the rose garden]</span><span class="i7sx">. </span><span class="i7si">[run paragraph on]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	otherwise say <span class="i7sx">&quot;Immediately </span><span class="i7si">[chosen direction]</span><span class="i7sx"> is </span><span class="i7si">[the roses]</span><span class="i7sx">. </span><span class="i7si">[run paragraph on]</span><span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Rule for writing a distant paragraph about the obelisk:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if a mentionable thing in the Upper Terrace is shorter than the obelisk,</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;A stupidly grand </span><span class="i7si">[obelisk]</span><span class="i7sx">, </span><span class="i7si">[chosen direction]</span><span class="i7sx">, towers over </span><span class="i7si">[a list of mentionable things in the Upper Terrace]</span><span class="i7sx">. </span><span class="i7si">[run paragraph on]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	otherwise say <span class="i7sx">&quot;To </span><span class="i7si">[the chosen direction]</span><span class="i7sx">, you can&#39;t help noticing </span><span class="i7si">[the obelisk]</span><span class="i7sx">, which is much larger than any object really needs to be. </span><span class="i7si">[run paragraph on]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">After writing a distant paragraph about something:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	increment the count of sentences.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Moreover, proximate things might have special descriptions too.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Rule for writing a paragraph about something tiny when the location is outdoors:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the location is the Gravel Circle,</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;Abandoned in the gravel </span><span class="i7si">[is-are a list of unmentioned tiny things in the location]</span><span class="i7sx">. </span><span class="i7si">[run paragraph on]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	otherwise say <span class="i7sx">&quot;Half trampled into the grass, and easy to miss, </span><span class="i7si">[is-are a list of unmentioned tiny things in the location]</span><span class="i7sx">. </span><span class="i7si">[run paragraph on]</span><span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Before doing something other than examining or approaching to something which is not within the location:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the player has the noun, continue the action;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;(first going over to </span><span class="i7si">[the noun]</span><span class="i7sx">)</span><span class="i7si">[line break]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	try approaching the noun;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the noun is not within the location, stop the action.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;go toward/to/towards/near </span><span class="i7si">[something]</span><span class="i7sx">&quot;</span> or <span class="i7sx">&quot;approach </span><span class="i7si">[something]</span><span class="i7sx">&quot;</span> as approaching.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Approaching is an action applying to one visible thing.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Check approaching:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the player is in something, say <span class="i7sx">&quot;You&#39;ll have to get up.&quot;</span> instead;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the noun is within the location, say <span class="i7sx">&quot;You&#39;re as close to </span><span class="i7si">[the noun]</span><span class="i7sx"> as you can get.&quot;</span> instead;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	let space be the location of the noun;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the space is not a room, say <span class="i7sx">&quot;You don&#39;t quite see how to get there.&quot;</span> instead;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	let way be the best route from the location to the space;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	unless way is a direction,</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;You can&#39;t see how to get over there from here.&quot;</span> instead.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To head to (space - a room):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	let the way be the best route from the location to the space;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the space is adjacent to the location,</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	try going way;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	otherwise silently try going way.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Carry out approaching:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	let space be the location of the noun;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	while the space is not the location:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	head to space.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[This is a bit primitive, since if we had an occasion where going was blocked, we could get stuck in a loop. So we would need to be careful, but for this example it won&#39;t arise.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Going state is a truth state that varies. Going state is false.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Check going:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now going state is true.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The description of a room is usually <span class="i7sx">&quot;</span><span class="i7si">[if going state is true]</span><span class="i7sx">You drift </span><span class="i7si">[noun]</span><span class="i7sx"> across the open lawn</span><span class="i7si">[direction relative to obelisk]</span><span class="i7sx">. </span><span class="i7si">[end if]</span><span class="i7sx">An absolutely phenomenal quantity of manicured turf stretches from where you stand in almost every direction.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Before reading a command:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now going state is false.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To say direction relative to obelisk:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if obelisk is in the location:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;, as though drawn magnetically to the foot of the monument&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	otherwise:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	let way be the best route from the location to the Upper Terrace;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if way is the noun, say <span class="i7sx">&quot;, drawn towards </span><span class="i7si">[the obelisk]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if the way is the opposite of the noun, say <span class="i7sx">&quot;, keeping </span><span class="i7si">[the obelisk]</span><span class="i7sx"> more or less at your back&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7gh">Chapter 3 - The Grounds</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">When play begins:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the left hand status line is <span class="i7sx">&quot;Idyllic&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the right hand status line is <span class="i7sx">&quot; &quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Gravel Circle, the Ha-ha, the Sheep Field, the Open Lawn, the Croquet Ground, the Rose Garden, the Upper Terrace, the Middle Terrace, and the Lower Terrace are outdoors.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Middle Terrace is north of the Lower Terrace and south of the Upper Terrace. The lily pond is fixed in place in the Middle Terrace.<span class="i7sx">&quot;You </span><span class="i7si">[if going state is true]</span><span class="i7sx">come to</span><span class="i7si">[otherwise]</span><span class="i7sx">are at</span><span class="i7si">[end if]</span><span class="i7sx"> the north edge of a perfectly round lily pond, bordered with stones. Its surface patchily reflects </span><span class="i7si">[the marble anteater]</span><span class="i7sx"> on the south bank.&quot;</span> A tent peg and a wilted orchid are in the Middle Terrace. The tent peg measures 0 feet 6. The orchid measures 0 feet 4.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The description of the Lower Terrace is <span class="i7sx">&quot;</span><span class="i7si">[if going state is true]</span><span class="i7sx">You climb </span><span class="i7si">[noun]</span><span class="i7sx"> up a small hillock</span><span class="i7si">[direction relative to obelisk][otherwise]</span><span class="i7sx">You stand on a short, round, entirely artificial hillock</span><span class="i7si">[end if]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The marble anteater is a fixed in place thing in the Lower Terrace. The height of marble anteater is 6 feet 2 inches.<span class="i7sx">&quot;A marble anteater stands on a pedestal at the top of the hill. In the bright sunlight the white marble makes a striking contrast with </span><span class="i7si">[the obelisk]</span><span class="i7sx"> in the distance.&quot;</span> The description is <span class="i7sx">&quot;The anteater is very much more than life-size.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The obelisk of black granite is a fixed in place thing in the Upper Terrace.<span class="i7sx">&quot;Now that you are at the foot of it, you can properly appreciate the stupid immensity of the obelisk, pointing stonily at heaven.&quot;</span> The height of the obelisk is 50 feet 0 inches. The description of the obelisk is <span class="i7sx">&quot;It stands ridiculously tall, and has an inscription on the face.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The inscription is part of the obelisk. The height of the inscription is 0 feet 3 inches. The description of the inscription is <span class="i7sx">&quot;You can&#39;t read the squirming, pointed letters, but they make you uneasy.&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Gravel Circle is west of the Upper Terrace, northwest of the Middle Terrace, and north of the Croquet Ground. The description of the Gravel Circle is <span class="i7sx">&quot;</span><span class="i7si">[if going state is true]</span><span class="i7sx">You head </span><span class="i7si">[noun]</span><span class="i7sx"> until the lawn thins and</span><span class="i7si">[otherwise]</span><span class="i7sx">Here the lawn</span><span class="i7si">[end if]</span><span class="i7sx"> gives way to a circle of raked gravel, which crunches pleasingly beneath you.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of going northwest in the Upper Terrace, try going north.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Ha-ha is north of the Gravel Circle and northwest of the Upper Terrace. The description of the Ha-ha is <span class="i7sx">&quot;</span><span class="i7si">[if going state is true]</span><span class="i7sx">The land dips here so suddenly that you do not know the dip is there until you&#39;re in it; but it prevents livestock from crossing barriers, and that is the important thing</span><span class="i7si">[otherwise]</span><span class="i7sx">You are at the base of a steep-sided depression, so the lawn continues north and south more or less at the level of your head</span><span class="i7si">[end if]</span><span class="i7sx">.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">The tip of </span><span class="i7si">[the obelisk]</span><span class="i7sx"> is the only thing you can make out from this depression, off to the southeast.&quot;</span>. North of the Ha-ha is the Sheep Field. In the Sheep Field is an animal called a black sheep. The black sheep stands 4 feet 3 inches.<span class="i7sx">&quot;A black sheep grazes placidly nearby.&quot;</span> The description of the black sheep is <span class="i7sx">&quot;It reminds you of your Uncle Tim.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Before going from the Ha-ha:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;It&#39;s a bit of a scramble to get back up the side of the depression, and you keep slipping in the damp grass. But you manage at last.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Rose Garden is  southwest of the Lower Terrace. The thicket of red roses is a fixed in place thing in the Rose Garden. The thicket stands 4 feet 2 inches.<span class="i7sx">&quot;Heavy red roses grow over a roughly horseshoe-shaped wall around you. Over this barrier, the head of </span><span class="i7si">[the marble anteater]</span><span class="i7sx"> is visible to the northwest, and the tip of </span><span class="i7si">[the obelisk]</span><span class="i7sx"> in the distance.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The description of the Rose Garden is <span class="i7sx">&quot;</span><span class="i7si">[if going state is true]</span><span class="i7sx">You slip </span><span class="i7si">[noun]</span><span class="i7sx"> into the enclosure of the rose garden. </span><span class="i7si">[end if]</span><span class="i7sx">The rest of the park, and the world, seems muted and quiet.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of smelling the rose garden: try smelling the roses. Instead of smelling the roses, say <span class="i7sx">&quot;The smell tickles the back of your throat and makes you want to cough.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of listening to the rose garden:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;You can&#39;t hear anything at all.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Open Lawn is north of the Rose Garden, west of the Lower Terrace, and southwest of the Middle Terrace. The Croquet Ground is north of the Open Lawn, west of the Middle Terrace, southwest of the Upper Terrace, and northwest of the Lower Terrace.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A discarded champagne cork is in the Open Lawn. It stands 0 feet 2 inches.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A stone bench is an enterable supporter in the Croquet Ground. It stands 3 feet 8 inches.<span class="i7sx">&quot;There is a stone bench here -- a sort of stone sofa, really, with nymphs disporting themselves on the arms and back.&quot;</span> The description of the bench is <span class="i7sx">&quot;It used to be a Roman sarcophagus -- hence the nymphs -- but someone has thoughtfully recarved it as lawn furniture.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The half-size Bentley is a vehicle in the Gravel Circle.<span class="i7sx">&quot;A sort of child&#39;s-toy version of a Bentley is parked </span><span class="i7si">[if something parkable is in the location]</span><span class="i7sx">beside </span><span class="i7si">[the tallest parkable thing in the location][otherwise]</span><span class="i7sx">close at hand</span><span class="i7si">[end if]</span><span class="i7sx">.&quot;</span> The description of the half-size Bentley is <span class="i7sx">&quot;Of beautiful and unambiguously luxurious lines, but sized down to hold only one or (at a stretch) two people, and powered by electricity.&quot;</span> The half-size Bentley stands 3 feet 6 inches.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Definition: a thing is parkable if it is not a person and it is not the Bentley.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of touching the obelisk, say <span class="i7sx">&quot;Though it is black stone in sunlight, the obelisk is very cold to the touch.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Test me with <span class="i7sx">&quot;look east / look toward obelisk / s / s / e / sw / ne / n / n / w / n / n / examine obelisk / touch obelisk / read inscription&quot;</span>.</span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

@@ -1,0 +1,178 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../style.css">
+<script>function toggle_details() {
+   var openness, toggle_link;
+   toggle_link = document.getElementById("toggle");
+   openness = toggle_link.classList.toggle("open");
+document.querySelectorAll("details.full-example").forEach(detail => { if (openness) { detail.setAttribute("open", true); } else { detail.removeAttribute("open");} });
+   toggle_link.innerText = (openness ? "Close" : "Open") + " all examples";
+   }
+
+
+function copyCode(text) { navigator.clipboard.writeText(text); }
+
+
+var links = document.getElementsByTagName('a');
+for (var i = 0; i < links.length; i++) {
+    if (links[i].href.match(/^#example-\d+/)) {
+	links[i].onClick = function() { links[i].href.match(/^#example-(\d+)$/); var example = document.getElementById($1).setAttribute('open'); return true; };
+    }
+}
+
+function add_bar(update) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let navbar = document.querySelector('div.index-navbar');
+
+    if (navbar && urlParams.has('project')) {
+        navbar.setAttribute('class', 'index-navbar'); // removes hidden
+        let project = decodeURIComponent(urlParams.get('project'));
+        let index_root = project + '/.index/';
+        let build = project + '/Build/';
+        let query_arg = "?project="+encodeURIComponent(project);
+
+        let links = [
+            { "General Index": document.getElementById('general_index').href },
+            { "Docs": document.getElementById('docs').href },
+            { "Extensions": index_root + 'doc/Extensions.html' },
+            { "Definitions": index_root + 'doc/ExtIndex.html' },
+            { "Debug Log": build + 'debug_log.html' },
+            { "Problems": build + 'problems.html' },
+            { "Source": index_root + 'story.html' },
+            { "Project Index": index_root + 'Index/Welcome.html' } ];
+        let sp = document.createTextNode(" ");
+        links.forEach(h => {
+            Object.entries(h).forEach(([text, url]) => {
+                let my_id = text.toLowerCase().replace(' ', '_');
+                let a = document.querySelector('#'+my_id);
+                let url_target = "file://"+url+query_arg;
+                if (a) {
+                    let parts = a.href.split('#');
+                    let qparts = parts[0].split('?');
+                    a.href = qparts[0] +  (qparts[1] ? ('?' + qparts[1]) : query_arg) + (parts[1] ? ('#' + parts[1]) : "");
+                }
+                else {
+                    a = document.createElement('a');
+                    let href = document.createAttribute("href");
+                    href.value = url_target;
+                    a.setAttributeNode(href);
+                    let elem_id = document.createAttribute("id");
+                    elem_id.value = my_id;
+                    a.setAttributeNode(elem_id);
+                    let linktext = document.createTextNode(text);
+                    a.appendChild(linktext);
+                    navbar.insertBefore(sp.cloneNode(), navbar.firstChild);
+                    navbar.insertBefore(a, navbar.firstChild);
+                }
+            })});
+        if (update) {
+            let main_links = document.querySelectorAll('main a');
+            main_links.forEach(a => {
+                if (!a.href.startsWith('javascript:') || (a.href.match(/[^:]+:\/\// && !a.href.startsWith('file:')))) {
+                    let parts = a.href.split('#')
+                    a.href = parts[0] + query_arg + (parts[1] ? ('#' + parts[1]) : "");
+                } });
+        }
+    }
+}
+
+
+
+document.addEventListener("DOMContentLoaded", add_bar);</script>
+<title>Example #283</title></head>
+<body class="inform7-source">
+
+<div class="inform7-source"><div class="pseudo">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;Introduction to Juggling&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[We allow things to have prices, and the player&#39;s price to indicate how much money the player has:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7gh">Section 1 - Mail-ordering defined</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Price is a kind of value. $100.99 specifies a price.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The player has a price. The price of the player is $60.00.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Because we&#39;re allowing the player to order things that he can&#39;t currently see, we need to borrow a special kind of grammar from the Understanding chapter. All our orderable items in this example are toys, so &quot;any toy&quot; means any object of the toy kind, whether or not it is in view at the moment:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;buy </span><span class="i7si">[any toy]</span><span class="i7sx">&quot;</span> as ordering. Understand the command <span class="i7sx">&quot;order&quot;</span> as something new. Understand the command <span class="i7sx">&quot;order&quot;</span> as <span class="i7sx">&quot;buy&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Ordering is an action applying to one visible thing.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Check ordering:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the cost of the noun is greater than the price of the player, say <span class="i7sx">&quot;You only have </span><span class="i7si">[price of the player]</span><span class="i7sx">, while </span><span class="i7si">[the noun]</span><span class="i7sx"> would cost </span><span class="i7si">[cost of the noun]</span><span class="i7sx">.&quot;</span> instead.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Carry out ordering:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	move the noun to the player;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	decrease the price of the player by the cost of the noun.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Report ordering:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;You order </span><span class="i7si">[a noun]</span><span class="i7sx">, which is delivered instantly.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[We should also handle the situation where the player orders another of something he has already bought and which is right in front of him:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of buying something:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;You already have </span><span class="i7si">[a noun]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[So much for the general rules for this scenario. Now we move on to particulars: the actual items the player is allowed to order. Each item will have a description, a price, and a difficulty representing how skilled the player must be in order to make use of that item.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Since we are going to use price and difficulty in the table that defines our juggling equipment, we need to mention these kinds of value before the line that says how toys are defined.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7gh">Section 2 - The Scenario</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Difficulty is a kind of value. The difficulties are easy, moderate, hard. The player has a difficulty. The difficulty of the player is easy.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The plural of toy is toys. A toy is a kind of thing. Some toys are defined by the Table of Juggling Equipment.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line">Table of Juggling Equipment</span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">toy</span><span class="td">cost</span><span class="td">restriction</span><span class="td">description</span><span class="td">difficulty</span><span class="td">outcome</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">an economy bounce ball set</span><span class="td">$10.00</span><span class="td"><span class="i7sx">&quot;comes in set of three&quot;</span></span><span class="td"><span class="i7sx">&quot;A fairly ordinary rubber ball, solid color.&quot;</span></span><span class="td">moderate</span><span class="td"><span class="i7sx">&quot;You create of the balls a cascade of moving color.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">an acrylic contact ball</span><span class="td">$14.00</span><span class="td"><span class="i7sx">&quot;should be bought with ball polish&quot;</span></span><span class="td"><span class="i7sx">&quot;A large clear ball, not for throwing but for using in various hand tricks.&quot;</span></span><span class="td">hard</span><span class="td"><span class="i7sx">&quot;You rotate the ball between your fingers and pass it over the backs of your hands.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">a UV-reactive contact ball</span><span class="td">$55.00</span><span class="td"><span class="i7sx">&quot;appears to glow in dark rooms&quot;</span></span><span class="td"><span class="i7sx">&quot;Similar to the ordinary acrylic contact ball, but UV-reactive.&quot;</span></span><span class="td">hard</span><span class="td"><span class="i7sx">&quot;The ball glows as it passes between your fingers and over the backs of your hands, rolls up to your wrist, snaps through the air-- all apparently of its own accord.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">a ball polish set</span><span class="td">$10.00</span><span class="td"><span class="i7sx">&quot;useful only with acrylic contact balls&quot;</span></span><span class="td"><span class="i7sx">&quot;Three bottles of polish and a rag for keeping acrylic contact balls scratch-free.&quot;</span></span><span class="td">hard</span><span class="td"><span class="i7sx">&quot;You juggle the polish bottles with difficulty, since they are full of sloshing liquid.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">a teaching beanbag set</span><span class="td">$8.00</span><span class="td"><span class="i7sx">&quot;set of three&quot;</span></span><span class="td"><span class="i7sx">&quot;Soft, easily-juggled bag.&quot;</span></span><span class="td">easy</span><span class="td"><span class="i7sx">&quot;You juggle the beanbags with basic competence.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">a stage ball set</span><span class="td">$13.50</span><span class="td"><span class="i7sx">&quot;comes in set of three&quot;</span></span><span class="td"><span class="i7sx">&quot;Not much different in appearance from the economy bounce ball, but larger so as to be visible from a stage.&quot;</span></span><span class="td">moderate</span><span class="td"><span class="i7sx">&quot;You create of the balls a cascade of moving color, visible from quite a distance.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">a fireball set</span><span class="td">$33.00</span><span class="td"><span class="i7sx">&quot;will not be sold to minors&quot;</span></span><span class="td"><span class="i7sx">&quot;A ball has wicking and a fuel-source inside so that it will burn while being juggled.&quot;</span></span><span class="td">hard</span><span class="td"><span class="i7sx">&quot;You juggle the fireballs rapidly, careful never to hold any of them a moment longer than necessary.&quot;</span></span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Notice that we are allowed to define &quot;description&quot; and other already-known properties in the table as well.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Backstage is a room. <span class="i7sx">&quot;A muffled black room with felt on the floors and walls. A glowing sign over the stage door says SHOW IN PROGRESS.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Juggling Equipment Catalog is a thing in Backstage.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of examining the Catalog:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;You read through the offerings, including: </span><span class="i7si">[paragraph break]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	repeat through Table of Juggling Equipment:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[bold type][toy entry][roman type]</span><span class="i7sx">: </span><span class="i7si">[description entry]</span><span class="i7sx"> </span><span class="i7si">[cost entry]</span><span class="i7sx">, </span><span class="i7si">[restriction entry]</span><span class="i7sx">. </span><span class="i7si">[paragraph break]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">When play begins:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now right hand status line is <span class="i7sx">&quot;Budget: </span><span class="i7si">[price of the player]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now left hand status line is <span class="i7sx">&quot;</span><span class="i7si">[location]</span><span class="i7sx">, feeling </span><span class="i7si">[if the difficulty of player is easy]</span><span class="i7sx">incompetent</span><span class="i7si">[end if][if the difficulty of player is moderate]</span><span class="i7sx">moderately skilled</span><span class="i7si">[end if][if the difficulty of player is hard]</span><span class="i7sx">highly skilled</span><span class="i7si">[end if]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[And of course this will be no fun unless the player is allowed to use the equipment:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;juggle </span><span class="i7si">[something]</span><span class="i7sx">&quot;</span> as juggling.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Juggling is an action applying to one thing.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Check juggling:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the noun is not a toy listed in the Table of Juggling Equipment, say <span class="i7sx">&quot;You can&#39;t juggle </span><span class="i7si">[a noun]</span><span class="i7sx">!&quot;</span> instead;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the difficulty of the noun is greater than the difficulty of the player, say <span class="i7sx">&quot;You&#39;re not quite ready to juggle something like </span><span class="i7si">[the noun]</span><span class="i7sx">. Better to start with an easier toy.&quot;</span> instead.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Carry out juggling:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if a random chance of 1 in 3 succeeds:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if the difficulty of the player is less than hard and the difficulty of the player is the difficulty of the noun:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	now the difficulty of the player is the difficulty after the difficulty of the player.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Report juggling:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[outcome of the noun][paragraph break]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of burning the fireball set:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;It will flame by itself when you use it.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Test me with <span class="i7sx">&quot;read catalog / buy economy / buy beanbag / juggle economy / juggle beanbag / juggle beanbag / juggle beanbag / juggle beanbag / juggle beanbag / juggle beanbag / juggle economy / juggle economy / juggle economy / buy fireball set / juggle fireball&quot;</span>.</span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

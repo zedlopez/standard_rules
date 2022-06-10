@@ -1,0 +1,119 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../style.css">
+<script>function toggle_details() {
+   var openness, toggle_link;
+   toggle_link = document.getElementById("toggle");
+   openness = toggle_link.classList.toggle("open");
+document.querySelectorAll("details.full-example").forEach(detail => { if (openness) { detail.setAttribute("open", true); } else { detail.removeAttribute("open");} });
+   toggle_link.innerText = (openness ? "Close" : "Open") + " all examples";
+   }
+
+
+function copyCode(text) { navigator.clipboard.writeText(text); }
+
+
+var links = document.getElementsByTagName('a');
+for (var i = 0; i < links.length; i++) {
+    if (links[i].href.match(/^#example-\d+/)) {
+	links[i].onClick = function() { links[i].href.match(/^#example-(\d+)$/); var example = document.getElementById($1).setAttribute('open'); return true; };
+    }
+}
+
+function add_bar(update) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let navbar = document.querySelector('div.index-navbar');
+
+    if (navbar && urlParams.has('project')) {
+        navbar.setAttribute('class', 'index-navbar'); // removes hidden
+        let project = decodeURIComponent(urlParams.get('project'));
+        let index_root = project + '/.index/';
+        let build = project + '/Build/';
+        let query_arg = "?project="+encodeURIComponent(project);
+
+        let links = [
+            { "General Index": document.getElementById('general_index').href },
+            { "Docs": document.getElementById('docs').href },
+            { "Extensions": index_root + 'doc/Extensions.html' },
+            { "Definitions": index_root + 'doc/ExtIndex.html' },
+            { "Debug Log": build + 'debug_log.html' },
+            { "Problems": build + 'problems.html' },
+            { "Source": index_root + 'story.html' },
+            { "Project Index": index_root + 'Index/Welcome.html' } ];
+        let sp = document.createTextNode(" ");
+        links.forEach(h => {
+            Object.entries(h).forEach(([text, url]) => {
+                let my_id = text.toLowerCase().replace(' ', '_');
+                let a = document.querySelector('#'+my_id);
+                let url_target = "file://"+url+query_arg;
+                if (a) {
+                    let parts = a.href.split('#');
+                    let qparts = parts[0].split('?');
+                    a.href = qparts[0] +  (qparts[1] ? ('?' + qparts[1]) : query_arg) + (parts[1] ? ('#' + parts[1]) : "");
+                }
+                else {
+                    a = document.createElement('a');
+                    let href = document.createAttribute("href");
+                    href.value = url_target;
+                    a.setAttributeNode(href);
+                    let elem_id = document.createAttribute("id");
+                    elem_id.value = my_id;
+                    a.setAttributeNode(elem_id);
+                    let linktext = document.createTextNode(text);
+                    a.appendChild(linktext);
+                    navbar.insertBefore(sp.cloneNode(), navbar.firstChild);
+                    navbar.insertBefore(a, navbar.firstChild);
+                }
+            })});
+        if (update) {
+            let main_links = document.querySelectorAll('main a');
+            main_links.forEach(a => {
+                if (!a.href.startsWith('javascript:') || (a.href.match(/[^:]+:\/\// && !a.href.startsWith('file:')))) {
+                    let parts = a.href.split('#')
+                    a.href = parts[0] + query_arg + (parts[1] ? ('#' + parts[1]) : "");
+                } });
+        }
+    }
+}
+
+
+
+document.addEventListener("DOMContentLoaded", add_bar);</script>
+<title>Example #324</title></head>
+<body class="inform7-source">
+
+<div class="inform7-source"><div class="pseudo">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;Bibliophilia&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Graduate Lounge is a room. <span class="i7sx">&quot;Shabby sofas; plastic cups remaining from the afternoon&#39;s pre-lecture espresso; a collection of Xena and Hercules figurines posed for ironic effect. It&#39;s somewhat depressing at this hour, when everyone has gone home.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Classics Reading Room is south of the Lounge. <span class="i7sx">&quot;Not as large a collection as the one in the Library, but it contains copies of everything really essential for reference.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;examine </span><span class="i7si">[text]</span><span class="i7sx">&quot;</span> as examining as a book when the player is in the Reading Room. Understand <span class="i7sx">&quot;look up </span><span class="i7si">[text]</span><span class="i7sx">&quot;</span> as examining as a book when the player is in the Reading Room.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Examining as a book is an action applying to one topic.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Carry out examining as a book:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;You can&#39;t find any such text.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of examining as a book a topic listed in the Table of Book Titles:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[description entry][paragraph break]</span><span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line">Table of Book Titles</span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">topic</span><span class="td">title</span><span class="td">description</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;Reading Greek Death&quot;</span></span><span class="td"> or &quot;reading/greek/death&quot; or &quot;greek death&quot;</span><span class="td"><span class="i7sx">&quot;Reading Greek Death&quot;</span></span><span class="td"><span class="i7sx">&quot;A dense orange paperback treatise on the development of Greek eschatology.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;TAPA/Transactions/134-2&quot;</span></span><span class="td"><span class="i7sx">&quot;TAPA 134-2&quot;</span></span><span class="td"><span class="i7sx">&quot;Transactions of the American Philological Association from 2004.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;Oxford Classical Dictionary&quot;</span></span><span class="td"> or &quot;OCD/dictionary/classical/oxford&quot;</span><span class="td"><span class="i7sx">&quot;Oxford Classical Dictionary&quot;</span></span><span class="td"><span class="i7sx">&quot;A hefty reference with short articles on everything from Greek meter to ancient cosmetics.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;Collected Dialogues of Plato&quot;</span></span><span class="td"> or &quot;Plato/dialogues/hamilton/cairns&quot;</span><span class="td"><span class="i7sx">&quot;Collected Dialogues of Plato&quot;</span></span><span class="td"><span class="i7sx">&quot;All the Platonic dialogues -- some, admittedly, in rather tired translations -- but still a useful single volume, ed. Edith Hamilton and Huntington Cairns.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;Adobe Illustrator CS User Guide&quot;</span></span><span class="td"> or &quot;user guide&quot; or &quot;adobe illustrator&quot; or &quot;adobe/illustrator/cs/user/guide&quot;</span><span class="td"><span class="i7sx">&quot;Adobe Illustrator CS User Guide&quot;</span></span><span class="td"><span class="i7sx">&quot;Hello, how did this get here? A suspiciously familiar name is scribbled inside the front cover...&quot;</span></span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Some books are scenery in the Reading Room. Understand <span class="i7sx">&quot;copies&quot;</span> or <span class="i7sx">&quot;book&quot;</span> or <span class="i7sx">&quot;shelf&quot;</span> or <span class="i7sx">&quot;shelves&quot;</span> as the books. Instead of examining the books:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	choose a random row in the Table of Book Titles;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;You scan the shelves and notice, among others, a volume entitled </span><span class="i7si">[italic type][title entry][roman type]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Test me with <span class="i7sx">&quot;south / examine ocd / examine books / examine books / examine plato / n / x hercules / s / x hercules&quot;</span>.</span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

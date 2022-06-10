@@ -1,0 +1,117 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../style.css">
+<script>function toggle_details() {
+   var openness, toggle_link;
+   toggle_link = document.getElementById("toggle");
+   openness = toggle_link.classList.toggle("open");
+document.querySelectorAll("details.full-example").forEach(detail => { if (openness) { detail.setAttribute("open", true); } else { detail.removeAttribute("open");} });
+   toggle_link.innerText = (openness ? "Close" : "Open") + " all examples";
+   }
+
+
+function copyCode(text) { navigator.clipboard.writeText(text); }
+
+
+var links = document.getElementsByTagName('a');
+for (var i = 0; i < links.length; i++) {
+    if (links[i].href.match(/^#example-\d+/)) {
+	links[i].onClick = function() { links[i].href.match(/^#example-(\d+)$/); var example = document.getElementById($1).setAttribute('open'); return true; };
+    }
+}
+
+function add_bar(update) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let navbar = document.querySelector('div.index-navbar');
+
+    if (navbar && urlParams.has('project')) {
+        navbar.setAttribute('class', 'index-navbar'); // removes hidden
+        let project = decodeURIComponent(urlParams.get('project'));
+        let index_root = project + '/.index/';
+        let build = project + '/Build/';
+        let query_arg = "?project="+encodeURIComponent(project);
+
+        let links = [
+            { "General Index": document.getElementById('general_index').href },
+            { "Docs": document.getElementById('docs').href },
+            { "Extensions": index_root + 'doc/Extensions.html' },
+            { "Definitions": index_root + 'doc/ExtIndex.html' },
+            { "Debug Log": build + 'debug_log.html' },
+            { "Problems": build + 'problems.html' },
+            { "Source": index_root + 'story.html' },
+            { "Project Index": index_root + 'Index/Welcome.html' } ];
+        let sp = document.createTextNode(" ");
+        links.forEach(h => {
+            Object.entries(h).forEach(([text, url]) => {
+                let my_id = text.toLowerCase().replace(' ', '_');
+                let a = document.querySelector('#'+my_id);
+                let url_target = "file://"+url+query_arg;
+                if (a) {
+                    let parts = a.href.split('#');
+                    let qparts = parts[0].split('?');
+                    a.href = qparts[0] +  (qparts[1] ? ('?' + qparts[1]) : query_arg) + (parts[1] ? ('#' + parts[1]) : "");
+                }
+                else {
+                    a = document.createElement('a');
+                    let href = document.createAttribute("href");
+                    href.value = url_target;
+                    a.setAttributeNode(href);
+                    let elem_id = document.createAttribute("id");
+                    elem_id.value = my_id;
+                    a.setAttributeNode(elem_id);
+                    let linktext = document.createTextNode(text);
+                    a.appendChild(linktext);
+                    navbar.insertBefore(sp.cloneNode(), navbar.firstChild);
+                    navbar.insertBefore(a, navbar.firstChild);
+                }
+            })});
+        if (update) {
+            let main_links = document.querySelectorAll('main a');
+            main_links.forEach(a => {
+                if (!a.href.startsWith('javascript:') || (a.href.match(/[^:]+:\/\// && !a.href.startsWith('file:')))) {
+                    let parts = a.href.split('#')
+                    a.href = parts[0] + query_arg + (parts[1] ? ('#' + parts[1]) : "");
+                } });
+        }
+    }
+}
+
+
+
+document.addEventListener("DOMContentLoaded", add_bar);</script>
+<title>Example #99</title></head>
+<body class="inform7-source">
+
+<div class="inform7-source"><div class="pseudo">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;Today Tomorrow&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Temporary Employment Office is a room. <span class="i7sx">&quot;&#39;Tomorrow&#39;s Temporary Workers - Today!&#39; proclaims the logo over the door. The office is divided into two areas, the inner sanctum where you take calls and fiddle with the computer, and the outer area where workers take skill exams and watch inspirational videos (&#39;Earn your way to partial benefits!&#39;, &#39;Vacation days and you!&#39;, &#39;Temping the Tomorrow Way&#39;, etc.).&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Maya is a woman in the Office. <span class="i7sx">&quot;Your coworker Maya sits at her own computer, diligently modifying all the </span><span class="i7si">[one of]</span><span class="i7sx">pay rates in the database down from $9.00 an hour to $8.96</span><span class="i7si">[or]</span><span class="i7sx">billing rates in the database up from $25.00 an hour to $25.04</span><span class="i7si">[purely at random]</span><span class="i7sx">.&quot;</span> She wears a trenchcoat. She carries a chihuahua. The description of Maya is <span class="i7sx">&quot;</span><span class="i7si">[if Maya is wearing the trenchcoat]</span><span class="i7sx">She&#39;s wearing a trenchcoat, in a bizarre bid to keep your boss unaware of the chihuahua in her pocket. &#39;Because petsitters are really expensive!&#39; she explained to you in an urgent hiss this morning over the coffeemaker. </span><span class="i7si">[otherwise]</span><span class="i7sx">She looks cold. </span><span class="i7si">[end if]</span><span class="i7sx">To all appearances, she is carrying </span><span class="i7si">[a list of unconcealed things carried by Maya]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Maya&#39;s computer is scenery in the Employment Office. The description is <span class="i7sx">&quot;You can&#39;t see the screen from here, but she was perfectly happy to tell you what she was doing.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Rule for deciding the concealed possessions of someone (called carrier):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the particular possession is the chihuahua and the carrier wears the trenchcoat, yes;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	otherwise no.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of eating something in the presence of the chihuahua:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[The chihuahua]</span><span class="i7sx"> yips at you! Maya looks despairingly at </span><span class="i7si">[the noun]</span><span class="i7sx">, which is obviously inciting it.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The desk is scenery in the Office. On the desk are a multi-line telephone and a printer. The description of the printer is <span class="i7sx">&quot;Every morning, this instrument of torture spits out a list of the assignments you have to fill - professional, attractive receptionist with level three Excel certification, at $7.05 an hour; that sort of thing. You spend the ensuing three hours trying to meet its tyrannical demands.&quot;</span> The description of the multi-line telephone is <span class="i7sx">&quot;Line three blinks urgently at you. You&#39;ll pick it up again as soon as you can remember who it was you put on hold.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The player carries a double bacon cheeseburger and a chocolate shake. Understand <span class="i7sx">&quot;milkshake&quot;</span> or <span class="i7sx">&quot;beverage&quot;</span> as the shake. The description of the cheeseburger is <span class="i7sx">&quot;A minor self-indulgence to make up for the fact that you have to work through lunch.&quot;</span> The cheeseburger is edible. The shake is edible. The description of the shake is <span class="i7sx">&quot;It has the consistency of spackle and is no longer cold, but there is some chocolatey goodness in it still.&quot;</span> Understand <span class="i7sx">&quot;burger&quot;</span> or <span class="i7sx">&quot;hamburger&quot;</span> as the cheeseburger. Instead of drinking the chocolate shake: try eating the shake instead.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Test me with <span class="i7sx">&quot;x maya / x cheeseburger / drink shake / eat cheeseburger&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Unless we somehow get the trenchcoat away from Maya, the chihuahua will not be in view, and will not intervene in our lunch. All very well for the player character, but not so interesting to the story... To this end, we might add an unfortunate event, courtesy of later chapters:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The time of day is 11:45 AM.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">At 11:47 AM: say <span class="i7sx">&quot;Your boss pokes his head in, temporarily free of the round of conference calls that occupy all his days. &#39;Maya,&#39; he says. &#39;Your coat?&#39; He shakes his head, clucking sadly. &#39;It doesn&#39;t say professional!&#39; But mercifully Maya manages to take it off so slowly that he doesn&#39;t glimpse her pet before her phone rings again.&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now Maya carries the trenchcoat.</span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

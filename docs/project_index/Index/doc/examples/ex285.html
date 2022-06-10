@@ -1,0 +1,130 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../style.css">
+<script>function toggle_details() {
+   var openness, toggle_link;
+   toggle_link = document.getElementById("toggle");
+   openness = toggle_link.classList.toggle("open");
+document.querySelectorAll("details.full-example").forEach(detail => { if (openness) { detail.setAttribute("open", true); } else { detail.removeAttribute("open");} });
+   toggle_link.innerText = (openness ? "Close" : "Open") + " all examples";
+   }
+
+
+function copyCode(text) { navigator.clipboard.writeText(text); }
+
+
+var links = document.getElementsByTagName('a');
+for (var i = 0; i < links.length; i++) {
+    if (links[i].href.match(/^#example-\d+/)) {
+	links[i].onClick = function() { links[i].href.match(/^#example-(\d+)$/); var example = document.getElementById($1).setAttribute('open'); return true; };
+    }
+}
+
+function add_bar(update) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let navbar = document.querySelector('div.index-navbar');
+
+    if (navbar && urlParams.has('project')) {
+        navbar.setAttribute('class', 'index-navbar'); // removes hidden
+        let project = decodeURIComponent(urlParams.get('project'));
+        let index_root = project + '/.index/';
+        let build = project + '/Build/';
+        let query_arg = "?project="+encodeURIComponent(project);
+
+        let links = [
+            { "General Index": document.getElementById('general_index').href },
+            { "Docs": document.getElementById('docs').href },
+            { "Extensions": index_root + 'doc/Extensions.html' },
+            { "Definitions": index_root + 'doc/ExtIndex.html' },
+            { "Debug Log": build + 'debug_log.html' },
+            { "Problems": build + 'problems.html' },
+            { "Source": index_root + 'story.html' },
+            { "Project Index": index_root + 'Index/Welcome.html' } ];
+        let sp = document.createTextNode(" ");
+        links.forEach(h => {
+            Object.entries(h).forEach(([text, url]) => {
+                let my_id = text.toLowerCase().replace(' ', '_');
+                let a = document.querySelector('#'+my_id);
+                let url_target = "file://"+url+query_arg;
+                if (a) {
+                    let parts = a.href.split('#');
+                    let qparts = parts[0].split('?');
+                    a.href = qparts[0] +  (qparts[1] ? ('?' + qparts[1]) : query_arg) + (parts[1] ? ('#' + parts[1]) : "");
+                }
+                else {
+                    a = document.createElement('a');
+                    let href = document.createAttribute("href");
+                    href.value = url_target;
+                    a.setAttributeNode(href);
+                    let elem_id = document.createAttribute("id");
+                    elem_id.value = my_id;
+                    a.setAttributeNode(elem_id);
+                    let linktext = document.createTextNode(text);
+                    a.appendChild(linktext);
+                    navbar.insertBefore(sp.cloneNode(), navbar.firstChild);
+                    navbar.insertBefore(a, navbar.firstChild);
+                }
+            })});
+        if (update) {
+            let main_links = document.querySelectorAll('main a');
+            main_links.forEach(a => {
+                if (!a.href.startsWith('javascript:') || (a.href.match(/[^:]+:\/\// && !a.href.startsWith('file:')))) {
+                    let parts = a.href.split('#')
+                    a.href = parts[0] + query_arg + (parts[1] ? ('#' + parts[1]) : "");
+                } });
+        }
+    }
+}
+
+
+
+document.addEventListener("DOMContentLoaded", add_bar);</script>
+<title>Example #285</title></head>
+<body class="inform7-source">
+
+<div class="inform7-source"><div class="pseudo">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;Trieste&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7gh">Section 1 - Procedure</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A help-topic is a kind of value. Some help-topics are defined by the Table of Standard Instructions.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line">Table of Standard Instructions</span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">help-topic</span><span class="td">reply</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">commands</span><span class="td"><span class="i7sx">&quot;This game recognizes 150 common commands for forms of military attack. These include...&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">saving</span><span class="td"><span class="i7sx">&quot;To save the game, type SAVE. You will be prompted to supply a file-name for your saved game. If you&#39;d like to return to play at that point again later, RESTORE the saved game.&quot;</span></span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;help </span><span class="i7si">[help-topic]</span><span class="i7sx">&quot;</span> as asking for help about. Asking for help about is an action out of world, applying to one help-topic.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;help&quot;</span> or <span class="i7sx">&quot;help </span><span class="i7si">[text]</span><span class="i7sx">&quot;</span> as a mistake (&quot;Help is available on the following topics: <span class="i7cm">[help-topics list]</span><span class="i7sx">&quot;).</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">To say help-topics list:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;repeat through the Table of Standard Instructions:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;&emsp;&emsp;&emsp;say &quot;</span><span class="i7cm">[line break]</span>  <span class="i7cm">[help-topic entry]</span><span class="i7sx">&quot;;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Carry out asking for help about:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;repeat through the Table of Standard Instructions:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;&emsp;&emsp;&emsp;if the help-topic understood is the help-topic entry:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;say &quot;</span><span class="i7cm">[reply entry][paragraph break]</span><span class="i7sx">&quot;;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;break.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Section 2 - Scenario</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7si">[Now, let&#39;s imagine our game is a special one in which only a very limited supply of moves are allowed. In that case, we&#39;ll want to replace the information on commands:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line"><span class="i7sx">Table of Standard Instructions (amended)</span></span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">help-topic</span><span class="td">reply</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">commands</span><span class="td">&quot;</span>The only commands this game recognizes are HOLD, MOVE, CONVOY, SUPPORT MOVE, and SUPPORT HOLD. No others are necessary.<span class="i7sx">&quot;</span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Board Room is a room. Mark is a man in the Board Room. &quot;</span>Russia (played by Mark) is also hovering over the board.<span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Guest Bathroom is south of Board Room. Lena and Rob are in the Guest Bathroom. Lena is a woman. Rob is a man.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Rule for writing a paragraph about Lena when Lena is in the Guest Bathroom and Rob is in the Guest Bathroom:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;say &quot;</span><span class="i7cm">[Lena]</span> (Italy) and <span class="i7cm">[Rob]</span> (Great Britain) are having a hushed conversation while leaning against your good towels. They stop and stare at you when you come in.<span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Test me with &quot;</span>help / help commands / help saving<span class="i7sx">&quot;.</span></span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

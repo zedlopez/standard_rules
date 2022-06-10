@@ -1,0 +1,1097 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../../../Index/doc/style.css">
+<script src="../../../Index/doc/chapter.js"></script>
+<title>Punctuation Removal by Emily Short</title></head>
+<body>
+<div class="index-navbar hidden">
+<a id="project_index" href="../../../Index/Welcome.html"> Project Index</a><a id="source" href="../../../story.html"> Source</a><a id="problems" href="../../../Build/problems.html"> Problems</a><a id="debug_log" href="../../../Build/debug_log.html"> Debug Log</a><a id="definitions" href="../../../Index/doc/ExtIndex.html"> Definitions</a><a id="extensions" href="../../../Index/doc/Extensions.html"> Extensions</a><a id="docs" href="../../../Index/doc/index.html"> Docs</a><a id="general_index" href="../../../Index/doc/index.html#general-index"> General Index</a>
+
+</div>
+
+
+<div class="pseudo">
+<span class="tr"><span class="th"></span><span class="td"><a href="javascript:copyCode(`Include Punctuation Removal by Emily Short.`)"><img border="0" src="/home/zed/.local/share/inf7/doc/doc_images/paste.png" alt="Copy Include Punctuation Removal by Emily Short to clipboard"></a> Include Punctuation Removal by Emily Short.</span></span></div><div class="ext-front-matter">
+<div>Documentation for Punctuation Removal by Emily Short</div>
+<a href="#line1">Jump to code</a></div>
+<div class="pseudo">
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Punctuation Removal provides phrases for removing unwanted punctuation marks from the player&#39;s command before attempting to interpret it. These are</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	remove exclamation points</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	remove question marks</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	remove quotes</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">and, to do all three of these things at once,</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	remove stray punctuation.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Also provided, but not included in <span class="i7sx">&quot;remove stray punctuation&quot;</span>, is</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	remove periods</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">which we should use sparingly, since the player&#39;s command might reasonably include multiple actions separated by full stops. Similarly dangerous is</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	remove apostrophes</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">A more common need is to be able to parse titles such as <span class="i7sx">&quot;mr.&quot;</span> and <span class="i7sx">&quot;mrs.&quot;</span> sensibly. Inform reads any full stop as the end of the sentence, which leads to such exchanges as </span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	&gt;x mr. sinister.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	You see nothing special about Mr. Sinister.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	That&#39;s not a verb I recognise.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">because Inform has interpreted as though the player had typed</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	&gt;x mr.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	You see nothing special about Mr. Sinister.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	&gt;sinister</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	That&#39;s not a verb I recognise.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">To get around this, we want to remove full stops only when they appear as parts of standard titles. <span class="i7sx">&quot;Punctuation Removal&quot;</span> provides the phrase</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	resolve punctuated titles</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">which turns all instances in the player&#39;s command of <span class="i7sx">&quot;mr.&quot;</span>, <span class="i7sx">&quot;mrs.&quot;</span>, <span class="i7sx">&quot;prof.&quot;</span>, <span class="i7sx">&quot;st.&quot;</span>, <span class="i7sx">&quot;dr.&quot;</span>, and <span class="i7sx">&quot;rev.&quot;</span> into <span class="i7sx">&quot;mr&quot;</span>, <span class="i7sx">&quot;mrs&quot;</span>, <span class="i7sx">&quot;prof&quot;</span>, <span class="i7sx">&quot;st&quot;</span>, <span class="i7sx">&quot;dr&quot;</span>, and <span class="i7sx">&quot;rev&quot;</span> respectively. Now (assuming Inform understands <span class="i7sx">&quot;mr&quot;</span> as referring to the correct character) we get such output as</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	&gt;x me. x mr. sinister. </span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	As good-looking as ever.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	You see nothing special about Mr. Sinister.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">These phrases should be used during the After reading a command activity, so for instance in a game designed to be very patient with the player&#39;s quirks:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	After reading a command:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		remove stray punctuation.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Or, if we have titled characters,</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	After reading a command:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		resolve punctuated titles.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Example: * Patience - In which question and exclamation marks are pulled from the player&#39;s input.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"> "Patience"</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Include Punctuation Removal by Emily Short.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">The Overpunctuation Arena is a room. "It's madness in here!! Fortunately, you have a lot of patience, right???"</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Understand "who is/are [text]" as inquiring about. Inquiring about is an action applying to one topic. Carry out inquiring about a topic listed in the Table of Answers: say "[reply entry][paragraph break]". Understand the command "what" as "who".</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td tablehead">Table of Answers</span><br></span></div><div class="pseudo tabletable">
+<span class="tr">
+topic	reply<br></span>
+<span class="tr">
+"patience"	"A virtue."<br></span>
+<span class="tr">
+"virtue" or "a virtue"	"A grace."<br></span>
+<span class="tr">
+"Grace" or "a grace"	"A little girl who doesn't wash her face."<br></span>
+<span class="tr">
+After reading a command:<br></span>
+<span class="tr">
+	remove stray punctuation;<br></span>
+<span class="tr">
+	if the player's command includes "&", replace the matched text with "and".<br></span>
+<span class="tr">
+      </div><div class="pseudo">
+<!-- <span class="tr"> -->
+<br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Test me with "what is patience? / what is a virtue?! / what is grace???"</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	*: <span class="i7sx">&quot;Abbreviation&quot;</span></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	Include Punctuation Removal by Emily Short.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	Test me with <span class="i7sx">&quot;x me / x me. x mr. Sinister. / x rev. carl / x mrs. grey / x st. thomas / x prof. green / rev. carl, hello / rev., hello / specialist, hello / x specialist. x st. Aquinas. /  x st. x me&quot;</span></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"> "Abbreviation"</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Include Punctuation Removal by Emily Short.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Test me with "x me / x me. x mr. Sinister. / x rev. carl / x mrs. grey / x st. thomas / x prof. green / rev. carl, hello / rev., hello / specialist, hello / x specialist. x st. Aquinas. /  x st. x me"</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">The Ecumenical Rod & Gun Club of Seventh Saint is a room. Mr Sinister is a man in Club. The printed name of Mr Sinister is "Mr. Sinister". </span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Reverend Carl is a man in Club. The printed name of Reverend Carl is "Rev. Carl". Understand "rev" as Reverend Carl. </span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">St Thomas Aquinas is a man in Club. Understand "saint" as Thomas. The printed name of Aquinas is "St. Thomas Aquinas". </span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Mrs Grey is a woman in Club. The printed name of Grey is "Mrs. Grey".</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Professor Green is a man in Club. The printed name of Green is "Prof. Green". Understand "prof" as professor.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Specialist Joan is a woman in the Club.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">After reading a command: resolve punctuated titles.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	*: <span class="i7sx">&quot;Ownership&quot;</span></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	Include Punctuation Removal by Emily Short.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	Understand <span class="i7sx">&quot;</span><span class="i7si">[something related by reversed possession]</span><span class="i7sx"> s&quot;</span> as a thing.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	Jack wears a tie. Jack is in the Turret. The Turret is a room.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"> "Ownership"</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Include Punctuation Removal by Emily Short.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Understand "[something related by reversed possession] s" as a thing.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Jack wears a tie. Jack is in the Turret. The Turret is a room.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">After reading a command:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	remove apostrophes.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Test me with "x jack's tie".</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+</div><div class="inform7-source"><div class="pseudo">
+<span class="tr line_no" id="line1">
+<!-- <span class="tr line_no" id="line1"> -->
+<span class="td">Version 5 of Punctuation Removal by Emily Short begins here.</span><br></span>
+<span class="tr line_no" id="line2">
+<!-- <span class="tr line_no" id="line2"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line3">
+<!-- <span class="tr line_no" id="line3"> -->
+<span class="td">Use authorial modesty.</span><br></span>
+<span class="tr line_no" id="line4">
+<!-- <span class="tr line_no" id="line4"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line5">
+<!-- <span class="tr line_no" id="line5"> -->
+<span class="td"><span class="i7gh">Section 1 - Wrappers</span></span><br></span>
+<span class="tr line_no" id="line6">
+<!-- <span class="tr line_no" id="line6"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line7">
+<!-- <span class="tr line_no" id="line7"> -->
+<span class="td">To remove stray punctuation:</span><br></span>
+<span class="tr line_no" id="line8">
+<!-- <span class="tr line_no" id="line8"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- PunctuationStripping(</span>)<span class="i7x">; players_command = 100 + WordCount(</span>)<span class="i7x">;  -)</span></span><br></span>
+<span class="tr line_no" id="line9">
+<!-- <span class="tr line_no" id="line9"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line10">
+<!-- <span class="tr line_no" id="line10"> -->
+<span class="td">To remove quotes:</span><br></span>
+<span class="tr line_no" id="line11">
+<!-- <span class="tr line_no" id="line11"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- Quotestripping(</span>)<span class="i7x">; players_command = 100 + WordCount(</span>)<span class="i7x">;  -)</span></span><br></span>
+<span class="tr line_no" id="line12">
+<!-- <span class="tr line_no" id="line12"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line13">
+<!-- <span class="tr line_no" id="line13"> -->
+<span class="td">To remove apostrophes:</span><br></span>
+<span class="tr line_no" id="line14">
+<!-- <span class="tr line_no" id="line14"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- SingleQuotestripping(</span>)<span class="i7x">; players_command = 100 + WordCount(</span>)<span class="i7x">;  -)</span></span><br></span>
+<span class="tr line_no" id="line15">
+<!-- <span class="tr line_no" id="line15"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line16">
+<!-- <span class="tr line_no" id="line16"> -->
+<span class="td">To remove question marks:</span><br></span>
+<span class="tr line_no" id="line17">
+<!-- <span class="tr line_no" id="line17"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- Questionstripping(</span>)<span class="i7x">; players_command = 100 + WordCount(</span>)<span class="i7x">; -)</span></span><br></span>
+<span class="tr line_no" id="line18">
+<!-- <span class="tr line_no" id="line18"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr line_no" id="line19">
+<!-- <span class="tr line_no" id="line19"> -->
+<span class="td">To remove exclamation points:</span><br></span>
+<span class="tr line_no" id="line20">
+<!-- <span class="tr line_no" id="line20"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- ExclamationStripping(</span>)<span class="i7x">; players_command = 100 + WordCount(</span>)<span class="i7x">; -)</span></span><br></span>
+<span class="tr line_no" id="line21">
+<!-- <span class="tr line_no" id="line21"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr line_no" id="line22">
+<!-- <span class="tr line_no" id="line22"> -->
+<span class="td">To remove periods:</span><br></span>
+<span class="tr line_no" id="line23">
+<!-- <span class="tr line_no" id="line23"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- PeriodStripping(</span>)<span class="i7x">; players_command = 100 + WordCount(</span>)<span class="i7x">;  -)</span></span><br></span>
+<span class="tr line_no" id="line24">
+<!-- <span class="tr line_no" id="line24"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr line_no" id="line25">
+<!-- <span class="tr line_no" id="line25"> -->
+<span class="td">To resolve punctuated titles:</span><br></span>
+<span class="tr line_no" id="line26">
+<!-- <span class="tr line_no" id="line26"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- DeTitler(</span>)<span class="i7x">; players_command = 100 + WordCount(</span>)<span class="i7x">; -)</span></span><br></span>
+<span class="tr line_no" id="line27">
+<!-- <span class="tr line_no" id="line27"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr line_no" id="line28">
+<!-- <span class="tr line_no" id="line28"> -->
+<span class="td">Include <span class="i7x">(- </span></span><br></span>
+<span class="tr line_no" id="line29">
+<!-- <span class="tr line_no" id="line29"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line30">
+<!-- <span class="tr line_no" id="line30"> -->
+<span class="td"><span class="i7x">[ Detitler i j buffer_length flag; </span></span><br></span>
+<span class="tr line_no" id="line31">
+<!-- <span class="tr line_no" id="line31"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line32">
+<!-- <span class="tr line_no" id="line32"> -->
+<span class="td"><span class="i7x">#ifdef TARGET_ZCODE;</span></span><br></span>
+<span class="tr line_no" id="line33">
+<!-- <span class="tr line_no" id="line33"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">buffer_length = buffer</span>-<span class="i7x">&gt;1+(WORDSIZE</span>-<span class="i7x">1</span>)<span class="i7x">;</span></span><br></span>
+<span class="tr line_no" id="line34">
+<!-- <span class="tr line_no" id="line34"> -->
+<span class="td"><span class="i7x">#endif;</span></span><br></span>
+<span class="tr line_no" id="line35">
+<!-- <span class="tr line_no" id="line35"> -->
+<span class="td"><span class="i7x">#ifdef TARGET_GLULX;</span></span><br></span>
+<span class="tr line_no" id="line36">
+<!-- <span class="tr line_no" id="line36"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">buffer_length = (buffer</span>--<span class="i7x">&gt;0</span>)<span class="i7x">+(WORDSIZE</span>-<span class="i7x">1</span>)<span class="i7x">;</span></span><br></span>
+<span class="tr line_no" id="line37">
+<!-- <span class="tr line_no" id="line37"> -->
+<span class="td"><span class="i7x">#endif; </span></span><br></span>
+<span class="tr line_no" id="line38">
+<!-- <span class="tr line_no" id="line38"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">for (i = WORDSIZE : i &lt;= buffer_length: i++</span>)</span><br></span>
+<span class="tr line_no" id="line39">
+<!-- <span class="tr line_no" id="line39"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">{ </span></span><br></span>
+<span class="tr line_no" id="line40">
+<!-- <span class="tr line_no" id="line40"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">if ((buffer</span>-<span class="i7x">&gt;i</span>)<span class="i7x"> == &#39;.&#39; &amp;&amp; (i &gt; WORDSIZE + 1</span>))<span class="i7x"> </span></span><br></span>
+<span class="tr line_no" id="line41">
+<!-- <span class="tr line_no" id="line41"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">{ </span></span><br></span>
+<span class="tr line_no" id="line42">
+<!-- <span class="tr line_no" id="line42"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;			<span class="i7c1">! flag if the period follows Mr, Mrs, Dr, prof, rev, or st</span></span><br></span>
+<span class="tr line_no" id="line43">
+<!-- <span class="tr line_no" id="line43"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;			<span class="i7c1">!</span></span><br></span>
+<span class="tr line_no" id="line44">
+<!-- <span class="tr line_no" id="line44"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;			<span class="i7c1">! This is hackish, but our hearts are pure</span></span><br></span>
+<span class="tr line_no" id="line45">
+<!-- <span class="tr line_no" id="line45"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;			</span><br></span>
+<span class="tr line_no" id="line46">
+<!-- <span class="tr line_no" id="line46"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;			<span class="i7x">if ((buffer</span>-<span class="i7x">&gt;(i</span>-<span class="i7x">1</span>)<span class="i7x">==&#39;r&#39;</span>)<span class="i7x"> &amp;&amp; (buffer</span>-<span class="i7x">&gt;(i</span>-<span class="i7x">2</span>)<span class="i7x">==&#39;m&#39;</span>)<span class="i7x"> &amp;&amp; ((buffer</span>-<span class="i7x">&gt;(i</span>-<span class="i7x">3</span>)<span class="i7x">==&#39; &#39;</span>)<span class="i7x"> || ((i</span>-<span class="i7x">3</span>)<span class="i7x"> &lt; WORDSIZE</span>)))<span class="i7x"> flag = 1;</span></span><br></span>
+<span class="tr line_no" id="line47">
+<!-- <span class="tr line_no" id="line47"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;			<span class="i7x">if ((buffer</span>-<span class="i7x">&gt;(i</span>-<span class="i7x">1</span>)<span class="i7x">==&#39;r&#39;</span>)<span class="i7x"> &amp;&amp; (buffer</span>-<span class="i7x">&gt;(i</span>-<span class="i7x">2</span>)<span class="i7x">==&#39;d&#39;</span>)<span class="i7x"> &amp;&amp; ((buffer</span>-<span class="i7x">&gt;(i</span>-<span class="i7x">3</span>)<span class="i7x">==&#39; &#39;</span>)<span class="i7x"> || ((i</span>-<span class="i7x">3</span>)<span class="i7x"> &lt; WORDSIZE</span>)))<span class="i7x"> flag = 1;</span></span><br></span>
+<span class="tr line_no" id="line48">
+<!-- <span class="tr line_no" id="line48"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;			<span class="i7x">if ((buffer</span>-<span class="i7x">&gt;(i</span>-<span class="i7x">1</span>)<span class="i7x">==&#39;t&#39;</span>)<span class="i7x"> &amp;&amp; (buffer</span>-<span class="i7x">&gt;(i</span>-<span class="i7x">2</span>)<span class="i7x">==&#39;s&#39;</span>)<span class="i7x"> &amp;&amp; ((buffer</span>-<span class="i7x">&gt;(i</span>-<span class="i7x">3</span>)<span class="i7x">==&#39; &#39;</span>)<span class="i7x"> || ((i</span>-<span class="i7x">3</span>)<span class="i7x"> &lt; WORDSIZE</span>)))<span class="i7x"> flag = 1;</span></span><br></span>
+<span class="tr line_no" id="line49">
+<!-- <span class="tr line_no" id="line49"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;			<span class="i7x">if ((buffer</span>-<span class="i7x">&gt;(i</span>-<span class="i7x">1</span>)<span class="i7x">==&#39;s&#39;</span>)<span class="i7x"> &amp;&amp; (buffer</span>-<span class="i7x">&gt;(i</span>-<span class="i7x">2</span>)<span class="i7x">==&#39;r&#39;</span>)<span class="i7x"> &amp;&amp; (buffer</span>-<span class="i7x">&gt;(i</span>-<span class="i7x">3</span>)<span class="i7x">==&#39;m&#39;</span>)<span class="i7x"> &amp;&amp; ((buffer</span>-<span class="i7x">&gt;(i</span>-<span class="i7x">4</span>)<span class="i7x">==&#39; &#39;</span>)<span class="i7x"> || ((i</span>-<span class="i7x">4</span>)<span class="i7x"> &lt; WORDSIZE</span>)))<span class="i7x"> flag = 1;</span></span><br></span>
+<span class="tr line_no" id="line50">
+<!-- <span class="tr line_no" id="line50"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;			<span class="i7x">if ((buffer</span>-<span class="i7x">&gt;(i</span>-<span class="i7x">1</span>)<span class="i7x">==&#39;v&#39;</span>)<span class="i7x"> &amp;&amp; (buffer</span>-<span class="i7x">&gt;(i</span>-<span class="i7x">2</span>)<span class="i7x">==&#39;e&#39;</span>)<span class="i7x"> &amp;&amp; (buffer</span>-<span class="i7x">&gt;(i</span>-<span class="i7x">3</span>)<span class="i7x">==&#39;r&#39;</span>)<span class="i7x"> &amp;&amp; ((buffer</span>-<span class="i7x">&gt;(i</span>-<span class="i7x">4</span>)<span class="i7x">==&#39; &#39;</span>)<span class="i7x"> || ((i</span>-<span class="i7x">4</span>)<span class="i7x"> &lt; WORDSIZE</span>)))<span class="i7x"> flag = 1;</span></span><br></span>
+<span class="tr line_no" id="line51">
+<!-- <span class="tr line_no" id="line51"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;			<span class="i7x">if ((buffer</span>-<span class="i7x">&gt;(i</span>-<span class="i7x">1</span>)<span class="i7x">==&#39;f&#39;</span>)<span class="i7x"> &amp;&amp; (buffer</span>-<span class="i7x">&gt;(i</span>-<span class="i7x">2</span>)<span class="i7x">==&#39;o&#39;</span>)<span class="i7x"> &amp;&amp; (buffer</span>-<span class="i7x">&gt;(i</span>-<span class="i7x">3</span>)<span class="i7x">==&#39;r&#39;</span>)<span class="i7x"> &amp;&amp; (buffer</span>-<span class="i7x">&gt;(i</span>-<span class="i7x">4</span>)<span class="i7x">==&#39;p&#39;</span>)<span class="i7x"> &amp;&amp; ((buffer</span>-<span class="i7x">&gt;(i</span>-<span class="i7x">5</span>)<span class="i7x">==&#39; &#39;</span>)<span class="i7x"> || ((i</span>-<span class="i7x">5</span>)<span class="i7x"> &lt; WORDSIZE</span>)))<span class="i7x"> flag = 1;</span></span><br></span>
+<span class="tr line_no" id="line52">
+<!-- <span class="tr line_no" id="line52"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;			<span class="i7x">if (flag</span>)<span class="i7x"> buffer</span>-<span class="i7x">&gt;i = &#39; &#39;;   </span></span><br></span>
+<span class="tr line_no" id="line53">
+<!-- <span class="tr line_no" id="line53"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line54">
+<!-- <span class="tr line_no" id="line54"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line55">
+<!-- <span class="tr line_no" id="line55"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">VM_Tokenise(buffer, parse</span>)<span class="i7x">;</span></span><br></span>
+<span class="tr line_no" id="line56">
+<!-- <span class="tr line_no" id="line56"> -->
+<span class="td"><span class="i7x">]; </span></span><br></span>
+<span class="tr line_no" id="line57">
+<!-- <span class="tr line_no" id="line57"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line58">
+<!-- <span class="tr line_no" id="line58"> -->
+<span class="td"><span class="i7x">-)</span> </span><br></span>
+<span class="tr line_no" id="line59">
+<!-- <span class="tr line_no" id="line59"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line60">
+<!-- <span class="tr line_no" id="line60"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line61">
+<!-- <span class="tr line_no" id="line61"> -->
+<span class="td"><span class="i7gh">Section 2 (for Z-machine only)</span></span><br></span>
+<span class="tr line_no" id="line62">
+<!-- <span class="tr line_no" id="line62"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line63">
+<!-- <span class="tr line_no" id="line63"> -->
+<span class="td">Include <span class="i7x">(-</span></span><br></span>
+<span class="tr line_no" id="line64">
+<!-- <span class="tr line_no" id="line64"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line65">
+<!-- <span class="tr line_no" id="line65"> -->
+<span class="td"><span class="i7x">[ PunctuationStripping i;</span></span><br></span>
+<span class="tr line_no" id="line66">
+<!-- <span class="tr line_no" id="line66"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">for (i = 2 : i &lt;= (buffer</span>-<span class="i7x">&gt;1</span>)<span class="i7x"> + 1 : i++</span>)</span><br></span>
+<span class="tr line_no" id="line67">
+<!-- <span class="tr line_no" id="line67"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">{ </span></span><br></span>
+<span class="tr line_no" id="line68">
+<!-- <span class="tr line_no" id="line68"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">if ((buffer</span>-<span class="i7x">&gt;i</span>)<span class="i7x"> == &#39;&quot;&#39; or &#39;?&#39; or &#39;!&#39;</span>)<span class="i7x"> </span></span><br></span>
+<span class="tr line_no" id="line69">
+<!-- <span class="tr line_no" id="line69"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">{	buffer</span>-<span class="i7x">&gt;i = &#39; &#39;;  </span></span><br></span>
+<span class="tr line_no" id="line70">
+<!-- <span class="tr line_no" id="line70"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line71">
+<!-- <span class="tr line_no" id="line71"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line72">
+<!-- <span class="tr line_no" id="line72"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">VM_Tokenise(buffer, parse</span>)<span class="i7x">;</span></span><br></span>
+<span class="tr line_no" id="line73">
+<!-- <span class="tr line_no" id="line73"> -->
+<span class="td"><span class="i7x">];</span></span><br></span>
+<span class="tr line_no" id="line74">
+<!-- <span class="tr line_no" id="line74"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line75">
+<!-- <span class="tr line_no" id="line75"> -->
+<span class="td"><span class="i7x">-)</span></span><br></span>
+<span class="tr line_no" id="line76">
+<!-- <span class="tr line_no" id="line76"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line77">
+<!-- <span class="tr line_no" id="line77"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line78">
+<!-- <span class="tr line_no" id="line78"> -->
+<span class="td">Include <span class="i7x">(-</span></span><br></span>
+<span class="tr line_no" id="line79">
+<!-- <span class="tr line_no" id="line79"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line80">
+<!-- <span class="tr line_no" id="line80"> -->
+<span class="td"><span class="i7x">[ SingleQuoteStripping i;</span></span><br></span>
+<span class="tr line_no" id="line81">
+<!-- <span class="tr line_no" id="line81"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">for (i = 2 : i &lt;= (buffer</span>-<span class="i7x">&gt;1</span>)<span class="i7x"> + 1 : i++</span>)</span><br></span>
+<span class="tr line_no" id="line82">
+<!-- <span class="tr line_no" id="line82"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">{ </span></span><br></span>
+<span class="tr line_no" id="line83">
+<!-- <span class="tr line_no" id="line83"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">if ((buffer</span>-<span class="i7x">&gt;i</span>)<span class="i7x"> == 39</span>)<span class="i7x"> </span></span><br></span>
+<span class="tr line_no" id="line84">
+<!-- <span class="tr line_no" id="line84"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">{	buffer</span>-<span class="i7x">&gt;i = &#39; &#39;;  </span></span><br></span>
+<span class="tr line_no" id="line85">
+<!-- <span class="tr line_no" id="line85"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line86">
+<!-- <span class="tr line_no" id="line86"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line87">
+<!-- <span class="tr line_no" id="line87"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">VM_Tokenise(buffer, parse</span>)<span class="i7x">;</span></span><br></span>
+<span class="tr line_no" id="line88">
+<!-- <span class="tr line_no" id="line88"> -->
+<span class="td"><span class="i7x">];</span></span><br></span>
+<span class="tr line_no" id="line89">
+<!-- <span class="tr line_no" id="line89"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line90">
+<!-- <span class="tr line_no" id="line90"> -->
+<span class="td"><span class="i7x">-)</span></span><br></span>
+<span class="tr line_no" id="line91">
+<!-- <span class="tr line_no" id="line91"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line92">
+<!-- <span class="tr line_no" id="line92"> -->
+<span class="td">Include <span class="i7x">(-</span></span><br></span>
+<span class="tr line_no" id="line93">
+<!-- <span class="tr line_no" id="line93"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line94">
+<!-- <span class="tr line_no" id="line94"> -->
+<span class="td"><span class="i7x">[ QuoteStripping i;</span></span><br></span>
+<span class="tr line_no" id="line95">
+<!-- <span class="tr line_no" id="line95"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">for (i = 2 : i &lt;= (buffer</span>-<span class="i7x">&gt;1</span>)<span class="i7x"> + 1 : i++</span>)</span><br></span>
+<span class="tr line_no" id="line96">
+<!-- <span class="tr line_no" id="line96"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">{ </span></span><br></span>
+<span class="tr line_no" id="line97">
+<!-- <span class="tr line_no" id="line97"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">if ((buffer</span>-<span class="i7x">&gt;i</span>)<span class="i7x"> == &#39;&quot;&#39;</span>)<span class="i7x"> </span></span><br></span>
+<span class="tr line_no" id="line98">
+<!-- <span class="tr line_no" id="line98"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">{	buffer</span>-<span class="i7x">&gt;i = &#39; &#39;;  </span></span><br></span>
+<span class="tr line_no" id="line99">
+<!-- <span class="tr line_no" id="line99"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line100">
+<!-- <span class="tr line_no" id="line100"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line101">
+<!-- <span class="tr line_no" id="line101"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">VM_Tokenise(buffer, parse</span>)<span class="i7x">;</span></span><br></span>
+<span class="tr line_no" id="line102">
+<!-- <span class="tr line_no" id="line102"> -->
+<span class="td"><span class="i7x">];</span></span><br></span>
+<span class="tr line_no" id="line103">
+<!-- <span class="tr line_no" id="line103"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line104">
+<!-- <span class="tr line_no" id="line104"> -->
+<span class="td"><span class="i7x">-)</span></span><br></span>
+<span class="tr line_no" id="line105">
+<!-- <span class="tr line_no" id="line105"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr line_no" id="line106">
+<!-- <span class="tr line_no" id="line106"> -->
+<span class="td">Include <span class="i7x">(-</span></span><br></span>
+<span class="tr line_no" id="line107">
+<!-- <span class="tr line_no" id="line107"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line108">
+<!-- <span class="tr line_no" id="line108"> -->
+<span class="td"><span class="i7x">[ Questionstripping i;</span></span><br></span>
+<span class="tr line_no" id="line109">
+<!-- <span class="tr line_no" id="line109"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">for (i = 2 : i &lt;= (buffer</span>-<span class="i7x">&gt;1</span>)<span class="i7x"> + 1 : i++</span>)</span><br></span>
+<span class="tr line_no" id="line110">
+<!-- <span class="tr line_no" id="line110"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">{ </span></span><br></span>
+<span class="tr line_no" id="line111">
+<!-- <span class="tr line_no" id="line111"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">if ((buffer</span>-<span class="i7x">&gt;i</span>)<span class="i7x"> == &#39;?&#39;</span>)<span class="i7x"> </span></span><br></span>
+<span class="tr line_no" id="line112">
+<!-- <span class="tr line_no" id="line112"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">{	buffer</span>-<span class="i7x">&gt;i = &#39; &#39;;  </span></span><br></span>
+<span class="tr line_no" id="line113">
+<!-- <span class="tr line_no" id="line113"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line114">
+<!-- <span class="tr line_no" id="line114"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line115">
+<!-- <span class="tr line_no" id="line115"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">VM_Tokenise(buffer, parse</span>)<span class="i7x">;</span></span><br></span>
+<span class="tr line_no" id="line116">
+<!-- <span class="tr line_no" id="line116"> -->
+<span class="td"><span class="i7x">];</span></span><br></span>
+<span class="tr line_no" id="line117">
+<!-- <span class="tr line_no" id="line117"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line118">
+<!-- <span class="tr line_no" id="line118"> -->
+<span class="td"><span class="i7x">-)</span></span><br></span>
+<span class="tr line_no" id="line119">
+<!-- <span class="tr line_no" id="line119"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line120">
+<!-- <span class="tr line_no" id="line120"> -->
+<span class="td">Include <span class="i7x">(-</span></span><br></span>
+<span class="tr line_no" id="line121">
+<!-- <span class="tr line_no" id="line121"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line122">
+<!-- <span class="tr line_no" id="line122"> -->
+<span class="td"><span class="i7x">[ ExclamationStripping i;</span></span><br></span>
+<span class="tr line_no" id="line123">
+<!-- <span class="tr line_no" id="line123"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">for (i = 2 : i &lt;= (buffer</span>-<span class="i7x">&gt;1</span>)<span class="i7x"> + 1 : i++</span>)</span><br></span>
+<span class="tr line_no" id="line124">
+<!-- <span class="tr line_no" id="line124"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">{ </span></span><br></span>
+<span class="tr line_no" id="line125">
+<!-- <span class="tr line_no" id="line125"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">if ((buffer</span>-<span class="i7x">&gt;i</span>)<span class="i7x"> == &#39;!&#39;</span>)<span class="i7x"> </span></span><br></span>
+<span class="tr line_no" id="line126">
+<!-- <span class="tr line_no" id="line126"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">{	buffer</span>-<span class="i7x">&gt;i = &#39; &#39;;  </span></span><br></span>
+<span class="tr line_no" id="line127">
+<!-- <span class="tr line_no" id="line127"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line128">
+<!-- <span class="tr line_no" id="line128"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line129">
+<!-- <span class="tr line_no" id="line129"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">VM_Tokenise(buffer, parse</span>)<span class="i7x">;</span></span><br></span>
+<span class="tr line_no" id="line130">
+<!-- <span class="tr line_no" id="line130"> -->
+<span class="td"><span class="i7x">];</span></span><br></span>
+<span class="tr line_no" id="line131">
+<!-- <span class="tr line_no" id="line131"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line132">
+<!-- <span class="tr line_no" id="line132"> -->
+<span class="td"><span class="i7x">-)</span></span><br></span>
+<span class="tr line_no" id="line133">
+<!-- <span class="tr line_no" id="line133"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line134">
+<!-- <span class="tr line_no" id="line134"> -->
+<span class="td">Include <span class="i7x">(-</span></span><br></span>
+<span class="tr line_no" id="line135">
+<!-- <span class="tr line_no" id="line135"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line136">
+<!-- <span class="tr line_no" id="line136"> -->
+<span class="td"><span class="i7x">[ PeriodStripping i j;</span></span><br></span>
+<span class="tr line_no" id="line137">
+<!-- <span class="tr line_no" id="line137"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">for (i = 2 : i &lt;= (buffer</span>-<span class="i7x">&gt;1</span>)<span class="i7x"> + 1 : i++</span>)</span><br></span>
+<span class="tr line_no" id="line138">
+<!-- <span class="tr line_no" id="line138"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">{ </span></span><br></span>
+<span class="tr line_no" id="line139">
+<!-- <span class="tr line_no" id="line139"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">if ((buffer</span>-<span class="i7x">&gt;i</span>)<span class="i7x"> == &#39;.&#39;</span>)<span class="i7x"> </span></span><br></span>
+<span class="tr line_no" id="line140">
+<!-- <span class="tr line_no" id="line140"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">{	buffer</span>-<span class="i7x">&gt;i = &#39; &#39;;  </span></span><br></span>
+<span class="tr line_no" id="line141">
+<!-- <span class="tr line_no" id="line141"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line142">
+<!-- <span class="tr line_no" id="line142"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line143">
+<!-- <span class="tr line_no" id="line143"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">VM_Tokenise(buffer, parse</span>)<span class="i7x">;</span></span><br></span>
+<span class="tr line_no" id="line144">
+<!-- <span class="tr line_no" id="line144"> -->
+<span class="td"><span class="i7x">];</span></span><br></span>
+<span class="tr line_no" id="line145">
+<!-- <span class="tr line_no" id="line145"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line146">
+<!-- <span class="tr line_no" id="line146"> -->
+<span class="td"><span class="i7x">-)</span></span><br></span>
+<span class="tr line_no" id="line147">
+<!-- <span class="tr line_no" id="line147"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line148">
+<!-- <span class="tr line_no" id="line148"> -->
+<span class="td"><span class="i7gh">Section 3 (for Glulx only)</span></span><br></span>
+<span class="tr line_no" id="line149">
+<!-- <span class="tr line_no" id="line149"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line150">
+<!-- <span class="tr line_no" id="line150"> -->
+<span class="td">Include <span class="i7x">(-</span></span><br></span>
+<span class="tr line_no" id="line151">
+<!-- <span class="tr line_no" id="line151"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line152">
+<!-- <span class="tr line_no" id="line152"> -->
+<span class="td"><span class="i7x">[ BufferOut i;   </span></span><br></span>
+<span class="tr line_no" id="line153">
+<!-- <span class="tr line_no" id="line153"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">for (i = WORDSIZE : i &lt;= (buffer</span>--<span class="i7x">&gt;0</span>)<span class="i7x">+(WORDSIZE</span>-<span class="i7x">1</span>)<span class="i7x"> : i++</span>)</span><br></span>
+<span class="tr line_no" id="line154">
+<!-- <span class="tr line_no" id="line154"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">{  </span></span><br></span>
+<span class="tr line_no" id="line155">
+<!-- <span class="tr line_no" id="line155"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">print (char</span>)<span class="i7x"> (buffer</span>-<span class="i7x">&gt;i</span>)<span class="i7x">;</span></span><br></span>
+<span class="tr line_no" id="line156">
+<!-- <span class="tr line_no" id="line156"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">} </span></span><br></span>
+<span class="tr line_no" id="line157">
+<!-- <span class="tr line_no" id="line157"> -->
+<span class="td"><span class="i7x">];</span></span><br></span>
+<span class="tr line_no" id="line158">
+<!-- <span class="tr line_no" id="line158"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line159">
+<!-- <span class="tr line_no" id="line159"> -->
+<span class="td"><span class="i7x">[ PunctuationStripping i;</span></span><br></span>
+<span class="tr line_no" id="line160">
+<!-- <span class="tr line_no" id="line160"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">for (i = WORDSIZE : i &lt;= (buffer</span>--<span class="i7x">&gt;0</span>)<span class="i7x">+(WORDSIZE</span>-<span class="i7x">1</span>)<span class="i7x"> : i++</span>)</span><br></span>
+<span class="tr line_no" id="line161">
+<!-- <span class="tr line_no" id="line161"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">{ </span></span><br></span>
+<span class="tr line_no" id="line162">
+<!-- <span class="tr line_no" id="line162"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">if ((buffer</span>-<span class="i7x">&gt;i</span>)<span class="i7x"> == &#39;&quot;&#39; or &#39;?&#39; or &#39;!&#39;</span>)<span class="i7x"> </span></span><br></span>
+<span class="tr line_no" id="line163">
+<!-- <span class="tr line_no" id="line163"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">{	buffer</span>-<span class="i7x">&gt;i = &#39; &#39;;  </span></span><br></span>
+<span class="tr line_no" id="line164">
+<!-- <span class="tr line_no" id="line164"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line165">
+<!-- <span class="tr line_no" id="line165"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line166">
+<!-- <span class="tr line_no" id="line166"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">VM_Tokenise(buffer, parse</span>)<span class="i7x">;</span></span><br></span>
+<span class="tr line_no" id="line167">
+<!-- <span class="tr line_no" id="line167"> -->
+<span class="td"><span class="i7x">];</span></span><br></span>
+<span class="tr line_no" id="line168">
+<!-- <span class="tr line_no" id="line168"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line169">
+<!-- <span class="tr line_no" id="line169"> -->
+<span class="td"><span class="i7x">-)</span></span><br></span>
+<span class="tr line_no" id="line170">
+<!-- <span class="tr line_no" id="line170"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line171">
+<!-- <span class="tr line_no" id="line171"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line172">
+<!-- <span class="tr line_no" id="line172"> -->
+<span class="td">Include <span class="i7x">(-</span></span><br></span>
+<span class="tr line_no" id="line173">
+<!-- <span class="tr line_no" id="line173"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line174">
+<!-- <span class="tr line_no" id="line174"> -->
+<span class="td"><span class="i7x">[ SingleQuoteStripping i;</span></span><br></span>
+<span class="tr line_no" id="line175">
+<!-- <span class="tr line_no" id="line175"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">for (i = WORDSIZE : i &lt;= (buffer</span>--<span class="i7x">&gt;0</span>)<span class="i7x">+(WORDSIZE</span>-<span class="i7x">1</span>)<span class="i7x"> : i++</span>)<span class="i7x">	{ </span></span><br></span>
+<span class="tr line_no" id="line176">
+<!-- <span class="tr line_no" id="line176"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">if ((buffer</span>-<span class="i7x">&gt;i</span>)<span class="i7x"> == 39</span>)<span class="i7x"> </span></span><br></span>
+<span class="tr line_no" id="line177">
+<!-- <span class="tr line_no" id="line177"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">{	buffer</span>-<span class="i7x">&gt;i = &#39; &#39;;  </span></span><br></span>
+<span class="tr line_no" id="line178">
+<!-- <span class="tr line_no" id="line178"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line179">
+<!-- <span class="tr line_no" id="line179"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line180">
+<!-- <span class="tr line_no" id="line180"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">VM_Tokenise(buffer, parse</span>)<span class="i7x">;</span></span><br></span>
+<span class="tr line_no" id="line181">
+<!-- <span class="tr line_no" id="line181"> -->
+<span class="td"><span class="i7x">];</span></span><br></span>
+<span class="tr line_no" id="line182">
+<!-- <span class="tr line_no" id="line182"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line183">
+<!-- <span class="tr line_no" id="line183"> -->
+<span class="td"><span class="i7x">[ QuoteStripping i;</span></span><br></span>
+<span class="tr line_no" id="line184">
+<!-- <span class="tr line_no" id="line184"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">for (i = WORDSIZE : i &lt;= (buffer</span>--<span class="i7x">&gt;0</span>)<span class="i7x">+(WORDSIZE</span>-<span class="i7x">1</span>)<span class="i7x"> : i++</span>)<span class="i7x">	{ </span></span><br></span>
+<span class="tr line_no" id="line185">
+<!-- <span class="tr line_no" id="line185"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">if ((buffer</span>-<span class="i7x">&gt;i</span>)<span class="i7x"> == &#39;&quot;&#39;</span>)<span class="i7x"> </span></span><br></span>
+<span class="tr line_no" id="line186">
+<!-- <span class="tr line_no" id="line186"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">{	buffer</span>-<span class="i7x">&gt;i = &#39; &#39;;  </span></span><br></span>
+<span class="tr line_no" id="line187">
+<!-- <span class="tr line_no" id="line187"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line188">
+<!-- <span class="tr line_no" id="line188"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line189">
+<!-- <span class="tr line_no" id="line189"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">VM_Tokenise(buffer, parse</span>)<span class="i7x">;</span></span><br></span>
+<span class="tr line_no" id="line190">
+<!-- <span class="tr line_no" id="line190"> -->
+<span class="td"><span class="i7x">];</span></span><br></span>
+<span class="tr line_no" id="line191">
+<!-- <span class="tr line_no" id="line191"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line192">
+<!-- <span class="tr line_no" id="line192"> -->
+<span class="td"><span class="i7x">-)</span></span><br></span>
+<span class="tr line_no" id="line193">
+<!-- <span class="tr line_no" id="line193"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr line_no" id="line194">
+<!-- <span class="tr line_no" id="line194"> -->
+<span class="td">Include <span class="i7x">(-</span></span><br></span>
+<span class="tr line_no" id="line195">
+<!-- <span class="tr line_no" id="line195"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line196">
+<!-- <span class="tr line_no" id="line196"> -->
+<span class="td"><span class="i7x">[ Questionstripping i;</span></span><br></span>
+<span class="tr line_no" id="line197">
+<!-- <span class="tr line_no" id="line197"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">for (i = WORDSIZE : i &lt;= (buffer</span>--<span class="i7x">&gt;0</span>)<span class="i7x">+(WORDSIZE</span>-<span class="i7x">1</span>)<span class="i7x"> : i++</span>)</span><br></span>
+<span class="tr line_no" id="line198">
+<!-- <span class="tr line_no" id="line198"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">{ </span></span><br></span>
+<span class="tr line_no" id="line199">
+<!-- <span class="tr line_no" id="line199"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">if ((buffer</span>-<span class="i7x">&gt;i</span>)<span class="i7x"> == &#39;?&#39;</span>)<span class="i7x"> </span></span><br></span>
+<span class="tr line_no" id="line200">
+<!-- <span class="tr line_no" id="line200"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">{	buffer</span>-<span class="i7x">&gt;i = &#39; &#39;;  </span></span><br></span>
+<span class="tr line_no" id="line201">
+<!-- <span class="tr line_no" id="line201"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line202">
+<!-- <span class="tr line_no" id="line202"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line203">
+<!-- <span class="tr line_no" id="line203"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">VM_Tokenise(buffer, parse</span>)<span class="i7x">;</span></span><br></span>
+<span class="tr line_no" id="line204">
+<!-- <span class="tr line_no" id="line204"> -->
+<span class="td"><span class="i7x">];</span></span><br></span>
+<span class="tr line_no" id="line205">
+<!-- <span class="tr line_no" id="line205"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line206">
+<!-- <span class="tr line_no" id="line206"> -->
+<span class="td"><span class="i7x">-)</span></span><br></span>
+<span class="tr line_no" id="line207">
+<!-- <span class="tr line_no" id="line207"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line208">
+<!-- <span class="tr line_no" id="line208"> -->
+<span class="td">Include <span class="i7x">(-</span></span><br></span>
+<span class="tr line_no" id="line209">
+<!-- <span class="tr line_no" id="line209"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line210">
+<!-- <span class="tr line_no" id="line210"> -->
+<span class="td"><span class="i7x">[ ExclamationStripping i;</span></span><br></span>
+<span class="tr line_no" id="line211">
+<!-- <span class="tr line_no" id="line211"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">for (i = WORDSIZE : i &lt;= (buffer</span>--<span class="i7x">&gt;0</span>)<span class="i7x">+(WORDSIZE</span>-<span class="i7x">1</span>)<span class="i7x"> : i++</span>)</span><br></span>
+<span class="tr line_no" id="line212">
+<!-- <span class="tr line_no" id="line212"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">{ </span></span><br></span>
+<span class="tr line_no" id="line213">
+<!-- <span class="tr line_no" id="line213"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">if ((buffer</span>-<span class="i7x">&gt;i</span>)<span class="i7x"> == &#39;!&#39;</span>)<span class="i7x"> </span></span><br></span>
+<span class="tr line_no" id="line214">
+<!-- <span class="tr line_no" id="line214"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">{	buffer</span>-<span class="i7x">&gt;i = &#39; &#39;;  </span></span><br></span>
+<span class="tr line_no" id="line215">
+<!-- <span class="tr line_no" id="line215"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line216">
+<!-- <span class="tr line_no" id="line216"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line217">
+<!-- <span class="tr line_no" id="line217"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">VM_Tokenise(buffer, parse</span>)<span class="i7x">;</span></span><br></span>
+<span class="tr line_no" id="line218">
+<!-- <span class="tr line_no" id="line218"> -->
+<span class="td"><span class="i7x">];</span></span><br></span>
+<span class="tr line_no" id="line219">
+<!-- <span class="tr line_no" id="line219"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line220">
+<!-- <span class="tr line_no" id="line220"> -->
+<span class="td"><span class="i7x">-)</span></span><br></span>
+<span class="tr line_no" id="line221">
+<!-- <span class="tr line_no" id="line221"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line222">
+<!-- <span class="tr line_no" id="line222"> -->
+<span class="td">Include <span class="i7x">(-</span></span><br></span>
+<span class="tr line_no" id="line223">
+<!-- <span class="tr line_no" id="line223"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line224">
+<!-- <span class="tr line_no" id="line224"> -->
+<span class="td"><span class="i7x">[ PeriodStripping i j;</span></span><br></span>
+<span class="tr line_no" id="line225">
+<!-- <span class="tr line_no" id="line225"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">for (i = WORDSIZE : i &lt;= (buffer</span>--<span class="i7x">&gt;0</span>)<span class="i7x">+(WORDSIZE</span>-<span class="i7x">1</span>)<span class="i7x"> : i++</span>)</span><br></span>
+<span class="tr line_no" id="line226">
+<!-- <span class="tr line_no" id="line226"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">{ </span></span><br></span>
+<span class="tr line_no" id="line227">
+<!-- <span class="tr line_no" id="line227"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">if ((buffer</span>-<span class="i7x">&gt;i</span>)<span class="i7x"> == &#39;.&#39;</span>)<span class="i7x"> </span></span><br></span>
+<span class="tr line_no" id="line228">
+<!-- <span class="tr line_no" id="line228"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">{	buffer</span>-<span class="i7x">&gt;i = &#39; &#39;;  </span></span><br></span>
+<span class="tr line_no" id="line229">
+<!-- <span class="tr line_no" id="line229"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;		<span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line230">
+<!-- <span class="tr line_no" id="line230"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line231">
+<!-- <span class="tr line_no" id="line231"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">VM_Tokenise(buffer, parse</span>)<span class="i7x">;</span></span><br></span>
+<span class="tr line_no" id="line232">
+<!-- <span class="tr line_no" id="line232"> -->
+<span class="td"><span class="i7x">];</span></span><br></span>
+<span class="tr line_no" id="line233">
+<!-- <span class="tr line_no" id="line233"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line234">
+<!-- <span class="tr line_no" id="line234"> -->
+<span class="td"><span class="i7x">-)</span></span><br></span>
+<span class="tr line_no" id="line235">
+<!-- <span class="tr line_no" id="line235"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line236">
+<!-- <span class="tr line_no" id="line236"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line237">
+<!-- <span class="tr line_no" id="line237"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line238">
+<!-- <span class="tr line_no" id="line238"> -->
+<span class="td">Punctuation Removal ends here.</span><br></span>
+<span class="tr line_no" id="line239">
+<!-- <span class="tr line_no" id="line239"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line240">
+<!-- <span class="tr line_no" id="line240"> -->
+<span class="td">---- DOCUMENTATION ----</span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

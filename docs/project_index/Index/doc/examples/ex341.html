@@ -1,0 +1,265 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../style.css">
+<script>function toggle_details() {
+   var openness, toggle_link;
+   toggle_link = document.getElementById("toggle");
+   openness = toggle_link.classList.toggle("open");
+document.querySelectorAll("details.full-example").forEach(detail => { if (openness) { detail.setAttribute("open", true); } else { detail.removeAttribute("open");} });
+   toggle_link.innerText = (openness ? "Close" : "Open") + " all examples";
+   }
+
+
+function copyCode(text) { navigator.clipboard.writeText(text); }
+
+
+var links = document.getElementsByTagName('a');
+for (var i = 0; i < links.length; i++) {
+    if (links[i].href.match(/^#example-\d+/)) {
+	links[i].onClick = function() { links[i].href.match(/^#example-(\d+)$/); var example = document.getElementById($1).setAttribute('open'); return true; };
+    }
+}
+
+function add_bar(update) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let navbar = document.querySelector('div.index-navbar');
+
+    if (navbar && urlParams.has('project')) {
+        navbar.setAttribute('class', 'index-navbar'); // removes hidden
+        let project = decodeURIComponent(urlParams.get('project'));
+        let index_root = project + '/.index/';
+        let build = project + '/Build/';
+        let query_arg = "?project="+encodeURIComponent(project);
+
+        let links = [
+            { "General Index": document.getElementById('general_index').href },
+            { "Docs": document.getElementById('docs').href },
+            { "Extensions": index_root + 'doc/Extensions.html' },
+            { "Definitions": index_root + 'doc/ExtIndex.html' },
+            { "Debug Log": build + 'debug_log.html' },
+            { "Problems": build + 'problems.html' },
+            { "Source": index_root + 'story.html' },
+            { "Project Index": index_root + 'Index/Welcome.html' } ];
+        let sp = document.createTextNode(" ");
+        links.forEach(h => {
+            Object.entries(h).forEach(([text, url]) => {
+                let my_id = text.toLowerCase().replace(' ', '_');
+                let a = document.querySelector('#'+my_id);
+                let url_target = "file://"+url+query_arg;
+                if (a) {
+                    let parts = a.href.split('#');
+                    let qparts = parts[0].split('?');
+                    a.href = qparts[0] +  (qparts[1] ? ('?' + qparts[1]) : query_arg) + (parts[1] ? ('#' + parts[1]) : "");
+                }
+                else {
+                    a = document.createElement('a');
+                    let href = document.createAttribute("href");
+                    href.value = url_target;
+                    a.setAttributeNode(href);
+                    let elem_id = document.createAttribute("id");
+                    elem_id.value = my_id;
+                    a.setAttributeNode(elem_id);
+                    let linktext = document.createTextNode(text);
+                    a.appendChild(linktext);
+                    navbar.insertBefore(sp.cloneNode(), navbar.firstChild);
+                    navbar.insertBefore(a, navbar.firstChild);
+                }
+            })});
+        if (update) {
+            let main_links = document.querySelectorAll('main a');
+            main_links.forEach(a => {
+                if (!a.href.startsWith('javascript:') || (a.href.match(/[^:]+:\/\// && !a.href.startsWith('file:')))) {
+                    let parts = a.href.split('#')
+                    a.href = parts[0] + query_arg + (parts[1] ? ('#' + parts[1]) : "");
+                } });
+        }
+    }
+}
+
+
+
+document.addEventListener("DOMContentLoaded", add_bar);</script>
+<title>Example #341</title></head>
+<body class="inform7-source">
+
+<div class="inform7-source"><div class="pseudo">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;Chronic Hinting Syndrome&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A subject is a kind of thing.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Knowledge relates various people to various subjects. The verb to know means the knowledge relation.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Awareness relates various people to various subjects. The verb to be aware of means the awareness relation.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Definition: a subject is pending if the player is aware of it and it is not known by the player.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of thinking:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the number of pending subjects is 0, say <span class="i7sx">&quot;You have no fresh leads at the moment.&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	otherwise say <span class="i7sx">&quot;You recall that thus far you have not followed up with questions about </span><span class="i7si">[the list of pending subjects]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">After printing the name of a subject (called idea):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the player is aware of the idea.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Now suppose that as an added convenience for the player, we let him turn on a mode in which useful conversation topics are always automatically highlighted in the text, so he doesn&#39;t waste his time trying to follow up dead leads:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Setting is a kind of value. The settings are bright and dull. Understand <span class="i7sx">&quot;on&quot;</span> as bright. Understand <span class="i7sx">&quot;off&quot;</span> as dull.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Highlighting is a setting that varies. Highlighting is dull.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;highlighting </span><span class="i7si">[setting]</span><span class="i7sx">&quot;</span> as setting highlighting. Setting highlighting is an action out of world, applying to one setting.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Carry out setting highlighting:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now highlighting is the setting understood.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Report setting highlighting:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;Highlighting is now </span><span class="i7si">[if highlighting is dull]</span><span class="i7sx">off</span><span class="i7si">[otherwise]</span><span class="i7sx">on</span><span class="i7si">[end if]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Before printing the name of a subject (called idea) when highlighting is bright:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	unless the player knows the idea:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[bold type]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">After printing the name of a subject when highlighting is bright:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[roman type]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[...And the rest is peripheral.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Sickbay is a room. <span class="i7sx">&quot;A place arranged for Nathan&#39;s comfort, since his sickness has been prolonged and because he becomes so irritating when not comfortable.&quot;</span> The Hallway is outside from the Sickbay.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A supporter can be untried or rejected. A supporter is usually untried.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Sickbay contains a wobbly pedestal, a table, and a sickbed. Understand <span class="i7sx">&quot;bed&quot;</span> as the sickbed. The pedestal, the table, and the sickbed are supporters. Nathan is a man on the sickbed. The sickbed is scenery. The initial appearance of the wobbly pedestal is <span class="i7sx">&quot;A wobbly pedestal near the door has sometimes been known to support vases of flowers, but is currently bare.&quot;</span> The initial appearance of the table is <span class="i7sx">&quot;There is also a table of a more ordinary sort.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Nathan can be active or passive.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">After printing the name of Nathan: now Nathan is passive.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of putting the sculpture on the table:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the table is rejected;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;&#39;</span><span class="i7si">[Not there]</span><span class="i7sx">,&#39; </span><span class="i7si">[Nathan]</span><span class="i7sx"> snaps. &#39;The table is way too far from the sickbed.&#39;&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of putting the sculpture on the sickbed:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the sickbed is rejected;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;&#39;</span><span class="i7si">[Not there]</span><span class="i7sx">,&#39; </span><span class="i7si">[Nathan]</span><span class="i7sx"> rebukes you. &#39;You don&#39;t want me knocking it over if I roll around. In pain.&#39;&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of putting the sculpture on the pedestal:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the pedestal is rejected;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;The pedestal starts to wobble so ominously that you don&#39;t dare let go.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&#39;</span><span class="i7si">[Not there]</span><span class="i7sx">,&#39; says </span><span class="i7si">[Nathan]</span><span class="i7sx">. &#39;That thing is falling apart.&#39;&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Before putting something on the down: try dropping the noun instead.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To say not there:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if all the supporters are rejected:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;Look, the floor would be fine&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	otherwise if the number of rejected supporters is 1:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;Yeah, anywhere but there, I&#39;m afraid&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	otherwise:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;Come on, use your head -- I can&#39;t be watching you all the time, I&#39;m sick&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of going outside when the player is carrying the sculpture:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;You&#39;ve still got this sculpture to get rid of.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of going outside when the breakage is pending:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;You can&#39;t very well smash in front of </span><span class="i7si">[Nathan]</span><span class="i7sx"> his prize sculpture and then just scamper off without saying something. Appealing though the thought is at the moment.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of going outside when a subject which is not the breakage is pending:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;&#39;Yeah, go ahead,&#39; says </span><span class="i7si">[Nathan]</span><span class="i7sx">, with a martyr-like air. &#39;It&#39;s probably best that you don&#39;t hear about </span><span class="i7si">[the random pending subject]</span><span class="i7sx">. It&#39;s not something I&#39;d go into normally.&#39;&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The breakage is a subject. The description is <span class="i7sx">&quot;It&#39;s not a big deal. I&#39;ll just buy a new </span><span class="i7si">[mental wave generator]</span><span class="i7sx">.&#39; A slight awkward pause. &#39;I mean, this one was a </span><span class="i7si">[gift]</span><span class="i7sx">, but don&#39;t worry about it&quot;</span>. Understand <span class="i7sx">&quot;accident&quot;</span> or <span class="i7sx">&quot;smashing&quot;</span> or <span class="i7sx">&quot;breaking&quot;</span> or <span class="i7sx">&quot;shard&quot;</span> or <span class="i7sx">&quot;mishap&quot;</span> or <span class="i7sx">&quot;shards&quot;</span> or <span class="i7sx">&quot;mistake&quot;</span> as the breakage. Understand <span class="i7sx">&quot;sculpture&quot;</span> as the breakage when the player is not carrying the sculpture.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of saying sorry in the presence of Nathan when the player is aware of the breakage:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	try asking Nathan about the matter of breakage.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of asking Nathan to try saying sorry when the player is aware of the breakage:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	try asking Nathan about the matter of breakage.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The mental wave generator is a subject. The description is <span class="i7sx">&quot;They&#39;re kind of expensive but I can save up. I really need one, though, because of my </span><span class="i7si">[dreams]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The dreams is a subject. The description is <span class="i7sx">&quot;They&#39;re not the kind of dream you want to have.&#39; He closes his eyes and contemplates these undesirable dreams. &#39;Have you ever woken up convinced you were dead? No, probably not. Well... At any rate, I need the </span><span class="i7si">[generator]</span><span class="i7sx">. Oh, don&#39;t worry, they&#39;re expensive but not so expensive that I won&#39;t be able to save up for another, in a few months&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The gift is a subject. The description is <span class="i7sx">&quot;</span><span class="i7si">[The mental wave generator]</span><span class="i7sx"> was a present from a girl named </span><span class="i7si">[Shari]</span><span class="i7sx">. Actually I&#39;m not sure she&#39;d take to being called a girl&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Shari is a subject. The description is <span class="i7sx">&quot;Look, let&#39;s just not go into it, okay? I don&#39;t really want to relive all that right now. I still have a six-inch </span><span class="i7si">[scar]</span><span class="i7sx"> shaped like a banana in the middle of my back&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The scar is a subject.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of asking Nathan about the matter of the scar:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;Nathan clears his throat, lowers his voice, and begins to tell you the story...&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	end the story saying <span class="i7sx">&quot;End of Demo -- Register to Continue!!&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;ask </span><span class="i7si">[someone]</span><span class="i7sx"> about </span><span class="i7si">[any subject]</span><span class="i7sx">&quot;</span> as asking it about the matter of.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Asking it about the matter of is an action applying to one thing and one visible thing.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Check asking it about the matter of:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the player is not aware of the second noun, say <span class="i7sx">&quot;What </span><span class="i7si">[second noun]</span><span class="i7sx">?&quot;</span> instead;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the noun does not know the second noun, say <span class="i7sx">&quot;&#39;I&#39;ve no idea,&#39; replies </span><span class="i7si">[the noun]</span><span class="i7sx">.&quot;</span> instead;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the player knows the second noun, say <span class="i7sx">&quot;You&#39;ve already covered that. The response was &#39;</span><span class="i7si">[description of the second noun]</span><span class="i7sx">.&#39;&quot;</span> instead.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Carry out asking it about the matter of:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the player knows the second noun.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Report asking it about the matter of:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;&#39;</span><span class="i7si">[description of the second noun]</span><span class="i7sx">,&#39; says </span><span class="i7si">[the noun]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of telling Nathan about something:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;He pinches the bridge of his nose. &#39;I can&#39;t really follow this right now,&#39; he says. &#39;I&#39;m sorry.&#39;&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of asking Nathan about something:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;He shrugs weakly.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">When play begins:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;&#39;Just put that down anywhere,&#39; says </span><span class="i7si">[Nathan]</span><span class="i7sx">, as you come into the room. He&#39;s sitting in the sickbed with his legs straight out in front of him. &#39;I don&#39;t care where.&#39; His voice is weak, but it sharpens up for the last remark: &#39;And don&#39;t make a lot of noise about it.&#39;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Considering that he woke you from a sound slumber to beg you to bring this thing over, his attitude is a bit much. You stare dubiously at the awkward crystal sculpture in your hands.&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now Nathan knows every subject.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of asking Nathan about something while the player carries the sculpture, say <span class="i7sx">&quot;</span><span class="i7si">[Nathan]</span><span class="i7sx"> moans dramatically and refuses to be drawn into conversation.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The player is carrying an awkward crystal sculpture. Understand <span class="i7sx">&quot;objet&quot;</span> or <span class="i7sx">&quot;objet de hideous&quot;</span> as the sculpture. The description of the sculpture is <span class="i7sx">&quot;It might possibly be natural, or it might be man-made. It might appeal to someone, but it is certainly not to your tastes.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of showing the sculpture to Nathan:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;&#39;Please put it anywhere,&#39; he says.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of giving the sculpture to Nathan:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;&#39;No, it doesn&#39;t work if I touch it. That&#39;s why I couldn&#39;t-- well, just put it down.&#39;&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">After dropping the sculpture:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the player is aware of the breakage;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the sculpture is nowhere;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;You are incredibly careful, but somehow the sculpture slips -- you might almost say slithers -- from your fingers and crashes into a thousand shards at the feet of </span><span class="i7si">[Nathan]</span><span class="i7sx">.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">There is a tense silence.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Before reading a command: now Nathan is active.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Every turn while not asking:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if Nathan is passive, rule succeeds;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the player is carrying the sculpture:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if showing or giving, rule succeeds;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[Nathan]</span><span class="i7sx"> opens one eye and stares at you meaningfully. He is waiting for you to deposit his objet de hideous somewhere.&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	rule succeeds;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the breakage is pending:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if dropping, rule succeeds;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;You&#39;re not quite sure where to begin, but you can&#39;t very well leave without making at least some remark on the smashing of the sculpture.&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	rule succeeds;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if a subject is pending:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	choose a random row in the Table of Offhand Reminiscences;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[line entry][paragraph break]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line">Table of Offhand Reminiscences</span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">line</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;&#39;It actually is kind of a funny story about </span></span><span class="td"><span class="i7si">[the random pending subject]</span></span><span class="td"><span class="i7sx">,&#39; </span></span><span class="td"><span class="i7si">[Nathan]</span></span><span class="td"><span class="i7sx"> remarks casually.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;</span></span><span class="td"><span class="i7si">[Nathan]</span></span><span class="td"><span class="i7sx"> chuckles under his breath. &#39;Man, I hadn&#39;t thought about </span></span><span class="td"><span class="i7si">[the random pending subject]</span></span><span class="td"><span class="i7sx"> in ages.&#39;&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;He glances sideways at you. &#39;It&#39;s nothing personal, you know, but I don&#39;t feel comfortable discussing </span></span><span class="td"><span class="i7si">[the random pending subject]</span></span><span class="td"><span class="i7sx"> with just anyone.&#39;&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;&#39;I don&#39;t know why I brought up </span></span><span class="td"><span class="i7si">[the random pending subject]</span></span><span class="td"><span class="i7sx"> just now,&#39; </span></span><span class="td"><span class="i7si">[Nathan]</span></span><span class="td"><span class="i7sx"> comments. &#39;Don&#39;t mention it to anyone, if you don&#39;t mind.&#39;&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;&#39;Okay, see, the thing about </span></span><span class="td"><span class="i7si">[the random pending subject]</span></span><span class="td"><span class="i7sx"> is...&#39;  </span></span><span class="td"><span class="i7si">[paragraph break]</span></span><span class="td"><span class="i7sx">&#39;Yes?&#39; you ask, on cue.</span></span><span class="td"><span class="i7si">[paragraph break]</span></span><span class="td"><span class="i7sx">&#39;...never mind.&#39;&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;</span></span><span class="td"><span class="i7si">[Nathan]</span></span><span class="td"><span class="i7sx"> makes an explosive exasperated sound. &#39;Don&#39;t you want to ask me about </span></span><span class="td"><span class="i7si">[the random pending subject]</span></span><span class="td"><span class="i7sx">?&#39; he demands.&quot;</span></span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Test me with <span class="i7sx">&quot;highlighting bright / put sculpture on pedestal / put it on table / put it on sickbed / drop it / think / ask nathan about breakage / think / ask him about generator / ask him about dreams / ask him about gift / ask him about shari / ask him about scar&quot;</span>.</span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

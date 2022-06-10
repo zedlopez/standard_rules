@@ -1,0 +1,170 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../style.css">
+<script>function toggle_details() {
+   var openness, toggle_link;
+   toggle_link = document.getElementById("toggle");
+   openness = toggle_link.classList.toggle("open");
+document.querySelectorAll("details.full-example").forEach(detail => { if (openness) { detail.setAttribute("open", true); } else { detail.removeAttribute("open");} });
+   toggle_link.innerText = (openness ? "Close" : "Open") + " all examples";
+   }
+
+
+function copyCode(text) { navigator.clipboard.writeText(text); }
+
+
+var links = document.getElementsByTagName('a');
+for (var i = 0; i < links.length; i++) {
+    if (links[i].href.match(/^#example-\d+/)) {
+	links[i].onClick = function() { links[i].href.match(/^#example-(\d+)$/); var example = document.getElementById($1).setAttribute('open'); return true; };
+    }
+}
+
+function add_bar(update) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let navbar = document.querySelector('div.index-navbar');
+
+    if (navbar && urlParams.has('project')) {
+        navbar.setAttribute('class', 'index-navbar'); // removes hidden
+        let project = decodeURIComponent(urlParams.get('project'));
+        let index_root = project + '/.index/';
+        let build = project + '/Build/';
+        let query_arg = "?project="+encodeURIComponent(project);
+
+        let links = [
+            { "General Index": document.getElementById('general_index').href },
+            { "Docs": document.getElementById('docs').href },
+            { "Extensions": index_root + 'doc/Extensions.html' },
+            { "Definitions": index_root + 'doc/ExtIndex.html' },
+            { "Debug Log": build + 'debug_log.html' },
+            { "Problems": build + 'problems.html' },
+            { "Source": index_root + 'story.html' },
+            { "Project Index": index_root + 'Index/Welcome.html' } ];
+        let sp = document.createTextNode(" ");
+        links.forEach(h => {
+            Object.entries(h).forEach(([text, url]) => {
+                let my_id = text.toLowerCase().replace(' ', '_');
+                let a = document.querySelector('#'+my_id);
+                let url_target = "file://"+url+query_arg;
+                if (a) {
+                    let parts = a.href.split('#');
+                    let qparts = parts[0].split('?');
+                    a.href = qparts[0] +  (qparts[1] ? ('?' + qparts[1]) : query_arg) + (parts[1] ? ('#' + parts[1]) : "");
+                }
+                else {
+                    a = document.createElement('a');
+                    let href = document.createAttribute("href");
+                    href.value = url_target;
+                    a.setAttributeNode(href);
+                    let elem_id = document.createAttribute("id");
+                    elem_id.value = my_id;
+                    a.setAttributeNode(elem_id);
+                    let linktext = document.createTextNode(text);
+                    a.appendChild(linktext);
+                    navbar.insertBefore(sp.cloneNode(), navbar.firstChild);
+                    navbar.insertBefore(a, navbar.firstChild);
+                }
+            })});
+        if (update) {
+            let main_links = document.querySelectorAll('main a');
+            main_links.forEach(a => {
+                if (!a.href.startsWith('javascript:') || (a.href.match(/[^:]+:\/\// && !a.href.startsWith('file:')))) {
+                    let parts = a.href.split('#')
+                    a.href = parts[0] + query_arg + (parts[1] ? ('#' + parts[1]) : "");
+                } });
+        }
+    }
+}
+
+
+
+document.addEventListener("DOMContentLoaded", add_bar);</script>
+<title>Example #70</title></head>
+<body class="inform7-source">
+
+<div class="inform7-source"><div class="pseudo">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;The Über-complète clavier&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The story headline is <span class="i7sx">&quot;Pushing the Limits of Unicode in IF&quot;</span>. The story description is <span class="i7sx">&quot;This is a demanding test for Unicode compliance by Z-machine interpreters.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Include Unicode Character Names by Graham Nelson.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Include Basic Screen Effects by Emily Short.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Château Bibliothèque Français is east of the Deutsche Universität Bücherei. <span class="i7sx">&quot;From this Borgesian construction, doorways lead into anterooms in each of the four cardinal directions.&quot;</span> South of the Bibliothèque is the Miscellany Mañana. North of the Bibliothèque is the Íslendingabók. East of the Bibliothèque is Alphabet Soup.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A framed photograph of Icelandic Prime Minister Halldór Ásgrímsson, a ruler measuring Ångströms, a Bokmål-Lëtzebuergesch Lëtzebuergesch-Bokmål dictionary and a ticket to Tromsø via Østfold are in the Íslendingabók.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A paper by Karl Weierstraß, a general feeling of Ärger, an old Österreich passport and the Bach Clavier-Übung open at the fugue à 4 are in the Bücherei.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The painting of École normale superiéure students singing Ça ira, the frankly lesser-known journal of Niccolò Polo, Così fan tutte on CD, an extract of Herodotus concerning Artaÿctes and the exit sign reading À BIENTÔT are in the Bibliothèque.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A wicker basket marked CHLOË is in the Bibliothèque. A ginger cat is in the basket.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A guide to Æsop for naïve æsthetes, Lönnrot&#39;s Kalevala, a creed according to the Bahá&#39;ís, FALARÃO magazine, an Estonian poem by Tõnu Trubetsky, a Portuguese-Italian recipe for macarrão, a stripy hanging CANDY PIÑATA bag, a ¿¡Punctuation Turned Upside Down¿¡ pamphlet, an Italian brewers&#39; anti-violence poster declaring  BÓTTE NON BÒTTE, a map of È and a dusty book titled The Parnasum of Luís Vaz bearing CAMÕES on its spine are in Miscellany Mañana.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The description of the map is <span class="i7sx">&quot;È is a province in the People&#39;s Republic of China.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">In Mañana is something called ÂÊÎÔÛ - The Official Journal of the Society for Vowels bearing Circumflexes.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">In Mañana is something called âêîôû comic - the youth edition.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The description of Alphabet Soup is <span class="i7sx">&quot;A bewildering place of glyphs, sigils and signs. The Library proper leads back west: steps lead upwards to an Observatory, or downwards into what seems to be a dangerous area. A gaming lounge lies to the south.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Greek Alphabet, the Cyrillic Alphabet, the Hebrew alphabet, and the embossed plaque are in Alphabet Soup. The description of the Greek alphabet is <span class="i7sx">&quot;αβγδεζηθικλμνξοπρςστυφχψω.&quot;</span>. The description of the Hebrew alphabet is <span class="i7sx">&quot;אבגדהוזחטיךכלםמןנסעףפץצקרשת.&quot;</span>. The description of the Cyrillic alphabet is <span class="i7sx">&quot;абвгдежзийклмнопрстуфхцчшщъыьэюя.&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of examining the plaque:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;It seems to be a sign in Braille: &quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say unicode Braille pattern dots-24, <span class="i7sx">&quot; (I), &quot;</span>,</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	unicode Braille pattern dots-1345, <span class="i7sx">&quot; (N), &quot;</span>,</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	unicode Braille pattern dots-124, <span class="i7sx">&quot; (F), &quot;</span>,</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	unicode Braille pattern dots-135, <span class="i7sx">&quot; (O), &quot;</span>,</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	unicode Braille pattern dots-1235, <span class="i7sx">&quot; (R), &quot;</span>,</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	unicode Braille pattern dots-134, <span class="i7sx">&quot; (M).&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Gaming Lounge is south of Alphabet Soup. The chess position and the book of puzzle canons are in the Gaming Lounge.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Georges de la Tour painting Le Tricheur is in the Gaming Lounge. <span class="i7sx">&quot;Hanging on one wall is Georges de la Tour&#39;s masterpiece Le Tricheur (the card-sharp). Visible are 8</span><span class="i7si">[unicode black diamond suit]</span><span class="i7sx">, 9</span><span class="i7si">[unicode black diamond suit]</span><span class="i7sx">, A</span><span class="i7si">[unicode black diamond suit]</span><span class="i7sx">, A</span><span class="i7si">[unicode black spade suit]</span><span class="i7sx">, 6</span><span class="i7si">[unicode black club suit]</span><span class="i7sx"> but not one of them has a </span><span class="i7si">[unicode black heart suit]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The description of Le Tricheur is <span class="i7sx">&quot;If they&#39;d been dice-players instead, they might have thrown </span><span class="i7si">[unicode die face-1]</span><span class="i7sx">, </span><span class="i7si">[unicode die face-2]</span><span class="i7sx">, </span><span class="i7si">[unicode die face-3]</span><span class="i7sx">, </span><span class="i7si">[unicode die face-4]</span><span class="i7sx">, </span><span class="i7si">[unicode die face-5]</span><span class="i7sx"> or </span><span class="i7si">[unicode die face-6]</span><span class="i7sx">, but as it is they stick to cards.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The description of the book of canons is <span class="i7sx">&quot;A typical fugue is no. 13 (Tovey: </span><span class="i7si">[unicode eighth note]</span><span class="i7sx"> = 110) in F</span><span class="i7si">[unicode music sharp sign]</span><span class="i7sx"> minor, but you can also make out keys like A</span><span class="i7si">[unicode music flat sign]</span><span class="i7sx"> and G</span><span class="i7si">[unicode music natural sign]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The empty square text is text that varies. To say empty: say the empty square text.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To display the board:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say empty, empty, empty, empty, empty, empty, unicode black chess king, empty, line break;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say empty, empty, empty, unicode black chess queen, empty, empty, unicode black chess pawn, empty, line break;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say unicode black chess pawn, empty, empty, unicode black chess bishop, unicode black chess pawn, empty, empty, unicode black chess pawn, line break;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say empty, empty, empty, unicode black chess pawn, empty, unicode black chess rook, empty, empty, line break;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say empty, unicode black chess pawn, empty, unicode white chess pawn, unicode black chess pawn, empty, empty, empty, line break;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say empty, empty, empty, unicode black chess bishop, unicode white chess queen, empty, unicode white chess pawn, unicode white chess pawn, line break;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say unicode white chess pawn, unicode white chess pawn, empty, unicode white chess bishop, empty, unicode black chess rook, unicode white chess bishop, empty, line break;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say empty, unicode white chess knight, empty, empty, unicode white chess rook, empty, unicode white chess rook, unicode white chess king, line break.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of examining the chess position:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;Fritz Saemisch - Aron Nimzowitsch, Copenhagen 1923: the Immortal Zugzwang Game. Nimzowitsch (black), observing that white will very soon have to play a terrible move, has just advanced his h pawn for no reason other than to wait. So it is white to play...&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[fixed letter spacing]</span><span class="i7sx">......k. </span><span class="i7si">[line break]</span><span class="i7sx">...q..p. </span><span class="i7si">[line break]</span><span class="i7sx">p..bp..p </span><span class="i7si">[line break]</span><span class="i7sx">...p.r.. </span><span class="i7si">[line break]</span><span class="i7sx">.p.Pp... </span><span class="i7si">[line break]</span><span class="i7sx">...bQ.PP </span><span class="i7si">[line break]</span><span class="i7sx">PP.B.rB. </span><span class="i7si">[line break]</span><span class="i7sx">.N..R.RK </span><span class="i7si">[variable letter spacing][line break]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;&#39;White must, willy-nilly, eventually throw himself upon the sword&#39;, in Nimzowitsch&#39;s commentary. &quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;We will now try to display the same position using chess-piece symbols in a Unicode font.&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say fixed letter spacing;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the empty square text is <span class="i7sx">&quot; &quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	display the board;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say variable letter spacing.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Astrological Observatory is above Alphabet Soup.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The planets are in the Observatory. <span class="i7sx">&quot;Diagrams of the planets are scattered across the dome: Sun </span><span class="i7si">[unicode Sun]</span><span class="i7sx">, Mercury </span><span class="i7si">[unicode Mercury]</span><span class="i7sx">, Venus </span><span class="i7si">[unicode Female Sign]</span><span class="i7sx">, Earth </span><span class="i7si">[unicode Earth]</span><span class="i7sx">, Moon </span><span class="i7si">[unicode First Quarter Moon]</span><span class="i7sx"> and </span><span class="i7si">[unicode Last Quarter Moon]</span><span class="i7sx">, Mars </span><span class="i7si">[unicode Male Sign]</span><span class="i7sx">, Jupiter </span><span class="i7si">[unicode Jupiter]</span><span class="i7sx">, Saturn </span><span class="i7si">[unicode Saturn]</span><span class="i7sx">, Uranus </span><span class="i7si">[unicode Uranus]</span><span class="i7sx">, Neptune </span><span class="i7si">[unicode Neptune]</span><span class="i7sx">, Pluto </span><span class="i7si">[unicode Pluto]</span><span class="i7sx"> and one or two comets </span><span class="i7si">[unicode Comet]</span><span class="i7sx">. Fainter, but all around, you see stars black </span><span class="i7si">[unicode black star]</span><span class="i7sx"> and white </span><span class="i7si">[unicode white star]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The constellations are in the Observatory. <span class="i7sx">&quot;Ringing the dome are the constellations: Aries </span><span class="i7si">[unicode Aries]</span><span class="i7sx">, Taurus </span><span class="i7si">[unicode Taurus]</span><span class="i7sx">, Gemini </span><span class="i7si">[unicode Gemini]</span><span class="i7sx">, Cancer </span><span class="i7si">[unicode Cancer]</span><span class="i7sx">, Leo </span><span class="i7si">[unicode Leo]</span><span class="i7sx">, Virgo </span><span class="i7si">[unicode Virgo]</span><span class="i7sx">, Libra </span><span class="i7si">[unicode Libra]</span><span class="i7sx">, Scorpius </span><span class="i7si">[unicode Scorpius]</span><span class="i7sx">, Sagittarius </span><span class="i7si">[unicode Sagittarius]</span><span class="i7sx">, Capricorn </span><span class="i7si">[unicode Capricorn]</span><span class="i7sx">, Aquarius </span><span class="i7si">[unicode Aquarius]</span><span class="i7sx">, Pisces </span><span class="i7si">[unicode Pisces]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The weather almanac is in the Observatory. The description of the almanac is <span class="i7sx">&quot;Here nightly observers scrawl in hasty abbreviations for the current weather conditions: clear weather </span><span class="i7si">[unicode Black Sun with Rays]</span><span class="i7sx">, cloudy </span><span class="i7si">[unicode cloud]</span><span class="i7sx">, rain </span><span class="i7si">[unicode umbrella]</span><span class="i7sx">, snow </span><span class="i7si">[unicode snowman]</span><span class="i7sx">, lightning </span><span class="i7si">[unicode lightning]</span><span class="i7sx">, thunderstorm </span><span class="i7si">[unicode thunderstorm]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Danger Zone is below Alphabet Soup. The printed name of the Danger Zone is <span class="i7sx">&quot;</span><span class="i7si">[unicode skull and crossbones]</span><span class="i7sx"> Danger Zone </span><span class="i7si">[unicode skull and crossbones]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The warning signs are in the Danger Zone. <span class="i7sx">&quot;A variety of international-standard warning standards suggest that this may not be the safest place: </span><span class="i7si">[unicode skull and crossbones]</span><span class="i7sx">, </span><span class="i7si">[unicode caution sign]</span><span class="i7sx">, </span><span class="i7si">[unicode radioactive sign]</span><span class="i7sx">, </span><span class="i7si">[unicode biohazard sign]</span><span class="i7sx">.&quot;</span></span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

@@ -1,0 +1,1829 @@
+<!doctype html>
+<meta charset="utf-8"><html lang="en"><head><title>Writing in Inform 16. Tables</title><link rel="stylesheet" href="style.css"><script src="chapter.js"></script></head><body>
+<nav><div class="index-navbar hidden">
+<a id="project_index" href="../Welcome.html"> Project Index</a><a id="source" href="../../story.html"> Source</a><a id="problems" href="../../Build/problems.html"> Problems</a><a id="debug_log" href="../../Build/debug_log.html"> Debug Log</a><a id="definitions" href="./ExtIndex.html"> Definitions</a><a id="extensions" href="./Extensions.html"> Extensions</a><a id="docs" href="./index.html"> Docs</a><a id="general_index" href="./index.html#general-index"> General Index</a>
+
+</div>
+</nav>
+<main>
+<header>
+
+<div class="toc">
+<h1>Writing in Inform</h1>
+<div class="doc-navbar">
+<div>
+<div class="doc-navbar-left"><a class="nav-left" href="wi_15.html#wi-chapter-15-numbers-and-equations">15. Numbers and Equations</a></div>
+<div class="doc-navbar-right"><a class="nav-right" href="wi_17.html#wi-chapter-17-understanding">17. Understanding</a></div>
+</div>
+<div>
+<div class="doc-navbar-left"><a href="index.html">Table of Contents</a></div>
+<div class="doc-navbar-right"><a href="index.html#general-index">General Index</a></div>
+</div>
+</div>
+
+<div><a id="toggle" href="javascript:toggle_details('examples')">Open all examples</a></div>
+<h2>16. Tables</h2>
+<div class="toc-section">16.1 <a href="wi_16.html#wi-16.1">Laying out tables</a></div>
+<div class="toc-section">16.2 <a href="wi_16.html#wi-16.2">Looking up entries</a></div>
+<div class="toc-section">16.3 <a href="wi_16.html#wi-16.3">Corresponding entries</a></div>
+<div class="toc-section">16.4 <a href="wi_16.html#wi-16.4">Changing entries</a></div>
+<div class="toc-section">16.5 <a href="wi_16.html#wi-16.5">Choosing rows</a></div>
+<div class="toc-section">16.6 <a href="wi_16.html#wi-16.6">Repeating through tables</a></div>
+<div class="toc-section">16.7 <a href="wi_16.html#wi-16.7">Blank entries</a></div>
+<div class="toc-section">16.8 <a href="wi_16.html#wi-16.8">Blank columns</a></div>
+<div class="toc-section">16.9 <a href="wi_16.html#wi-16.9">Blank rows</a></div>
+<div class="toc-section">16.10 <a href="wi_16.html#wi-16.10">Adding and removing rows</a></div>
+<div class="toc-section">16.11 <a href="wi_16.html#wi-16.11">Sorting</a></div>
+<div class="toc-section">16.12 <a href="wi_16.html#wi-16.12">Listed in...</a></div>
+<div class="toc-section">16.13 <a href="wi_16.html#wi-16.13">Topic columns</a></div>
+<div class="toc-section">16.14 <a href="wi_16.html#wi-16.14">Another scoring example</a></div>
+<div class="toc-section">16.15 <a href="wi_16.html#wi-16.15">Varying which table to look at</a></div>
+<div class="toc-section">16.16 <a href="wi_16.html#wi-16.16">Defining things with tables</a></div>
+<div class="toc-section">16.17 <a href="wi_16.html#wi-16.17">Defining values with tables</a></div>
+<div class="toc-section">16.18 <a href="wi_16.html#wi-16.18">Table continuations</a></div>
+<div class="toc-section">16.19 <a href="wi_16.html#wi-16.19">Table amendments</a></div>
+</header>
+<main>
+<section class="chapter" id="wi-chapter-16-tables">
+<section class="section" id="wi-16.1"><div>
+
+
+
+<h3>WI §16.1. Laying out tables</h3>
+<p>When printed books need to display detailed information in a systematic way, they break off from running text and print a table instead. Inform does the same. Here is a typical example:</p>
+
+<div class="code">
+<p class="quoted">
+ Table 2.1 - Selected Elements
+<br></p>
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">Element</p></td>
+<td class="quotedtablecell"><p class="quoted">Symbol</p></td>
+<td class="quotedtablecell"><p class="quoted">Atomic number</p></td>
+<td class="quotedtablecell"><p class="quoted">Atomic weight</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Hydrogen"</p></td>
+<td class="quotedtablecell"><p class="quoted">"H"</p></td>
+<td class="quotedtablecell"><p class="quoted">1</p></td>
+<td class="quotedtablecell"><p class="quoted">1</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Iron"</p></td>
+<td class="quotedtablecell"><p class="quoted">"Fe"</p></td>
+<td class="quotedtablecell"><p class="quoted">26</p></td>
+<td class="quotedtablecell"><p class="quoted">56</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Zinc"</p></td>
+<td class="quotedtablecell"><p class="quoted">"Zn"</p></td>
+<td class="quotedtablecell"><p class="quoted">30</p></td>
+<td class="quotedtablecell"><p class="quoted">65</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Uranium"</p></td>
+<td class="quotedtablecell"><p class="quoted">"U"</p></td>
+<td class="quotedtablecell"><p class="quoted">92</p></td>
+<td class="quotedtablecell"><p class="quoted">238</p></td>
+</tr>
+</table>
+</div>
+<p>After the two titling lines, each line represents one row in the table, and entries on a line must be separated by at least one tab character. A table must occupy a single whole paragraph, with no skipped lines or missing entries.</p>
+<p>The top line is a title, the first word of which must be the word 'Table'. We can then either give a table number (this need not actually be a number: Table C2, or some such, would be fine), or give a name, or both - as in this case. The possible titling formats are:</p>
+
+<div class="code"><p class="quoted">
+Table 2.3
+<br>Table of Population Statistics
+<br>Table 2.3 - Population Statistics
+</p></div>
+<p>In the last example we could call the table either "Table 2.3" or "Table of Population Statistics".</p>
+<p>Each column then has a name, and the contents must all be the same kind of value. In the elements table the "Symbol" column contains only text, for instance, and the "Atomic weight" column contains only numbers. Any kinds of value will do, so long as all the entries in the column are mutually compatible. (For instance, mixing rooms and things in a single column would be fine, as these can be reconciled, but mixing numbers and rooms would not.)</p>
+
+
+</div></section>
+<section class="section" id="wi-16.2"><div>
+
+
+
+
+
+<h3>WI §16.2. Looking up entries</h3>
+<p>The simplest way to access the information inside tables is to ask explicitly for it, specifying the row number, the column name and what table is to be consulted. So, given our example table</p>
+
+<div class="code">
+<p class="quoted">
+ Table 2.1 - Selected Elements
+<br></p>
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">Element</p></td>
+<td class="quotedtablecell"><p class="quoted">Symbol</p></td>
+<td class="quotedtablecell"><p class="quoted">Atomic number</p></td>
+<td class="quotedtablecell"><p class="quoted">Atomic weight</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Hydrogen"</p></td>
+<td class="quotedtablecell"><p class="quoted">"H"</p></td>
+<td class="quotedtablecell"><p class="quoted">1</p></td>
+<td class="quotedtablecell"><p class="quoted">1</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Iron"</p></td>
+<td class="quotedtablecell"><p class="quoted">"Fe"</p></td>
+<td class="quotedtablecell"><p class="quoted">26</p></td>
+<td class="quotedtablecell"><p class="quoted">56</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Zinc"</p></td>
+<td class="quotedtablecell"><p class="quoted">"Zn"</p></td>
+<td class="quotedtablecell"><p class="quoted">30</p></td>
+<td class="quotedtablecell"><p class="quoted">65</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Uranium"</p></td>
+<td class="quotedtablecell"><p class="quoted">"U"</p></td>
+<td class="quotedtablecell"><p class="quoted">92</p></td>
+<td class="quotedtablecell"><p class="quoted">238</p></td>
+</tr>
+</table>
+</div>
+<p>we can write the following description:</p>
+
+<div class="code"><p class="quoted">
+symbol in row 3 of the Table of Selected Elements
+</p></div>
+<p>to produce the value "Zn". Or the following will run off some chemical data:</p>
+
+<div class="code"><p class="quoted">
+ repeat with N running from 1 to the number of rows in the Table of Selected Elements:
+<br>    say "The atomic weight of [element in row N of the Table of Selected Elements] is [atomic weight in row N of the Table of Selected Elements]."
+</p></div>
+<p>The result of which will be:</p>
+
+<div class="code"><p class="quoted">
+The atomic weight of Hydrogen is 1.
+<br>The atomic weight of Iron is 56.
+<br>The atomic weight of Zinc is 65.
+<br>The atomic weight of Uranium is 238.
+</p></div>
+<p>Note that the first row in a table is row number 1, and that the last can be found with the phrase:</p>
+
+<div class="definition" id="defn220">
+<p class="defnprototype"><strong>number of rows in</strong>/from<strong> </strong>(table name)<strong> ... number</strong></p>
+
+
+
+<p>This phrase produces the number of rows (including any blank rows) in the given table. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+number of rows in the Table of Selected Elements
+</p></blockquote>
+
+
+
+</div>
+
+
+
+</div></section>
+<section class="section" id="wi-16.3"><div>
+
+
+
+
+
+<h3>WI §16.3. Corresponding entries</h3>
+<p>Continuing our example of the elements:</p>
+
+<div class="code">
+<p class="quoted">
+ Table 2.1 - Selected Elements
+<br></p>
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">Element</p></td>
+<td class="quotedtablecell"><p class="quoted">Symbol</p></td>
+<td class="quotedtablecell"><p class="quoted">Atomic number</p></td>
+<td class="quotedtablecell"><p class="quoted">Atomic weight</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Hydrogen"</p></td>
+<td class="quotedtablecell"><p class="quoted">"H"</p></td>
+<td class="quotedtablecell"><p class="quoted">1</p></td>
+<td class="quotedtablecell"><p class="quoted">1</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Iron"</p></td>
+<td class="quotedtablecell"><p class="quoted">"Fe"</p></td>
+<td class="quotedtablecell"><p class="quoted">26</p></td>
+<td class="quotedtablecell"><p class="quoted">56</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Zinc"</p></td>
+<td class="quotedtablecell"><p class="quoted">"Zn"</p></td>
+<td class="quotedtablecell"><p class="quoted">30</p></td>
+<td class="quotedtablecell"><p class="quoted">65</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Uranium"</p></td>
+<td class="quotedtablecell"><p class="quoted">"U"</p></td>
+<td class="quotedtablecell"><p class="quoted">92</p></td>
+<td class="quotedtablecell"><p class="quoted">238</p></td>
+</tr>
+</table>
+</div>
+<p>If we want to know the atomic number of Uranium, say, it seems artificial to have to talk about the particular row number where the information happens to be. So we are also allowed to cross-reference, like so:</p>
+
+<div class="code"><p class="quoted">
+the atomic number corresponding to a symbol of "Fe" in the Table of Selected Elements
+</p></div>
+<p>This results in 26, and similarly</p>
+
+<div class="code"><p class="quoted">
+the symbol corresponding to an atomic number of 26 in the Table of Selected Elements
+</p></div>
+<p>results in "Fe". But we have to be careful:</p>
+
+<div class="code"><p class="quoted">
+the element corresponding to an atomic number of 27 in the Table of Selected Elements
+</p></div>
+<p>This is not allowed (it produces an error at run-time), because there is no row with atomic number 27 in this rather limited table. We can check this in advance with the condition:</p>
+
+<div class="code"><p class="quoted">
+if there is an element corresponding to an atomic number of 27 in the Table of Standard Elements ...
+</p></div>
+<p>Or more simply:</p>
+
+<div class="code"><p class="quoted">
+if there is an atomic number of 27 in the Table of Standard Elements ...
+</p></div>
+<p>The condition "if there is..." can be used with any reference to a table entry: for instance, "if there is a symbol in row 5 of the Table of Standard Elements" would be false, because there are only four rows.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-271"><p class="example-p"><span class="example-short-start">271. <a href="rb_8.html#example-271" class="example-link" onClick="(function() { document.getElementById('example-271').setAttribute('open','open'); return true; })();">Dubai</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">An elevator which connects any of 27 floors in a luxury hotel.</span> (c.f. <a href="rb_8.html#rb-8.2">RB §8.2. Ships, Trains and Elevators</a>)</p></div>
+</div></section>
+<section class="section" id="wi-16.4"><div>
+
+
+
+
+
+<h3>WI §16.4. Changing entries</h3>
+<p>Here is another rather definitive, immutable-looking table:</p>
+
+<div class="code">
+<p class="quoted">
+ Table 4 - Recent Monarchs
+<br></p>
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">Name</p></td>
+<td class="quotedtablecell"><p class="quoted">Accession</p></td>
+<td class="quotedtablecell"><p class="quoted">Family</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Anne"</p></td>
+<td class="quotedtablecell"><p class="quoted">1702</p></td>
+<td class="quotedtablecell"><p class="quoted">Stuart</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"George I"</p></td>
+<td class="quotedtablecell"><p class="quoted">1714</p></td>
+<td class="quotedtablecell"><p class="quoted">Hanover</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"George II"</p></td>
+<td class="quotedtablecell"><p class="quoted">1720</p></td>
+<td class="quotedtablecell"><p class="quoted">Hanover</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"George III"</p></td>
+<td class="quotedtablecell"><p class="quoted">1760</p></td>
+<td class="quotedtablecell"><p class="quoted">Hanover</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"George IV"</p></td>
+<td class="quotedtablecell"><p class="quoted">1820</p></td>
+<td class="quotedtablecell"><p class="quoted">Hanover</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"William IV"</p></td>
+<td class="quotedtablecell"><p class="quoted">1830</p></td>
+<td class="quotedtablecell"><p class="quoted">Hanover</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Victoria"</p></td>
+<td class="quotedtablecell"><p class="quoted">1837</p></td>
+<td class="quotedtablecell"><p class="quoted">Hanover</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Edward VII"</p></td>
+<td class="quotedtablecell"><p class="quoted">1901</p></td>
+<td class="quotedtablecell"><p class="quoted">Saxe-Coburg-Gotha</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"George V"</p></td>
+<td class="quotedtablecell"><p class="quoted">1910</p></td>
+<td class="quotedtablecell"><p class="quoted">Windsor</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Edward VIII"</p></td>
+<td class="quotedtablecell"><p class="quoted">1936</p></td>
+<td class="quotedtablecell"><p class="quoted">Windsor</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"George VI"</p></td>
+<td class="quotedtablecell"><p class="quoted">1936</p></td>
+<td class="quotedtablecell"><p class="quoted">Windsor</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Elizabeth II"</p></td>
+<td class="quotedtablecell"><p class="quoted">1952</p></td>
+<td class="quotedtablecell"><p class="quoted">Windsor</p></td>
+</tr>
+</table>
+</div>
+<p>But table entries can be changed as freely as variables: that is, any value can be entered so long as it has the right kind. We cannot put a dynasty into the "Name" column, or text in the "Accession" column. The phrase needed is "now ... is ...", just as it is for properties or variables:</p>
+
+<div class="code">
+<p class="quoted">
+Dynasty is a kind of value. The dynasties are Stuart, Hanover, Saxe-Coburg-Gotha and Windsor.
+</p>
+<p class="quoted">
+The Table Office is a room. The Succession is in the Table Office. "The Succession, a ponderous list of English monarchs, takes pride of place."
+</p>
+<p class="quoted">
+Instead of examining the Succession:
+<br>    say "The Succession List runs as follows...";
+<br>    repeat with N running from 1 to the number of rows in the Table of Recent Monarchs:
+<br>        say "[accession in row N of Table 4]: [name in row N of Table 4] ([family in row N of Table 4])."
+</p>
+<p class="quoted">
+Instead of attacking the Succession:
+<br>    now the family corresponding to an accession of 1720 in the Table of Recent Monarchs is Stuart;
+<br>    now the name in row 4 of the Table of Recent Monarchs is "Graham I";
+<br>    now the name in row 5 of the Table of Recent Monarchs is "Trixibelle IV";
+<br>    say "You deface the English succession, making suitable amendments with a quill pen. Considering it is supposed to be mightier than the sword the effect is a little disappointing."
+</p>
+<p class="quoted">
+Test me with "examine succession / attack it / examine it".
+</p>
+</div>
+<p>Once we start changing tables, it sometimes becomes useful to check what they contain.</p>
+
+<div class="definition" id="defn221">
+<p class="defnprototype"><strong>showme the contents of </strong>(table name)<strong></strong></p>
+
+
+
+<p>This phrase prints a crude but sometimes useful display on screen of the current contents of the named table. It's intended for authors to see when testing, not for players of the finished version to see.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn222">
+<p class="defnprototype"><strong>say "[current table row]"</strong></p>
+
+
+
+<p>This text substitution produces a crude but sometimes useful listing of the entries in the currently chosen table row.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn223">
+<p class="defnprototype"><strong>say "[row </strong>(number)<strong> in</strong>/from<strong> table </strong>(table name)<strong>]"</strong></p>
+
+
+
+<p>This text substitution produces a crude but sometimes useful listing of the entries in the specified row.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn224">
+<p class="defnprototype"><strong>say "[</strong>(column name)<strong> in</strong>/from<strong> table </strong>(table name)<strong>]"</strong></p>
+
+
+
+<p>This text substitution produces a crude but sometimes useful listing of the entries in the specified column.</p>
+
+
+</div>
+
+
+
+</div></section>
+<section class="section" id="wi-16.5"><div>
+
+
+
+
+
+<h3>WI §16.5. Choosing rows</h3>
+<p>The following would be one way to print out a list of recent Kings and Queens:</p>
+
+<div class="code"><p class="quoted">
+ To list the succession:
+<br>say "The Succession List runs as follows...";
+<br>repeat with N running from 1 to the number of rows in the Table of Recent Monarchs:
+<br>    say "[accession in row N of the Table of Recent Monarchs]: [name in row N of the Table of Recent Monarchs] ([family in row N of the Table of Recent Monarchs])."
+</p></div>
+<p>This works, but is repetitive. We often want to work on a single row for a while, either to change things or think about the contents, and it is tiresome to keep specifying the row over and over again. The following shorthand provides some relief:</p>
+
+<div class="definition" id="defn225">
+<p class="defnprototype"><strong>choose a</strong>/the/--<strong> row </strong>(number)<strong> in</strong>/from<strong> </strong>(table name)<strong></strong></p>
+
+
+
+<p>This phrase selects the row with the given number. Row numbers in a table start from 1, so</p>
+
+<blockquote class="code"><p class="quoted">
+choose row 1 from the Table of Recent Monarchs
+</p></blockquote>
+
+<p>selects the top row.</p>
+
+
+</div>
+
+<p>That allows us to improve the loop:</p>
+
+<div class="code"><p class="quoted">
+To list the succession:
+<br>    say "The Succession List runs as follows...";
+<br>    repeat with N running from 1 to the number of rows in the Table of Recent Monarchs:
+<br>        choose row N in the Table of Recent Monarchs;
+<br>        say "[accession entry]: [name entry] ([family entry]).";
+</p></div>
+<p>Actually, as we'll see in the next section, this kind of loop is needed so often that there's a shorthand wording for it.</p>
+<p>Note that since "accession" is a column name, "accession entry" means the entry in that column of the currently chosen row. This notation can only be used if a "choose" has certainly already happened, and it is a good idea to make that choice somewhere close by in the source code (and certainly in the same rule or phrase definition) for the sake of avoiding errors. We can also choose rows by specifying something about them, like so:</p>
+
+<div class="definition" id="defn226">
+<p class="defnprototype"><strong>choose a</strong>/the/--<strong> row with </strong>(table column)<strong> of </strong>(value)<strong> in</strong>/from<strong> </strong>(table name)<strong></strong></p>
+
+
+
+<p>This phrase selects the first row, working down from the top of the given table, in which the given column has the given value. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+choose row with a name of "Victoria" in the Table of Recent Monarchs;
+</p></blockquote>
+
+<p>A run-time problem message is produced if the value isn't found anywhere in that column.</p>
+
+
+</div>
+
+<p>Sometimes it will happen that a column's name clashes with the name of something else: for instance, if we call a column "apples" but we also have a kind called "apple", so that the word "apples" could mean either some fruit or the column. Inform will generally prefer the former meaning as more likely. In case of such trouble, we can simply refer to "the apples column" rather than just "the apples": for instance, "choose row with an apples column of..." rather than "choose row with an apples of..."</p>
+<p>We can also choose a row quite at random:</p>
+
+<div class="definition" id="defn227">
+<p class="defnprototype"><strong>choose a</strong>/the/--<strong> random row in</strong>/from<strong> </strong>(table name)<strong></strong></p>
+
+
+
+<p>This phrase makes a uniformly random choice of non-blank rows in the given table. Note that although a table always has at least one row, it can't be guaranteed that it always has a non-blank row, so it's possible for this to fail: if it does, a real-time problem message is thrown.</p>
+
+
+</div>
+
+
+
+</div></section>
+<section class="section" id="wi-16.6"><div>
+
+
+
+
+
+<h3>WI §16.6. Repeating through tables</h3>
+<p>We very often want to run through a table doing something to, or with, each row in turn, so a special loop is provided for this. Rather than having to write all this out:</p>
+
+<div class="code"><p class="quoted">
+To list the succession:
+<br>    say "The Succession List runs as follows...";
+<br>    repeat with N running from 1 to the number of rows in the Table of Recent Monarchs:
+<br>        choose row N in the Table of Recent Monarchs;
+<br>        say "[accession entry]: [name entry] ([family entry])."
+</p></div>
+<p>We can simply use this instead:</p>
+
+<div class="definition" id="defn228">
+<p class="defnprototype"><strong>repeat through </strong>(table name)<strong>:</strong></p>
+
+
+
+<p>This phrase causes the block of phrases following it to be repeated once for each row in the given table, choosing each row in turn, from top to bottom. Blank rows are skipped. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+To list the succession:
+<br>    say "The Succession List runs as follows...";
+<br>    repeat through the Table of Recent Monarchs:
+<br>        say "[accession entry]: [name entry] ([family entry])."
+</p></blockquote>
+
+
+
+</div>
+
+<p>Note that there is no loop variable here, unlike in other forms of "repeat", because it's the choice of row which keeps track of how far we have got.</p>
+<p>We can alternatively go backwards:</p>
+
+<div class="definition" id="defn229">
+<p class="defnprototype"><strong>repeat through </strong>(table name)<strong> in reverse order:</strong></p>
+
+
+
+<p>This phrase causes the block of phrases following it to be repeated once for each row in the given table, choosing each row in turn, from bottom to top. Blank rows are skipped.</p>
+
+
+</div>
+
+<p>More often we want a sequence which is neither forwards nor backwards, but which depends on the actual values in the table.</p>
+
+<div class="definition" id="defn230">
+<p class="defnprototype"><strong>repeat through </strong>(table name)<strong> in </strong>(table column)<strong> order:</strong></p>
+
+
+
+<p>This phrase causes the block of phrases following it to be repeated once for each row in the given table, choosing each row in turn, in order of the values in the given column. Blank rows are skipped. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+repeat through the Table of Recent Monarchs in name order: ...
+<br>repeat through the Table of Recent Monarchs in accession order: ...
+</p></blockquote>
+
+<p>work through the same table in rather different orders. The sequence is lower to higher (small numbers to high numbers, A to Z, and so on); insert "reverse" after "in" to reverse this.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn231">
+<p class="defnprototype"><strong>repeat through </strong>(table name)<strong> in reverse </strong>(table column)<strong> order:</strong></p>
+
+
+
+<p>This phrase causes the block of phrases following it to be repeated once for each row in the given table, choosing each row in turn, in order of the values in the given column. Blank rows are skipped. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+repeat through the Table of Recent Monarchs in reverse name order: ...
+<br>repeat through the Table of Recent Monarchs in reverse accession order: ...
+</p></blockquote>
+
+<p>work through the same table in rather different orders. The sequence is higher to lower (high numbers to small numbers, Z to A, and so on); delete the "reverse" after "in" to reverse this.</p>
+
+
+</div>
+
+<p>In a loop like this, the data is not searched very efficiently, which is fine for modest-sized tables like the examples in this chapter, but might be a problem for much larger tables: see the later section on sorting.</p>
+<p>These definitions mentioned blankness several times, and that's the topic to cover in the next section.</p>
+
+
+
+</div>
+<div class="crossreferences">
+<h4>See also</h4>
+<div class="crossreference">
+<a href="wi_16.html#wi-16.11" class="crossreference_link">Sorting</a> for reordering a table to put it into increasing or decreasing order of the entries in any column</div>
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-272"><p class="example-p"><span class="example-short-start">272. <a href="rb_3.html#example-272" class="example-link" onClick="(function() { document.getElementById('example-272').setAttribute('open','open'); return true; })();">Port Royal 4</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">A cell window through which the player can see people who were in Port Royal in the current year of game-time.</span> (c.f. <a href="rb_3.html#rb-3.6">RB §3.6. Windows</a>)</p></div>
+</div></section>
+<section class="section" id="wi-16.7"><div>
+
+
+
+
+
+<h3>WI §16.7. Blank entries</h3>
+<p>We are allowed to leave certain entries blank (perhaps to be filled in later, perhaps not) by writing "--" instead of the relevant value:</p>
+
+<div class="code">
+<p class="quoted">
+ Table 2.1 - Selected Elements
+<br></p>
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">Element</p></td>
+<td class="quotedtablecell"><p class="quoted">Symbol</p></td>
+<td class="quotedtablecell"><p class="quoted">Atomic number</p></td>
+<td class="quotedtablecell"><p class="quoted">Atomic weight</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Hydrogen"</p></td>
+<td class="quotedtablecell"><p class="quoted">"H"</p></td>
+<td class="quotedtablecell"><p class="quoted">1</p></td>
+<td class="quotedtablecell"><p class="quoted">1</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Iron"</p></td>
+<td class="quotedtablecell"><p class="quoted">"Fe"</p></td>
+<td class="quotedtablecell"><p class="quoted">--</p></td>
+<td class="quotedtablecell"><p class="quoted">56</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Zinc"</p></td>
+<td class="quotedtablecell"><p class="quoted">--</p></td>
+<td class="quotedtablecell"><p class="quoted">30</p></td>
+<td class="quotedtablecell"><p class="quoted">65</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Uranium"</p></td>
+<td class="quotedtablecell"><p class="quoted">"U"</p></td>
+<td class="quotedtablecell"><p class="quoted">92</p></td>
+<td class="quotedtablecell"><p class="quoted">238</p></td>
+</tr>
+</table>
+</div>
+<p>In effect, blank entries don't exist. "--" is not a value, but only a hole where a value might be. It can be useful to check for this:</p>
+
+<div class="definition" id="defn232">
+<p class="defnprototype"><strong>if there is </strong>(a table entry)<strong>:</strong></p>
+
+
+
+<p>This condition is true if the entry referred to exists, that is, that is, the space for it in the table is not blank. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+if there is a symbol corresponding to an atomic number of 30 in the Table of Standard Elements ...
+<br>if there is an atomic number in row 2 of the Table of Standard Elements ...
+</p></blockquote>
+
+
+
+</div>
+
+
+<div class="definition" id="defn233">
+<p class="defnprototype"><strong>if there is no </strong>(a table entry)<strong>:</strong></p>
+
+
+
+<p>This condition is true if the entry referred to does not exist, that is, the space for it in the table is blank. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+if there is no symbol corresponding to an atomic number of 30 in the Table of Standard Elements ...
+<br>if there is no atomic number in row 2 of the Table of Standard Elements ...
+</p></blockquote>
+
+
+
+</div>
+
+
+
+</div></section>
+<section class="section" id="wi-16.8"><div>
+
+
+
+
+
+<h3>WI §16.8. Blank columns</h3>
+<p>An entire column of blank entries "--" is problematic:</p>
+
+<div class="code">
+<p class="quoted">
+ Table 2 - Selected Elements
+<br></p>
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">Element</p></td>
+<td class="quotedtablecell"><p class="quoted">Symbol</p></td>
+<td class="quotedtablecell"><p class="quoted">Atomic number</p></td>
+<td class="quotedtablecell"><p class="quoted">Atomic weight</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Hydrogen"</p></td>
+<td class="quotedtablecell"><p class="quoted">"H"</p></td>
+<td class="quotedtablecell"><p class="quoted">1</p></td>
+<td class="quotedtablecell"><p class="quoted">--</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Iron"</p></td>
+<td class="quotedtablecell"><p class="quoted">"Fe"</p></td>
+<td class="quotedtablecell"><p class="quoted">26</p></td>
+<td class="quotedtablecell"><p class="quoted">--</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Zinc"</p></td>
+<td class="quotedtablecell"><p class="quoted">"Zn"</p></td>
+<td class="quotedtablecell"><p class="quoted">30</p></td>
+<td class="quotedtablecell"><p class="quoted">--</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Uranium"</p></td>
+<td class="quotedtablecell"><p class="quoted">"U"</p></td>
+<td class="quotedtablecell"><p class="quoted">92</p></td>
+<td class="quotedtablecell"><p class="quoted">--</p></td>
+</tr>
+</table>
+</div>
+<p>Inform is unable to work out what kind of value should go into the "atomic weight" column here, since it has no examples to guess from. We can get around this by writing in the name of a kind of value:</p>
+
+<div class="code">
+<p class="quoted">
+ Table 2 - Selected Elements
+<br></p>
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">Element</p></td>
+<td class="quotedtablecell"><p class="quoted">Symbol</p></td>
+<td class="quotedtablecell"><p class="quoted">Atomic number</p></td>
+<td class="quotedtablecell"><p class="quoted">Atomic weight</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Hydrogen"</p></td>
+<td class="quotedtablecell"><p class="quoted">"H"</p></td>
+<td class="quotedtablecell"><p class="quoted">1</p></td>
+<td class="quotedtablecell"><p class="quoted">a number</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Iron"</p></td>
+<td class="quotedtablecell"><p class="quoted">"Fe"</p></td>
+<td class="quotedtablecell"><p class="quoted">26</p></td>
+<td class="quotedtablecell"><p class="quoted">--</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Zinc"</p></td>
+<td class="quotedtablecell"><p class="quoted">"Zn"</p></td>
+<td class="quotedtablecell"><p class="quoted">30</p></td>
+<td class="quotedtablecell"><p class="quoted">--</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Uranium"</p></td>
+<td class="quotedtablecell"><p class="quoted">"U"</p></td>
+<td class="quotedtablecell"><p class="quoted">92</p></td>
+<td class="quotedtablecell"><p class="quoted">--</p></td>
+</tr>
+</table>
+</div>
+<p>That top entry in the "atomic weight" column is also blank, but now Inform knows that anything put into the column in future will be a number.</p>
+<p>If there are many rows, and perhaps several blank columns, it would become very tedious to have to keep typing out "--". So this is optional <em>at the end of a row</em>: it remains compulsory for a blank value appearing in between two values which aren't blank. This is the general idea:</p>
+
+<div class="code">
+<p class="quoted">
+ Table 2 - Selected Elements
+<br></p>
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">Element</p></td>
+<td class="quotedtablecell"><p class="quoted">Symbol</p></td>
+<td class="quotedtablecell"><p class="quoted">Atomic number</p></td>
+<td class="quotedtablecell"><p class="quoted">Density</p></td>
+<td class="quotedtablecell"><p class="quoted">Specific gravity</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Hydrogen"</p></td>
+<td class="quotedtablecell"><p class="quoted">"H"</p></td>
+<td class="quotedtablecell"><p class="quoted">1</p></td>
+<td class="quotedtablecell"><p class="quoted">a number</p></td>
+<td class="quotedtablecell"><p class="quoted">a number</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Iron"</p></td>
+<td class="quotedtablecell"><p class="quoted">"Fe"</p></td>
+<td class="quotedtablecell"><p class="quoted">26</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Zinc"</p></td>
+<td class="quotedtablecell"><p class="quoted">"Zn"</p></td>
+<td class="quotedtablecell"><p class="quoted">30</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Uranium"</p></td>
+<td class="quotedtablecell"><p class="quoted">"U"</p></td>
+<td class="quotedtablecell"><p class="quoted">92</p></td>
+</tr>
+</table>
+</div>
+</div></section>
+<section class="section" id="wi-16.9"><div>
+
+
+
+
+
+<h3>WI §16.9. Blank rows</h3>
+<p>There is no difficulty about entirely blank rows: or rather, the only difficulty is once again that they are boring to type out. We can avoid the necessity by appending "with ... blank rows" at the foot of the table:</p>
+
+<div class="code">
+<p class="quoted">
+ Table 2 - Selected Elements
+<br></p>
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">Element</p></td>
+<td class="quotedtablecell"><p class="quoted">Symbol</p></td>
+<td class="quotedtablecell"><p class="quoted">Atomic number</p></td>
+<td class="quotedtablecell"><p class="quoted">Atomic weight</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Hydrogen"</p></td>
+<td class="quotedtablecell"><p class="quoted">"H"</p></td>
+<td class="quotedtablecell"><p class="quoted">1</p></td>
+<td class="quotedtablecell"><p class="quoted">a number</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Iron"</p></td>
+<td class="quotedtablecell"><p class="quoted">"Fe"</p></td>
+<td class="quotedtablecell"><p class="quoted">26</p></td>
+<td class="quotedtablecell"><p class="quoted">--</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Zinc"</p></td>
+<td class="quotedtablecell"><p class="quoted">"Zn"</p></td>
+<td class="quotedtablecell"><p class="quoted">30</p></td>
+<td class="quotedtablecell"><p class="quoted">--</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"Uranium"</p></td>
+<td class="quotedtablecell"><p class="quoted">"U"</p></td>
+<td class="quotedtablecell"><p class="quoted">92</p></td>
+<td class="quotedtablecell"><p class="quoted">--</p></td>
+</tr>
+<tr><td class="quotedtablecell"><p class="quoted">with 3 blank rows</p></td></tr>
+</table>
+</div>
+<p>(These words cannot be placed in between rows, but only at the bottom.) And indeed the table can start out completely empty:</p>
+
+<div class="code">
+<p class="quoted">
+ Table 3 - Undiscovered Periodic Table
+<br></p>
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">Element (text)</p></td>
+<td class="quotedtablecell"><p class="quoted">Symbol (text)</p></td>
+<td class="quotedtablecell"><p class="quoted">Atomic number (a number)</p></td>
+<td class="quotedtablecell"><p class="quoted">Atomic weight (a number)</p></td>
+</tr>
+<tr><td class="quotedtablecell"><p class="quoted">with 92 blank rows</p></td></tr>
+</table>
+</div>
+<p>Blank rows are useful because they enable us to add new data to a table. In effect, they are invisible when not used. A repeat loop like</p>
+
+<div class="code"><p class="quoted">
+repeat through Table 3:
+<br>    ...
+</p></div>
+<p>automatically skips blank rows, so it would initially do nothing at all. Similarly, choosing a "random" row will never choose a blank one.</p>
+<p>A convenient way to test if a table contains non-blank rows is to use the built-in adjectives "empty" and "non-empty". So:</p>
+
+<div class="code"><p class="quoted">
+if the Undiscovered Periodic Table is empty, ...
+</p></div>
+<p>tests whether all of its rows are blank; if even one cell contains a value then the table is "non-empty".</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-273"><p class="example-p"><span class="example-short-start">273. <a href="rb_9.html#example-273" class="example-link" onClick="(function() { document.getElementById('example-273').setAttribute('open','open'); return true; })();">If It Hadn't Been For...</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A sound recording device that records the noises made by player and non-player actions, then plays them back on demand.</span> (c.f. <a href="rb_9.html#rb-9.12">RB §9.12. Cameras and Recording Devices</a>)</p></div>
+</div></section>
+<section class="section" id="wi-16.10"><div>
+
+
+
+
+
+<h3>WI §16.10. Adding and removing rows</h3>
+<p>Writing in new rows is simple, once we can find space for them:</p>
+
+<div class="definition" id="defn234">
+<p class="defnprototype"><strong>choose a</strong>/the/--<strong> blank row in</strong>/from<strong> </strong>(table name)<strong></strong></p>
+
+
+
+<p>This phrase chooses a row in the given table which is currently blank under every column. A run-time problem message is issued if no rows are blank. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+choose a blank row in Table 3;
+<br>now element entry is "Fluorine";
+<br>now symbol entry is "F";
+<br>now atomic number entry is 9;
+<br>now atomic weight entry is 19;
+</p></blockquote>
+
+
+
+</div>
+
+<p>To avoid problem messages, it can be important to worry about free space. To that end we can not only find the number of rows (as we have already seen) but also the number currently blank and not blank:</p>
+
+<div class="definition" id="defn235">
+<p class="defnprototype"><strong>number of blank rows in</strong>/from<strong> </strong>(table name)<strong> ... number</strong></p>
+
+
+
+<p>This phrase produces the number of rows in the given table which are entirely blank (that is, blank under every column).</p>
+
+
+</div>
+
+
+<div class="definition" id="defn236">
+<p class="defnprototype"><strong>number of filled rows in</strong>/from<strong> </strong>(table name)<strong> ... number</strong></p>
+
+
+
+<p>This phrase produces the number of rows in the given table which are not entirely blank (that is, at least one column has a value in this row).</p>
+
+
+</div>
+
+<p>"Filled" here really means "non-blank": a row can be filled in this sense even if only one of its values exists. Since every row is either blank or filled, it must be true that:</p>
+
+<div class="code"><p class="quoted">
+the number of blank rows in Table 3
+<br>the number of filled rows in Table 3
+</p></div>
+<p>add up to "the number of rows in Table 3".</p>
+<p>We've seen that blank entries can be filled with values using "now":</p>
+
+<div class="code"><p class="quoted">
+now symbol entry is "F";
+</p></div>
+<p>But the same method can't be used to put blanks back, since a blank is not a value. Instead:</p>
+
+<div class="definition" id="defn237">
+<p class="defnprototype"><strong>blank out </strong>(a table entry)<strong></strong></p>
+
+
+
+<p>This phrase replaces the entry referred to with a blank, erasing any value previously stored there. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+choose row 1 in the Table of Fish Habitats;
+<br>blank out the salinity entry;
+</p></blockquote>
+
+
+
+</div>
+
+<p>These more destructive phrases need a steady hand:</p>
+
+<div class="definition" id="defn238">
+<p class="defnprototype"><strong>blank out the whole row</strong></p>
+
+
+
+<p>This phrase replaces the currently chosen row with blanks, erasing any value previously stored under any of the columns. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+choose row 1 in the Table of Fish Habitats;
+<br>blank out the whole row;
+</p></blockquote>
+
+
+
+</div>
+
+
+<div class="definition" id="defn239">
+<p class="defnprototype"><strong>blank out the whole </strong>(table column)<strong> column in </strong>(table)<strong></strong></p>
+
+
+
+<p>This phrase replaces the currently chosen column with blanks, erasing any value previously stored in any of the rows. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+blank out the whole salinity column in the Table of Fish Habitats;
+</p></blockquote>
+
+
+
+</div>
+
+
+<div class="definition" id="defn240">
+<p class="defnprototype"><strong>blank out the whole of </strong>(table)<strong></strong></p>
+
+
+
+<p>This phrase replaces every row of the currently chosen table with blanks, erasing any value previously stored anywhere in it. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+blank out the whole of the Table of Fish Habitats;
+</p></blockquote>
+
+<p>This is only really useful when a Table is being used to hold working space for some calculation or other.</p>
+
+
+</div>
+
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-274"><p class="example-p"><span class="example-short-start">274. <a href="rb_7.html#example-274" class="example-link" onClick="(function() { document.getElementById('example-274').setAttribute('open','open'); return true; })();">Odyssey</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">A person who follows a path predetermined and stored in a table, and who can be delayed if the player tries to interact with her.</span> (c.f. <a href="rb_7.html#rb-7.13">RB §7.13. Traveling Characters</a>)</p></div>
+</div></section>
+<section class="section" id="wi-16.11"><div>
+
+
+
+
+
+<h3>WI §16.11. Sorting</h3>
+<p>The three ways to sort a table correspond loosely to the three different orders in which tables can be repeated through. First:</p>
+
+<div class="definition" id="defn241">
+<p class="defnprototype"><strong>sort </strong>(table name)<strong> in random order</strong></p>
+
+
+
+<p>This phrase rearranges the rows of the given table so that the non-blank rows occur at the top, in a uniformly random order, and any blank rows at the bottom. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+sort the Table of Recent Monarchs in random order;
+</p></blockquote>
+
+
+
+</div>
+
+<p>Secondly:</p>
+
+<div class="definition" id="defn242">
+<p class="defnprototype"><strong>sort </strong>(table name)<strong> in </strong>(table column)<strong> order</strong></p>
+
+
+
+<p>This phrase rearranges the rows of the given table so that the non-blank rows occur at the top, so that the given column has ascending order, and any blank rows at the bottom. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+sort the Table of Recent Monarchs in accession order;
+</p></blockquote>
+
+<p>Ascending order means 1 up to 10, say, or A up to Z, with blank values coming last.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn243">
+<p class="defnprototype"><strong>sort </strong>(table name)<strong> in reverse </strong>(table column)<strong> order</strong></p>
+
+
+
+<p>This phrase rearranges the rows of the given table so that the non-blank rows occur at the top, so that the given column has descending order, and any blank rows at the bottom. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+sort the Table of Recent Monarchs in reverse name order;
+</p></blockquote>
+
+<p>Descending order means 10 down to 1, say, or Z down to A, with blank values coming last.</p>
+
+
+</div>
+
+<p>How sorting is done depends on the contents of the column being sorted on. If it holds numbers then numerical order is used, with 2 coming before 7, and so on. (And similarly for real numbers, though the existence of infinities makes this more interesting.) If times are sorted then they are sorted from midnight to midnight, following the "is greater than" relation, not with 4 AM as the zero point, as with "is after".</p>
+<p>If text is sorted then alphabetical order is used, though this doesn't always come out the way you might expect, because upper case and lower case letters are treated as different: A-Z come before a-z, and accented letters such as é come after the regular alphabet. (What's happening here is that Inform is sorting on raw  character values, not performing the full Unicode collation algorithm, which would be too slow at run-time.)</p>
+<p>Note that blank values will always be placed below non-blank ones, and entirely blank rows last of all. This is true even if we use "reverse".</p>
+<p>The method of sorting is "stable", that is, if two rows have the same value then they will stay the same way round in the sorted table, rather than being swapped over. For example, if we sort this into reverse index order:</p>
+
+<div class="code"><table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">Index</p></td>
+<td class="quotedtablecell"><p class="quoted">Comment</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">1</p></td>
+<td class="quotedtablecell"><p class="quoted">"Originally row 1"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">2</p></td>
+<td class="quotedtablecell"><p class="quoted">"Originally row 2"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">2</p></td>
+<td class="quotedtablecell"><p class="quoted">"Originally row 3"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">3</p></td>
+<td class="quotedtablecell"><p class="quoted">"Originally row 4"</p></td>
+</tr>
+</table></div>
+<p>then we get</p>
+
+<div class="code"><table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">Index</p></td>
+<td class="quotedtablecell"><p class="quoted">Comment</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">3</p></td>
+<td class="quotedtablecell"><p class="quoted">"Originally row 4"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">2</p></td>
+<td class="quotedtablecell"><p class="quoted">"Originally row 2"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">2</p></td>
+<td class="quotedtablecell"><p class="quoted">"Originally row 3"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">1</p></td>
+<td class="quotedtablecell"><p class="quoted">"Originally row 1"</p></td>
+</tr>
+</table></div>
+<p>As a result note that repeating through this sorted table goes through the original rows in order 4, 2, 3, 1; whereas repeating through the original table in reverse order goes through in order 4, 3, 2, 1. (This is all to explain the word "loosely" in the opening sentence of this section.)</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-275"><p class="example-p"><span class="example-short-start">275. <a href="rb_9.html#example-275" class="example-link" onClick="(function() { document.getElementById('example-275').setAttribute('open','open'); return true; })();">Jokers Wild</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">A deck of cards which can be shuffled and dealt from.</span> (c.f. <a href="rb_9.html#rb-9.5">RB §9.5. Dice and Playing Cards</a>)</p></div>
+</div></section>
+<section class="section" id="wi-16.12"><div>
+
+
+
+
+
+<h3>WI §16.12. Listed in...</h3>
+<p>Tables are especially useful for combining a run of basically similar rules in a simple and concise way. The "listed in" condition, as in</p>
+
+<div class="code"><p class="quoted">
+if the newfound object is an item listed in the Table of Treasures...
+</p></div>
+<p>looks through a given table (here "table of treasures"), in a given column ("item"), to see if a given value is present ("the newfound object"). If this is successful, the row where it was found is automatically chosen; but if not, note that any existing row selection will be lost, so make use of the row only if the test succeeds.</p>
+<p>We can similarly use "... listed in ..." in a description used when specifying an action. Thus:</p>
+
+<div class="code"><p class="quoted">
+ After taking an item listed in the Table of Treasures:
+<br>    if there is no time entry:
+<br>        now the time entry is the time of day;
+<br>        increase the score by the value entry;
+<br>    say "Taken!"
+</p></div>
+<p>This assumes a table in the following shape:</p>
+
+<div class="code">
+<p class="quoted">
+Table of Treasures
+<br></p>
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">Item</p></td>
+<td class="quotedtablecell"><p class="quoted">Value</p></td>
+<td class="quotedtablecell"><p class="quoted">Time</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">brooch</p></td>
+<td class="quotedtablecell"><p class="quoted">5</p></td>
+<td class="quotedtablecell"><p class="quoted">a time</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">tiara</p></td>
+<td class="quotedtablecell"><p class="quoted">8</p></td>
+<td class="quotedtablecell"><p class="quoted">--</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">coronet</p></td>
+<td class="quotedtablecell"><p class="quoted">10</p></td>
+<td class="quotedtablecell"><p class="quoted">--</p></td>
+</tr>
+</table>
+</div>
+<p>In effect the table has allowed us to combine three very similar rules into one. The time column records the first time at which the item has been picked up, which starts out blank since at the start of play it has never been picked up. This enables us to award the appropriate number of points on the first occasion only.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-276"><p class="example-p"><span class="example-short-start">276. <a href="rb_10.html#example-276" class="example-link" onClick="(function() { document.getElementById('example-276').setAttribute('open','open'); return true; })();">Noisy Cricket</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">Implementing liquids that can be mixed, and the components automatically recognized as matching one recipe or another.</span> (c.f. <a href="rb_10.html#rb-10.2">RB §10.2. Liquids</a>)</p></div>
+</div></section>
+<section class="section" id="wi-16.13"><div>
+
+
+
+
+
+<h3>WI §16.13. Topic columns</h3>
+<p>When double-quoted matter appears in a column of a table, Inform will normally treat that as text for printing out. The exception is when the column is called "topic", where it is treated as text for comparing against what the player has typed. There is really only one operation allowed with topic columns, the "...listed in..." construction, but fortunately it is the one most often needed.</p>
+<p>Let us suppose that the Sybil has a penchant for telling passers-by which is the Greek muse for what. We might write:</p>
+
+<div class="code"><p class="quoted">
+ After asking the Sybil about a topic listed in the Table of Sybil's Replies, say "The Sybil declaims for a while, the gist being that the muse in question looks after [muse entry]."
+</p></div>
+<p>We can then provide a simple table giving her responses:</p>
+
+<div class="code">
+<p class="quoted">
+Table of Sybil's Replies
+<br></p>
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">Topic</p></td>
+<td class="quotedtablecell"><p class="quoted">Muse</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"calliope"</p></td>
+<td class="quotedtablecell"><p class="quoted">"epic poetry"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"clio"</p></td>
+<td class="quotedtablecell"><p class="quoted">"history"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"erato"</p></td>
+<td class="quotedtablecell"><p class="quoted">"love poetry"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"euterpe"</p></td>
+<td class="quotedtablecell"><p class="quoted">"music"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"melpomene"</p></td>
+<td class="quotedtablecell"><p class="quoted">"tragedy"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"polyhymnia"</p></td>
+<td class="quotedtablecell"><p class="quoted">"sacred poetry"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"terpsichore"</p></td>
+<td class="quotedtablecell"><p class="quoted">"dancing"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"thalia"</p></td>
+<td class="quotedtablecell"><p class="quoted">"comedy"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"urania"</p></td>
+<td class="quotedtablecell"><p class="quoted">"astronomy"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"monica"</p></td>
+<td class="quotedtablecell"><p class="quoted">"tidiness"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"phoebe"</p></td>
+<td class="quotedtablecell"><p class="quoted">"massage"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"rachel"</p></td>
+<td class="quotedtablecell"><p class="quoted">"oval hair-cuts"</p></td>
+</tr>
+</table>
+</div>
+<p>Topics can use the full range of abilities of the "understanding" system which Inform uses to parse text, and which will be the subject of a later chapter. For now, note that the Sybil's topics might equally include "flora/eve" (matching the single word "flora" or the single word "eve"), or something more elaborate such as:</p>
+
+<div class="code"><p class="quoted">
+"Bridget" or "Bridge" or "Bridget Jones"
+</p></div>
+</div>
+<div class="crossreferences">
+<h4>See also</h4>
+<div class="crossreference">
+<a href="wi_17.html#wi-17.1" class="crossreference_link">Understand</a> for the system Inform uses to parse text</div>
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-277"><p class="example-p"><span class="example-short-start">277. <a href="rb_5.html#example-277" class="example-link" onClick="(function() { document.getElementById('example-277').setAttribute('open','open'); return true; })();">Merlin</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A REMEMBER command which accepts any text and looks up a response in a table of recollections.</span> (c.f. <a href="rb_5.html#rb-5.4">RB §5.4. Background</a>)</p></div>
+<div class="example-short" id="example-short-278"><p class="example-p"><span class="example-short-start">278. <a href="rb_7.html#example-278" class="example-link" onClick="(function() { document.getElementById('example-278').setAttribute('open','open'); return true; })();">Questionable Revolutions</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">An expansion on the previous idea, only this time we store information and let characters answer depending on their expertise in a given area.</span> (c.f. <a href="rb_7.html#rb-7.11">RB §7.11. Character Knowledge and Reasoning</a>)</p></div>
+<div class="example-short" id="example-short-279"><p class="example-p"><span class="example-short-start">279. <a href="rb_7.html#example-279" class="example-link" onClick="(function() { document.getElementById('example-279').setAttribute('open','open'); return true; })();">The Queen of Sheba</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">Allowing the player to use question words, and using that information to modify the response given by the other character.</span> (c.f. <a href="rb_7.html#rb-7.11">RB §7.11. Character Knowledge and Reasoning</a>)</p></div>
+</div></section>
+<section class="section" id="wi-16.14"><div>
+
+
+
+
+
+<h3>WI §16.14. Another scoring example</h3>
+
+<div class="code"><p class="quoted">
+ To record (T - text) as achieved:
+<br>    choose row with a citation of T in the Table of Tasks Achieved;
+<br>    if there is no time entry:
+<br>        now time entry is the time of day;
+<br>        increase the score by the points entry.
+</p></div>
+<p>The phrase above expects to see a table like this one:</p>
+
+<div class="code">
+<p class="quoted">
+Table of Tasks Achieved
+<br></p>
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">Points</p></td>
+<td class="quotedtablecell"><p class="quoted">Citation</p></td>
+<td class="quotedtablecell"><p class="quoted">Time</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">1</p></td>
+<td class="quotedtablecell"><p class="quoted">"pride"</p></td>
+<td class="quotedtablecell"><p class="quoted">a time</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">3</p></td>
+<td class="quotedtablecell"><p class="quoted">"anger"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">2</p></td>
+<td class="quotedtablecell"><p class="quoted">"avarice"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">4</p></td>
+<td class="quotedtablecell"><p class="quoted">"envy"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">1</p></td>
+<td class="quotedtablecell"><p class="quoted">"lust"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">2</p></td>
+<td class="quotedtablecell"><p class="quoted">"gluttony"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">3</p></td>
+<td class="quotedtablecell"><p class="quoted">"sloth"</p></td>
+</tr>
+</table>
+</div>
+<p>The middle column records the tasks to be achieved, the first column records the points on offer for each: the final column, initially blank, will store the times at which the tasks are first achieved.</p>
+
+<div class="code"><p class="quoted">
+Before eating, record "gluttony" as achieved.
+</p></div>
+<p>The first time we record "gluttony" as achieved, 2 points will be awarded and the time will be logged in the Table, but on all subsequent occasions nothing will happen. So the combination of the phrase and the Table will look after a scoring system based on achieving specific goals (probably not the seven deadly sins, of course). We can, if we choose, use the same system to display a log of recent accomplishments:</p>
+
+<div class="code"><p class="quoted">
+repeat through the Table of Tasks Achieved in reverse time order:
+<br>    say "[time entry]: [citation entry] ([points entry])."
+</p></div>
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-280"><p class="example-p"><span class="example-short-start">280. <a href="rb_11.html#example-280" class="example-link" onClick="(function() { document.getElementById('example-280').setAttribute('open','open'); return true; })();">Goat-Cheese and Sage Chicken</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">Implementing a FULL SCORE command which lists more information than the regular SCORE command, adding times and rankings, as an extension of the example given in this chapter.</span> (c.f. <a href="rb_11.html#rb-11.4">RB §11.4. Scoring</a>)</p></div>
+</div></section>
+<section class="section" id="wi-16.15"><div>
+
+
+
+
+
+<h3>WI §16.15. Varying which table to look at</h3>
+<p>So far, we have always used fixed table names when referring to tables: for instance in source like "sort the Table of Recent Monarchs in accession order", we refer to the "Table of Recent Monarchs", a definite and explicitly named table.</p>
+<p>With a little care, however, we are allowed to have variables which themselves hold the names of tables. This opens up the possibility of more elaborate ways of storing and interconnecting information in table form, but is probably best avoided until it becomes necessary.</p>
+<p>For example, suppose we have two different tables with the same basic structure:</p>
+
+<div class="code">
+<p class="quoted">
+ Table 1 - Nifty Opening Plays in US Scrabble
+<br></p>
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">word</p></td>
+<td class="quotedtablecell"><p class="quoted">score</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"muzjiks"</p></td>
+<td class="quotedtablecell"><p class="quoted">128</p></td>
+</tr>
+</table>
+<p class="quoted">
+Table 2 - Nifty Opening Plays in UK Scrabble
+<br></p>
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">word</p></td>
+<td class="quotedtablecell"><p class="quoted">score</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"quartzy"</p></td>
+<td class="quotedtablecell"><p class="quoted">126</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">"squeezy"</p></td>
+<td class="quotedtablecell"><p class="quoted">126</p></td>
+</tr>
+</table>
+</div>
+<p>We could then record which one of these tables to use in a variable:</p>
+
+<div class="code"><p class="quoted">
+The lexicon is a table name that varies. The lexicon is Table 1.
+</p></div>
+<p>Note that for this purpose, the kind of value is a special kind called "table name", not "table". (The word "table" already has too many meanings and we must be careful to avoid ambiguities here.) We could make use of this as follows, for instance:</p>
+
+<div class="code"><p class="quoted">
+To flip tables:
+<br>    say "You exchange dictionaries, lexically crossing the Atlantic. ";
+<br>    if the lexicon is Table 1, now the lexicon is Table 2;
+<br>    otherwise now the lexicon is Table 1;
+<br>    choose a random row in the lexicon;
+<br>    say "Did you know that according to [the lexicon], [word entry] scores [score entry]?"
+</p></div>
+<p>which produces text such as</p>
+
+<div class="code"><p class="quoted">
+You exchange dictionaries, lexically crossing the Atlantic. Did you know that according to Table 1 - Nifty Opening Plays in US Scrabble, muzjiks scores 128?
+</p></div>
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-281"><p class="example-p"><span class="example-short-start">281. <a href="rb_7.html#example-281" class="example-link" onClick="(function() { document.getElementById('example-281').setAttribute('open','open'); return true; })();">Farewell</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">People who respond to conversational gambits, summarize what they said before if asked again, and provide recap of conversation that is past.</span> (c.f. <a href="rb_7.html#rb-7.8">RB §7.8. Saying Complicated Things</a>)</p></div>
+</div></section>
+<section class="section" id="wi-16.16"><div>
+
+
+
+
+
+<h3>WI §16.16. Defining things with tables</h3>
+<p>Suppose we need to create a collection of items which differ in their properties, but are basically part of a larger pattern. For instance, here we set up what we need to make a collection of coloured shirts:</p>
+
+<div class="code"><p class="quoted">
+A jersey is a kind of thing. A jersey is wearable. A jersey has a number called year established. A jersey has a text called citation. The description of a jersey is "Since [year established], the Tour de France has awarded this jersey to the [citation]."
+</p></div>
+<p>Now we have the pattern, but making the actual shirts is tedious and repetitive:</p>
+
+<div class="code"><p class="quoted">
+The yellow jersey is a jersey. The year established of the yellow jersey is 1919. The citation of the yellow jersey is "race leader". The polkadot jersey...
+</p></div>
+<p>And so on. Instead, we can use a table to abbreviate all of this:</p>
+
+<div class="code">
+<p class="quoted">
+ "Tour des Maillots"
+</p>
+<p class="quoted">
+The Staging Area is a room. A jersey is a kind of thing. A jersey is wearable. Some jerseys in the Staging Area are defined by the Table of Honorary Jerseys. The description of a jersey is "Since [year established], the Tour de France has awarded this jersey to the [citation]."
+</p>
+<p class="quoted">
+Table of Honorary Jerseys
+<br></p>
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">jersey</p></td>
+<td class="quotedtablecell"><p class="quoted">year established</p></td>
+<td class="quotedtablecell"><p class="quoted">citation</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">a yellow jersey</p></td>
+<td class="quotedtablecell"><p class="quoted">1919</p></td>
+<td class="quotedtablecell"><p class="quoted">"race leader"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">a polkadot jersey</p></td>
+<td class="quotedtablecell"><p class="quoted">1933</p></td>
+<td class="quotedtablecell"><p class="quoted">"King of the Mountains"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">a green jersey</p></td>
+<td class="quotedtablecell"><p class="quoted">1953</p></td>
+<td class="quotedtablecell"><p class="quoted">"highest point scorer on sprints"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">a white jersey</p></td>
+<td class="quotedtablecell"><p class="quoted">1975</p></td>
+<td class="quotedtablecell"><p class="quoted">"best cyclist aged 25 or less"</p></td>
+</tr>
+</table>
+</div>
+<p>The first column provides names for the new things to be created. Subsequent columns provide property values. Note that we did not need to say that jerseys have a number called "year established" because Inform is able to infer this from the column heading and the presence of numbers in the column; similarly for "citation". Lastly, note that if any entry is blank (written "--") then that particular property is simply not set for that particular item.</p>
+<p>Note that Inform reads articles such as "the" or "a" in the first column just as it would when something is created with any other sentence.</p>
+<p>It's even possible to define kinds this way, though it's rare to need to create many kinds at once. (See the worked example "Reliques of Tolti-Aph" at the Inform website. There's no special syntax needed: rather than saying "Some jerseys are defined by..." we would say "Some kinds of jersey are defined by...")</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-282"><p class="example-p"><span class="example-short-start">282. <a href="rb_7.html#example-282" class="example-link" onClick="(function() { document.getElementById('example-282').setAttribute('open','open'); return true; })();">Sweeney</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">A conversation where each topic may have multiple questions and answers associated with it, and where a given exchange can lead to new additions to the list.</span> (c.f. <a href="rb_7.html#rb-7.8">RB §7.8. Saying Complicated Things</a>)</p></div>
+<div class="example-short" id="example-short-283"><p class="example-p"><span class="example-short-start">283. <a href="rb_9.html#example-283" class="example-link" onClick="(function() { document.getElementById('example-283').setAttribute('open','open'); return true; })();">Introduction to Juggling</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">Assortment of equipment defined with price and description, in a table.</span> (c.f. <a href="rb_9.html#rb-9.4">RB §9.4. Money</a>)</p></div>
+</div></section>
+<section class="section" id="wi-16.17"><div>
+
+
+
+
+
+<h3>WI §16.17. Defining values with tables</h3>
+<p>Just as we can define many similar things (or kinds) using a table, we can also define a whole run of new values. Again, this avoids unnatural prose like</p>
+
+<div class="code"><p class="quoted">
+The chemical elements are Hydrogen, Helium, Lithium, ..., and Ununquadium.
+</p></div>
+<p>We can give these new values properties, too. For example:</p>
+
+<div class="code">
+<p class="quoted">
+ Solar distance is a kind of value. 1000 AU specifies a solar distance. Planet is a kind of value. The planets are defined by the Table of Outer Planets.
+</p>
+<p class="quoted">
+Table of Outer Planets
+<br></p>
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">planet</p></td>
+<td class="quotedtablecell"><p class="quoted">semimajor axis</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">Jupiter</p></td>
+<td class="quotedtablecell"><p class="quoted">5 AU</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">Saturn</p></td>
+<td class="quotedtablecell"><p class="quoted">10 AU</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">Uranus</p></td>
+<td class="quotedtablecell"><p class="quoted">19 AU</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">Neptune</p></td>
+<td class="quotedtablecell"><p class="quoted">30 AU</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">Pluto</p></td>
+<td class="quotedtablecell"><p class="quoted">39 AU</p></td>
+</tr>
+</table>
+</div>
+<p>creates five values of the kind "planet", but it also makes a property called "semimajor axis" which belongs only to these five values. Thus:</p>
+
+<div class="code"><p class="quoted">
+say "Pluto orbits at [semimajor axis of Pluto]."
+</p></div>
+<p>produces "Pluto orbits at 39 AU." We can both use and change this value:</p>
+
+<div class="code"><p class="quoted">
+Praying is an action applying to nothing. Understand "pray" as praying.
+<br>Instead of praying:
+<br>    now the semimajor axis of Pluto is 1 AU;
+<br>    say "Your prayers are answered, and the Almighty moves Pluto in closer to the fire."
+</p></div>
+<p>Similar properties would be made for each column of the table after the first (there can be any number of properties, including none). Because the values are created first, before the rest of the table is gone through, we can even use "planet" as one of the values of properties:</p>
+
+<div class="code">
+<p class="quoted">
+Table of Outer Planets
+<br></p>
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">planet</p></td>
+<td class="quotedtablecell"><p class="quoted">semimajor axis</p></td>
+<td class="quotedtablecell"><p class="quoted">centre of government</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">Jupiter</p></td>
+<td class="quotedtablecell"><p class="quoted">5 AU</p></td>
+<td class="quotedtablecell"><p class="quoted">Jupiter</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">Saturn</p></td>
+<td class="quotedtablecell"><p class="quoted">10 AU</p></td>
+<td class="quotedtablecell"><p class="quoted">Saturn</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">Uranus</p></td>
+<td class="quotedtablecell"><p class="quoted">19 AU</p></td>
+<td class="quotedtablecell"><p class="quoted">Saturn</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">Neptune</p></td>
+<td class="quotedtablecell"><p class="quoted">30 AU</p></td>
+<td class="quotedtablecell"><p class="quoted">Pluto</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">Pluto</p></td>
+<td class="quotedtablecell"><p class="quoted">39 AU</p></td>
+<td class="quotedtablecell"><p class="quoted">Pluto</p></td>
+</tr>
+</table>
+</div>
+<p>All of this is intended to be closely parallel to defining a whole run of things, such as the coloured jerseys, using a table, but there are two important restrictions: firstly, when a kind of value is defined by table, the table must contain all of its possible values; and secondly, the column names (after the first) cannot coincide with names of any properties held by any other value (or thing, for that matter). So it is a good idea to give the columns very specific names ("centre of government") rather than vague names which might cause clashes elsewhere ("owner").</p>
+<p>Two technical footnotes. In a table used to define a kind of value, blank entries are not left blank: they are filled in with suitable default values. For instance, if the semimajor axis column had been all "--"s except for listing Neptune at "30 AU", say, Inform would deduce that the column was meant to hold a value of kind "solar distance", and would set the solar distances for all of the other planets to be "0 AU". It does this to ensure that "solar distance of P" exists for any planet P.</p>
+<p>The second technical note is that we must not sort such a table, because it is used during play to store the properties, and if it were to get rearranged then so would the properties be - with probably disastrous results.</p>
+
+
+</div></section>
+<section class="section" id="wi-16.18"><div>
+
+
+
+
+
+<h3>WI §16.18. Table continuations</h3>
+<p>A table is an arrangement for putting information together concisely in a single place, so it might seem odd that we sometimes need to divide it up: but once in a while, we do. Suppose we have:</p>
+
+<div class="code">
+<p class="quoted">
+Table of Outer Planets
+<br></p>
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">planet</p></td>
+<td class="quotedtablecell"><p class="quoted">semimajor axis</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">Jupiter</p></td>
+<td class="quotedtablecell"><p class="quoted">5 AU</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">Saturn</p></td>
+<td class="quotedtablecell"><p class="quoted">10 AU</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">Uranus</p></td>
+<td class="quotedtablecell"><p class="quoted">19 AU</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">Neptune</p></td>
+<td class="quotedtablecell"><p class="quoted">30 AU</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">Pluto</p></td>
+<td class="quotedtablecell"><p class="quoted">39 AU</p></td>
+</tr>
+</table>
+</div>
+<p>But then someone in Chile with a telescope the size of God's own teacup notices something a long, long way out, and the newspapers get terribly excited. We can write an addendum:</p>
+
+<div class="code">
+<p class="quoted">
+Table of Outer Planets (continued)
+<br></p>
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">planet</p></td>
+<td class="quotedtablecell"><p class="quoted">semimajor axis</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">Orcus</p></td>
+<td class="quotedtablecell"><p class="quoted">39 AU</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">Quaoar</p></td>
+<td class="quotedtablecell"><p class="quoted">43 AU</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">Xena</p></td>
+<td class="quotedtablecell"><p class="quoted">68 AU</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">Sedna</p></td>
+<td class="quotedtablecell"><p class="quoted">524 AU</p></td>
+</tr>
+</table>
+</div>
+<p>This may seem unnecessary - why not simply add extra rows to the original table? - but it allows us to split the table between different parts of the source text, if we want to, or to continue a table which exists only in an extension. (Thus if we were using an extension which involved the planets, and had a table like this one, we would be able to add new planets without changing the extension.)</p>
+<p>The name for the continuation must be identical to the original. The continuation has no existence in its own right: Inform simply splices the two (or more) pieces together, exactly as if the table were all in one piece at the place where it first occurred. Thus the above creates only one table, the "Table of Outer Planets", with nine rows. Each column in the continuation must exist in the original, but not every column need be given: those omitted are filled with blank entries. The columns need not be in the same order. Both original and continuations are allowed to quote a number of blank rows: if so, the combined total is used.</p>
+<p>At time of writing the International Astronomical Union has not yet consented to name 2003 UB313 after Xena, the Warrior Princess, but this is surely only a bureaucratic delay. (Footnote: on 24 August 2006 it was demoted to dwarf planet status, like the luckless Pluto, and on 13 September renamed Eris; though its moon's official name, Dysnomia, is an ingenious double-meaning to do with the name of Xena's actress, Lucy Lawless.)</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-284"><p class="example-p"><span class="example-short-start">284. <a href="rb_11.html#example-284" class="example-link" onClick="(function() { document.getElementById('example-284').setAttribute('open','open'); return true; })();">Food Network Interactive</a></span> <span class="example-difficulty">★</span>  <span class="example-description">Using a menu system from an extension, but adding our own material to it for this game.</span> (c.f. <a href="rb_11.html#rb-11.3">RB §11.3. Helping and Hinting</a>)</p></div>
+</div></section>
+<section class="section" id="wi-16.19"><div>
+
+
+
+
+
+<h3>WI §16.19. Table amendments</h3>
+<p>Tables can have amendments as well as continuations. The arrangement is much the same: a supplementary table supplies new rows for the original table. But instead of adding the new rows at the end of the original, as a continuation would, an amendment replaces matching rows in the original. (So the original stays the same size.)</p>
+<p>The amendment table must have exactly the columns of the original and in the same order. Moreover, each row in the amended table must match exactly one row in the original. For instance:</p>
+
+<div class="code">
+<p class="quoted">
+Table of Plans
+<br></p>
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">moment</p></td>
+<td class="quotedtablecell"><p class="quoted">outcome</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">10 AM</p></td>
+<td class="quotedtablecell"><p class="quoted">"takeover of Mars"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">11:30 AM</p></td>
+<td class="quotedtablecell"><p class="quoted">"canals reflooded"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">11:45 AM</p></td>
+<td class="quotedtablecell"><p class="quoted">"chocolate bar production doubled"</p></td>
+</tr>
+</table>
+<p class="quoted">
+Table of Plans (amended)
+<br></p>
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">moment</p></td>
+<td class="quotedtablecell"><p class="quoted">outcome</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">11:45 AM</p></td>
+<td class="quotedtablecell"><p class="quoted">"volcanic cave production doubled"</p></td>
+</tr>
+</table>
+</div>
+<p>creates a three-row Table of Plans, with reference to the chocolate bars struck out.</p>
+<p>Amendment rows may be given in any order. The process of matching a row begins at the left-most column: Inform tries to see if any single row in the original table has a matching entry. If none does, a Problem is issued. If more than one do, Inform then looks at the second column, and so on. For instance:</p>
+
+<div class="code">
+<p class="quoted">
+Enthusiasm is a kind of value. The enthusiasms are pumped, wired and languid.
+</p>
+<p class="quoted">
+Table of Mental States
+<br></p>
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">feeling</p></td>
+<td class="quotedtablecell"><p class="quoted">extent</p></td>
+<td class="quotedtablecell"><p class="quoted">consequence</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">pumped</p></td>
+<td class="quotedtablecell"><p class="quoted">1</p></td>
+<td class="quotedtablecell"><p class="quoted">"you feel able to run for your life"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">pumped</p></td>
+<td class="quotedtablecell"><p class="quoted">2</p></td>
+<td class="quotedtablecell"><p class="quoted">"you feel able to run for President"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">wired</p></td>
+<td class="quotedtablecell"><p class="quoted">1</p></td>
+<td class="quotedtablecell"><p class="quoted">"you feel able to run"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">languid</p></td>
+<td class="quotedtablecell"><p class="quoted">1</p></td>
+<td class="quotedtablecell"><p class="quoted">"you feel"</p></td>
+</tr>
+</table>
+<p class="quoted">
+Table of Mental States (amended)
+<br></p>
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">feeling</p></td>
+<td class="quotedtablecell"><p class="quoted">extent</p></td>
+<td class="quotedtablecell"><p class="quoted">consequence</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">pumped</p></td>
+<td class="quotedtablecell"><p class="quoted">2</p></td>
+<td class="quotedtablecell"><p class="quoted">"you feel able to run for the Nebraska State Legislature"</p></td>
+</tr>
+</table>
+</div>
+<p>Here the amendment is made to the second row of the original table. The value in the leftmost column, "pumped", matches two rows in the original, so Inform moves on to the next column, reads "2", and finds that only one row in the original still qualifies - so that is the one replaced.</p>
+<p>For the present, at least, the columns used for matching may only contain: numbers, times, objects, action names, activities, figure names, sound names, truth states and any new kinds of value or units which have been declared.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-285"><p class="example-p"><span class="example-short-start">285. <a href="rb_11.html#example-285" class="example-link" onClick="(function() { document.getElementById('example-285').setAttribute('open','open'); return true; })();">Trieste</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">Table amendment to adjust HELP commands provided for the player.</span> (c.f. <a href="rb_11.html#rb-11.3">RB §11.3. Helping and Hinting</a>)</p></div>
+</div></section>
+</section>
+
+<footer>
+<div class="linkback"><a href="http://inform7.com/book/WI_16_1.html">WI Chapter 16 on inform7.com</a></div>
+<div class="doc-navbar">
+<div>
+<div class="doc-navbar-left"><a class="nav-left" href="wi_15.html#wi-chapter-15-numbers-and-equations">15. Numbers and Equations</a></div>
+<div class="doc-navbar-right"><a class="nav-right" href="wi_17.html#wi-chapter-17-understanding">17. Understanding</a></div>
+</div>
+<div>
+<div class="doc-navbar-left"><a href="index.html">Table of Contents</a></div>
+<div class="doc-navbar-right"><a href="index.html#general-index">General Index</a></div>
+</div>
+</div>
+
+</footer>
+</main></body></html>
+

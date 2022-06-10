@@ -1,0 +1,1392 @@
+<!doctype html>
+<meta charset="utf-8"><html lang="en"><head><title>Writing in Inform 20. Advanced Text</title><link rel="stylesheet" href="style.css"><script src="chapter.js"></script></head><body>
+<nav><div class="index-navbar hidden">
+<a id="project_index" href="../Welcome.html"> Project Index</a><a id="source" href="../../story.html"> Source</a><a id="problems" href="../../Build/problems.html"> Problems</a><a id="debug_log" href="../../Build/debug_log.html"> Debug Log</a><a id="definitions" href="./ExtIndex.html"> Definitions</a><a id="extensions" href="./Extensions.html"> Extensions</a><a id="docs" href="./index.html"> Docs</a><a id="general_index" href="./index.html#general-index"> General Index</a>
+
+</div>
+</nav>
+<main>
+<header>
+
+<div class="toc">
+<h1>Writing in Inform</h1>
+<div class="doc-navbar">
+<div>
+<div class="doc-navbar-left"><a class="nav-left" href="wi_19.html#wi-chapter-19-rulebooks">19. Rulebooks</a></div>
+<div class="doc-navbar-right"><a class="nav-right" href="wi_21.html#wi-chapter-21-lists">21. Lists</a></div>
+</div>
+<div>
+<div class="doc-navbar-left"><a href="index.html">Table of Contents</a></div>
+<div class="doc-navbar-right"><a href="index.html#general-index">General Index</a></div>
+</div>
+</div>
+
+<div><a id="toggle" href="javascript:toggle_details('examples')">Open all examples</a></div>
+<h2>20. Advanced Text</h2>
+<div class="toc-section">20.1 <a href="wi_20.html#wi-20.1">Changing texts</a></div>
+<div class="toc-section">20.2 <a href="wi_20.html#wi-20.2">Memory limitations</a></div>
+<div class="toc-section">20.3 <a href="wi_20.html#wi-20.3">Characters, words, punctuated words, unpunctuated words, lines, paragraphs</a></div>
+<div class="toc-section">20.4 <a href="wi_20.html#wi-20.4">Upper and lower case letters</a></div>
+<div class="toc-section">20.5 <a href="wi_20.html#wi-20.5">Matching and exactly matching</a></div>
+<div class="toc-section">20.6 <a href="wi_20.html#wi-20.6">Regular expression matching</a></div>
+<div class="toc-section">20.7 <a href="wi_20.html#wi-20.7">Making new text with text substitutions</a></div>
+<div class="toc-section">20.8 <a href="wi_20.html#wi-20.8">Replacements</a></div>
+<div class="toc-section">20.9 <a href="wi_20.html#wi-20.9">Summary of regular expression notation</a></div>
+</header>
+<main>
+<section class="chapter" id="wi-chapter-20-advanced-text">
+<section class="section" id="wi-20.1"><div>
+
+
+
+<h3>WI §20.1. Changing texts</h3>
+<p>So far, we have dealt with text as something which comes in little packets: we have printed it out, read it in from the keyboard, and compared it with other text. But we have never tried to open the packets and get at the contents, letter by letter, or to make any alterations, or look for certain combinations of letters. These tricks are surprisingly seldom needed - a surprise, that is, given that everything Inform does is textual - but they are in fact open to us. For example:</p>
+
+<div class="code"><p class="quoted">
+if character number 1 in "[time of day]" is "1", ...
+</p></div>
+<p>will be true at, for example, 11:30 PM and 1:22 AM, but not at 3:15 PM. What happens here is that Inform expands the time of day into a text, say "11:30 PM", then extracts the first character, say "1", and tests it.</p>
+<p>Until 2012, Inform had two kinds of text - plain "text", and "indexed text" - but there's now only "text", which has all of the abilities of both.</p>
+
+
+</div></section>
+<section class="section" id="wi-20.2"><div>
+
+
+
+
+
+<h3>WI §20.2. Memory limitations</h3>
+<p>Inform creates "story files" for very small virtual computers (capable of running on phones, for instance) where memory is tight. If we create a number variable and keep on adding 1 to it, the value simply gets bigger. But if we make some text and keep on adding a letter "x" to it, the text takes up more and more space, growing into longer and longer runs of "x"s until there is no more space to hold it.</p>
+<p>The following warnings are rather like the tiny print about side-effects on medicine bottles: that is, we mostly ignore them, and if the drugs should kill us, well, at least we have the consolation of knowing we were warned. There are basically three limitations on text:</p>
+<p>(1) An amount of memory has to be set aside for text (and other flexible-sized data), and Inform guesses the amount needed. Story files using the Glulx format (see the Settings panel) are able to increase this as necessary in play, so there's no problem if the guess was wrong. But Z-machine story files are stuck with whatever amount of memory was initially chosen.</p>
+<p>That choice can be increased with a use option, like so:</p>
+
+<div class="code"><p class="quoted">
+Use dynamic memory allocation of at least 16384.
+</p></div>
+<p>Inform raises its estimate of the amount needed to ensure that this amount is always at least its own guess, and also at least any amount declared like this. (And then it rounds up to the nearest power of 2, as it happens.) The default value of "dynamic memory allocation" is 8192. In practice, this use option isn't needed much, though, because any story needing large amounts of dynamic memory will likely be on Glulx in any case.</p>
+<p>(2) Text has a maximum length. This maximum is normally 1000 characters, which ought to be plenty, but can be raised by sentences such as:</p>
+
+<div class="code"><p class="quoted">
+Use maximum text length of at least 2000.
+</p></div>
+<p>What happens if this is broken, that is, if we try to use text overrunning this length? The Z-machine may simply crash, so if there is any chance that any single text may grow unpredictably large, Glulx should always be used. On Glulx, overrunning text is truncated safely, except that under Glulx 3.1.0 or better the story file will try to use dynamic memory allocation to expand the limit as needed to avoid truncation. (Testing shows that text is slow to manipulate once it grows beyond about 20,000 characters in length, but this is not really surprising.)</p>
+<p>(3) Under the Z-machine, text may only contain characters from the so-called "ZSCII" character set - standard numbers, letters, punctuation marks and the commonest West European accented letters. Anything more exotic is likely to be flattened into a question mark "?". Under Glulx, any character can be used.</p>
+<p>All of this makes the Z-machine sound very inferior, for text purposes. But note that Z can handle all of the examples in this chapter perfectly happily.</p>
+
+
+</div></section>
+<section class="section" id="wi-20.3"><div>
+
+
+
+
+
+<h3>WI §20.3. Characters, words, punctuated words, unpunctuated words, lines, paragraphs</h3>
+<p>Inform can get at the contents of text in a variety of ways. The lowest-level is by character - a character is a letter, digit, punctuation symbol, space or other letter-form. (We use the term "character" rather than "letter" because otherwise we would have to call "5" a letter, and so on.) Characters number upwards from 1: character number 1, to repeat that, starts the text. We can get the Nth character with:</p>
+
+<div class="definition" id="defn287">
+<p class="defnprototype"><strong>character number </strong>(number)<strong> in </strong>(text)<strong> ... text</strong></p>
+
+
+
+<p>This phrase produces the Nth character from the text, counting from 1. Characters include letters, digits, punctuation symbols, spaces or other letter-forms. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+character number 8 in "numberless projects of social reform"
+</p></blockquote>
+
+<p>produces "e". If the index is less than 1 or more than the length of the text, the result is an empty text, "".</p>
+
+
+</div>
+
+<p>The maximum character number varies with the current length of the text, and can be evaluated as:</p>
+
+<div class="definition" id="defn288">
+<p class="defnprototype"><strong>number of characters in </strong>(text)<strong> ... number</strong></p>
+
+
+
+<p>This phrase produces the number of characters from the text. Characters include letters, digits, punctuation symbols, spaces or other letter-forms. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+number of characters in "War and Peace"
+<br>number of characters in ""
+</p></blockquote>
+
+<p>produce 13 and 0 respectively.</p>
+
+
+</div>
+
+<p>We can also use the adjective "empty":</p>
+
+<div class="code"><p class="quoted">
+if the description of the location is empty, ...
+</p></div>
+<p>The empty text, "", is the only one with 0 characters.</p>
+<p>We can also extract the contents by word, again numbered from 1. Thus:</p>
+
+<div class="definition" id="defn289">
+<p class="defnprototype"><strong>word number </strong>(number)<strong> in </strong>(text)<strong> ... text</strong></p>
+
+
+
+<p>This phrase produces the Nth word from the text, counting from 1. Words for this purpose are what's left after breaking the text up at punctuation or spacing (spaces, line breaks, paragraph breaks) and then removing that punctuation or spacing. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+word number 3 in "ice-hot, don't you think?"
+</p></blockquote>
+
+<p>produces "don't". If the index is less than 1 or more than the number of words in the text, the result is an empty text, "".</p>
+
+
+</div>
+
+
+<div class="definition" id="defn290">
+<p class="defnprototype"><strong>number of words in </strong>(text)<strong> ... number</strong></p>
+
+
+
+<p>This phrase produces the number of words from the text. Words for this purpose are what's left after breaking the text up at punctuation or spacing (spaces, line breaks, paragraph breaks) and then removing that punctuation or spacing. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+number of words in "ice-hot, don't you think?"
+</p></blockquote>
+
+<p>produces 5.</p>
+
+
+</div>
+
+<p>Note that the contraction apostrophe in "don't" doesn't count as punctuation. Because this is not always quite what we want, Inform offers two variations:</p>
+
+<div class="definition" id="defn291">
+<p class="defnprototype"><strong>punctuated word number </strong>(number)<strong> in </strong>(text)<strong> ... text</strong></p>
+
+
+
+<p>This phrase produces the Nth word from the text, counting from 1. Words for this purpose are what's left after breaking the text up at punctuation or spacing (spaces, line breaks, paragraph breaks) and then removing the spacing, but leaving the punctuation as independent words. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+punctuated word number 2 in "ice-hot, don't you think?"
+</p></blockquote>
+
+<p>produces "-". The punctuated words here are "ice", "-", "hot", ",", "don't", "you", "think", "?". If two or more punctuation marks are adjacent, they are counted as different words, except for runs of dashes or periods: thus ",," has two punctuated words, but "--" and "..." have only one each. If the index is less than 1 or more than the number of punctuated words in the text, the result is an empty text, "".</p>
+
+
+</div>
+
+
+<div class="definition" id="defn292">
+<p class="defnprototype"><strong>number of punctuated words in </strong>(text)<strong> ... number</strong></p>
+
+
+
+<p>This phrase produces the number of words from the text. Words for this purpose are what's left after breaking the text up at punctuation or spacing (spaces, line breaks, paragraph breaks) and then removing the spacing, but leaving the punctuation as independent words. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+number of punctuated words in "ice-hot, don't you think?"
+</p></blockquote>
+
+<p>produces 8; see if you can find them all.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn293">
+<p class="defnprototype"><strong>unpunctuated word number </strong>(number)<strong> in </strong>(text)<strong> ... text</strong></p>
+
+
+
+<p>This phrase produces the Nth word from the text, counting from 1. Words for this purpose are what's left after breaking the text up at spacing (spaces, line breaks, paragraph breaks) but including all punctuation as if it were part of the spelling of the words it joins to. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+unpunctuated word number 1 in "ice-hot, don't you think?"
+</p></blockquote>
+
+<p>produces "ice-hot,". The unpunctuated words in "ice-hot, don't you think?" are "ice-hot,", "don't", "you", "think?". If the index is less than 1 or more than the number of punctuated words in the text, the result is an empty text, "".</p>
+
+
+</div>
+
+
+<div class="definition" id="defn294">
+<p class="defnprototype"><strong>number of unpunctuated words in </strong>(text)<strong> ... number</strong></p>
+
+
+
+<p>This phrase produces the number of words from the text. Words for this purpose are what's left after breaking the text up at spacing (spaces, line breaks, paragraph breaks) but including all punctuation as if it were part of the spelling of the words it joins to. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+number of unpunctuated words in "ice-hot, don't you think?"
+</p></blockquote>
+
+<p>produces just 4.</p>
+
+
+</div>
+
+<p>Finally, on the larger scale still, we also have:</p>
+
+<div class="definition" id="defn295">
+<p class="defnprototype"><strong>line number </strong>(number)<strong> in </strong>(text)<strong> ... text</strong></p>
+
+
+
+<p>This phrase produces the Nth line from the text, counting from 1. Unless explicit use is made of line-breaking, lines and paragraphs will be the same - it doesn't refer to lines as visible on screen, because we have no way of knowing what size screen the player might have.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn296">
+<p class="defnprototype"><strong>number of lines in </strong>(text)<strong> ... number</strong></p>
+
+
+
+<p>This phrase produces the number of lines in the text. Unless explicit use is made of line-breaking, lines and paragraphs will be the same - it doesn't refer to lines as visible on screen, because we have no way of knowing what size screen the player might have. Example: the number of lines in</p>
+
+<blockquote class="code"><p class="quoted">
+"Sensational news just in![paragraph break]The Martians have invaded Miranda.[line break](One of the moons of Uranus, that is.)"
+</p></blockquote>
+
+<p>is 3.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn297">
+<p class="defnprototype"><strong>paragraph number </strong>(number)<strong> in </strong>(text)<strong> ... text</strong></p>
+
+
+
+<p>This phrase produces the Nth paragraph from the text, counting from 1.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn298">
+<p class="defnprototype"><strong>number of paragraphs in </strong>(text)<strong> ... number</strong></p>
+
+
+
+<p>This phrase produces the number of paragraphs in the text. Example: the number of paragraphs in</p>
+
+<blockquote class="code"><p class="quoted">
+"Sensational news just in![paragraph break]The Martians have invaded Miranda.[line break](One of the moons of Uranus, that is.)"
+</p></blockquote>
+
+<p>is 2.</p>
+
+
+</div>
+
+<p>(Attempting to make large enough texts to have a serious paragraph count is slightly risky if there is not much memory to play with, as on the Z-machine. But the facilities do exist.)</p>
+
+
+</div></section>
+<section class="section" id="wi-20.4"><div>
+
+
+
+
+
+<h3>WI §20.4. Upper and lower case letters</h3>
+<p>In most European languages the same letters can appear in two forms: as capitals, like "X", mainly used to mark a name or the start of a sentence; or in their ordinary less prominent form, like "x". These forms are called upper and lower case because, historically, typesetters kept lead castings of letters in two wooden cases, one above the other on the workbench. Lower case letters were in the lower box closer to hand, being more often needed.</p>
+<p>Human languages are complicated. Not every lower case letter has an upper case partner: ordinal markers in Hispanic languages don't, for instance, and the German "ß" is never used in upper case. Sometimes two different lower case letters have the same upper case form: "ς" and "σ", two versions of the Greek sigma, both capitalise to "Σ". Inform follows the international Unicode standard in coping with all this.</p>
+<p>We can test whether text is in either case like so:</p>
+
+<div class="definition" id="defn299">
+<p class="defnprototype"><strong>if </strong>(text)<strong> is in lower case:</strong></p>
+
+
+
+<p>This condition is true if every character in the text is a lower case letter. Examples: this is true for "wax", but false for "wax seal" or "eZ mOnEy".</p>
+
+
+</div>
+
+
+<div class="definition" id="defn300">
+<p class="defnprototype"><strong>if </strong>(text)<strong> is in upper case:</strong></p>
+
+
+
+<p>This condition is true if every character in the text is in upper case. Examples: this is true for "BEESWAX", but false for "ROOM 101".</p>
+
+
+</div>
+
+<p>We can change the casing of text using:</p>
+
+<div class="definition" id="defn301">
+<p class="defnprototype"><strong></strong>(text)<strong> in lower case ... text</strong></p>
+
+
+
+<p>This phrase produces a new version of the given text, but with all upper case letters reduced to lower case. Example: "a ticket to Tromsø via Østfold" becomes</p>
+
+<blockquote class="code"><p class="quoted">
+"a ticket to tromsø via østfold"
+</p></blockquote>
+
+
+
+</div>
+
+
+<div class="definition" id="defn302">
+<p class="defnprototype"><strong></strong>(text)<strong> in upper case ... text</strong></p>
+
+
+
+<p>This phrase produces a new version of the given text, but with all upper case letters reduced to lower case. Example: "a ticket to Tromsø via Østfold" becomes</p>
+
+<blockquote class="code"><p class="quoted">
+"A TICKET TO TROMSØ VIA ØSTFOLD"
+</p></blockquote>
+
+
+
+</div>
+
+
+<div class="definition" id="defn303">
+<p class="defnprototype"><strong></strong>(text)<strong> in title case ... text</strong></p>
+
+
+
+<p>This phrase produces a new version of the given text, but with casing of words changed to title casing: this capitalises the first letter of each word, and lowers the rest. Example: "a ticket to Tromsø via Østfold" becomes</p>
+
+<blockquote class="code"><p class="quoted">
+"A Ticket To Tromsø Via Østfold"
+</p></blockquote>
+
+
+
+</div>
+
+
+<div class="definition" id="defn304">
+<p class="defnprototype"><strong></strong>(text)<strong> in sentence case ... text</strong></p>
+
+
+
+<p>This phrase produces a new version of the given text, but with casing of words changed to sentence casing: this capitalises the first letter of each sentence and reduces the rest to lower case. Example: "a ticket to Tromsø via Østfold" becomes</p>
+
+<blockquote class="code"><p class="quoted">
+"A ticket to tromsø via østfold"
+</p></blockquote>
+
+
+
+</div>
+
+<p>Accents are preserved in case changes. So (if we are using Glulx and have Unicode available) title case can turn Aristophanes' discomfortingly lower-case lines</p>
+
+<div class="code"><p class="quoted">
+ἐξ οὗ γὰρ ἡμᾶς προὔδοσαν μιλήσιοι,
+<br>οὐκ εἶδον οὐδ᾽ ὄλισβον ὀκτωδάκτυλον,
+<br>ὃς ἦν ἂν ἡμῖν σκυτίνη "πικουρία
+</p></div>
+<p>by raising them proudly up like so:</p>
+
+<div class="code"><p class="quoted">
+Ἐξ Οὗ Γὰρ Ἡμᾶς Προὔδοσαν Μιλήσιοι,
+<br>Οὐκ Εἶδον Οὐδ᾽ Ὄλισβον Ὀκτωδάκτυλον,
+<br>Ὃς Ἦν Ἂν Ἡμῖν Σκυτίνη "Πικουρία.
+</p></div>
+<p>Title and sentence casing can only be approximate if done by computer. Inform looks at the letters, but is blind to the words and sentences they make up. (Note the way sentence casing did not realise "Tromsø" and "Østfold" were proper nouns.) If asked to put the name "MCKAY" into title casing, Inform will opt for "Mckay", not recognising this as the Scottish patronymic surname "McKay". Given "baym dnieper", the title of David Bergelson's great Yiddish novel of 1932, it will opt for "BAYM DNIEPER": but properly speaking Yiddish does not have upper case lettering at all, though nowadays it is sometimes printed as if it did. And conventions are very variable about which words should be capitalised in titles: English publishers mostly agree that connectives, articles and prepositions should be in lower case, but in France almost anything goes, with Académie Française rules giving way to avant-garde book design. In short, we cannot rely on Inform's title casing to produce a result which a human reader will always think perfect.</p>
+<p>This discussion has all been about how Inform prints, not about how it reads commands from the keyboard, because the latter is done case-insensitively. The virtual machines for which Inform creates programs normally flatten all command input to lower case, and in any case Understand comparison ignores casing. Thus</p>
+
+<div class="code"><p class="quoted">
+Understand "mckay" as the Highland Piper.
+</p></div>
+<p>means that "examine McKay", "examine MCKAY", "examine mckay", and so forth are all equivalent. The text of the player's command probably doesn't preserve the original casing typed in any event.</p>
+<p>One more caution, though it will affect hardly anyone. For projects using the Z-machine, only a restricted character set is available in texts: for more, we must use Glulx. A mad anomaly of ZSCII, the Z-machine character set, is that it contains the lower case letter "ÿ" but not its upper case form "Ÿ", so that</p>
+
+<div class="code"><p class="quoted">
+"ÿ" in upper case
+</p></div>
+<p>produces "Ÿ" in Glulx but "ÿ" in the Z-machine. This will come as a blow to Queensrÿche fans, but in all other respects any result on the Z-machine should agree with its counterpart on Glulx.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-412"><p class="example-p"><span class="example-short-start">412. <a href="rb_12.html#example-412" class="example-link" onClick="(function() { document.getElementById('example-412').setAttribute('open','open'); return true; })();">Capital City</a></span> <span class="example-difficulty">★</span>  <span class="example-description">To arrange that the location information normally given on the left-hand side of the status line appears in block capitals.</span> (c.f. <a href="rb_12.html#rb-12.2">RB §12.2. The Status Line</a>)</p></div>
+<div class="example-short" id="example-short-413"><p class="example-p"><span class="example-short-start">413. <a href="rb_2.html#example-413" class="example-link" onClick="(function() { document.getElementById('example-413').setAttribute('open','open'); return true; })();">Rocket Man</a></span> <span class="example-difficulty">★</span>  <span class="example-description">Using case changes on any text produced by a "to say..." phrase.</span> (c.f. <a href="rb_2.html#rb-2.1">RB §2.1. Varying What Is Written</a>)</p></div>
+</div></section>
+<section class="section" id="wi-20.5"><div>
+
+
+
+
+
+<h3>WI §20.5. Matching and exactly matching</h3>
+<p>Up to now, we have only been able to judge two texts by seeing if they are equal, but we can now ask more subtle questions.</p>
+
+<div class="definition" id="defn305">
+<p class="defnprototype"><strong>if </strong>(text)<strong> matches the text </strong>(text)<strong>:</strong></p>
+
+
+
+<p>This condition is true if the second text occurs anywhere inside the first. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+if "[score]" matches the text "3", ...
+</p></blockquote>
+
+<p>tests whether the digit 3 occurs anywhere in the score, as printed out; and</p>
+
+<blockquote class="code"><p class="quoted">
+if the printed name of the location matches the text "the", ...
+</p></blockquote>
+
+<p>tests to see whether "the" can be found anywhere in the current room's name. Note that the location "Smotheringly Hot Jungle" would pass this test - it's there if you look. On the other hand, "The Orangery" would not, because "The" does not match against "the". We can get around this in a variety of ways, one of which is to tell Inform to be insensitive to the case (upper or lower) of letters:</p>
+
+<blockquote class="code"><p class="quoted">
+if the printed name of the location matches the text "the", case insensitively: ...
+</p></blockquote>
+
+
+
+</div>
+
+
+<div class="definition" id="defn306">
+<p class="defnprototype"><strong>if </strong>(text)<strong> exactly matches the text </strong>(text)<strong>:</strong></p>
+
+
+
+<p>This condition is true if the second text matches the first, starting at the beginning and finishing at the end. This appears to be the same as testing if one is equal to the other, but that's not quite true: for example,</p>
+
+<blockquote class="code"><p class="quoted">
+if "[score]" exactly matches the text "[best score]", ...
+</p></blockquote>
+
+<p>is true if the score and best score currently print out as the same text, which will be true if they are currently equal as numbers; but</p>
+
+<blockquote class="code"><p class="quoted">
+if "[score]" is "[best score]", ...
+</p></blockquote>
+
+<p>is never true - these are different texts, even if they sometimes look the same.</p>
+
+
+</div>
+
+<p>In the next section we shall see that "matches" and "exactly matches" can do much more than the simple text matching demonstrated above.</p>
+<p>We can also see how many times something matches:</p>
+
+<div class="definition" id="defn307">
+<p class="defnprototype"><strong>number of times </strong>(text)<strong> matches the text </strong>(text)<strong> ... number</strong></p>
+
+
+
+<p>This produces the number of times the second text occurs within the first. The matches are not allowed to overlap. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+number of times "pell-mell sally" matches the text "ll" = 3
+<br>number of times "xyzzy" matches the text "Z" = 0
+<br>number of times "xyzzy" matches the text "Z", case insensitively = 2
+<br>number of times "aaaaaaaa" matches the text "aaaa" = 2
+</p></blockquote>
+
+
+
+</div>
+
+<p>There's no "number of times WHATEVER exactly matches the text FIND" phrase since this is by definition going to have to be 0 or 1.</p>
+
+
+</div></section>
+<section class="section" id="wi-20.6"><div>
+
+
+
+
+
+<h3>WI §20.6. Regular expression matching</h3>
+<p>When playing around with text, we tend to get into longer and trickier wrangles of matching - we find that we want to look not for simple text like "gold", but for "gold" used only as a separate word, or for a date in YYYY-MM-DD format, or for a seemingly endless range of other possibilities. What we need is not just for Inform to provide a highly flexible matching program, but also a good notation in which to describe what we want.</p>
+<p>Fortunately, such a notation already exists. This is the "regular expression" notation, named for a 1950s mathematical model by the logician Stephen Kleene, applied to computing in the late 60s by Ken Thompson, borrowed almost at once by the early Unix tools of the 70s, and developed further by Henry Spencer in the 80s and Philip Hazel in the 90s. The glue holding the Internet together - the Apache web-server, the scripting languages Perl and Python, and so forth - makes indispensable use of regular expressions.</p>
+<p>As might be expected from the previous section, we simply have to describe the FIND text as "regular expression" rather than "text" and then the same facilities are available:</p>
+
+<div class="definition" id="defn308">
+<p class="defnprototype"><strong>if </strong>(text)<strong> matches the regular expression </strong>(text)<strong>:</strong></p>
+
+
+
+<p>This condition is true if any contiguous part of the text can be matched against the given regular expression. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+if "taramasalata" matches the regular expression "a.*l", ...
+</p></blockquote>
+
+<p>is true, since this looks for a part of "taramasalata" which begins with "a", continues with any number of characters, and finishes with "l"; so it matches "aramasal". (Not "asal", because it gets the makes the leftmost match it can.) The option "case insensitively" causes lower and upper case letters to be treated as equivalent.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn309">
+<p class="defnprototype"><strong>if </strong>(text)<strong> exactly matches the regular expression </strong>(text)<strong>:</strong></p>
+
+
+
+<p>This condition is true if the whole text (starting from the beginning and finishing at the end) can be matched against the given regular expression. The option "case insensitively" causes lower and upper case letters to be treated as equivalent.</p>
+
+
+</div>
+
+<p>And once again:</p>
+
+<div class="definition" id="defn310">
+<p class="defnprototype"><strong>number of times </strong>(text)<strong> matches the regular expression </strong>(text)<strong> ... number</strong></p>
+
+
+
+<p>This produces the number of times that contiguous pieces of the text can be matched against the regular expression, without allowing them to overlap.</p>
+
+
+</div>
+
+<p>Since a regular expression can match quite a variety of possibilities (for instance "b\w+t" could match "boast", "boat", "bonnet" and so on), it's sometimes useful to find what the match actually was:</p>
+
+<div class="definition" id="defn311">
+<p class="defnprototype"><strong>text matching regular expression ... text</strong></p>
+
+
+
+<p>This phrase is only meaningful immediately after a successful match of a regular expression against text, and it produces the text which matched. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+if "taramasalata" matches the regular expression "m.*l":
+<br>    say "[text matching regular expression].";
+</p></blockquote>
+
+<p>says "masal."</p>
+
+
+</div>
+
+<p>Perhaps fairly, perhaps not, regular expressions have a reputation for being inscrutable. The basic idea is that although alphanumeric characters (letters, numbers and spaces) mean just what they look like, punctuation characters are commands with sometimes dramatic effects. Thus:</p>
+
+<div class="code"><p class="quoted">
+if WHATEVER matches the regular expression "fish", ...
+<br>if WHATEVER matches the regular expression "f.*h", ...
+</p></div>
+<p>behave very differently. The first is just like matching the text "fish", but the second matches on any sequence of characters starting with an "f" and ending with an "h". This is not at all obvious at first sight: reading regular expressions is a skill which must be learned, like reading a musical score. A really complex regular expression can look like a soup of punctuation and even an expert will blink for a few minutes before telling you what it does - but a beginner can pick up the basics very quickly. Newcomers might like to try out and become comfortable with the features a few at a time, reading down the following list.</p>
+<p><strong>1. Golden rule</strong>. Don't try to remember all the characters with weird effects. Instead, if you actually mean any symbol other than a letter, digit or space to be taken literally, place a backslash "\" in front of it. For instance, matching the regular expression</p>
+
+<div class="code"><p class="quoted">
+"\*A\* of the Galactic Patrol"
+</p></div>
+<p>is the same as matching the text "*A* of the Galactic Patrol", because the asterisks are robbed of their normal powers. This includes backslash itself: "\\" means a literal backslash. (Don't backslash letters or digits - that turns out to have a meaning all its own, but anyway, there is never any need.)</p>
+<p><strong>2. Alternatives</strong>. The vertical stroke "|" - not a letter I or L, nor the digit 1 - divides alternatives. Thus</p>
+
+<div class="code"><p class="quoted">
+"the fish|fowl|crawling thing"
+</p></div>
+<p>is the same as saying match "the fish", or "fowl", or "crawling thing".</p>
+<p><strong>3. Dividing with brackets</strong>. Round brackets "(" and ")" group parts of the expression together.</p>
+
+<div class="code"><p class="quoted">
+"the (fish|fowl|crawling thing) in question"
+</p></div>
+<p>is the same as saying match "the fish in question", or "the fowl in question", or "the crawling thing in question". Note that the "|" ranges outwards only as far as the group it is in.</p>
+<p><strong>4. Any character</strong>. The period "." means any single character. So</p>
+
+<div class="code"><p class="quoted">
+"a...z"
+</p></div>
+<p>matches on any sequence of five characters so long as the first is "a" and the last is "z".</p>
+<p><strong>5. Character alternatives</strong>. The angle brackets "&lt;" and "&gt;" are a more concise way of specifying alternatives for a single character. Thus</p>
+
+<div class="code"><p class="quoted">
+"b&lt;aeiou&gt;b"
+</p></div>
+<p>matches on "bab", "beb", "bib", "bob" or "bub", but not "baob" or "beeb" - any single character within the angle brackets is accepted. Beginning the range with "^" means "any single character so long as it is not one of these": thus</p>
+
+<div class="code"><p class="quoted">
+"b&lt;^aeiou&gt;b"
+</p></div>
+<p>matches on "blb" but not "bab", "beb", etc., nor on "blob" or "bb". Because long runs like this can be a little tiresome, we are also allowed to use "-" to indicate whole ranges. Thus</p>
+
+<div class="code"><p class="quoted">
+"b&lt;a-z&gt;b"
+</p></div>
+<p>matches a "b", then any lower case English letter, then another "b".</p>
+<p>In traditional regular expression language, square brackets rather than angle brackets are used for character ranges. In fact Inform does understand this notation if there are actual square brackets "[" and "]" in the pattern text, but in practice this would be tiresome to achieve, since Inform uses those to achieve text substitutions. So Inform allows "b&lt;a-z&gt;b" rather than making us type something like</p>
+
+<div class="code"><p class="quoted">
+"b[bracket]a-z[close bracket]b"
+</p></div>
+<p>to create the text "b[a-z]b".</p>
+<p><strong>6. Popular character ranges</strong>. The range "&lt;0-9&gt;", matching any decimal digit, is needed so often that it has an abbreviation: "\d". Thus</p>
+
+<div class="code"><p class="quoted">
+"\d\d\d\d-\d\d-\d\d"
+</p></div>
+<p>matches, say, "2006-12-03". Similarly, "\s" means "any spacing character" - a space, tab or line break. "\p" is a punctuation character, in the same sense used for word division in the previous section: it actually matches any of</p>
+
+<div class="code"><p class="quoted">
+. , ! ? - / " : ; ( ) [ ] { }
+</p></div>
+<p>"\w" means "any character appearing in a word", and Inform defines it as anything not matching "\s" or "\p".</p>
+<p>"\l" and "\u" match lower and upper case letters, respectively. These are much stronger than "&lt;a-z&gt;" and "&lt;A-Z&gt;", since they use the complete definition in the Unicode 4.0.0 standard, so that letter-forms from all languages are catered for: for example "δ" matches "\l" and "Δ" matches "\u".</p>
+<p>The reverse of these is achieved by capitalising the letter. So "\D" means "anything not a digit", "\P" means "anything not punctuation", "\W" means "anything not a word character", "\L" means "anything not a lower case letter" and so on.</p>
+<p><strong>7. Positional restrictions</strong>. The notation "^" does not match anything, as such, but instead requires that we be positioned at the start of the text. Thus</p>
+
+<div class="code"><p class="quoted">
+"^fish"
+</p></div>
+<p>matches only "fish" at the start of the text, not occurring anywhere later on. Similarly, "$" requires that the position be the end of the text. So</p>
+
+<div class="code"><p class="quoted">
+"fish$"
+</p></div>
+<p>matches only if the last four characters are "fish". Matching "^fish$" is the same thing as what Inform calls exactly matching "fish".</p>
+<p>Another useful notation is "\b", which matches a word boundary: that is, it matches no actual text, but requires the position to be a junction between a word character and a non-word character (a "\w" and a "\W") or vice versa. Thus</p>
+
+<div class="code"><p class="quoted">
+"\bfish\b"
+</p></div>
+<p>matches "fish" in "some fish" and also "some fish, please!", but not in "shellfish". (The regular expression "\w*fish\b" catches all words ending in "fish", as we will see below.) As usual, the capitalised version "\B" negates this, and means "not at a word boundary".</p>
+<p><strong>8. Line break and tab</strong>. The notations "\n" and "\t" are used for a line break ("n" for "new line") and tab, respectively. Tabs normally do not occur in Inform strings, but can do when reading from files. It makes no sense to reverse these, so "\N" and "\T" produce errors.</p>
+<p><strong>9. Repetition</strong>. Placing a number in braces "{" and "}" after something says that it should be repeated that many times. Thus</p>
+
+<div class="code"><p class="quoted">
+"ax{25}"
+</p></div>
+<p>matches only on "axxxxxxxxxxxxxxxxxxxxxxxxx". More usefully, perhaps, we can specify a range of the number of repetitions:</p>
+
+<div class="code"><p class="quoted">
+"ax{2,6}"
+</p></div>
+<p>matches only on "axx", "axxx", "axxxx", "axxxxx", "axxxxxx". And we can leave the top end open: "ax{2,}" means "a" followed by at least two "x"s.</p>
+<p>Note that the braces attach only to most recent thing - so "ax{2}" means "a" followed by two of "x" - but, as always, we can use grouping brackets to change that. So "(ax){2,}" matches "axax", "axaxax", "axaxaxax",...</p>
+<p>(It's probably best not to use Inform to try to match the human genome against "&lt;acgt&gt;{3000000000}", but one of the most important practical uses of regular expression matching in science is in treating DNA as a string of nucleotides represented by the letters "a", "c", "g", "t", and looking for patterns.)</p>
+<p><strong>10. Popular repetitions.</strong> Three cases are so often needed that they have standard short forms:</p>
+<p>"{0,1}", which means 0 or 1 repetition of something - in other words, doesn't so much repeat it as make it optional - is written "?". Thus "ax?y" matches only on "ay" or "axy".</p>
+<p>"{0,}", which means 0 or more repetitions - in other words, any number at all - is written "*". Thus "ax*y" matches on "ay", "axy", "axxy", "axxxy", ... and the omnivorous ".*" - which means "anything, any number of times" - matches absolutely every text. (Perhaps unexpectedly, replacing ".*" in a text with "X" will produce "XX", not "X", because the ".*" first matches the text, then matches the empty gap at the end. To match the entire text just once, try "^.*$".)</p>
+<p>"{1,}", which means 1 or more repetitions, is written "+". So "\d+" matches any run of digits, for instance.</p>
+<p><strong>11. Greedy vs lazy.</strong> Once we allow things to repeat an unknown number of times, we run into an ambiguity. Sure, "\d+" matches the text "16339b". But does it look only as far as the "1", then reason that it now has one or more digits in a row, and stop? Or does it run onward devouring digits until it can do so no longer, so matching the "16339" part? These two strategies are called "lazy" and "greedy" respectively.</p>
+<p>Do we care? Well, the strategy used makes no difference to whether there is a match, but it does affect what part of the text is matched, and the number of matches there are. Unless we mark for it, all repetitions are greedy. Usually this is good, but it means that, for instance,</p>
+
+<div class="code"><p class="quoted">
+"-.+-"
+</p></div>
+<p>applied to "-alpha- -beta- -gamma-" will match the whole text, because ".+" picks up all of "alpha- -beta- -gamma". To get around this, we can mark any of the repetition operators as lazy by adding a question mark "?". Thus:</p>
+
+<div class="code"><p class="quoted">
+"-.+?-"
+</p></div>
+<p>applied to "-alpha- -beta- -gamma-" matches three times, producing "-alpha-" then "-beta-" then "-gamma-".</p>
+<p>A logical but sometimes confusing consequence is that a doubled question mark "??" means "repeat 0 or 1 times, but prefer 0 matches to 1 if both are possibilities": whereas a single question mark "?", being greedy, means "repeat 0 or 1 times, but prefer 1 match to 0 if both are possibilities".</p>
+<p><strong>12. Numbered groups.</strong> We have already seen that round brackets are useful to clump together parts of the regular expression - to choose within them, or repeat them. In fact, Inform numbers these from 1 upwards as they are used from left to right, and we can subsequently refer back to their contents with the notation "\1", "\2", ... After a successful match, we can find the results of these subexpressions with:</p>
+
+<div class="definition" id="defn312">
+<p class="defnprototype"><strong>text matching subexpression </strong>(number)<strong> ... text</strong></p>
+
+
+
+<p>This phrase is only meaningful immediately after a successful match of a regular expression against text, and it produces the text which matched. The number must be from 1 to 9, and must correspond to one of the bracketed groups in the expression just matched. Example: after</p>
+
+<blockquote class="code"><p class="quoted">
+if "taramasalata" matches the regular expression "a(r.*l)a(.)":
+</p></blockquote>
+
+<p>the "text matching regular expression" is "aramasalat", the "text matching subexpression 1" is "ramasal", and "text matching subexpression 2" is "t".</p>
+
+
+</div>
+
+<p>For instance:</p>
+
+<div class="code"><p class="quoted">
+"(\w)\w*\1"
+</p></div>
+<p>matches any run of two or more word-characters, subject to the restriction that the last one has to be the same as the first - so it matches "xerox" but not "alphabet". When Inform matches this against "xerox", first it matches the initial "x" against the group "(\w)". It then matches "\w*" ("any number of word-characters") against "ero", so that the "*" runs up to 3 repetitions. It then matches "\1" against the final "x", because "\1" requires it to match against whatever last matched in sub-expression 1 - which was an "x".</p>
+<p>Numbered groups allow wicked tricks in matching, it's true, but really come into their own when it comes to replacing - as we shall see.</p>
+<p><strong>13. Switching case sensitivity on and off.</strong> The special notations "(?i)" and "(?-i)" switch sensitivity to upper vs. lower case off and on, mid-expression. Thus "a(?i)bcd(?-i)e" matches "abcde", "aBcDe", etc., but not "Abcde" or "abcdE".</p>
+<p><strong>14. Groups with special meanings.</strong> This is the last of the special syntaxes: but it's a doozy. A round-bracketed group can be marked to behave in a special way by following the open bracket by a symbol with a special meaning. Groups like this have no number and are not counted as part of \1, \2, and so forth - they are intended not to gather up material but to have some effect of their own.</p>
+
+<div class="code"><p class="quoted">
+"(# ...)"
+</p></div>
+<p>Is a comment, that is, causes the group to do nothing and match against anything.</p>
+
+<div class="code"><p class="quoted">
+"(?= ...)"
+</p></div>
+<p>Is a lookahead: it is a form of positional requirement, like "\b" or "^", but one which requires that the text ahead of us matches whatever is in the brackets. (It doesn't consume that text - only checks to see that it's there.) For instance "\w+(?=;)" matches a word followed by a semicolon, but does not match the semicolon itself.</p>
+
+<div class="code"><p class="quoted">
+"(?! ...)"
+</p></div>
+<p>Is the same but negated: it requires that the text ahead of us does not match the material given. For instance, "a+(?!z)" matches any run of "a"s not followed by a "z".</p>
+
+<div class="code"><p class="quoted">
+"(?&lt;= ...)" and "(?&lt;! ...)"
+</p></div>
+<p>Are the same but looking behind (hence the "&lt;"), not forward. These are restricted to cases where Inform can determine that the material to be matched has a definite known width. For instance, "(?&lt;!shell)fish" matches any "fish" not occurring in "shellfish".</p>
+
+<div class="code"><p class="quoted">
+"(&gt; ...)"
+</p></div>
+<p>Is a possessive, that is, causes the material to be matched and, once matched, never lets go. No matter what subsequently turns out to be convenient, it will never change its match. For instance, "\d+8" matches against "768" because Inform realises that "\d+" cannot be allowed to eat the "8" if there is to be a match, and stops it. But "(&gt;\d+)8" does not match against "768" because now the "\d+", which initially eats "768", is possessive and refuses to give up the "8" once taken.</p>
+
+<div class="code"><p class="quoted">
+"(?(1)...)" and "(?(1)...|...)"
+</p></div>
+<p>Are conditionals. These require us to match the material given if \1 has successfully matched already; in the second version, the material after the "|" must be matched if \1 has not successfully matched yet. And the same for 2, 3, ..., 9, of course.</p>
+<p>Finally, conditionals can also use lookaheads or lookbehinds as their conditions. So for instance:</p>
+
+<div class="code"><p class="quoted">
+"(?(?=\d)\d\d\d\d|AY-\d\d\d\d)"
+</p></div>
+<p>means if you start with a digit, match four digits; otherwise match "AY-" followed by four digits. There are easier ways to do this, of course, but the really juicy uses of conditionals are only borderline legible and make poor examples - perhaps this is telling us something.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-414"><p class="example-p"><span class="example-short-start">414. <a href="rb_13.html#example-414" class="example-link" onClick="(function() { document.getElementById('example-414').setAttribute('open','open'); return true; })();">Alpha</a></span> <span class="example-difficulty">★</span>  <span class="example-description">Creating a beta-testing command that matches any line starting with punctuation.</span> (c.f. <a href="rb_13.html#rb-13.1">RB §13.1. Testing</a>)</p></div>
+<div class="example-short" id="example-short-415"><p class="example-p"><span class="example-short-start">415. <a href="rb_1.html#example-415" class="example-link" onClick="(function() { document.getElementById('example-415').setAttribute('open','open'); return true; })();">About Inform's regular expression support</a></span> <span class="example-difficulty">★</span>  <span class="example-description">Some footnotes on Inform's regular expressions, and how they compare to those of other programming languages.</span> (c.f. <a href="rb_1.html#rb-1.4">RB §1.4. Information Only</a>)</p></div>
+</div></section>
+<section class="section" id="wi-20.7"><div>
+
+
+
+
+
+<h3>WI §20.7. Making new text with text substitutions</h3>
+<p>Substitutions are most often used just for printing, like so:</p>
+
+<div class="code"><p class="quoted">
+say "The clock reads [time of day].";
+</p></div>
+<p>But they can also produce text which can be stored up or used in other ways. For example, defining</p>
+
+<div class="code"><p class="quoted">
+To decide what text is (T - text) doubled:
+<br>    decide on "[T][T]".
+</p></div>
+<p>makes</p>
+
+<div class="code"><p class="quoted">
+let the Gerard Kenny reference be "NewYork" doubled;
+</p></div>
+<p>set this temporary variable to "NewYorkNewYork".</p>
+<p>There is, however, a subtlety here. A text with a substitution in it, like:</p>
+
+<div class="code"><p class="quoted">
+"The clock reads [time of day]."
+</p></div>
+<p>is always waiting to be substituted, that is, to become something like:</p>
+
+<div class="code"><p class="quoted">
+"The clock reads 11:12 AM."
+</p></div>
+<p>If all we do with text is to print it, there's nothing to worry about. But if we're storing it up, especially for multiple turns, there are ambiguities. For example, suppose we're changing the look of the black status line bar at the top of the text window:</p>
+
+<div class="code"><p class="quoted">
+now the left hand status line is "[time of day]";
+</p></div>
+<p>Just copying "[time of day]" to the "left hand status line" variable doesn't make it substitute - which is just as well, or the top of the screen would perpetually show "9:00 AM".</p>
+<p>On the other hand, looking back at the phrase example:</p>
+
+<div class="code"><p class="quoted">
+To decide what text is (T - text) doubled:
+<br>    decide on "[T][T]".
+</p></div>
+<p>"[T][T]" is substituted immediately it's formed. That's also a good thing, because "T" loses its meaning the moment the phrase finishes, which would make "[T][T]" meaningless anywhere else.</p>
+<p>What's going on here is this: Inform substitutes text immediately if it contains references to a temporary value such as "T", and otherwise only if it needs to access the contents. This is why "[time of day]" isn't substituted until we need to print it out (or, say, access the third character): "time of day" is a value which always exists, not a temporary one.</p>
+<p>Using the adjectives "substituted" and "unsubstituted", it's always possible to test whether a given text is in either state, should this ever be useful. For example,</p>
+
+<div class="code"><p class="quoted">
+now the left hand status line is "[time of day]";
+<br>if the left hand status line is unsubstituted, say "Yes!";
+</p></div>
+<p>will say "Yes!": the LHSL is like a bomb waiting to go off. Speaking of which:</p>
+
+<div class="code">
+<p class="quoted">
+The player is holding a temporal bomb.
+</p>
+<p class="quoted">
+When play begins:
+<br>    now the left hand status line is "Clock reads: [time of day]".
+</p>
+<p class="quoted">
+After dropping the temporal bomb:
+<br>    now the left hand status line is the substituted form of the left hand status line;
+<br>    say "Time itself is now broken. Well done."
+</p>
+</div>
+<p>This is making use of:</p>
+
+<div class="definition" id="defn313">
+<p class="defnprototype"><strong>substituted form of </strong>(text)<strong> ... text</strong></p>
+
+
+
+<p>This takes a text and makes substitution occur immediately. For example,</p>
+
+<blockquote class="code"><p class="quoted">
+substituted form of "time of death, [time of day]"
+</p></blockquote>
+
+<p>produces something like "time of death, 9:15 AM" rather than "time of death, [time of day]". It's entirely legal to apply this to text which never had any substitutions in, so</p>
+
+<blockquote class="code"><p class="quoted">
+substituted form of "balloon"
+</p></blockquote>
+
+<p>produces "balloon".</p>
+
+
+</div>
+
+<p>Note that there's no analogous phrase for "unsubstituted form of...", because once text has substituted, there's no way to go back.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-416"><p class="example-p"><span class="example-short-start">416. <a href="rb_9.html#example-416" class="example-link" onClick="(function() { document.getElementById('example-416').setAttribute('open','open'); return true; })();">Mirror, Mirror</a></span> <span class="example-difficulty">★</span>  <span class="example-description">The sorcerer's mirror can, when held up high, form an impression of its surroundings which it then preserves.</span> (c.f. <a href="rb_9.html#rb-9.12">RB §9.12. Cameras and Recording Devices</a>)</p></div>
+<div class="example-short" id="example-short-417"><p class="example-p"><span class="example-short-start">417. <a href="rb_5.html#example-417" class="example-link" onClick="(function() { document.getElementById('example-417').setAttribute('open','open'); return true; })();">Identity Theft</a></span> <span class="example-difficulty">★</span>  <span class="example-description">Allowing the player to enter a name to be used for the player character during the game.</span> (c.f. <a href="rb_5.html#rb-5.2">RB §5.2. Traits Determined By the Player</a>)</p></div>
+<div class="example-short" id="example-short-418"><p class="example-p"><span class="example-short-start">418. <a href="rb_10.html#example-418" class="example-link" onClick="(function() { document.getElementById('example-418').setAttribute('open','open'); return true; })();">The Cow Exonerated</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">Creating a class of matches that burn for a time and then go out, with elegant reporting when several matches go out at once.</span> (c.f. <a href="rb_10.html#rb-10.8">RB §10.8. Fire</a>)</p></div>
+</div></section>
+<section class="section" id="wi-20.8"><div>
+
+
+
+
+
+<h3>WI §20.8. Replacements</h3>
+<p>Suppose V is a text which varies - perhaps a property of something, or a variable defined everywhere, or a temporary "let"-named value. How do we change its contents? The easiest way is simply to assign text to it. Thus:</p>
+
+<div class="code"><p class="quoted">
+let V be "It is now [the time of the day in words]."
+</p></div>
+<p>And, for instance,</p>
+
+<div class="code"><p class="quoted">
+let V be "[V]!"
+</p></div>
+<p>adds an exclamation mark at the end of V.</p>
+<p>Otherwise, it is more useful (also a little faster) to modify V by changing its characters, words and so on. Thus:</p>
+
+<div class="definition" id="defn314">
+<p class="defnprototype"><strong>replace character number </strong>(number)<strong> in </strong>(text)<strong> with </strong>(text)<strong></strong></p>
+
+
+
+<p>This phrase acts on the named text by placing the given text in place of the Nth character, counting from 1. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+let V be "mope";
+<br>replace character number 3 in V with "lecul";
+<br>say V;
+</p></blockquote>
+
+<p>says "molecule".</p>
+
+
+</div>
+
+
+<div class="definition" id="defn315">
+<p class="defnprototype"><strong>replace word number </strong>(number)<strong> in </strong>(text)<strong> with </strong>(text)<strong></strong></p>
+
+
+
+<p>This phrase acts on the named text by placing the given text in place of the Nth word, counting from 1, and dividing words at spacing or punctuation. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+let V be "Does the well run dry?";
+<br>replace word number 3 in V with "jogger";
+<br>say V;
+</p></blockquote>
+
+<p>says "Does the jogger run dry?".</p>
+
+
+</div>
+
+
+<div class="definition" id="defn316">
+<p class="defnprototype"><strong>replace punctuated word number </strong>(number)<strong> in </strong>(text)<strong> with </strong>(text)<strong></strong></p>
+
+
+
+<p>This phrase acts on the named text by placing the given text in place of the Nth word, counting from 1, and dividing words at spacing, counting punctuation runs as words in their own right. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+let V be "Frankly, yes, I agree.";
+<br>replace punctuated word number 2 in V with ":";
+<br>say V;
+</p></blockquote>
+
+<p>says "Frankly: yes, I agree.".</p>
+
+
+</div>
+
+
+<div class="definition" id="defn317">
+<p class="defnprototype"><strong>replace unpunctuated word number </strong>(number)<strong> in </strong>(text)<strong> with </strong>(text)<strong></strong></p>
+
+
+
+<p>This phrase acts on the named text by placing the given text in place of the Nth word, counting from 1, and dividing words at spacing, counting punctuation as part of a word just as if it were lettering. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+let V be "Frankly, yes, I agree.";
+<br>replace unpunctuated word number 2 in V with "of course";
+<br>say V;
+</p></blockquote>
+
+<p>says "Frankly, of course I agree.".</p>
+
+
+</div>
+
+
+<div class="definition" id="defn318">
+<p class="defnprototype"><strong>replace line number </strong>(number)<strong> in </strong>(text)<strong> with </strong>(text)<strong></strong></p>
+
+
+
+<p>This phrase acts on the named text by placing the given text in place of the Nth line, counting from 1. Lines are divided by paragraph or line breaks.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn319">
+<p class="defnprototype"><strong>replace paragraph number </strong>(number)<strong> in </strong>(text)<strong> with </strong>(text)<strong></strong></p>
+
+
+
+<p>This phrase acts on the named text by placing the given text in place of the Nth paragraph, counting from 1.</p>
+
+
+</div>
+
+<p>Last, but not least, we can replace text wherever it occurs:</p>
+
+<div class="definition" id="defn320">
+<p class="defnprototype"><strong>replace the text </strong>(text)<strong> in </strong>(text)<strong> with </strong>(text)<strong></strong></p>
+
+
+
+<p>This phrase acts on the named text by searching and replacing, as many non-overlapping times as possible. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+replace the text "a" in V with "z"
+</p></blockquote>
+
+<p>changes every lower-case "a" to "z": the same thing done with the "case insensitively" option would change each "a" or "A" to "z".</p>
+
+
+</div>
+
+<p>All very well for letters, but it can be unfortunate to try</p>
+
+<div class="code"><p class="quoted">
+replace the text "Bob" in V with "Robert"
+</p></div>
+<p>if V happens to contain, say "The Olympic Bobsleigh Team": it would become "The Olympic Robertsleigh Team". What we want, of course, is for Bob to become Robert only when it's a whole word. We can get that with:</p>
+
+<div class="definition" id="defn321">
+<p class="defnprototype"><strong>replace the word </strong>(text)<strong> in </strong>(text)<strong> with </strong>(text)<strong></strong></p>
+
+
+
+<p>This phrase acts on the named text by searching and replacing, as many non-overlapping times as possible, where the search text must occur as a whole word. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+replace the word "Bob" in V with "Robert"
+</p></blockquote>
+
+<p>changes "Bob got on the Bobsleigh" to "Robert got on the Bobsleigh".</p>
+
+
+</div>
+
+
+<div class="definition" id="defn322">
+<p class="defnprototype"><strong>replace the punctuated word </strong>(text)<strong> in </strong>(text)<strong> with </strong>(text)<strong></strong></p>
+
+
+
+<p>This phrase acts on the named text by searching and replacing, as many non-overlapping times as possible, where the search text must occur as a whole word or run of punctuation.</p>
+
+
+</div>
+
+<p>But these are all just special cases of the grand-daddy of all replacement phrases:</p>
+
+<div class="definition" id="defn323">
+<p class="defnprototype"><strong>replace the regular expression </strong>(text)<strong> in </strong>(text)<strong> with </strong>(text)<strong></strong></p>
+
+
+
+<p>This phrase acts on the named text by matching the regular expression and replacing anything which fits it, as many non-overlapping times as possible. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+replace the regular expression "\d+" in V with "..."
+</p></blockquote>
+
+<p>changes "The Battle of Waterloo, 1815, rivalled Trafalgar, 1805" to "The Battle of Waterloo, ..., rivalled Trafalgar, ...". The "case insensitively" causes lower and upper case letters to be treated as if the same letter.</p>
+<p>When replacing a regular expression, the replacement text also has a few special meanings (though, thankfully, many fewer than for the expression itself). Once again "\n" and "\t" can be used for line break and tab characters, and "\\" must be used for an actual backslash. But, very usefully, "\1" to "\9" expand as the contents of groups numbered 1 to 9, and "\0" to the exact text matched. So:</p>
+
+<blockquote class="code"><p class="quoted">
+replace the regular expression "\d+" in V with "roughly \0"
+</p></blockquote>
+
+<p>adds the word "roughly" in front of any run of digits in V, because \0 becomes in turn whichever run of digits matched. And</p>
+
+<blockquote class="code"><p class="quoted">
+replace the regular expression "(\w+) (.*)" in V with "\2, \1"
+</p></blockquote>
+
+<p>performs the transformation "Frank Booth" to "Booth, Frank".</p>
+<p>Finally, prefixing the number by "l" or "u" forces the text it represents into lower or upper case, respectively. For instance:</p>
+
+<blockquote class="code"><p class="quoted">
+replace the regular expression "\b(\w)(\w*)" in X with "\u1\l2";
+</p></blockquote>
+
+<p>changes the casing of X to "title casing", where each individual word is capitalised. (This is a little slow on large texts, since so many matches and replacements are made: it's more efficient to use the official phrases for changing case.)</p>
+
+
+</div>
+
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-419"><p class="example-p"><span class="example-short-start">419. <a href="rb_2.html#example-419" class="example-link" onClick="(function() { document.getElementById('example-419').setAttribute('open','open'); return true; })();">Igpay Atinlay</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A pig Latin filter for the player's commands.</span> (c.f. <a href="rb_2.html#rb-2.3">RB §2.3. Using the Player's Input</a>)</p></div>
+<div class="example-short" id="example-short-420"><p class="example-p"><span class="example-short-start">420. <a href="rb_8.html#example-420" class="example-link" onClick="(function() { document.getElementById('example-420').setAttribute('open','open'); return true; })();">Fido</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A dog the player can name and un-name at will.</span> (c.f. <a href="rb_8.html#rb-8.3">RB §8.3. Animals</a>)</p></div>
+<div class="example-short" id="example-short-421"><p class="example-p"><span class="example-short-start">421. <a href="rb_2.html#example-421" class="example-link" onClick="(function() { document.getElementById('example-421').setAttribute('open','open'); return true; })();">Blackout</a></span> <span class="example-difficulty">★</span>  <span class="example-description">Filtering the names of rooms printed while in darkness.</span> (c.f. <a href="rb_2.html#rb-2.1">RB §2.1. Varying What Is Written</a>)</p></div>
+<div class="example-short" id="example-short-422"><p class="example-p"><span class="example-short-start">422. <a href="rb_7.html#example-422" class="example-link" onClick="(function() { document.getElementById('example-422').setAttribute('open','open'); return true; })();">Northstar</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">Making Inform understand ASK JOSH TO TAKE INVENTORY as JOSH, TAKE INVENTORY. This requires us to use a regular expression on the player's command, replacing some of the content.</span> (c.f. <a href="rb_7.html#rb-7.14">RB §7.14. Obedient Characters</a>)</p></div>
+<div class="example-short" id="example-short-423"><p class="example-p"><span class="example-short-start">423. <a href="rb_2.html#example-423" class="example-link" onClick="(function() { document.getElementById('example-423').setAttribute('open','open'); return true; })();">Mr. Burns' Repast</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">Letting the player guess types for an unidentifiable fish.</span> (c.f. <a href="rb_2.html#rb-2.3">RB §2.3. Using the Player's Input</a>)</p></div>
+<div class="example-short" id="example-short-424"><p class="example-p"><span class="example-short-start">424. <a href="rb_6.html#example-424" class="example-link" onClick="(function() { document.getElementById('example-424').setAttribute('open','open'); return true; })();">Cave-troll</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">Determining that the command the player typed is invalid, editing it, and re-examining it to see whether it now reads correctly.</span> (c.f. <a href="rb_6.html#rb-6.17">RB §6.17. Clarification and Correction</a>)</p></div>
+</div></section>
+<section class="section" id="wi-20.9"><div>
+
+
+
+
+
+<h3>WI §20.9. Summary of regular expression notation</h3>
+<p><strong>MATCHING</strong></p>
+<p>Positional restrictions</p>
+
+<div class="code"><table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">^</p></td>
+<td class="quotedtablecell"><p class="quoted">Matches (accepting no text) only at the start of the text</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">$</p></td>
+<td class="quotedtablecell"><p class="quoted">Matches (accepting no text) only at the end of the text</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">\b</p></td>
+<td class="quotedtablecell"><p class="quoted">Word boundary: matches at either end of text or between a \w and a \W</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">\B</p></td>
+<td class="quotedtablecell"><p class="quoted">Matches anywhere where \b does not match</p></td>
+</tr>
+</table></div>
+<p>Backslashed character classes</p>
+
+<div class="code">
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">\char</p></td>
+<td class="quotedtablecell"><p class="quoted">If char is other than a-z, A-Z, 0-9 or space, matches that literal char</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">\\</p></td>
+<td class="quotedtablecell"><p class="quoted">For example, this matches literal backslash "\"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">\n</p></td>
+<td class="quotedtablecell"><p class="quoted">Matches literal line break character</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">\t</p></td>
+<td class="quotedtablecell"><p class="quoted">Matches literal tab character (but use this only with external files)</p></td>
+</tr>
+</table>
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">\d</p></td>
+<td class="quotedtablecell"><p class="quoted">Matches any single digit</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">\l</p></td>
+<td class="quotedtablecell"><p class="quoted">Matches any lower case letter (by Unicode 4.0.0 definition)</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">\p</p></td>
+<td class="quotedtablecell"><p class="quoted">Matches any single punctuation mark: . , ! ? - / " : ; ( ) [ ] { }</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">\s</p></td>
+<td class="quotedtablecell"><p class="quoted">Matches any single spacing character (space, line break, tab)</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">\u</p></td>
+<td class="quotedtablecell"><p class="quoted">Matches any upper case letter (by Unicode 4.0.0 definition)</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">\w</p></td>
+<td class="quotedtablecell"><p class="quoted">Matches any single word character (neither \p nor \s)</p></td>
+</tr>
+</table>
+<table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">\D</p></td>
+<td class="quotedtablecell"><p class="quoted">Matches any single non-digit</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">\L</p></td>
+<td class="quotedtablecell"><p class="quoted">Matches any non-lower-case-letter</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">\P</p></td>
+<td class="quotedtablecell"><p class="quoted">Matches any single non-punctuation-mark</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">\S</p></td>
+<td class="quotedtablecell"><p class="quoted">Matches any single non-spacing-character</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">\U</p></td>
+<td class="quotedtablecell"><p class="quoted">Matches any non-upper-case-letter</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">\W</p></td>
+<td class="quotedtablecell"><p class="quoted">Matches any single non-word-character (i.e., matches either \p or \s)</p></td>
+</tr>
+</table>
+</div>
+<p>Other character classes</p>
+
+<div class="code"><table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">.</p></td>
+<td class="quotedtablecell"><p class="quoted">Matches any single character</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">&lt;...&gt;</p></td>
+<td class="quotedtablecell"><p class="quoted">Character range: matches any single character inside</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">&lt;^...&gt;</p></td>
+<td class="quotedtablecell"><p class="quoted">Negated character range: matches any single character not inside</p></td>
+</tr>
+</table></div>
+<p>Inside a character range</p>
+
+<div class="code"><table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">e-h</p></td>
+<td class="quotedtablecell"><p class="quoted">Any character in the run "e" to "h" inclusive (and so on for other runs)</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">&gt;...</p></td>
+<td class="quotedtablecell"><p class="quoted">Starting with "&gt;" means that a literal close angle bracket is included</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">\</p></td>
+<td class="quotedtablecell"><p class="quoted">Backslash has the same meaning as for backslashed character classes: see above</p></td>
+</tr>
+</table></div>
+<p>Structural</p>
+
+<div class="code"><table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">|</p></td>
+<td class="quotedtablecell"><p class="quoted">Divides alternatives: "fish|fowl" matches either</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">(?i)</p></td>
+<td class="quotedtablecell"><p class="quoted">Always matches: switches to case-insensitive matching from here on</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">(?-i)</p></td>
+<td class="quotedtablecell"><p class="quoted">Always matches: switches to case-sensitive matching from here on</p></td>
+</tr>
+</table></div>
+<p>Repetitions</p>
+
+<div class="code"><table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">...?</p></td>
+<td class="quotedtablecell"><p class="quoted">Matches "..." either 0 or 1 times, i.e., makes "..." optional</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">...*</p></td>
+<td class="quotedtablecell"><p class="quoted">Matches "..." 0 or more times: e.g. "\s*" matches an optional run of space</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">...+</p></td>
+<td class="quotedtablecell"><p class="quoted">Matches "..." 1 or more times: e.g. "x+" matches any run of "x"s</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">...{6}</p></td>
+<td class="quotedtablecell"><p class="quoted">Matches "..." exactly 6 times (similarly for other numbers, of course)</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">...{2,5}</p></td>
+<td class="quotedtablecell"><p class="quoted">Matches "..." between 2 and 5 times</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">...{3,}</p></td>
+<td class="quotedtablecell"><p class="quoted">Matches "..." 3 or more times</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">....?</p></td>
+<td class="quotedtablecell"><p class="quoted">"?" after any repetition makes it "lazy", matching as few repeats as it can</p></td>
+</tr>
+</table></div>
+<p>Numbered subexpressions</p>
+
+<div class="code"><table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">(...)</p></td>
+<td class="quotedtablecell"><p class="quoted">Groups part of the expression together: matches if the interior matches</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">\1</p></td>
+<td class="quotedtablecell"><p class="quoted">Matches the contents of the 1st subexpression reading left to right</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">\2</p></td>
+<td class="quotedtablecell"><p class="quoted">Matches the contents of the 2nd, and so on up to "\9" (but no further)</p></td>
+</tr>
+</table></div>
+<p>Unnumbered subexpressions</p>
+
+<div class="code"><table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">(# ...)</p></td>
+<td class="quotedtablecell"><p class="quoted">Comment: always matches, and the contents are ignored</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">(?= ...)</p></td>
+<td class="quotedtablecell"><p class="quoted">Lookahead: matches if the text ahead matches "...", but doesn't consume it</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">(?! ...)</p></td>
+<td class="quotedtablecell"><p class="quoted">Negated lookahead: matches if lookahead fails</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">(?&lt;= ...)</p></td>
+<td class="quotedtablecell"><p class="quoted">Lookbehind: matches if the text behind matches "...", but doesn't consume it</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">(?&lt;! ...)</p></td>
+<td class="quotedtablecell"><p class="quoted">Negated lookbehind: matches if lookbehind fails</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">(&gt; ...)</p></td>
+<td class="quotedtablecell"><p class="quoted">Possessive: tries to match "..." and if it succeeds, never backtracks on this</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">(?(1)...)</p></td>
+<td class="quotedtablecell"><p class="quoted">Conditional: if \1 has matched by now, require that "..." be matched</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">(?(1)...|...)</p></td>
+<td class="quotedtablecell"><p class="quoted">Conditional: ditto, but if \1 has not matched, require the second part</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">(?(?=...)...|...)</p></td>
+<td class="quotedtablecell"><p class="quoted">Conditional with lookahead as its condition for which to match</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">(?(?&lt;=...)...|...)</p></td>
+<td class="quotedtablecell"><p class="quoted">Conditional with lookbehind as its condition for which to match</p></td>
+</tr>
+</table></div>
+<p><strong>IN REPLACEMENT TEXT</strong></p>
+
+<div class="code"><table class="codetable">
+<tr>
+<td class="quotedtablecell"><p class="quoted">\char</p></td>
+<td class="quotedtablecell"><p class="quoted">If char is other than a-z, A-Z, 0-9 or space, expands to that literal char</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">\\</p></td>
+<td class="quotedtablecell"><p class="quoted">In particular, "\\" expands to a literal backslash "\"</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">\n</p></td>
+<td class="quotedtablecell"><p class="quoted">Expands to a line break character</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">\t</p></td>
+<td class="quotedtablecell"><p class="quoted">Expands to a tab character (but use this only with external files)</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">\0</p></td>
+<td class="quotedtablecell"><p class="quoted">Expands to the full text matched</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">\1</p></td>
+<td class="quotedtablecell"><p class="quoted">Expands to whatever the 1st bracketed subexpression matched</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">\2</p></td>
+<td class="quotedtablecell"><p class="quoted">Expands to whatever the 2nd matched, and so on up to "\9" (but no further)</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">\l0</p></td>
+<td class="quotedtablecell"><p class="quoted">Expands to \0 converted to lower case (and so on for "\l1" to "\l9")</p></td>
+</tr>
+<tr>
+<td class="quotedtablecell"><p class="quoted">\u0</p></td>
+<td class="quotedtablecell"><p class="quoted">Expands to \0 converted to upper case (and so on for "\u1" to "\u9")</p></td>
+</tr>
+</table></div>
+</div></section>
+</section>
+
+<footer>
+<div class="linkback"><a href="http://inform7.com/book/WI_20_1.html">WI Chapter 20 on inform7.com</a></div>
+<div class="doc-navbar">
+<div>
+<div class="doc-navbar-left"><a class="nav-left" href="wi_19.html#wi-chapter-19-rulebooks">19. Rulebooks</a></div>
+<div class="doc-navbar-right"><a class="nav-right" href="wi_21.html#wi-chapter-21-lists">21. Lists</a></div>
+</div>
+<div>
+<div class="doc-navbar-left"><a href="index.html">Table of Contents</a></div>
+<div class="doc-navbar-right"><a href="index.html#general-index">General Index</a></div>
+</div>
+</div>
+
+</footer>
+</main></body></html>
+

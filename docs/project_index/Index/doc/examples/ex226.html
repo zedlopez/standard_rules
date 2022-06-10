@@ -1,0 +1,286 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../style.css">
+<script>function toggle_details() {
+   var openness, toggle_link;
+   toggle_link = document.getElementById("toggle");
+   openness = toggle_link.classList.toggle("open");
+document.querySelectorAll("details.full-example").forEach(detail => { if (openness) { detail.setAttribute("open", true); } else { detail.removeAttribute("open");} });
+   toggle_link.innerText = (openness ? "Close" : "Open") + " all examples";
+   }
+
+
+function copyCode(text) { navigator.clipboard.writeText(text); }
+
+
+var links = document.getElementsByTagName('a');
+for (var i = 0; i < links.length; i++) {
+    if (links[i].href.match(/^#example-\d+/)) {
+	links[i].onClick = function() { links[i].href.match(/^#example-(\d+)$/); var example = document.getElementById($1).setAttribute('open'); return true; };
+    }
+}
+
+function add_bar(update) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let navbar = document.querySelector('div.index-navbar');
+
+    if (navbar && urlParams.has('project')) {
+        navbar.setAttribute('class', 'index-navbar'); // removes hidden
+        let project = decodeURIComponent(urlParams.get('project'));
+        let index_root = project + '/.index/';
+        let build = project + '/Build/';
+        let query_arg = "?project="+encodeURIComponent(project);
+
+        let links = [
+            { "General Index": document.getElementById('general_index').href },
+            { "Docs": document.getElementById('docs').href },
+            { "Extensions": index_root + 'doc/Extensions.html' },
+            { "Definitions": index_root + 'doc/ExtIndex.html' },
+            { "Debug Log": build + 'debug_log.html' },
+            { "Problems": build + 'problems.html' },
+            { "Source": index_root + 'story.html' },
+            { "Project Index": index_root + 'Index/Welcome.html' } ];
+        let sp = document.createTextNode(" ");
+        links.forEach(h => {
+            Object.entries(h).forEach(([text, url]) => {
+                let my_id = text.toLowerCase().replace(' ', '_');
+                let a = document.querySelector('#'+my_id);
+                let url_target = "file://"+url+query_arg;
+                if (a) {
+                    let parts = a.href.split('#');
+                    let qparts = parts[0].split('?');
+                    a.href = qparts[0] +  (qparts[1] ? ('?' + qparts[1]) : query_arg) + (parts[1] ? ('#' + parts[1]) : "");
+                }
+                else {
+                    a = document.createElement('a');
+                    let href = document.createAttribute("href");
+                    href.value = url_target;
+                    a.setAttributeNode(href);
+                    let elem_id = document.createAttribute("id");
+                    elem_id.value = my_id;
+                    a.setAttributeNode(elem_id);
+                    let linktext = document.createTextNode(text);
+                    a.appendChild(linktext);
+                    navbar.insertBefore(sp.cloneNode(), navbar.firstChild);
+                    navbar.insertBefore(a, navbar.firstChild);
+                }
+            })});
+        if (update) {
+            let main_links = document.querySelectorAll('main a');
+            main_links.forEach(a => {
+                if (!a.href.startsWith('javascript:') || (a.href.match(/[^:]+:\/\// && !a.href.startsWith('file:')))) {
+                    let parts = a.href.split('#')
+                    a.href = parts[0] + query_arg + (parts[1] ? ('#' + parts[1]) : "");
+                } });
+        }
+    }
+}
+
+
+
+document.addEventListener("DOMContentLoaded", add_bar);</script>
+<title>Example #226</title></head>
+<body class="inform7-source">
+
+<div class="inform7-source"><div class="pseudo">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;Four Cheeses&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7gh">Section 1 - Telephones and Connections</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A telephone is a kind of thing. Understand <span class="i7sx">&quot;phone&quot;</span> as a telephone.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;call </span><span class="i7si">[any telephone]</span><span class="i7sx"> on </span><span class="i7si">[something]</span><span class="i7sx">&quot;</span> as calling it on. Understand <span class="i7sx">&quot;call </span><span class="i7si">[any telephone]</span><span class="i7sx">&quot;</span> as calling it on. Understand the commands <span class="i7sx">&quot;dial&quot;</span> or <span class="i7sx">&quot;phone&quot;</span> or <span class="i7sx">&quot;telephone&quot;</span> as <span class="i7sx">&quot;call&quot;</span>. Understand <span class="i7sx">&quot;call </span><span class="i7si">[any known person]</span><span class="i7sx">&quot;</span> as calling it by name on.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Connection relates one thing to another (called the other party).</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The verb to reach means the connection relation.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Calling it on is an action applying to one visible thing and one thing.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Check calling it on:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the second noun is not a telephone, say <span class="i7sx">&quot;</span><span class="i7si">[The second noun]</span><span class="i7sx"> is unlikely to be much use in that respect.&quot;</span> instead;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the second noun is the noun, say <span class="i7sx">&quot;You get a busy signal.&quot;</span> instead.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Carry out calling it on:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if a person (called the listener) can see the noun, now the player reaches the listener.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Because we&#39;ve said that connection is a reciprocal, one-to-one relationship, Inform will do the rest of the bookkeeping: if (for instance) we telephone someone else, the first connection will be broken automatically.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Report calling it on:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;&#39;Hello?&#39; says </span><span class="i7si">[the other party of the player]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[To avoid annoyance, we should also let the player use CALL #### as well as CALL #### ON TELEPHONE. A rule from the chapter on Activities comes in handy here:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Rule for supplying a missing second noun while calling something on:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	assign a phone.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To assign a phone:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the player can touch a telephone (called the current phone):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;(on </span><span class="i7si">[the current phone]</span><span class="i7sx">)</span><span class="i7si">[line break]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	now the second noun is the current phone;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	otherwise:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;You don&#39;t have a phone handy.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Things might be a little more complicated if we had cell phones that could be moved around, but for right now the player can only touch a maximum of one phone at a time.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Suppose we further want to allow the player to call people up by name, but only if they&#39;ve already been encountered or are familiar to the player for some reason.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A person can be known or unknown.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;call </span><span class="i7si">[any known person]</span><span class="i7sx">&quot;</span> as calling it by name on.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;call </span><span class="i7si">[any known person]</span><span class="i7sx"> on </span><span class="i7si">[something]</span><span class="i7sx">&quot;</span> as calling it by name on.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Rule for supplying a missing second noun while calling something by name on:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	assign a phone.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Calling it by name on is an action applying to one visible thing and one thing.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Check calling it by name on:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the noun is in the location, say <span class="i7sx">&quot;</span><span class="i7si">[The noun]</span><span class="i7sx"> is right here.&quot;</span> instead.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Carry out calling it by name on:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the noun can touch a telephone (called the link), try calling the link on the second noun;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	otherwise say <span class="i7sx">&quot;You can&#39;t reach </span><span class="i7si">[the noun]</span><span class="i7sx">.&quot;</span> instead.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Before calling something on something when the player reaches someone:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;(first ending your conversation with </span><span class="i7si">[the other party of the player]</span><span class="i7sx">)</span><span class="i7si">[command clarification break]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	end current conversation.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;hang up </span><span class="i7si">[something]</span><span class="i7sx">&quot;</span> as hanging up.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Hanging up is an action applying to one thing.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Check hanging up:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the noun is not a telephone, say <span class="i7sx">&quot;You can&#39;t hang up </span><span class="i7si">[the noun]</span><span class="i7sx">.&quot;</span> instead;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the player does not reach someone, say <span class="i7sx">&quot;You&#39;re not on the line with anyone.&quot;</span> instead.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Carry out hanging up:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the player does not reach anyone.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Report hanging up:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;You put down </span><span class="i7si">[the noun]</span><span class="i7sx">, cutting the connection.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Before going somewhere when the player reaches someone:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;(first hanging up on </span><span class="i7si">[the other party of the player]</span><span class="i7sx">)</span><span class="i7si">[command clarification break]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	end current conversation.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[And finally we want to make sure that calling random other numbers produces a sensible result:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;call </span><span class="i7si">[text]</span><span class="i7sx">&quot;</span> as misdialling. Misdialling is an action applying to one topic. Carry out misdialling: say <span class="i7sx">&quot;The phone rings and rings but no one answers.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;call 911&quot;</span> or <span class="i7sx">&quot;call 999&quot;</span> or <span class="i7sx">&quot;call police&quot;</span> or <span class="i7sx">&quot;call fire department&quot;</span> as a mistake (&quot;After strict warnings, you&#39;ve given up making prank calls to emergency services.<span class="i7sx">&quot;).</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Before misdialling when the player reaches someone:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;say &quot;</span>(first ending your conversation with <span class="i7cm">[the other party of the player]</span>)<span class="i7cm">[command clarification break]</span><span class="i7sx">&quot;;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;end current conversation.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">To end current conversation:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;let the current phone be a random telephone which can be touched by the player;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;silently try hanging up the current phone.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">After deciding the scope of the player while the player reaches someone:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;place the other party of the player in scope, but not its contents.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7si">[A note about this scope addition: the player can refer to the other party whenever he has the other person on the phone. He can&#39;t, however, see or refer to anything that person might be holding or wearing, thanks to the &quot;but not its contents&quot; option.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7si">[Furthermore, the player can&#39;t actually do anything to that person that requires touching. That&#39;s because of the reaching inside rules, which govern whether the player can reach through intervening barriers such as rooms. (See the Advanced Actions chapter for more about changing reachability.) There are two things we might want to be careful about, though.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7si">[First, we should specifically disallow the player from looking at the person on the other end of the line. Since sight doesn&#39;t require touching, the reaching inside rules will not be consulted about a command such as EXAMINE BOSS or LOOK UNDER BOSS. We can, however, intervene in such cases using the visibility rules, which are consulted for any actions that &quot;require light&quot; (including EXAMINE and LOOK UNDER). Here again we borrow some options from the Advanced Actions chapter:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">To decide whether acting through the line:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;if the noun is something and the location of the noun is not the location of the player:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;&emsp;&emsp;&emsp;yes;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;if the second noun is something and the location of the second noun is not the location of the player:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;&emsp;&emsp;&emsp;yes;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;no.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Visibility rule when acting through the line:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;there is insufficient light.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Rule for printing a refusal to act in the dark when acting through the line:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;say &quot;</span>You&#39;re not on a video phone, so you can only hear.<span class="i7sx">&quot; instead.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7si">[Second, though the existing reaching inside rules are adequate to stop us from touching the person on the other end of the line, the response that&#39;s currently printed is a bit generic: it just says &quot;You can&#39;t reach into [the room containing the person]</span><span class="i7sx">.&quot;</span> Let&#39;s add our own custom reply, instead:]</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A rule for reaching inside a room (called destination):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the other party of the player is enclosed by the destination:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;Though you&#39;re on the line with </span><span class="i7si">[the other party of the player]</span><span class="i7sx">, you can&#39;t physically reach to </span><span class="i7si">[the destination]</span><span class="i7sx">.&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	deny access.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7gh">Section 2 - Conversation over the Phone, In General</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[This portion supplies a simple method of conversation; but we could substitute some completely different conversation system if appropriate. The effect of the telephones is that we are allowed to talk to characters in distant locations under certain circumstances, after which the usual conversation rules apply.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of listening to a telephone when the player reaches someone:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;You can hear </span><span class="i7si">[the other party of the player]</span><span class="i7sx"> breathing.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Before listening to someone when the player cannot touch the noun:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[The noun]</span><span class="i7sx"> is waiting for you to carry on the conversation.&quot;</span> instead.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A person has a table name called chatter.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Before telling someone about something:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	try asking the noun about it instead.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Before answering someone that something:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;Best to confine your conversation to questions and answers.&quot;</span> instead.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Before asking someone about something:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the topic understood is a topic listed in the chatter of the noun, say <span class="i7sx">&quot;</span><span class="i7si">[reply entry][paragraph break]</span><span class="i7sx">&quot;</span> instead;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	otherwise say <span class="i7sx">&quot;</span><span class="i7si">[The noun]</span><span class="i7sx"> does not reply.&quot;</span> instead.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7gh">Section 3 - The Scenario</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Guard House is a room. <span class="i7sx">&quot;Here you spend all your nights. Bullet-proof windows offer a panoramic view of serene cliffs, palm trees, and a moonlit ocean. Occasionally someone is foolish enough to try a cliff ascent or even an attack by helicopter, but lately things have been pretty quiet.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">The mansion is up the hill behind you, security lights ablaze.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The grey telephone is a telephone in the Guard House. Understand <span class="i7sx">&quot;6885&quot;</span> as the grey telephone. <span class="i7sx">&quot;Before you is a grey telephone. In black marker someone has written on it: MAIN OFFICE 2802.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Before going a direction in the Guard House, say <span class="i7sx">&quot;And leave your post? The boss would have you flayed. No kidding.&quot;</span> instead.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[In a game where the player could walk around, we would of course want to add a before rule so that he automatically hung up any phone he was using before leaving the room.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Main Office is a room. The boss is a known woman in the Main Office. A telephone called the red telephone is in the Main Office. Understand <span class="i7sx">&quot;2802&quot;</span> as the red telephone.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Guild is a room. The ninja is an unknown man in the Guild. A telephone called the black telephone is in the Guild. Understand <span class="i7sx">&quot;4431&quot;</span> as the black telephone.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Potter&#39;s Pizza is a room. The pizza delivery boy is a known man in Pizza. A telephone called the saucy telephone is in Pizza. Understand <span class="i7sx">&quot;8885&quot;</span> as the saucy telephone.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The chatter of the boss is the Table of Boss Conversation. The chatter of the delivery boy is the Table of Pizza Conversation. The chatter of the ninja is the Table of Ninja Conversation.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">After calling the red telephone on something for the first time:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;&#39;Yes?&#39; asks the boss. Her voice is especially husky this evening. Maybe that night of passion isn&#39;t so far off after all.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line">Table of Boss Conversation</span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">topic</span><span class="td">reply</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;love/passion/tonight/night&quot;</span></span><span class="td"> or &quot;night of passion&quot;</span><span class="td"><span class="i7sx">&quot;&#39;...Sorry, what?&#39; she asks. &#39;I wasn&#39;t listening.&#39; Oh. Maybe she&#39;d go for some pizza, though.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;pizza&quot;</span></span><span class="td"><span class="i7sx">&quot;&#39;I&#39;d love some. No pepperoni, though,&#39; she says, sounding dreamy. Yes, this is definitely time for a call to your old friend, the pizza boy.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;imminent ninja attack&quot;</span></span><span class="td"><span class="i7sx">&quot;&#39;Don&#39;t worry about it,&#39; says the boss crisply. &#39;I have everything under control.&#39;&quot;</span></span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line">Table of Pizza Conversation</span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line">topic</span><span class="td">reply</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;pizza&quot;</span></span><span class="td"><span class="i7sx">&quot;&#39;Pepperoni special tonight!&#39; he says proudly.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;pepperoni&quot;</span></span><span class="td"><span class="i7sx">&quot;&#39;Pepperoni is included free on ALL our pizzas,&#39; he says proudly.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;no pepperoni&quot;</span></span><span class="td"><span class="i7sx">&quot;&#39;Well, I don&#39;t see why you&#39;d want that,&#39; replies the boy sniffily. &#39;It&#39;s free!&#39;&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;jalapeno&quot;</span></span><span class="td"><span class="i7sx">&quot;&#39;Sorry, we&#39;re out of jalapenos this evening. There was a run on them.&#39;&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;sausage&quot;</span></span><span class="td"><span class="i7sx">&quot;&#39;Sausage, sure, we can do you sausage.&#39;&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;canadian bacon&quot;</span></span><span class="td"><span class="i7sx">&quot;&#39;There&#39;s currently an embargo on Canadian pig products.&#39;&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;cheese&quot;</span></span><span class="td"><span class="i7sx">&quot;&#39;We use four kinds,&#39; says the boy, then lowers his voice confidentially. &#39;Actually, two of them are the same. Nobody ever counts. The stringy one, the one that comes in dollops and the orangey one. You know.&#39;&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;pineapple&quot;</span></span><span class="td"><span class="i7sx">&quot;&#39;We could put pineapple on there, sure,&#39; says the delivery boy, in a tone that lets you know his opinion of people who order fruit-based pizzas.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;pineapple and garlic&quot;</span></span><span class="td"><span class="i7sx">&quot;&#39;What kind of crazy combination is that?&#39; demands the delivery boy, finally losing all self-control.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;delivery&quot;</span></span><span class="td"><span class="i7sx">&quot;&#39;Well, I don&#39;t know,&#39; says the boy in a worried voice. &#39;Last time I came there were attack dogs. And ninjas.&#39;&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;massive gratuity&quot;</span></span><span class="td"><span class="i7sx">&quot;&#39;There&#39;s no use in a big tip you don&#39;t live to spend,&#39; says the delivery boy quite firmly.&quot;</span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line">Table of Ninja Conversation</span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">topic</span><span class="td">reply</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;imminent attack&quot;</span></span><span class="td"><span class="i7sx">&quot;&#39;Yes, still on for tonight,&#39; confirms the voice at the other end of the line.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;pizza delivery boy&quot;</span></span><span class="td"><span class="i7sx">&quot;The voice, in tones of velvet, indicates that it cannot guarantee the safety of any delivery persons whomsoever.&quot;</span></span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Test me with <span class="i7sx">&quot;call 2802 / examine boss / ask boss about night of passion / ask boss about pizza / listen to telephone / call delivery boy on telephone / ask boy about cheese / tell boy about no pepperoni / ask boy about delivery / tell boy about massive gratuity / attack boy&quot;</span>.</span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

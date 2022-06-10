@@ -1,0 +1,689 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../../../Index/doc/style.css">
+<script src="../../../Index/doc/chapter.js"></script>
+<title>Rideable Vehicles by Graham Nelson</title></head>
+<body>
+<div class="index-navbar hidden">
+<a id="project_index" href="../../../Index/Welcome.html"> Project Index</a><a id="source" href="../../../story.html"> Source</a><a id="problems" href="../../../Build/problems.html"> Problems</a><a id="debug_log" href="../../../Build/debug_log.html"> Debug Log</a><a id="definitions" href="../../../Index/doc/ExtIndex.html"> Definitions</a><a id="extensions" href="../../../Index/doc/Extensions.html"> Extensions</a><a id="docs" href="../../../Index/doc/index.html"> Docs</a><a id="general_index" href="../../../Index/doc/index.html#general-index"> General Index</a>
+
+</div>
+
+
+<div class="pseudo">
+<span class="tr"><span class="th"></span><span class="td"><a href="javascript:copyCode(`Include Rideable Vehicles by Graham Nelson.`)"><img border="0" src="/home/zed/.local/share/inf7/doc/doc_images/paste.png" alt="Copy Include Rideable Vehicles by Graham Nelson to clipboard"></a> Include Rideable Vehicles by Graham Nelson.</span></span></div><div class="ext-front-matter">
+<div>Documentation for Rideable Vehicles by Graham Nelson</div>
+<a href="#line1">Jump to code</a></div>
+<div class="pseudo">
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Inform&#39;s built-in <span class="i7sx">&quot;vehicle&quot;</span> kind assumes that the vehicle is a</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">container, which is fine for cars or hot-air balloons, but not so</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">good for a pony or a four-wheeled lawnmower, which one rides rather</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">than gets inside. Rideable Vehicles is an extension which creates</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">two more kinds: <span class="i7sx">&quot;rideable animal&quot;</span> (good for the pony) and</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"><span class="i7sx">&quot;rideable vehicle&quot;</span> (good for the lawnmower).</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	The pony is a rideable animal in the Forest Clearing.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	The lawnmover is a rideable vehicle in the Garden Shed.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">This means that three different kinds of thing can be used as a</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">means of travel, which might make it awkward to write a general</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">rule about them, so we also define the adjective <span class="i7sx">&quot;vehicular&quot;</span> for</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">any thing of any of these kinds.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	The Transport Museum is a room. <span class="i7sx">&quot;The Museum is filled with means of transport old and new, including </span><span class="i7si">[list of vehicular things in the Transport Museum]</span><span class="i7sx">.&quot;</span></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">A new action called <span class="i7sx">&quot;mounting&quot;</span> is created, and a new command <span class="i7sx">&quot;mount&quot;</span></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">(or <span class="i7sx">&quot;ride&quot;</span>) is added for the player to use. Thus:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	Instead of mounting the pony, say <span class="i7sx">&quot;The pony snorts and backs off.&quot;</span></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">results in</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	&gt;ride pony</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	The pony snorts and backs off.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">And a corresponding <span class="i7sx">&quot;dismounting&quot;</span> action handles the command <span class="i7sx">&quot;dismount&quot;</span>.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	&gt;dismount</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	You get off the pony.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Moreover, commands such as <span class="i7sx">&quot;get off the pony&quot;</span> or <span class="i7sx">&quot;get on the lawnmower&quot;</span></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">are converted into these new actions instead, so that rules like the</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">following will always work, no matter what command is tried:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	Instead of mounting the tricycle when the transport pass is not carried by the player:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		say <span class="i7sx">&quot;The tricycle can only be ridden by those with a transport pass.&quot;</span></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Lastly, a special rule means that <span class="i7sx">&quot;pony, go east&quot;</span> is recognised when</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">the player is riding the pony. (This works for rideable animals, but not</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">rideable vehicles.)</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Example: * Vehicle Testing Center - An assortment of rideable and other vehicles, with restrictions about which rooms can be entered with what rides.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"> "Rides" by Emily Short </span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Include Rideable Vehicles by Graham Nelson.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">The Vehicle Testing Center is a room. "A large square of field surrounded by a wall of hay bales. A driveway leads out to the west. The ground slopes down to a pond along the northern edge."</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">A sign is a thing in the Center. "The sign advertises experimental rides in the following: [list of vehicular things][clear vehicles]."</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">To say clear vehicles:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	now every vehicular thing is unmentioned.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">The red wagon is a vehicle in the Vehicle Testing Center. "There is a lovely red wagon here, complete with an outboard motor."</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">The swan is a rideable animal in the Vehicle Testing Center. "At the pond's edge waits a black swan of unusual size, wearing a bridle and a gold-trimmed Mexican hat." The description of the swan is "The swan looks back at you."</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">The swan can be fed or unfed.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Instead of mounting the unfed swan:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	say "The swan gives you a look of disappointment and reproach. Apparently it doesn't work for free."</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Some chow is carried by the player. The description is "Delicious Purina swan chow pellets!"</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Instead of giving the chow to the swan:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	now the swan is fed;</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	say "The swan accepts your offering courteously."</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Instead of going to the Dusty Road by swan:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	say "The swan honks indignantly at the very notion."</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Instead of going to the Open Sky by swan:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	say "The swan can swim with you aboard, but not lift off." </span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">After going somewhere by swan:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	say "The swan honks a lovely Mexican serenade as it paddles you about.";</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	continue the action.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">The Pond is north of the Vehicle Testing Center. "Funny, the pond is bigger from the middle than it seemed from the shore. In fact, you can't see any edge but the testing center to the south and a small island to the north."</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Instead of going to the Pond when the player is not carried by the swan: </span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	say "You forgot your water skis." </span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Instead of dismounting when the location is the Pond:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	say "You'd fall in!"</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">North of the Pond is the Small Island.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">The glass elevator is a vehicle in the Small Island. It is transparent. "A glass elevator stands in the center, a fantastically strong microfilament connecting it to... something in the sky."</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">The Open Sky is above the Small Island. "There's a great view from here, starting with that lovely glass floor. In fact, maybe you'd better not look that way."</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Instead of going a direction (called the way) when the player is in the Elevator:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	if the way is up, continue the action;</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	if the way is down, continue the action;</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	say "The elevator ascends and descends only."</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Instead of going to the Open Sky when the player is not in the Elevator:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	say "Do you plan to flap your arms, then?"</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Instead of exiting in the Open Sky:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	say "It's a long way down."</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">The Dusty Road is west of the Vehicle Testing Center. "Off to the east is an enclosed area for the testing of dangerous and improbable vehicles."</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">A rideable vehicle called a tricycle is in the Dusty Road.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Test me with "test wagon / test tricycle / test swan / test elevator".</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Test wagon with "get in wagon / w / e / e / w / out".</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Test tricycle with "get in wagon / mount tricycle /  e / n / w / e / dismount".</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Test swan with "n / get on swan / give chow to swan / mount swan / dismount / mount swan / n / dismount / swan, n / dismount".</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Test elevator with "u / get in elevator / get out / get in elevator / up / get out / d".</span><br></span>
+</div><div class="inform7-source"><div class="pseudo">
+<span class="tr line_no" id="line1">
+<!-- <span class="tr line_no" id="line1"> -->
+<span class="td">Version 3 of Rideable Vehicles by Graham Nelson begins here.</span><br></span>
+<span class="tr line_no" id="line2">
+<!-- <span class="tr line_no" id="line2"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line3">
+<!-- <span class="tr line_no" id="line3"> -->
+<span class="td"><span class="i7sx">&quot;Vehicles which one sits on top of, rather than inside, such as elephants or</span></span><br></span>
+<span class="tr line_no" id="line4">
+<!-- <span class="tr line_no" id="line4"> -->
+<span class="td"><span class="i7sx">motorcycles.&quot;</span></span><br></span>
+<span class="tr line_no" id="line5">
+<!-- <span class="tr line_no" id="line5"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line6">
+<!-- <span class="tr line_no" id="line6"> -->
+<span class="td">To mount is a verb. To dismount is a verb.</span><br></span>
+<span class="tr line_no" id="line7">
+<!-- <span class="tr line_no" id="line7"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line8">
+<!-- <span class="tr line_no" id="line8"> -->
+<span class="td">A rideable animal is a kind of animal.</span><br></span>
+<span class="tr line_no" id="line9">
+<!-- <span class="tr line_no" id="line9"> -->
+<span class="td">A rideable animal is usually not portable.</span><br></span>
+<span class="tr line_no" id="line10">
+<!-- <span class="tr line_no" id="line10"> -->
+<span class="td">Include <span class="i7x">(-</span></span><br></span>
+<span class="tr line_no" id="line11">
+<!-- <span class="tr line_no" id="line11"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">has enterable supporter,</span></span><br></span>
+<span class="tr line_no" id="line12">
+<!-- <span class="tr line_no" id="line12"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">with before [; Go: return 1; ],</span></span><br></span>
+<span class="tr line_no" id="line13">
+<!-- <span class="tr line_no" id="line13"> -->
+<span class="td"><span class="i7x">-)</span> when defining a rideable animal.</span><br></span>
+<span class="tr line_no" id="line14">
+<!-- <span class="tr line_no" id="line14"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line15">
+<!-- <span class="tr line_no" id="line15"> -->
+<span class="td">A rideable vehicle is a kind of supporter.</span><br></span>
+<span class="tr line_no" id="line16">
+<!-- <span class="tr line_no" id="line16"> -->
+<span class="td">A rideable vehicle is always enterable.</span><br></span>
+<span class="tr line_no" id="line17">
+<!-- <span class="tr line_no" id="line17"> -->
+<span class="td">A rideable vehicle is usually not portable.</span><br></span>
+<span class="tr line_no" id="line18">
+<!-- <span class="tr line_no" id="line18"> -->
+<span class="td">Include <span class="i7x">(-</span></span><br></span>
+<span class="tr line_no" id="line19">
+<!-- <span class="tr line_no" id="line19"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">with before [; Go: return 1; ],</span></span><br></span>
+<span class="tr line_no" id="line20">
+<!-- <span class="tr line_no" id="line20"> -->
+<span class="td"><span class="i7x">-)</span> when defining a rideable vehicle.</span><br></span>
+<span class="tr line_no" id="line21">
+<!-- <span class="tr line_no" id="line21"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line22">
+<!-- <span class="tr line_no" id="line22"> -->
+<span class="td">The stand up before going rule is not listed in any rulebook.</span><br></span>
+<span class="tr line_no" id="line23">
+<!-- <span class="tr line_no" id="line23"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line24">
+<!-- <span class="tr line_no" id="line24"> -->
+<span class="td">Definition: Something is vehicular if it is a vehicle or it is a</span><br></span>
+<span class="tr line_no" id="line25">
+<!-- <span class="tr line_no" id="line25"> -->
+<span class="td">rideable animal or it is a rideable vehicle.</span><br></span>
+<span class="tr line_no" id="line26">
+<!-- <span class="tr line_no" id="line26"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line27">
+<!-- <span class="tr line_no" id="line27"> -->
+<span class="td">Rule for setting action variables for going (this is the allow rideables to be</span><br></span>
+<span class="tr line_no" id="line28">
+<!-- <span class="tr line_no" id="line28"> -->
+<span class="td">	&ensp;&ensp;	going vehicles rule):</span><br></span>
+<span class="tr line_no" id="line29">
+<!-- <span class="tr line_no" id="line29"> -->
+<span class="td">	&ensp;&ensp;	if the actor is carried by a rideable animal (called the steed),</span><br></span>
+<span class="tr line_no" id="line30">
+<!-- <span class="tr line_no" id="line30"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		now the vehicle gone by is the steed;</span><br></span>
+<span class="tr line_no" id="line31">
+<!-- <span class="tr line_no" id="line31"> -->
+<span class="td">	&ensp;&ensp;	if the actor is on a rideable vehicle (called the conveyance),</span><br></span>
+<span class="tr line_no" id="line32">
+<!-- <span class="tr line_no" id="line32"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		now the vehicle gone by is the conveyance.</span><br></span>
+<span class="tr line_no" id="line33">
+<!-- <span class="tr line_no" id="line33"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line34">
+<!-- <span class="tr line_no" id="line34"> -->
+<span class="td">Mounting is an action applying to one thing.</span><br></span>
+<span class="tr line_no" id="line35">
+<!-- <span class="tr line_no" id="line35"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line36">
+<!-- <span class="tr line_no" id="line36"> -->
+<span class="td">Before an actor entering a rideable animal (called the steed), try the actor</span><br></span>
+<span class="tr line_no" id="line37">
+<!-- <span class="tr line_no" id="line37"> -->
+<span class="td">mounting the steed instead.</span><br></span>
+<span class="tr line_no" id="line38">
+<!-- <span class="tr line_no" id="line38"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line39">
+<!-- <span class="tr line_no" id="line39"> -->
+<span class="td">Before an actor entering a rideable vehicle (called the conveyance), try the</span><br></span>
+<span class="tr line_no" id="line40">
+<!-- <span class="tr line_no" id="line40"> -->
+<span class="td">actor mounting the conveyance instead.</span><br></span>
+<span class="tr line_no" id="line41">
+<!-- <span class="tr line_no" id="line41"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line42">
+<!-- <span class="tr line_no" id="line42"> -->
+<span class="td">Before an actor getting off a rideable animal (called the steed), try the</span><br></span>
+<span class="tr line_no" id="line43">
+<!-- <span class="tr line_no" id="line43"> -->
+<span class="td">actor dismounting instead.</span><br></span>
+<span class="tr line_no" id="line44">
+<!-- <span class="tr line_no" id="line44"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line45">
+<!-- <span class="tr line_no" id="line45"> -->
+<span class="td">Before an actor getting off a rideable vehicle (called the conveyance), try</span><br></span>
+<span class="tr line_no" id="line46">
+<!-- <span class="tr line_no" id="line46"> -->
+<span class="td">the actor dismounting instead.</span><br></span>
+<span class="tr line_no" id="line47">
+<!-- <span class="tr line_no" id="line47"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line48">
+<!-- <span class="tr line_no" id="line48"> -->
+<span class="td">Before an actor exiting:</span><br></span>
+<span class="tr line_no" id="line49">
+<!-- <span class="tr line_no" id="line49"> -->
+<span class="td">	&ensp;&ensp;	if the actor is carried by a rideable animal, try the actor dismounting instead;</span><br></span>
+<span class="tr line_no" id="line50">
+<!-- <span class="tr line_no" id="line50"> -->
+<span class="td">	&ensp;&ensp;	if the actor is carried by a rideable vehicle, try the actor dismounting instead.</span><br></span>
+<span class="tr line_no" id="line51">
+<!-- <span class="tr line_no" id="line51"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line52">
+<!-- <span class="tr line_no" id="line52"> -->
+<span class="td">Check an actor mounting (this is the can&#39;t mount when mounted on an animal rule): </span><br></span>
+<span class="tr line_no" id="line53">
+<!-- <span class="tr line_no" id="line53"> -->
+<span class="td">	&ensp;&ensp;	if the actor is carried by a rideable animal (called the steed):</span><br></span>
+<span class="tr line_no" id="line54">
+<!-- <span class="tr line_no" id="line54"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		if the actor is the player, say <span class="i7sx">&quot;</span><span class="i7si">[We]</span><span class="i7sx"> </span><span class="i7si">[are]</span><span class="i7sx"> already riding </span><span class="i7si">[the steed]</span><span class="i7sx">.&quot;</span> (A);</span><br></span>
+<span class="tr line_no" id="line55">
+<!-- <span class="tr line_no" id="line55"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		stop the action.</span><br></span>
+<span class="tr line_no" id="line56">
+<!-- <span class="tr line_no" id="line56"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line57">
+<!-- <span class="tr line_no" id="line57"> -->
+<span class="td">Check an actor mounting (this is the can&#39;t mount when mounted on a vehicle rule):</span><br></span>
+<span class="tr line_no" id="line58">
+<!-- <span class="tr line_no" id="line58"> -->
+<span class="td">	&ensp;&ensp;	if the actor is on a rideable vehicle (called the conveyance):</span><br></span>
+<span class="tr line_no" id="line59">
+<!-- <span class="tr line_no" id="line59"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		if the actor is the player, say <span class="i7sx">&quot;</span><span class="i7si">[We]</span><span class="i7sx"> </span><span class="i7si">[are]</span><span class="i7sx"> already riding </span><span class="i7si">[the conveyance]</span><span class="i7sx">.&quot;</span> (A);</span><br></span>
+<span class="tr line_no" id="line60">
+<!-- <span class="tr line_no" id="line60"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		stop the action.</span><br></span>
+<span class="tr line_no" id="line61">
+<!-- <span class="tr line_no" id="line61"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line62">
+<!-- <span class="tr line_no" id="line62"> -->
+<span class="td">Check an actor mounting (this is the can&#39;t mount something unrideable rule):</span><br></span>
+<span class="tr line_no" id="line63">
+<!-- <span class="tr line_no" id="line63"> -->
+<span class="td">	&ensp;&ensp;	if the noun is not a rideable animal and the noun is not a rideable vehicle:</span><br></span>
+<span class="tr line_no" id="line64">
+<!-- <span class="tr line_no" id="line64"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		if the actor is the player, say <span class="i7sx">&quot;</span><span class="i7si">[The noun]</span><span class="i7sx"> </span><span class="i7si">[cannot]</span><span class="i7sx"> be ridden.&quot;</span> (A) instead;</span><br></span>
+<span class="tr line_no" id="line65">
+<!-- <span class="tr line_no" id="line65"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		stop the action.</span><br></span>
+<span class="tr line_no" id="line66">
+<!-- <span class="tr line_no" id="line66"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line67">
+<!-- <span class="tr line_no" id="line67"> -->
+<span class="td">Check an actor mounting (this is the can&#39;t mount something carried rule):</span><br></span>
+<span class="tr line_no" id="line68">
+<!-- <span class="tr line_no" id="line68"> -->
+<span class="td">	&ensp;&ensp;	abide by the can&#39;t enter something carried rule.</span><br></span>
+<span class="tr line_no" id="line69">
+<!-- <span class="tr line_no" id="line69"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line70">
+<!-- <span class="tr line_no" id="line70"> -->
+<span class="td">Check an actor mounting (this is the can&#39;t mount something unreachable rule):</span><br></span>
+<span class="tr line_no" id="line71">
+<!-- <span class="tr line_no" id="line71"> -->
+<span class="td">	&ensp;&ensp;	abide by the implicitly pass through other barriers rule. </span><br></span>
+<span class="tr line_no" id="line72">
+<!-- <span class="tr line_no" id="line72"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr line_no" id="line73">
+<!-- <span class="tr line_no" id="line73"> -->
+<span class="td">Carry out an actor mounting (this is the standard mounting rule):</span><br></span>
+<span class="tr line_no" id="line74">
+<!-- <span class="tr line_no" id="line74"> -->
+<span class="td">	&ensp;&ensp;	surreptitiously move the actor to the noun.</span><br></span>
+<span class="tr line_no" id="line75">
+<!-- <span class="tr line_no" id="line75"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line76">
+<!-- <span class="tr line_no" id="line76"> -->
+<span class="td">Report an actor mounting (this is the standard report mounting rule):</span><br></span>
+<span class="tr line_no" id="line77">
+<!-- <span class="tr line_no" id="line77"> -->
+<span class="td">	&ensp;&ensp;	if the actor is the player:</span><br></span>
+<span class="tr line_no" id="line78">
+<!-- <span class="tr line_no" id="line78"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		say <span class="i7sx">&quot;</span><span class="i7si">[We]</span><span class="i7sx"> </span><span class="i7si">[mount]</span><span class="i7sx"> </span><span class="i7si">[the noun]</span><span class="i7sx">.&quot;</span> (A);</span><br></span>
+<span class="tr line_no" id="line79">
+<!-- <span class="tr line_no" id="line79"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		describe locale for the noun;</span><br></span>
+<span class="tr line_no" id="line80">
+<!-- <span class="tr line_no" id="line80"> -->
+<span class="td">	&ensp;&ensp;	otherwise:</span><br></span>
+<span class="tr line_no" id="line81">
+<!-- <span class="tr line_no" id="line81"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		say <span class="i7sx">&quot;</span><span class="i7si">[The actor]</span><span class="i7sx"> </span><span class="i7si">[mount]</span><span class="i7sx"> </span><span class="i7si">[the noun]</span><span class="i7sx">.&quot;</span> (B) instead. </span><br></span>
+<span class="tr line_no" id="line82">
+<!-- <span class="tr line_no" id="line82"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line83">
+<!-- <span class="tr line_no" id="line83"> -->
+<span class="td">Unsuccessful attempt by someone trying mounting (this is the mounting excuses rule):</span><br></span>
+<span class="tr line_no" id="line84">
+<!-- <span class="tr line_no" id="line84"> -->
+<span class="td">	&ensp;&ensp;	if the reason the action failed is the can&#39;t mount when mounted on an animal rule:</span><br></span>
+<span class="tr line_no" id="line85">
+<!-- <span class="tr line_no" id="line85"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		let the steed be the random rideable animal which carries the person asked;</span><br></span>
+<span class="tr line_no" id="line86">
+<!-- <span class="tr line_no" id="line86"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		say <span class="i7sx">&quot;</span><span class="i7si">[The person asked]</span><span class="i7sx"> </span><span class="i7si">[are]</span><span class="i7sx"> already riding </span><span class="i7si">[the steed]</span><span class="i7sx">.&quot;</span> (A);</span><br></span>
+<span class="tr line_no" id="line87">
+<!-- <span class="tr line_no" id="line87"> -->
+<span class="td">	&ensp;&ensp;	if the reason the action failed is the can&#39;t mount when mounted on a vehicle rule:</span><br></span>
+<span class="tr line_no" id="line88">
+<!-- <span class="tr line_no" id="line88"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		let the conveyance be the random rideable vehicle which supports the person asked;</span><br></span>
+<span class="tr line_no" id="line89">
+<!-- <span class="tr line_no" id="line89"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		say <span class="i7sx">&quot;</span><span class="i7si">[The person asked]</span><span class="i7sx"> </span><span class="i7si">[are]</span><span class="i7sx"> already riding </span><span class="i7si">[the conveyance]</span><span class="i7sx">.&quot;</span> (B);</span><br></span>
+<span class="tr line_no" id="line90">
+<!-- <span class="tr line_no" id="line90"> -->
+<span class="td">	&ensp;&ensp;	if the reason the action failed is the can&#39;t mount something unrideable rule,</span><br></span>
+<span class="tr line_no" id="line91">
+<!-- <span class="tr line_no" id="line91"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		say <span class="i7sx">&quot;</span><span class="i7si">[The noun]</span><span class="i7sx"> </span><span class="i7si">[cannot]</span><span class="i7sx"> be ridden.&quot;</span> (C).</span><br></span>
+<span class="tr line_no" id="line92">
+<!-- <span class="tr line_no" id="line92"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line93">
+<!-- <span class="tr line_no" id="line93"> -->
+<span class="td">Understand <span class="i7sx">&quot;ride </span><span class="i7si">[something]</span><span class="i7sx">&quot;</span> as mounting.</span><br></span>
+<span class="tr line_no" id="line94">
+<!-- <span class="tr line_no" id="line94"> -->
+<span class="td">Understand <span class="i7sx">&quot;mount </span><span class="i7si">[something]</span><span class="i7sx">&quot;</span> as mounting.</span><br></span>
+<span class="tr line_no" id="line95">
+<!-- <span class="tr line_no" id="line95"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line96">
+<!-- <span class="tr line_no" id="line96"> -->
+<span class="td">Dismounting is an action applying to nothing.</span><br></span>
+<span class="tr line_no" id="line97">
+<!-- <span class="tr line_no" id="line97"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line98">
+<!-- <span class="tr line_no" id="line98"> -->
+<span class="td">Check an actor dismounting (this is the can&#39;t dismount when not mounted rule):</span><br></span>
+<span class="tr line_no" id="line99">
+<!-- <span class="tr line_no" id="line99"> -->
+<span class="td">	&ensp;&ensp;	if the actor is not carried by a rideable animal and the actor is not on a rideable vehicle:</span><br></span>
+<span class="tr line_no" id="line100">
+<!-- <span class="tr line_no" id="line100"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		if the actor is a player, say <span class="i7sx">&quot;</span><span class="i7si">[We]</span><span class="i7sx"> </span><span class="i7si">[are]</span><span class="i7sx"> not riding anything.&quot;</span> (A);</span><br></span>
+<span class="tr line_no" id="line101">
+<!-- <span class="tr line_no" id="line101"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		stop the action.</span><br></span>
+<span class="tr line_no" id="line102">
+<!-- <span class="tr line_no" id="line102"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line103">
+<!-- <span class="tr line_no" id="line103"> -->
+<span class="td">Carry out an actor dismounting (this is the standard dismounting rule):</span><br></span>
+<span class="tr line_no" id="line104">
+<!-- <span class="tr line_no" id="line104"> -->
+<span class="td">	&ensp;&ensp;	if the actor is carried by a rideable animal (called the steed),</span><br></span>
+<span class="tr line_no" id="line105">
+<!-- <span class="tr line_no" id="line105"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		now the noun is the steed;</span><br></span>
+<span class="tr line_no" id="line106">
+<!-- <span class="tr line_no" id="line106"> -->
+<span class="td">	&ensp;&ensp;	if the actor is on a rideable vehicle (called the conveyance),</span><br></span>
+<span class="tr line_no" id="line107">
+<!-- <span class="tr line_no" id="line107"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		now the noun is the conveyance;</span><br></span>
+<span class="tr line_no" id="line108">
+<!-- <span class="tr line_no" id="line108"> -->
+<span class="td">	&ensp;&ensp;	let the former exterior be the holder of the noun;</span><br></span>
+<span class="tr line_no" id="line109">
+<!-- <span class="tr line_no" id="line109"> -->
+<span class="td">	&ensp;&ensp;	surreptitiously move the actor to the former exterior.</span><br></span>
+<span class="tr line_no" id="line110">
+<!-- <span class="tr line_no" id="line110"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line111">
+<!-- <span class="tr line_no" id="line111"> -->
+<span class="td">Report an actor dismounting (this is the standard report dismounting rule):</span><br></span>
+<span class="tr line_no" id="line112">
+<!-- <span class="tr line_no" id="line112"> -->
+<span class="td">	&ensp;&ensp;	if the actor is the player:</span><br></span>
+<span class="tr line_no" id="line113">
+<!-- <span class="tr line_no" id="line113"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		say <span class="i7sx">&quot;</span><span class="i7si">[We]</span><span class="i7sx"> </span><span class="i7si">[dismount]</span><span class="i7sx"> </span><span class="i7si">[the noun]</span><span class="i7sx">.</span><span class="i7si">[line break][run paragraph on]</span><span class="i7sx">&quot;</span> (A);</span><br></span>
+<span class="tr line_no" id="line114">
+<!-- <span class="tr line_no" id="line114"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		produce a room description with going spacing conventions;</span><br></span>
+<span class="tr line_no" id="line115">
+<!-- <span class="tr line_no" id="line115"> -->
+<span class="td">	&ensp;&ensp;	otherwise:</span><br></span>
+<span class="tr line_no" id="line116">
+<!-- <span class="tr line_no" id="line116"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		say <span class="i7sx">&quot;</span><span class="i7si">[The actor]</span><span class="i7sx"> </span><span class="i7si">[dismount]</span><span class="i7sx"> </span><span class="i7si">[the noun]</span><span class="i7sx">.&quot;</span> (B)</span><br></span>
+<span class="tr line_no" id="line117">
+<!-- <span class="tr line_no" id="line117"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr line_no" id="line118">
+<!-- <span class="tr line_no" id="line118"> -->
+<span class="td">Unsuccessful attempt by someone trying dismounting (this is the dismounting excuses rule):</span><br></span>
+<span class="tr line_no" id="line119">
+<!-- <span class="tr line_no" id="line119"> -->
+<span class="td">	&ensp;&ensp;	if the reason the action failed is the can&#39;t dismount when not mounted rule,</span><br></span>
+<span class="tr line_no" id="line120">
+<!-- <span class="tr line_no" id="line120"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		say <span class="i7sx">&quot;</span><span class="i7si">[The person asked]</span><span class="i7sx"> </span><span class="i7si">[are]</span><span class="i7sx"> not riding anything.&quot;</span> (A);</span><br></span>
+<span class="tr line_no" id="line121">
+<!-- <span class="tr line_no" id="line121"> -->
+<span class="td">	&ensp;&ensp;	otherwise make no decision.</span><br></span>
+<span class="tr line_no" id="line122">
+<!-- <span class="tr line_no" id="line122"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line123">
+<!-- <span class="tr line_no" id="line123"> -->
+<span class="td">Understand <span class="i7sx">&quot;dismount&quot;</span> as dismounting.</span><br></span>
+<span class="tr line_no" id="line124">
+<!-- <span class="tr line_no" id="line124"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line125">
+<!-- <span class="tr line_no" id="line125"> -->
+<span class="td">Before asking a rideable animal (called the mount) to try going a</span><br></span>
+<span class="tr line_no" id="line126">
+<!-- <span class="tr line_no" id="line126"> -->
+<span class="td">direction (called the way):</span><br></span>
+<span class="tr line_no" id="line127">
+<!-- <span class="tr line_no" id="line127"> -->
+<span class="td">	&ensp;&ensp;	if the player is carried by the mount, try going the way instead.</span><br></span>
+<span class="tr line_no" id="line128">
+<!-- <span class="tr line_no" id="line128"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line129">
+<!-- <span class="tr line_no" id="line129"> -->
+<span class="td">Rideable Vehicles ends here.</span><br></span>
+<span class="tr line_no" id="line130">
+<!-- <span class="tr line_no" id="line130"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line131">
+<!-- <span class="tr line_no" id="line131"> -->
+<span class="td">---- DOCUMENTATION ----</span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

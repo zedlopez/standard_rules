@@ -1,0 +1,358 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../style.css">
+<script>function toggle_details() {
+   var openness, toggle_link;
+   toggle_link = document.getElementById("toggle");
+   openness = toggle_link.classList.toggle("open");
+document.querySelectorAll("details.full-example").forEach(detail => { if (openness) { detail.setAttribute("open", true); } else { detail.removeAttribute("open");} });
+   toggle_link.innerText = (openness ? "Close" : "Open") + " all examples";
+   }
+
+
+function copyCode(text) { navigator.clipboard.writeText(text); }
+
+
+var links = document.getElementsByTagName('a');
+for (var i = 0; i < links.length; i++) {
+    if (links[i].href.match(/^#example-\d+/)) {
+	links[i].onClick = function() { links[i].href.match(/^#example-(\d+)$/); var example = document.getElementById($1).setAttribute('open'); return true; };
+    }
+}
+
+function add_bar(update) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let navbar = document.querySelector('div.index-navbar');
+
+    if (navbar && urlParams.has('project')) {
+        navbar.setAttribute('class', 'index-navbar'); // removes hidden
+        let project = decodeURIComponent(urlParams.get('project'));
+        let index_root = project + '/.index/';
+        let build = project + '/Build/';
+        let query_arg = "?project="+encodeURIComponent(project);
+
+        let links = [
+            { "General Index": document.getElementById('general_index').href },
+            { "Docs": document.getElementById('docs').href },
+            { "Extensions": index_root + 'doc/Extensions.html' },
+            { "Definitions": index_root + 'doc/ExtIndex.html' },
+            { "Debug Log": build + 'debug_log.html' },
+            { "Problems": build + 'problems.html' },
+            { "Source": index_root + 'story.html' },
+            { "Project Index": index_root + 'Index/Welcome.html' } ];
+        let sp = document.createTextNode(" ");
+        links.forEach(h => {
+            Object.entries(h).forEach(([text, url]) => {
+                let my_id = text.toLowerCase().replace(' ', '_');
+                let a = document.querySelector('#'+my_id);
+                let url_target = "file://"+url+query_arg;
+                if (a) {
+                    let parts = a.href.split('#');
+                    let qparts = parts[0].split('?');
+                    a.href = qparts[0] +  (qparts[1] ? ('?' + qparts[1]) : query_arg) + (parts[1] ? ('#' + parts[1]) : "");
+                }
+                else {
+                    a = document.createElement('a');
+                    let href = document.createAttribute("href");
+                    href.value = url_target;
+                    a.setAttributeNode(href);
+                    let elem_id = document.createAttribute("id");
+                    elem_id.value = my_id;
+                    a.setAttributeNode(elem_id);
+                    let linktext = document.createTextNode(text);
+                    a.appendChild(linktext);
+                    navbar.insertBefore(sp.cloneNode(), navbar.firstChild);
+                    navbar.insertBefore(a, navbar.firstChild);
+                }
+            })});
+        if (update) {
+            let main_links = document.querySelectorAll('main a');
+            main_links.forEach(a => {
+                if (!a.href.startsWith('javascript:') || (a.href.match(/[^:]+:\/\// && !a.href.startsWith('file:')))) {
+                    let parts = a.href.split('#')
+                    a.href = parts[0] + query_arg + (parts[1] ? ('#' + parts[1]) : "");
+                } });
+        }
+    }
+}
+
+
+
+document.addEventListener("DOMContentLoaded", add_bar);</script>
+<title>Example #167</title></head>
+<body class="inform7-source">
+
+<div class="inform7-source"><div class="pseudo">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;Pine&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7gh">Part 1 - The Set-up</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A person can be asleep or awake. A person can be active or passive.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Spinning Tower is a room. <span class="i7sx">&quot;A remote corner of the old castle, reserved for spinning and weaving tasks.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Sleeping Beauty is an asleep woman in the Spinning Tower. <span class="i7sx">&quot;</span><span class="i7si">[if asleep]</span><span class="i7sx">Sleeping Beauty lies here, oblivious to your presence</span><span class="i7si">[otherwise]</span><span class="i7sx">Sleeping Beauty stands beside you, looking </span><span class="i7si">[attitude][end if]</span><span class="i7sx">.&quot;</span> The description is <span class="i7sx">&quot;She is even more magnificent than the rumors suggested.&quot;</span> Understand <span class="i7sx">&quot;woman&quot;</span> or <span class="i7sx">&quot;girl&quot;</span> or <span class="i7sx">&quot;princess&quot;</span> or <span class="i7sx">&quot;lady&quot;</span> as Sleeping Beauty.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Discovery is a scene. Discovery begins when play begins. Discovery ends when Sleeping Beauty is awake. Marriage Proposal is a scene. Marriage Proposal begins when Discovery ends.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">When Discovery ends: say <span class="i7sx">&quot;Throughout the palace you can hear the other sounds of stirring and movement as the spell of centuries is broken.&quot;</span>; now Beauty is passive.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of waking an awake person: say <span class="i7sx">&quot;Redundant.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of waking an asleep person: say <span class="i7sx">&quot;Yes, but how?&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of waiting in the presence of an asleep person (called snorer): say <span class="i7sx">&quot;You are alone with the sound of </span><span class="i7si">[the snorer]</span><span class="i7sx"> snoring sonorously.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of attacking an asleep person:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the noun is awake;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[The noun]</span><span class="i7sx"> sits bolt upright. &#39;Hey! Ow!&#39; So much for that true love&#39;s kiss nonsense.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of kissing an asleep person:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the noun is awake;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[The noun]</span><span class="i7sx"> slowly stirs to wakefulness!&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of throwing water at an asleep person:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the second noun is awake;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the noun is nowhere;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;You pour out </span><span class="i7si">[the noun]</span><span class="i7sx"> on </span><span class="i7si">[the second noun]</span><span class="i7sx">.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7si">[The second noun]</span><span class="i7sx"> wakes, shuddering. &#39;Agh! I had a terrible dream about drowning and then-- Hey!&#39;&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The player carries a jug of water. Understand <span class="i7sx">&quot;pour </span><span class="i7si">[something]</span><span class="i7sx"> on </span><span class="i7si">[something]</span><span class="i7sx">&quot;</span> or <span class="i7sx">&quot;splash </span><span class="i7si">[something]</span><span class="i7sx"> at/on </span><span class="i7si">[something]</span><span class="i7sx">&quot;</span> as throwing it at.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line">Table of Conversation</span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">topic</span><span class="td">reply</span><span class="td">quip</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;dream/dreams/nightmare/nightmares/sleep&quot;</span></span><span class="td"><span class="i7sx">&quot;&#39;Sleep well?&#39; you ask solicitously.</span></span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;&#39;Ghastly nightmares,&#39; she remarks. You nod politely.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;marriage/love/wedding/boyfriend/beau/lover&quot;</span></span><span class="td"><span class="i7sx">&quot;&#39;So,&#39; you say. &#39;This is a little weird since we just met, but, um. Would you like to get married?&#39;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">She looks at you nervously. &#39;Do I have to? I mean, I&#39;d rather not.&#39;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;&#39;I, er,&#39; she says. &#39;I hope I&#39;m not supposed to marry you or something.&#39; Uh oh.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;marriage/love/wedding/boyfriend/beau/lover&quot;</span></span><span class="td"><span class="i7sx">&quot;&#39;I was told I was going to marry you and inherit the kingdom,&#39; you say, apologetically. &#39;Would that be very bad?&#39; This could be awkward, considering your family circumstances -- you did promise your mother that everything would be better, after this --</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&#39;Oh, it&#39;s not you -- I&#39;m seeing someone,&#39; she says, smiling quickly.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;&#39;Do you think I could go look for someone? I&#39;m seeing him, you see, and I think I&#39;ve been... sick... for a while, so he might be worried.&#39;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">You try to think how to point out that it&#39;s been a hundred years since she last saw her boyfriend. And try not to think how awkward things would be in your family if she refuses to marry you.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;marriage/love/wedding/boyfriend/beau/lover&quot;</span></span><span class="td"><span class="i7sx">&quot;&#39;Do you think you could consider alternatives if he&#39;s no longer interested in you?&#39; you suggest.</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">She gives you the look of a wounded squirrel. &#39;My father might not approve of my love for the kitchen boy, but his heart is faithful and true!&#39; she exclaims.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;&#39;I don&#39;t expect you to understand,&#39; she says in a low whisper. &#39;I know it is not considered proper for a princess to love -- and such a one as my William, who works in the kitchen --&#39; Her glance dares you to laugh. &#39;-- but I cannot marry you without telling you this truth.&#39;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Right then. Perhaps you&#39;d better tell her your secret, in exchange?&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;marriage/love/wedding/boyfriend/beau/lover&quot;</span></span><span class="td"><span class="i7sx">&quot;&#39;You&#39;ve been up here for a hundred years,&#39; you say. An unpleasant thought occurs to you. &#39;Was your young man in the castle somewhere?&#39;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;She goes to the window and looks out at the now-fading thicket of briar. &#39;That took a while to grow,&#39; she observes. &#39;I&#39;ve been up here longer than I thought.&#39;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">You shrug, uncomfortable.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of asking an awake beauty about a topic listed in the Table of Conversation when Marriage Proposal is happening:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now Beauty is passive;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[reply entry][paragraph break]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	blank out the whole row.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of telling an awake beauty about something: try asking the noun about it.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of asking an asleep person about something:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[The noun]</span><span class="i7sx"> snores.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Marriage Proposal ends in failure when the number of filled rows in the Table of Conversation is 0.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Every turn during Marriage Proposal:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if Beauty is active and Beauty is visible:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	repeat through Table of Conversation:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[quip entry][paragraph break]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	blank out the whole row;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	make no decision.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">When Marriage Proposal ends in failure: end the story saying <span class="i7sx">&quot;This is going to take some explaining.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7gh">Part 2 - Flashbacks</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of asking an awake beauty about a topic listed in the Table of Flashback Material:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now Beauty is passive;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[reply entry][paragraph break]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A fact is a kind of thing. A fact can be known or unknown. A fact can be current or past.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The family circumstances is a fact. The secret identity is a fact. The printed name of secret identity is <span class="i7sx">&quot;secret&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line">Table of Flashback Material</span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">topic</span><span class="td">reply</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;poor/poverty/family/money/mother/circumstances&quot;</span></span><span class="td"> or &quot;family circumstances&quot; or &quot;my family/mother&quot;</span><span class="td"><span class="i7sx">&quot;</span></span><span class="td"><span class="i7si">[if family circumstances is unknown]</span></span><span class="td"><span class="i7sx">&#39;I wish you&#39;d give some thought to marrying me. You see,&#39; you say, your jaw tensing. &#39;I wouldn&#39;t ask if it weren&#39;t for my </span></span><span class="td"><span class="i7si">[family circumstances]</span></span><span class="td"><span class="i7sx">...&#39;</span></span><span class="td"><span class="i7si">[otherwise]</span></span><span class="td"><span class="i7sx">&#39;I don&#39;t think you fully understand the </span></span><span class="td"><span class="i7si">[family circumstances]</span></span><span class="td"><span class="i7sx">,&#39; you say.</span></span><span class="td"><span class="i7si">[end if]</span></span><span class="td"><span class="i7sx">&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;secret/identity/gender/girl/female/woman&quot;</span></span><span class="td"> or &quot;secret identity&quot; or &quot;my secret&quot; or &quot;my secret identity&quot; or &quot;my gender&quot;</span><span class="td"><span class="i7sx">&quot;</span></span><span class="td"><span class="i7si">[if dramatic revelation ended in failure]</span></span><span class="td"><span class="i7sx">&#39;Look,&#39; you say, trying again. &#39;Pay attention: I need you to understand my </span></span><span class="td"><span class="i7si">[secret identity]</span></span><span class="td"><span class="i7sx">.&#39;</span></span><span class="td"><span class="i7si">[otherwise]</span></span><span class="td"><span class="i7sx">You clear your throat and allow your voice to stray upward, into its natural register and out of this husky false tenor you&#39;ve been affecting. &#39;There&#39;s, er, something you should know about my </span></span><span class="td"><span class="i7si">[secret identity]</span></span><span class="td"><span class="i7sx">,&#39; you say...</span></span><span class="td"><span class="i7si">[end if][if dramatic revelation ended in success]</span></span><span class="td"><span class="i7sx"> She looks impatient. &#39;I get it, you know,&#39; she says. &#39;I&#39;m not stupid.&#39;&quot;</span></span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> After printing the name of a fact (called target): now the target is current; now the target is known.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Poverty flashback is a recurring scene. Poverty flashback begins when family circumstances is current. When poverty flashback begins: strip the player; move the player to the Woodcutter&#39;s Shack.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Woodcutter&#39;s Shack is a room. <span class="i7sx">&quot;Your family lives in a shack in the forest. There are holes in the roof, and in the winter the snow comes in -- rain, too, for that matter. The walls aren&#39;t very well-boarded, and don&#39;t keep out the wind, and even though you live in the middle of dense woods, you can never gather enough fuel to keep this place fully heated. And then there&#39;s the stench. Pigs wander freely in and out, and your three youngest brothers play on the floor.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Pigs are an animal in the shack. The pigs are scenery. The description is <span class="i7sx">&quot;They really are very grubby, dirty animals, but what&#39;s worse than that, the value of pigs has declined a lot over the last few decades. This is hard to explain to someone who has been out of touch with the world for a while, but keeping pigs for meat is a dubious prospect when there&#39;s less and less for them to forage on.&quot;</span> Instead of smelling the pigs: say <span class="i7sx">&quot;They smell the way animals do, when they live among their own refuse.&quot;</span>; increase the pity of Beauty by 2.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The brothers are a man in the shack. The brothers are scenery. The description of brothers is <span class="i7sx">&quot;Hans, Franz, and Lukas. Twins and then the baby. So young, and growing up fatherless; and soon to be orphaned entirely, if your mother&#39;s health does not improve.&quot;</span> Understand <span class="i7sx">&quot;brother&quot;</span> or <span class="i7sx">&quot;twin&quot;</span> or <span class="i7sx">&quot;twins&quot;</span> or <span class="i7sx">&quot;baby&quot;</span> or <span class="i7sx">&quot;franz&quot;</span> or <span class="i7sx">&quot;hans&quot;</span> or <span class="i7sx">&quot;lukas&quot;</span> as the brothers.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The untidy bed is scenery in the Shack. Mother is a woman on the untidy bed. The description of mother is <span class="i7sx">&quot;She is wasting away of a slow disease, her skin stretched tautly over bone. She hasn&#39;t been the same since your father left.&quot;</span> On the bed is a folded letter.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The description of the letter is <span class="i7sx">&quot;Many times read over and creased, the letter explains how your father has gone away with a wealthy countess and will not return. Your mother was not able to read it herself, of course, and had to have it explained to her by the parish priest. Now she keeps it by the bed and crumples it in her fits of delirium.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of kissing or touching Mother for the first time:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;You place a gentle kiss on her feverish brow. She looks up at you, her oldest -- yes, never mind that bit -- with a look of sincere trust and admiration.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&#39;You&#39;ll find a way through this for us,&#39; she says, squeezing your fingers. &#39;I know you will.&#39;&quot;</span>; increase the pity of Beauty by 3.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of kissing Mother: say <span class="i7sx">&quot;You have no more heart-rending memories of affection to recount; that one incident will have to serve, for rhetorical purposes.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of waiting in the Shack: say <span class="i7sx">&quot;The wind blows sharply through the walls.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of attacking someone in the Shack:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;Though sometimes the conditions of your life make you grouchy and impatient, you would never dream of striking a member of your own family. But from time to time you do feel the temptation.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Beauty has a number called pity. After examining something in the Woodcutter&#39;s Shack, increment the pity of Beauty. After examining mother, increase the pity of Beauty by 2. After examining the letter, increase the pity of Beauty by 3.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Poverty flashback ends when waiting or the time since poverty flashback began is five minutes.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">When Poverty flashback ends:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now family circumstances is past;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;...you finish describing the miserable circumstances of your home life, and allow your attention to return to the present.&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	restore the player;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now Beauty is passive;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if Beauty is clever and Beauty is sympathetic:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;&#39;I understand,&#39; she says slowly. &#39;Yes, I do. I&#39;ll do it.&#39; She takes a deep breath and looks at you. &#39;We will be king together! and your family will be royalty!&#39;&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	end the story finally;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	otherwise:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if Beauty is sympathetic, say <span class="i7sx">&quot;&#39;Oh dear!&#39; she says. &#39;What a dreadful life!&#39; She wrings her hands. &#39;No wonder you are eager to improve your lot...! But --&#39; Her brow clears, a new thought occurring. &#39;You needn&#39;t marry me, you know! We could arrange it differently! I am certain that my father would give you a large reward, instead, and then I would not be separated from my current boyfriend!&#39;&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	otherwise say <span class="i7sx">&quot;She makes a disgusted face, but she doesn&#39;t seem nearly so heart-wrung as you had hoped to make her. Tough audience, these modern princesses.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Definition: Beauty is sympathetic if the pity of Beauty is greater than 4.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To say attitude:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if Beauty is sympathetic, say <span class="i7sx">&quot;distressed on your behalf&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	otherwise say <span class="i7sx">&quot;a little confused&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Saved location is a room that varies. Locker is a container. Wardrobe is a container.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To strip the player:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&ensp;&ensp;&ensp;	 now every thing carried by the player is in the locker;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now every thing worn by the player is in the wardrobe;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now saved location is location.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To restore the player:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now every thing carried by the player is in the location;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now every thing in the locker is carried by the player;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now every thing in the wardrobe is worn by the player;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	move the player to saved location.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7gh">Part 3 - The Other Secret</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[This time, we&#39;re waiting for the princess either to understand or not understand -- so we don&#39;t want to rerun the scene once it has happened successfully.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Beauty has a number called clue count.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Dramatic revelation is a recurring scene. Dramatic revelation begins when attempting confidence.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To decide whether attempting confidence:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if dramatic revelation ended in success, no;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if secret identity is current, yes;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	no.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">When dramatic revelation begins:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	strip the player;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;You reminisce about one of the many stops on the way here: you had a long journey from your homeland, and it wasn&#39;t made any easier by your poverty, the inability to afford decent inns or plentiful food or any kind of ride along the way.&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	move the player to the Forest Clearing;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	move the pack to the player; now the player wears the trousers; now the player wears the shirt.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Forest Clearing is a room. <span class="i7sx">&quot;It&#39;s mid-autumn in your memory, the pool clear and cold, gold and red leaves floating on the surface.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The pool is scenery in the Clearing. Understand <span class="i7sx">&quot;reflection&quot;</span> or <span class="i7sx">&quot;surface&quot;</span> or <span class="i7sx">&quot;water&quot;</span> as the pool. <span class="i7sx">&quot;The pool is cold but beautiful, and the stopping place a welcome rest.&quot;</span> The leaves are scenery in the clearing. The description is <span class="i7sx">&quot;Bright gold and orange and red: it&#39;s been a sharply chilly autumn, as you have reason to know in detail.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The trousers and the shirt are wearable things. The pack is a container. The pack contains ale, food, and skirt. A distraction is a kind of thing. The ale, the food, the pair of trousers, and the shirt are distractions. The description of a distraction is usually <span class="i7sx">&quot;</span><span class="i7si">[The item described]</span><span class="i7sx"> is not the point of this story.&quot;</span> The shirt and the trousers are wearable. The description of the trousers is <span class="i7sx">&quot;Borrowed from your oldest brother, who is only a year younger than you. They are too long for your legs and overly snug at the hip, but no one around here pays much attention to fashion, and you&#39;re getting away with it, more or less.&quot;</span> After examining the trousers, increment the clue count of Beauty.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of examining the player during dramatic revelation:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	increment the clue count of Beauty;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;You cannot see yourself without reflection, but you can feel your hair loose and unbound over your shoulders.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Rule for printing the name of the skirt while taking inventory: say <span class="i7sx">&quot;one skirt you have not been able to bring yourself to part with&quot;</span>. The description of the skirt is <span class="i7sx">&quot;Made for you by your mother, and it looks quite pretty on you. If your primary plan does not work, you may be forced to wear it again, and hope to catch a male eye... but with luck that will not be necessary.&quot;</span> After taking inventory: increment clue count of Beauty.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Swimming is an action applying to nothing. Understand <span class="i7sx">&quot;swim&quot;</span> or <span class="i7sx">&quot;dive&quot;</span> as swimming.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of swimming in the presence of the pool:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	increment clue count of Beauty;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;You consider going for a swim, but don&#39;t dare be caught unclad and unarmed, not here. There are too many men around, and any of them discovering you here would surely take advantage.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of searching or drinking the pool:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	increment clue count of Beauty;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;You lean over the pool and look carefully at your reflection, your hair loose and unbound, falling around your face in waves. (That should surely give it away!)&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of waiting during dramatic revelation: say <span class="i7sx">&quot;You wait for the penny to drop, for her to understand.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Dramatic revelation ends in failure when waiting or the time since dramatic revelation began is five minutes. When dramatic revelation ends in failure:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now secret identity is past;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	restore the player;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now Beauty is passive;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;She wrinkles her nose. &#39;I don&#39;t understand!&#39; she says. &#39;What are you trying to tell me?&#39;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;You could weep for womankind. But you don&#39;t quite dare spell it out in so many words, not when someone might come up the stair and overhear a chance revelation.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Dramatic revelation ends in success when Beauty is clever. When dramatic revelation ends in success:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	restore the player;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now Beauty is passive;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;&#39;You&#39;re -- a girl? Like me?&#39;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&#39;Not much like you,&#39; you say, glancing over her petite frame and pert nose. &#39;But female, at any rate.&#39;&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Definition: Beauty is clever if the clue count of Beauty is greater than 2.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[And now, since we don&#39;t really want to return to the rest of the &#39;marriage proposal&#39; scene once she has learned our ID:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Marriage proposal ends in distraction when Dramatic Revelation ends in success.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Compromise proposal is a scene. Compromise proposal begins when Dramatic Revelation ends in success. When Compromise Proposal begins: now Beauty is passive.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of asking an awake beauty about a topic listed in the Table of Secondary Conversation when Compromise Proposal is happening:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now Beauty is passive;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[reply entry][paragraph break]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	blank out the whole row.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Every turn during Compromise Proposal:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if Beauty is active and Beauty is visible:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	repeat through Table of Secondary Conversation:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[quip entry][paragraph break]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	if the number of filled rows in the Table of Secondary Conversation is greater than 1, blank out the whole row;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	make no decision.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Every turn: now Beauty is active.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Notice that we moved the re-activation rule down here so that the Compromise Proposal rule would fire first. There are other more complicated ways of handling order of every turn rules than by relying on text sequence alone; but we will save that for a later chapter. For now it is sufficient to depend on the order in which the rules are declared.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line">Table of Secondary Conversation</span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">topic</span><span class="td">reply</span><span class="td">quip</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;girls/me/women/female/truth/identity&quot;</span></span><span class="td"><span class="i7sx">&quot;&#39;Marrying me would be no interference,&#39; you go on. &#39;You could carry on whatever romances you wished, without your father noticing.&#39; (Probably. You&#39;ll let the pragmatic details of this work themselves out later, and hope that any children she has will look vaguely like you.)&quot;</span></span><span class="td"><span class="i7sx">&quot;&#39;Girls can&#39;t rescue people.&#39;</span></span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&#39;Wrong,&#39; you say, feeling a little annoyed. &#39;But you see why marrying me wouldn&#39;t be an interference. You could carry on whatever romances you wished, without your father even noticing.&#39;&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;king/man&quot;</span></span><span class="td"><span class="i7sx">&quot;&#39;If you&#39;re thinking that a woman can&#39;t be the prince -- and then king -- well, there was a woman Pope, once.&#39;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;The crease in her forehead does not go away. &#39;But if everyone thinks you are a man... later you would be king!&#39;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Before she can go on, you say, &#39;There was a woman Pope, once. Compared to that, a woman king is nothing.&#39;&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;decision/proposal/marriage/choice&quot;</span></span><span class="td"><span class="i7sx">&quot;&#39;So,&#39; you say. &#39;What do you think?&#39;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;Her pretty nose twitches again, which you are coming to recognize as a sign of hard mental labor. &#39;I think I see,&#39; she says. </span></span><span class="td"><span class="i7si">[final decision]</span></span><span class="td"><span class="i7sx">&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To say final decision:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if Beauty is sympathetic:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;She considers the matter silently for some minutes, then says: &#39;I will do it. My beloved William will be so glad!&#39; You imagine that William&#39;s feelings on the matter will be a tad more complex than that, but do not bother quashing her exuberance...&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	end the story finally;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	otherwise:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;&#39;I still don&#39;t quite understand why you would want this so badly as to go to all that trouble,&#39; she admits uneasily. Evidently you have not explained enough to her about the poverty of your home life.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Test me with <span class="i7sx">&quot;x beauty / pour water on beauty / ask beauty about sleep / tell beauty about poverty / smell pigs / x mother / x letter / kiss mother / ask beauty about marriage / tell beauty about identity / x me / look in water / i / z / ask beauty about marriage&quot;</span>.</span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

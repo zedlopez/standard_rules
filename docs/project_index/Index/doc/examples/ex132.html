@@ -1,0 +1,165 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../style.css">
+<script>function toggle_details() {
+   var openness, toggle_link;
+   toggle_link = document.getElementById("toggle");
+   openness = toggle_link.classList.toggle("open");
+document.querySelectorAll("details.full-example").forEach(detail => { if (openness) { detail.setAttribute("open", true); } else { detail.removeAttribute("open");} });
+   toggle_link.innerText = (openness ? "Close" : "Open") + " all examples";
+   }
+
+
+function copyCode(text) { navigator.clipboard.writeText(text); }
+
+
+var links = document.getElementsByTagName('a');
+for (var i = 0; i < links.length; i++) {
+    if (links[i].href.match(/^#example-\d+/)) {
+	links[i].onClick = function() { links[i].href.match(/^#example-(\d+)$/); var example = document.getElementById($1).setAttribute('open'); return true; };
+    }
+}
+
+function add_bar(update) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let navbar = document.querySelector('div.index-navbar');
+
+    if (navbar && urlParams.has('project')) {
+        navbar.setAttribute('class', 'index-navbar'); // removes hidden
+        let project = decodeURIComponent(urlParams.get('project'));
+        let index_root = project + '/.index/';
+        let build = project + '/Build/';
+        let query_arg = "?project="+encodeURIComponent(project);
+
+        let links = [
+            { "General Index": document.getElementById('general_index').href },
+            { "Docs": document.getElementById('docs').href },
+            { "Extensions": index_root + 'doc/Extensions.html' },
+            { "Definitions": index_root + 'doc/ExtIndex.html' },
+            { "Debug Log": build + 'debug_log.html' },
+            { "Problems": build + 'problems.html' },
+            { "Source": index_root + 'story.html' },
+            { "Project Index": index_root + 'Index/Welcome.html' } ];
+        let sp = document.createTextNode(" ");
+        links.forEach(h => {
+            Object.entries(h).forEach(([text, url]) => {
+                let my_id = text.toLowerCase().replace(' ', '_');
+                let a = document.querySelector('#'+my_id);
+                let url_target = "file://"+url+query_arg;
+                if (a) {
+                    let parts = a.href.split('#');
+                    let qparts = parts[0].split('?');
+                    a.href = qparts[0] +  (qparts[1] ? ('?' + qparts[1]) : query_arg) + (parts[1] ? ('#' + parts[1]) : "");
+                }
+                else {
+                    a = document.createElement('a');
+                    let href = document.createAttribute("href");
+                    href.value = url_target;
+                    a.setAttributeNode(href);
+                    let elem_id = document.createAttribute("id");
+                    elem_id.value = my_id;
+                    a.setAttributeNode(elem_id);
+                    let linktext = document.createTextNode(text);
+                    a.appendChild(linktext);
+                    navbar.insertBefore(sp.cloneNode(), navbar.firstChild);
+                    navbar.insertBefore(a, navbar.firstChild);
+                }
+            })});
+        if (update) {
+            let main_links = document.querySelectorAll('main a');
+            main_links.forEach(a => {
+                if (!a.href.startsWith('javascript:') || (a.href.match(/[^:]+:\/\// && !a.href.startsWith('file:')))) {
+                    let parts = a.href.split('#')
+                    a.href = parts[0] + query_arg + (parts[1] ? ('#' + parts[1]) : "");
+                } });
+        }
+    }
+}
+
+
+
+document.addEventListener("DOMContentLoaded", add_bar);</script>
+<title>Example #132</title></head>
+<body class="inform7-source">
+
+<div class="inform7-source"><div class="pseudo">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;Uptown Girls&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Riverside Drive is a room. <span class="i7sx">&quot;There&#39;s a pleasant late-afternoon view of the Hudson, and a snap in the air, and you would rather be here than anywhere.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of going a direction, say <span class="i7sx">&quot;Oh, you know where you&#39;re going; no need to deviate from the usual path.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of waiting, say <span class="i7sx">&quot;You stroll along enjoying the November crispness.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[It gets a little annoying to have a random event occurring every single turn of play, so let&#39;s introduce some randomness to determine how often the message appears:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Every turn when a random chance of 1 in 3 succeeds:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	reset passerby;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	choose a random row in the Table of Atmospheric Events;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[event entry][paragraph break]</span><span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line">Table of Atmospheric Events</span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">event</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;Slowly </span></span><span class="td"><span class="i7si">[a passerby]</span></span><span class="td"><span class="i7sx"> strolls by, turning to look at you as she passes.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;Some </span></span><span class="td"><span class="i7si">[passerby]</span></span><span class="td"><span class="i7sx"> nearly bumps into you.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;You dodge to avoid </span></span><span class="td"><span class="i7si">[a passerby]</span></span><span class="td"><span class="i7sx">.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;You weave around </span></span><span class="td"><span class="i7si">[a passerby]</span></span><span class="td"><span class="i7sx">, who has stalled to look into a window.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;There&#39;s a ruckus as one of the ubiquitous taxis nearly collides with </span></span><span class="td"><span class="i7si">[a passerby]</span></span><span class="td"><span class="i7sx"> crossing the street.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;</span></span><span class="td"><span class="i7si">[The passerby]</span></span><span class="td"><span class="i7sx"> beside you waves to a friend across the street.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;To your left, </span></span><span class="td"><span class="i7si">[a passerby]</span></span><span class="td"><span class="i7sx"> drops her purse, and swears as she retrieves it.&quot;</span></span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Hair color is a kind of value. A person has hair color. the hair colors are red-headed, brunette, blonde.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Height is a kind of value. A person has height. The heights are tall, medium-height, short.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Grooming is a kind of value. A person has grooming. The groomings are messy and tidy.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To reset passerby:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the hair color of the passerby is a random hair color;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the height of the passerby is a random height;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the grooming of the passerby is a random grooming.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The passerby is a woman in Riverside Drive. The passerby is scenery. Understand <span class="i7sx">&quot;woman&quot;</span> or <span class="i7sx">&quot;lady&quot;</span> as the passerby. The printed name of the passerby is <span class="i7sx">&quot;</span><span class="i7si">[one of]</span><span class="i7sx">woman</span><span class="i7si">[or]</span><span class="i7sx">lady</span><span class="i7si">[purely at random]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[At this point we borrow some techniques from later to describe the woman with a random combination of characteristics, and to let the player refer to her by those traits:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Before printing the name of the passerby:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if a random chance of 1 in 4 succeeds, say <span class="i7sx">&quot;</span><span class="i7si">[height]</span><span class="i7sx"> &quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if a random chance of 1 in 4 succeeds, say <span class="i7sx">&quot;</span><span class="i7si">[grooming]</span><span class="i7sx"> &quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if a random chance of 1 in 4 succeeds, say <span class="i7sx">&quot;</span><span class="i7si">[hair color]</span><span class="i7sx"> &quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand the hair color property as describing the passerby. Understand the height property as describing the passerby. Understand the grooming property as describing the passerby.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[If we also wanted each of those combinations to mean some more specifically-described woman:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of examining a passerby:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	repeat through Table of Passerby Descriptions:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if hair entry is the hair color of the passerby and height entry is the height of the passerby and grooming entry is the grooming of the passerby, say <span class="i7sx">&quot;</span><span class="i7si">[description entry][paragraph break]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line">Table of Passerby Descriptions</span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">hair</span><span class="td">height</span><span class="td">grooming</span><span class="td">description</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">red-headed</span><span class="td">tall</span><span class="td">messy</span><span class="td"><span class="i7sx">&quot;An older woman with long red hippie-hair poking out of a ponytail in straggles, and bent to hide how tall she is.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">red-headed</span><span class="td">medium-height</span><span class="td">messy</span><span class="td"><span class="i7sx">&quot;A shaggy red-head with shingled hair.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">red-headed</span><span class="td">short</span><span class="td">messy</span><span class="td"><span class="i7sx">&quot;Almost an urchin, and very young, with ginger hair and a smudged nose and far too many freckles.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">red-headed</span><span class="td">tall</span><span class="td">tidy</span><span class="td"><span class="i7sx">&quot;A precise career woman with henna-red hair.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">red-headed</span><span class="td">medium-height</span><span class="td">tidy</span><span class="td"><span class="i7sx">&quot;Her hair is red in the way that lollipops and fire trucks are red: not by nature but by art. The rest of her clothing is pretty ordinary, though.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">red-headed</span><span class="td">short</span><span class="td">tidy</span><span class="td"><span class="i7sx">&quot;Thin and small in every sense, with chin-length red-hair. Even high heels do not bring her head much above your shoulder.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">brunette</span><span class="td">tall</span><span class="td">messy</span><span class="td"><span class="i7sx">&quot;A Juno-esque woman with dark hair, wearing something resembling a tent.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">brunette</span><span class="td">medium-height</span><span class="td">messy</span><span class="td"><span class="i7sx">&quot;An unremarkable woman with dark brown hair and the aura of needing a wash.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">brunette</span><span class="td">short</span><span class="td">messy</span><span class="td"><span class="i7sx">&quot;There are mustard stains on the t-shirt of this short brown-haired woman. Estimated age ca. 40. Possibly homeless.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">brunette</span><span class="td">tall</span><span class="td">tidy</span><span class="td"><span class="i7sx">&quot;A leggy brunette in business attire.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">brunette</span><span class="td">medium-height</span><span class="td">tidy</span><span class="td"><span class="i7sx">&quot;Medium-height, brown-haired, generally nondescript.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">brunette</span><span class="td">short</span><span class="td">tidy </span><span class="td"><span class="i7sx">&quot;A neat little dark-haired girl.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">blonde</span><span class="td">tall</span><span class="td">messy</span><span class="td"><span class="i7sx">&quot;A tall blonde of about thirteen who looks as though she has not yet figured out how to get her wardrobe to catch up with her rate of growth. Her t-shirt and her pants are too short.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">blonde</span><span class="td">medium-height</span><span class="td">messy</span><span class="td"><span class="i7sx">&quot;Black leather pants and the wall-o-hair look.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">blonde</span><span class="td">short</span><span class="td">messy</span><span class="td"><span class="i7sx">&quot;One of those shocking platinum blonde types, with a tiger-patterned skirt. Reeally trashy.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">blonde</span><span class="td">tall</span><span class="td">tidy</span><span class="td"><span class="i7sx">&quot;Elfin and severe, with perfectly straight hair falling to the middle of the back.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">blonde</span><span class="td">medium-height</span><span class="td">tidy</span><span class="td"><span class="i7sx">&quot;A rounded, Marilyn-esque blonde.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">blonde</span><span class="td">short</span><span class="td">tidy</span><span class="td"> &quot;Pin-precise in a blue-and-white striped suit and a boyish haircut.&quot;</span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Test me with <span class="i7sx">&quot;z / z / x passerby / z / z / x passerby&quot;</span>.</span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

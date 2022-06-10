@@ -1,0 +1,1559 @@
+<!doctype html>
+<meta charset="utf-8"><html lang="en"><head><title>Writing in Inform 15. Numbers and Equations</title><link rel="stylesheet" href="style.css"><script src="chapter.js"></script></head><body>
+<nav><div class="index-navbar hidden">
+<a id="project_index" href="../Welcome.html"> Project Index</a><a id="source" href="../../story.html"> Source</a><a id="problems" href="../../Build/problems.html"> Problems</a><a id="debug_log" href="../../Build/debug_log.html"> Debug Log</a><a id="definitions" href="./ExtIndex.html"> Definitions</a><a id="extensions" href="./Extensions.html"> Extensions</a><a id="docs" href="./index.html"> Docs</a><a id="general_index" href="./index.html#general-index"> General Index</a>
+
+</div>
+</nav>
+<main>
+<header>
+
+<div class="toc">
+<h1>Writing in Inform</h1>
+<div class="doc-navbar">
+<div>
+<div class="doc-navbar-left"><a class="nav-left" href="wi_14.html#wi-chapter-14-adaptive-text-and-responses">14. Adaptive Text and Responses</a></div>
+<div class="doc-navbar-right"><a class="nav-right" href="wi_16.html#wi-chapter-16-tables">16. Tables</a></div>
+</div>
+<div>
+<div class="doc-navbar-left"><a href="index.html">Table of Contents</a></div>
+<div class="doc-navbar-right"><a href="index.html#general-index">General Index</a></div>
+</div>
+</div>
+
+<div><a id="toggle" href="javascript:toggle_details('examples')">Open all examples</a></div>
+<h2>15. Numbers and Equations</h2>
+<div class="toc-section">15.1 <a href="wi_15.html#wi-15.1">How do we measure things?</a></div>
+<div class="toc-section">15.2 <a href="wi_15.html#wi-15.2">Numbers and real numbers</a></div>
+<div class="toc-section">15.3 <a href="wi_15.html#wi-15.3">Real number conversions</a></div>
+<div class="toc-section">15.4 <a href="wi_15.html#wi-15.4">Printing real numbers</a></div>
+<div class="toc-section">15.5 <a href="wi_15.html#wi-15.5">Arithmetic</a></div>
+<div class="toc-section">15.6 <a href="wi_15.html#wi-15.6">Powers and logarithms</a></div>
+<div class="toc-section">15.7 <a href="wi_15.html#wi-15.7">Trigonometry</a></div>
+<div class="toc-section">15.8 <a href="wi_15.html#wi-15.8">Units</a></div>
+<div class="toc-section">15.9 <a href="wi_15.html#wi-15.9">Multiple notations</a></div>
+<div class="toc-section">15.10 <a href="wi_15.html#wi-15.10">Scaling and equivalents</a></div>
+<div class="toc-section">15.11 <a href="wi_15.html#wi-15.11">Named notations</a></div>
+<div class="toc-section">15.12 <a href="wi_15.html#wi-15.12">Making the verb &quot;to weigh&quot;</a></div>
+<div class="toc-section">15.13 <a href="wi_15.html#wi-15.13">The Metric Units extension</a></div>
+<div class="toc-section">15.14 <a href="wi_15.html#wi-15.14">Notations including more than one number</a></div>
+<div class="toc-section">15.15 <a href="wi_15.html#wi-15.15">The parts of a number specification</a></div>
+<div class="toc-section">15.16 <a href="wi_15.html#wi-15.16">Understanding specified numbers</a></div>
+<div class="toc-section">15.17 <a href="wi_15.html#wi-15.17">Totals</a></div>
+<div class="toc-section">15.18 <a href="wi_15.html#wi-15.18">Equations</a></div>
+<div class="toc-section">15.19 <a href="wi_15.html#wi-15.19">Arithmetic with units</a></div>
+<div class="toc-section">15.20 <a href="wi_15.html#wi-15.20">Multiplication of units</a></div>
+</header>
+<main>
+<section class="chapter" id="wi-chapter-15-numbers-and-equations">
+<section class="section" id="wi-15.1"><div>
+
+
+
+<h3>WI §15.1. How do we measure things?</h3>
+<p>In a poem, or in a novel, exact scientific measurements are not the point. So a writer who wants to set up ways to describe the sky at different times might go for something like this:</p>
+
+<div class="code"><p class="quoted">
+The sky can be cadmium, mackerel, overcast or cornflower.
+</p></div>
+<p>And nobody is interested in the sun angle, the percentage of cloud cover, or any of the other numbers behind all of this. Similarly, if we walk into a familiar office which has been disturbed, we might well say "Look! The filing cabinet is in the middle of the floor." We are not likely to exclaim "Look! The filing cabinet is 1.2m from the east wall and 2.1m from the north wall."</p>
+<p>But some writers of interactive fiction do like to make use of physical realism. For instance, it's easier to forbid a bulky object being taken through a narrow doorway if there is a way to measure and compare sizes.</p>
+<p>Most computer programs write numbers in the same way, whatever they're used for. But human beings don't. If someone says "How far is Duluth?", we're more likely to say "100 miles" than just "100". This is a useful feature of natural language, because it means we always know how to translate that number into reality - it's 100 miles, not 100 km, or 100 inches; and it's definitely a distance, not 100 apples or 100 kilograms.</p>
+<p>Inform lets us use plain numbers if we want to, but it also allows us to create numerical kinds of value:</p>
+
+<div class="code"><p class="quoted">
+A distance is a kind of value. 5 miles specifies a distance.
+</p></div>
+<p>That kind of definition, and the consequences, will be the subject of this chapter. But we will first look a little harder at the two numerical kinds of value we get for free: "number" and "real number".</p>
+
+
+</div></section>
+<section class="section" id="wi-15.2"><div>
+
+
+
+
+
+<h3>WI §15.2. Numbers and real numbers</h3>
+<p>Inform uses two different kinds of numerical quantity: "number" and "real number". Neither is better than the other: they're different approaches, each good for a different purpose.</p>
+<p>What Inform calls a "number" is a whole number, positive, negative or zero. The range of numbers we can hold is not unlimited - if the format Setting for a project is the Z-machine, then we have:</p>
+
+<div class="code"><p class="quoted">
+-32768, -32767, ..., -3, -2, -1, 0, 1, 2, 3, ..., 32767
+</p></div>
+<p>and if it is set to Glulx, then we have:</p>
+
+<div class="code"><p class="quoted">
+-2147483648, -2147483647, ..., -3, -2, -1, 0, 1, 2, 3, ..., 2147483647
+</p></div>
+<p>Numbers from zero to twelve may be written out, but larger ones must be written as numerals. So "twelve" or "12", but "13" only.</p>
+<p>If we're using Glulx, Inform also has "real numbers" such as</p>
+
+<div class="code"><p class="quoted">
+2.1718, 4.0, -1633.9
+</p></div>
+<p>which are not restricted to whole numbers, but which are stored only approximately: only about six to nine decimal digits can be relied on. For example,</p>
+
+<div class="code"><p class="quoted">
+showme 1.2345654321;
+<br>showme 1.2345667890;
+</p></div>
+<p>produces</p>
+
+<div class="code"><p class="quoted">
+real number: 1.23457
+<br>real number: 1.23457
+</p></div>
+<p>because these two numbers are so close together that Inform can't tell them apart. But we do also get the ability to represent enormously large or small quantities, and to help with that, Inform can read and write "scientific notation". For example,</p>
+
+<div class="code"><p class="quoted">
+let Avogadro's number be 6.022141 x 10^23;
+</p></div>
+<p>is equivalent to typing</p>
+
+<div class="code"><p class="quoted">
+let Avogadro's number be 602214100000000000000000.0;
+</p></div>
+<p>The "x 10^23" part tells Inform that the decimal point belongs 23 places to the left of where it's written. (In scientific papers, the 23 would be printed as a superscript -- it's 10 to the power 23 -- but that's not convenient to type in to the source text, so we use the "^" symbol to indicate superscript.) The range we can hold is roughly:</p>
+
+<div class="code"><p class="quoted">
+1.18 x 10^−38 to 3.4 x 10^38
+</p></div>
+<p>It's hard to convey just how enormously different these two numbers are: if we used them to measure widths in meters, one would be a hundred trillion trillion times smaller than an atom, the other a billion times larger than the entire visible universe. Scientific notation is the ultimate adjustable spanner.</p>
+<p>Inform also allows the two most famous real numbers in mathematics to be given by their names:</p>
+
+<div class="code"><p class="quoted">
+pi
+<br>e
+</p></div>
+<p>which are close to 3.14159265 and 2.7182818 respectively. (Lower case letters must be used: these can't be written "Pi" or "E".  Euler's constant gamma, always in the bronze medal position, will have to be written out longhand as 0.5772156649.)</p>
+<p>Most computer programming languages traditionally write floating-point numbers using the E notation, like so:</p>
+
+<div class="code"><p class="quoted">
+6.022141E+23;
+</p></div>
+<p>Inform will follow suit if the use option "Use engineering notation." is set, but by default it isn't.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-253"><p class="example-p"><span class="example-short-start">253. <a href="rb_9.html#example-253" class="example-link" onClick="(function() { document.getElementById('example-253').setAttribute('open','open'); return true; })();">Alias</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">A telephone with phone numbers of the standard American seven-digit length.</span> (c.f. <a href="rb_9.html#rb-9.10">RB §9.10. Telephones</a>)</p></div>
+</div></section>
+<section class="section" id="wi-15.3"><div>
+
+
+
+
+
+<h3>WI §15.3. Real number conversions</h3>
+<p>This section notes down some technicalities about real numbers which need to be put down in writing somewhere, but won't affect most people most of the time.</p>
+<p>Inform allows us to use numbers whenever real numbers are expected, and converts them automatically. For example,</p>
+
+<div class="code"><p class="quoted">
+cosine of 2
+</p></div>
+<p>is read as if it were</p>
+
+<div class="code"><p class="quoted">
+cosine of 2.0
+</p></div>
+<p>and produces -0.41615 either way. This conversion goes from exactness to approximation, so we may lose a little accuracy: real numbers measure to an accuracy of about 1 part in 16000000, so they'll have trouble telling the difference between 16000000 and 16000001. But this is unlikely to matter, since real numbers are used only for approximate calculations anyway.</p>
+<p>The ordinary arithmetic operations work on both numbers and real numbers, so the meaning of "N plus M" depends on the kinds of N and M. In general the rule is that if either is a real number then the other one is automatically converted, and real arithmetic is used. So:</p>
+
+<div class="code"><p class="quoted">
+3 divided by 2 = 1
+<br>3 divided by 2.0 = 1.5
+<br>3.0 divided by 2 = 1.5
+<br>3.0 divided by 2.0 = 1.5
+</p></div>
+<p>In general we can't do the reverse, that is, we can't silently use a real number where a number is expected. For example,</p>
+
+<div class="code"><p class="quoted">
+word number 1.6 in "The Great Wall of China"
+</p></div>
+<p>makes no sense. But we can explicitly convert them:</p>
+
+<div class="definition" id="defn182">
+<p class="defnprototype"><strong></strong>(real number)<strong> to the nearest whole number ... number</strong></p>
+
+
+
+<p>This phrase performs signed addition on the given values, whose kinds must agree, and produces the result. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+1.4 to the nearest whole number = 1
+<br>1.6 to the nearest whole number = 2
+<br>-1.6 to the nearest whole number = -2
+</p></blockquote>
+
+<p>We probably ought to bear in mind that the limited range of "number" means that the nearest whole number might not be all that near. For example:</p>
+
+<blockquote class="code"><p class="quoted">
+6 x 10^23 to the nearest whole number = 2147483647
+</p></blockquote>
+
+<p>because 2147483647 is the highest value a "number" can have.</p>
+
+
+</div>
+
+<p>Finally, real number can also store two interesting not-really-number sorts of value. First, we have</p>
+
+<div class="code"><p class="quoted">
+plus infinity, minus infinity
+</p></div>
+<p>which are used to keep track of what happens when we divide by really small quantities. It's mathematically impossible to divide by 0, but this can be hard to avoid when we're using real numbers, because they're only approximately stored - so it's not always possible to say whether they're exactly 0 or not. So in real number arithmetic,</p>
+
+<div class="code"><p class="quoted">
+showme 1.0 divided by 0.0;
+</p></div>
+<p>doesn't throw a run-time problem the way that</p>
+
+<div class="code"><p class="quoted">
+showme 1 divided by 0;
+</p></div>
+<p>does. Instead, it produces "plus infinity". Infinity behaves roughly the way we might expect - for example, "2 divided by plus infinity" produces 0 - but once it comes into a calculation the result probably lies on some extreme and won't be very useful. Amusingly, the following is correct Inform syntax:</p>
+
+<div class="code"><p class="quoted">
+plus infinity to the nearest whole number
+</p></div>
+<p>and evaluates of course to 2147483647. We can use the adjectives "infinite" and "finite" to talk about these numbers: plus infinity and minus infinity are infinite, everything else is finite.</p>
+<p>The same problem occurs for calculations like square roots. It's impossible to take the square root of a negative number, but we don't want to throw a run-time problem, because approximation means we can't always guarantee to stay the right side of 0. So for a few calculations like this, Inform generates what's called a "nonexistent" real number. We can use the adjectives nonexistent or existent to talk about this. Every number mentioned on this page so far is "existent", including the infinities. The only way to get a nonexistent number is to carry out an impossible mathematical operation such as</p>
+
+<div class="code"><p class="quoted">
+logarithm of -10
+</p></div>
+<p>(The design of "real number" here follows well established trade-offs for scientific computing. Inform follows the IEEE-754 binary32 standard for floating-point arithmetic, so Inform's "real number" behaves very like the "float" type in C, C++, Java and similar programming languages. A "nonexistent" number is what's often called a NaN - a Not-a-Number.)</p>
+
+
+</div></section>
+<section class="section" id="wi-15.4"><div>
+
+
+
+
+
+<h3>WI §15.4. Printing real numbers</h3>
+
+<div class="definition" id="defn183">
+<p class="defnprototype"><strong>say "[</strong>(real number)<strong> to </strong>(number)<strong> decimal places]"</strong></p>
+
+
+
+<p>This text substitution writes out the number to the given number of decimal places. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+"The semicircle is roughly [pi to 3 decimal places] paces around."
+</p></blockquote>
+
+<p>produces "The semicircle is roughly 3.142 paces around." The number of places can only usefully be from 1 to 8. Note that, for example, "[1.235 x 10^-7 to 3 decimal places]" produces 0.0; "[1.235678 x 10^8 to 3 decimal places]" produces "1.236 × 10^8".</p>
+
+
+</div>
+
+
+<div class="definition" id="defn184">
+<p class="defnprototype"><strong>say "[</strong>(real number)<strong> in decimal notation]"</strong></p>
+
+
+
+<p>This text substitution writes out the number in decimal form, that is, avoiding "x 10^n" even for very large or very small quantities. For example,</p>
+
+<blockquote class="code"><p class="quoted">
+"[1.23457 x 10^8 in decimal notation]"
+</p></blockquote>
+
+<p>produces 123457000.0 rather than 1.23457 x 10^8. This can look pretty extreme: for example, "[1.8983 x 10^27 in decimal notation]", the mass of the planet Jupiter in kilograms, produces 1898296960000000000000000000.0.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn185">
+<p class="defnprototype"><strong>say "[</strong>(real number)<strong> to </strong>(number)<strong> decimal places in decimal notation]"</strong></p>
+
+
+
+<p>This text substitution writes out the number in decimal form, but rounding to the accuracy given.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn186">
+<p class="defnprototype"><strong>say "[</strong>(real number)<strong> in scientific notation]"</strong></p>
+
+
+
+<p>This text substitution writes out the number in scientific form, that is, using "x 10^n" even for easy-to-judge quantities. For example,</p>
+
+<blockquote class="code"><p class="quoted">
+"[the reciprocal of 137 in scientific notation]"
+</p></blockquote>
+
+<p>produces 7.29927 x 10^-3 rather than 0.0073. This can look odd: for example, "[pi in scientific notation]" comes out as 3.14159 × 10^0 rather than 3.14159.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn187">
+<p class="defnprototype"><strong>say "[</strong>(real number)<strong> to </strong>(number)<strong> decimal places in scientific notation]"</strong></p>
+
+
+
+<p>This text substitution writes out the number in scientific form, but rounding to the accuracy given.</p>
+
+
+</div>
+
+
+
+</div></section>
+<section class="section" id="wi-15.5"><div>
+
+
+
+
+
+<h3>WI §15.5. Arithmetic</h3>
+<p>We are allowed to perform about the same operations on numbers as are provided by a simple office calculator, starting with addition, subtraction, multiplication and division. We can use the traditional typewriter symbols for these, +, -, * and /, or can spell them out in words as "plus", "minus", "times" (or "multiplied by"), and "divided by". Definitively:</p>
+
+<div class="definition" id="defn188">
+<p class="defnprototype"><strong></strong>(arithmetic value)<strong> + </strong>(arithmetic value)<strong> ... value</strong></p>
+<br><em>or:</em>   <p class="defnprototype"><strong></strong>(arithmetic value)<strong> plus </strong>(arithmetic value)<strong> ... value</strong></p>
+
+
+
+<p>This phrase performs signed addition on the given values, whose kinds must agree, and produces the result. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+200 + 1 = 201
+<br>10:04 AM + two minutes = 10:06 AM
+</p></blockquote>
+
+
+
+</div>
+
+
+<div class="definition" id="defn189">
+<p class="defnprototype"><strong></strong>(arithmetic value)<strong> - </strong>(arithmetic value)<strong> ... value</strong></p>
+<br><em>or:</em>   <p class="defnprototype"><strong></strong>(arithmetic value)<strong> minus </strong>(arithmetic value)<strong> ... value</strong></p>
+
+
+
+<p>This phrase performs signed subtraction on the given values, whose kinds must agree, and produces the result. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+200 - 1 = 199
+<br>10:04 AM - two minutes = 10:02 AM
+</p></blockquote>
+
+
+
+</div>
+
+
+<div class="definition" id="defn190">
+<p class="defnprototype"><strong></strong>(arithmetic value)<strong> * </strong>(arithmetic value)<strong> ... value</strong></p>
+<br><em>or:</em>   <p class="defnprototype"><strong></strong>(arithmetic value)<strong> times </strong>(arithmetic value)<strong> ... value</strong></p>
+<br><em>or:</em>   <p class="defnprototype"><strong></strong>(arithmetic value)<strong> multiplied by </strong>(arithmetic value)<strong> ... value</strong></p>
+
+
+
+<p>This phrase performs signed multiplication on the given values, whose kinds must be dimensionally compatible, and produces the result. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+201 times 3 = 603
+<br>two minutes times 4 = eight minutes
+</p></blockquote>
+
+
+
+</div>
+
+
+<div class="definition" id="defn191">
+<p class="defnprototype"><strong></strong>(arithmetic value)<strong> / </strong>(arithmetic value)<strong> ... value</strong></p>
+<br><em>or:</em>   <p class="defnprototype"><strong></strong>(arithmetic value)<strong> divided by </strong>(arithmetic value)<strong> ... value</strong></p>
+
+
+
+<p>This phrase performs signed division on the given values, whose kinds must be dimensionally compatible, and produces the result. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+201 divided by 3 = 67
+<br>202 divided by 3 = 67
+<br>202.0 divided by 3 = 67.33334
+<br>twenty minutes divided by 4 = five minutes
+<br>twenty minutes divided by five minutes = 4
+</p></blockquote>
+
+<p>Division rounds whole-number values down to the nearest whole number. An attempt to divide a number by 0 will cause a run-time problem message; but an attempt to divide a real number by 0 will instead produce plus infinity or minus infinity.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn192">
+<p class="defnprototype"><strong>remainder after dividing </strong>(arithmetic value)<strong> by </strong>(arithmetic value)<strong> ... value</strong></p>
+
+
+
+<p>This phrase performs signed division on the given values, whose kinds must be dimensionally compatible, and then produces the remainder. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+remainder after dividing 201 by 5 = 1
+<br>remainder after dividing twenty minutes by 7 = six minutes
+</p></blockquote>
+
+<p>It is mathematically impossible to divide by 0, so any attempt to find the remainder after dividing a number by 0 will cause a run-time problem message. For a real number this won't arise and the remainder will usually be 0.0.</p>
+
+
+</div>
+
+<p>The verbal and symbolic forms of these phrases are equivalent:</p>
+
+<div class="code"><p class="quoted">
+the score + 10
+<br>the score plus 10
+</p></div>
+<p>It's probably better style to spell them out in full when writing text, and keep the symbols for writing equations, as we'll see later on in the chapter. (If we do use the symbols, then spaces around them are obligatory: to Inform, they are words which just happen to be spelt with symbols instead of letters.)</p>
+<p>Arithmetic often produces fussily exact answers which seem inappropriate in a conversation. Nobody says "Steeple Barton is 7.655 miles down the road", but "Steeple Barton is eight miles down the road" sounds perfectly normal. In order to make that sort of report easier to make, Inform provides another arithmetic operation, one that's not found in most computer programming languages:</p>
+
+<div class="definition" id="defn193">
+<p class="defnprototype"><strong></strong>(arithmetic value)<strong> to the nearest </strong>(arithmetic value)<strong> ... value</strong></p>
+
+
+
+<p>This phrase rounds the given value off, rounding upward in boundary cases. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+201 to the nearest 5 = 200
+<br>205 to the nearest 10 = 210
+<br>10:27 AM to the nearest five minutes = 10:25 AM
+</p></blockquote>
+
+
+
+</div>
+
+<p>Inform has very few mathematical functions built in as phrases, because these aren't very often needed in story-telling. But it does provide these:</p>
+
+<div class="definition" id="defn194">
+<p class="defnprototype"><strong>square root of </strong>(arithmetic value)<strong> ... value</strong></p>
+
+
+
+<p>This phrase produces an approximate square root, to the nearest integer, of the given value, which must be of a kind which has square roots. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+square root of 16 = 4
+</p></blockquote>
+
+<p>Trying to take the square root of a negative number will cause a run-time problem, because then we can't even nearly solve it.</p>
+<p>(Warning: this is slow to compute if the Z-machine setting is used. For</p>
+<p>best performance, use Glulx.)</p>
+
+
+</div>
+
+
+<div class="definition" id="defn195">
+<p class="defnprototype"><strong>real square root of </strong>(arithmetic value)<strong> ... value</strong></p>
+
+
+
+<p>This phrase produces a square root, as accurately as a real number can hold it, of the given value, which must be of a kind which has square roots. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+real square root of 2 = 1.41421
+</p></blockquote>
+
+<p>The real square root of a negative number is nonexistent.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn196">
+<p class="defnprototype"><strong>cube root of </strong>(arithmetic value)<strong> ... value</strong></p>
+
+
+
+<p>This phrase produces an approximate cube root, to the nearest integer, of the given value, which must be of a kind which has cube roots. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+cube root of 27 = 3
+<br>cube root of -27 = -3
+</p></blockquote>
+
+<p>(Warning: this is not very accurate if the Z-machine setting is used. For</p>
+<p>best performance, use Glulx.)</p>
+
+
+</div>
+
+<p>We can compare numbers using either the traditional computer-programming symbols, or using words:</p>
+
+<div class="code"><p class="quoted">
+if the score is less than 10
+<br>if the score &lt; 10
+</p></div>
+<p>and similarly for "greater than", "at least" and "at most", with the symbols "&gt;", "&gt;=" and "&lt;=". But we are not allowed the equals sign: for that we need only use "is" -</p>
+
+<div class="code"><p class="quoted">
+if the score is 10
+</p></div>
+</div></section>
+<section class="section" id="wi-15.6"><div>
+
+
+
+
+
+<h3>WI §15.6. Powers and logarithms</h3>
+<p>If the last section provided a basic office calculator, this section and the next provide the more exotic rows of buttons found on a scientific calculator. All of these are done using real number arithmetic. To start with some dull ones, here are two ways to round off numbers:</p>
+
+<div class="definition" id="defn197">
+<p class="defnprototype"><strong>ceiling of </strong>(real number)<strong> ... real number</strong></p>
+
+
+
+<p>Produces the smallest integer value greater than or equal to the one given. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+ceiling of pi = 4.0
+<br>ceiling of -16.315 = -16.0
+</p></blockquote>
+
+<p>(Note that the result is still a real number; it simply has no fractional part any more.)</p>
+
+
+</div>
+
+
+<div class="definition" id="defn198">
+<p class="defnprototype"><strong>floor of </strong>(real number)<strong> ... real number</strong></p>
+
+
+
+<p>Produces the largest integer value less than or equal to the one given. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+floor of pi = 3.0
+<br>floor of -16.315 = -17.0
+</p></blockquote>
+
+<p>(Note that the result is still a real number; it simply has no fractional part any more.)</p>
+
+
+</div>
+
+<p>Two more easy functions:</p>
+
+<div class="definition" id="defn199">
+<p class="defnprototype"><strong>absolute value of </strong>(real number)<strong> ... real number</strong></p>
+
+
+
+<p>Removes the sign from a value, leaving positive numbers alone but making negative ones positive. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+absolute value of 62.1 = 62.1
+<br>absolute value of 0 = 0.0
+<br>absolute value of -62.1 = 62.1
+<br>absolute value of minus infinity = plus infinity
+</p></blockquote>
+
+
+
+</div>
+
+
+<div class="definition" id="defn200">
+<p class="defnprototype"><strong>reciprocal of </strong>(real number)<strong> ... real number</strong></p>
+
+
+
+<p>Calculates 1/x, that is, divides up 1 into this many pieces. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+reciprocal of -2 = -0.5
+<br>reciprocal of 0.1 = 10.0
+<br>reciprocal of 7 = 0.14286
+<br>reciprocal of plus infinity = 0.0
+</p></blockquote>
+
+
+
+</div>
+
+<p>Now for taking powers. In general we have:</p>
+
+<div class="definition" id="defn201">
+<p class="defnprototype"><strong></strong>(real number)<strong> to the power </strong>(real number)<strong> ... real number</strong></p>
+
+
+
+<p>Computes x to the power y. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+2 to the power 4 = 16.0
+<br>100 to the power 0.5 = 10.0
+<br>7 to the power -1 = 0.14286
+<br>pi to the power 0 = 1.0
+</p></blockquote>
+
+<p>In the words of the Glulx specification document (section 2.12), "the special cases are breathtaking": if you need to know exactly what, say, "minus infinity to the power Y" will do for different cases of Y, refer to the details of the "pow" opcode.</p>
+
+
+</div>
+
+<p>To compute square roots, it's more efficient to use "real square root of X" function than "X to the power 0.5", though both work. To obtain the Nth root of X, we might use:</p>
+
+<div class="code"><p class="quoted">
+X to the power (reciprocal of N)
+</p></div>
+<p>being careful to use "reciprocal of N" rather than "1 divided by N" to make sure we're using real and not integer arithmetic.</p>
+<p>Similarly, the following is more efficient than "e to the power ...", but equivalent to it:</p>
+
+<div class="definition" id="defn202">
+<p class="defnprototype"><strong>exponential of </strong>(real number)<strong> ... real number</strong></p>
+
+
+
+<p>Computes e to the given power, where e is the base of natural logarithms. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+exponential of 0 = 1.0
+<br>exponential of 1 = e = 2.7182818
+<br>exponential of -10 = 4.53999 x 10^-5
+<br>exponential of 10 = 22026.46484
+<br>exponential of logarithm of 7.12 = 7.12
+</p></blockquote>
+
+
+
+</div>
+
+<p>The reverse of taking powers is taking logarithms.</p>
+
+<div class="definition" id="defn203">
+<p class="defnprototype"><strong>logarithm to base </strong>(number)<strong> of </strong>(real number)<strong> ... real number</strong></p>
+
+
+
+<p>Finds what power the base would have to be raised to in order to get this value. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+logarithm to base 10 of 1000000 = 6.0
+<br>logarithm to base 10 of 350 = 2.54407
+<br>logarithm to base 2 of 256 = 8.0
+</p></blockquote>
+
+<p>Logarithms of zero or negative numbers are nonexistent. Note that "logarithm to base 10 of ..." is what most calculators call simply "log", but Inform doesn't: it uses "log" for natural logarithms.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn204">
+<p class="defnprototype"><strong>natural</strong>/--<strong> logarithm of </strong>(real number)<strong> ... real number</strong></p>
+
+
+
+<p>Finds what power e would have to be raised to in order to get this value. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+logarithm of e = 1.0
+<br>logarithm of 1 = 0.0
+<br>logarithm of 1000 = 6.90776
+<br>logarithm of exponential of 7.12 = 7.12
+</p></blockquote>
+
+<p>Logarithms of zero or negative numbers are nonexistent. This is the function which most calculators label as "ln", for "log natural", but in mathematical and scientific papers it's more often written "log", and Inform follows that convention.</p>
+
+
+</div>
+
+
+
+</div></section>
+<section class="section" id="wi-15.7"><div>
+
+
+
+
+
+<h3>WI §15.7. Trigonometry</h3>
+<p>We have twelve functions left to cover, though they are all closely related.</p>
+
+<div class="definition" id="defn205">
+<p class="defnprototype"><strong></strong>(real number)<strong> degrees ... real number</strong></p>
+
+
+
+<p>Inform measures angles in radians, a convention in which the angle for a half circle is pi, and a right angle is pi divided by 2. This is better from a mathematical point of view, but in practice most people think about angles using degrees, where 180 degrees is a half-circle and a right angle is 90 degrees. This phrase helps with that by converting from degrees to radians: in other words, it multiplies by 0.0174532925, since that's roughly 1/180th of pi. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+sine of 90 degrees = 0.0
+<br>cosine of 60 degrees = 0.5
+</p></blockquote>
+
+
+
+</div>
+
+
+<div class="definition" id="defn206">
+<p class="defnprototype"><strong>sine of </strong>(real number)<strong> ... real number</strong></p>
+
+
+
+<p>The length of the upright of a right-angled triangle with this angle and a hypotenuse of length 1, where angle is measured in radians. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+sine of 0 = 0
+<br>sine of 45 degrees = 0.70711
+<br>sine of (pi divided by 4) = 0.70711
+<br>sine of (pi divided by 2) = 1.0
+<br>sine of pi = 0
+</p></blockquote>
+
+
+
+</div>
+
+
+<div class="definition" id="defn207">
+<p class="defnprototype"><strong>cosine of </strong>(real number)<strong> ... real number</strong></p>
+
+
+
+<p>The length of the base of a right-angled triangle with this angle and a hypotenuse of length 1, where angle is measured in radians. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+cosine of 0 = 1.0
+<br>cosine of 45 degrees = 0.70711
+<br>cosine of (pi divided by 4) = 0.70711
+<br>cosine of (pi divided by 2) = 0.0
+<br>cosine of pi = -1.0
+</p></blockquote>
+
+
+
+</div>
+
+
+<div class="definition" id="defn208">
+<p class="defnprototype"><strong>tangent of </strong>(real number)<strong> ... real number</strong></p>
+
+
+
+<p>The ratio of the upright length to the base length in a right-angled triangle with this angle and a hypotenuse of length 1, where angle is measured in radians. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+tangent of 0 = 0.0
+<br>tangent of 45 degrees = 1.0
+<br>tangent of (pi divided by 4) = 1.0
+<br>tangent of (pi divided by 2) = plus infinity
+</p></blockquote>
+
+
+
+</div>
+
+
+<div class="definition" id="defn209">
+<p class="defnprototype"><strong>arcsine of </strong>(real number)<strong> ... real number</strong></p>
+
+
+
+<p>The inverse of the sine function.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn210">
+<p class="defnprototype"><strong>arccosine of </strong>(real number)<strong> ... real number</strong></p>
+
+
+
+<p>The inverse of the cosine function.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn211">
+<p class="defnprototype"><strong>arctangent of </strong>(real number)<strong> ... real number</strong></p>
+
+
+
+<p>The inverse of the tangent function.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn212">
+<p class="defnprototype"><strong>hyperbolic sine of </strong>(real number)<strong> ... real number</strong></p>
+
+
+
+<p>The hyperbolic sine function, often written "sinh" but pronounced "shine".</p>
+
+
+</div>
+
+
+<div class="definition" id="defn213">
+<p class="defnprototype"><strong>hyperbolic cosine of </strong>(real number)<strong> ... real number</strong></p>
+
+
+
+<p>The hyperbolic cosine function, often written "cosh".</p>
+
+
+</div>
+
+
+<div class="definition" id="defn214">
+<p class="defnprototype"><strong>hyperbolic tangent of </strong>(real number)<strong> ... real number</strong></p>
+
+
+
+<p>The hyperbolic tangent function, often written "tanh".</p>
+
+
+</div>
+
+
+<div class="definition" id="defn215">
+<p class="defnprototype"><strong>hyperbolic arcsine of </strong>(real number)<strong> ... real number</strong></p>
+
+
+
+<p>The inverse of the hyperbolic sine function.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn216">
+<p class="defnprototype"><strong>hyperbolic arccosine of </strong>(real number)<strong> ... real number</strong></p>
+
+
+
+<p>The inverse of the hyperbolic cosine function.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn217">
+<p class="defnprototype"><strong>hyperbolic arctangent of </strong>(real number)<strong> ... real number</strong></p>
+
+
+
+<p>The inverse of the hyperbolic tangent function.</p>
+
+
+</div>
+
+
+
+</div></section>
+<section class="section" id="wi-15.8"><div>
+
+
+
+
+
+<h3>WI §15.8. Units</h3>
+<p>Suppose we want to talk about how tall people are. We could just create a "number" property, like this:</p>
+
+<div class="code"><p class="quoted">
+A person has a number called height.
+</p></div>
+<p>But then we would have to write lines like "Isabella has height 68", which nobody would naturally say. What we want is to be able to write "Isabella is 5 foot 8." Perhaps the computer will need to store that measurement as the number 68 in some register or other, but we don't want to know about that.</p>
+<p>"5 foot 8" is a complicated notation in a way - it involves both feet and inches - so let's start with a simpler example:</p>
+
+<div class="code"><p class="quoted">
+A weight is a kind of value. 10kg specifies a weight.
+</p></div>
+<p>This is a little different to the kinds of value seen so far, which were all created like so:</p>
+
+<div class="code"><p class="quoted">
+A colour is a kind of value. The colours are red, green and blue.
+</p></div>
+<p>We can't mix the two styles: a new kind of value will either be numerical at heart ("10kg") or verbal at heart ("blue").</p>
+<p>The effect of "10kg specifies a weight" is to tell Inform that this is the notation for writing a constant "weight". So, for instance,</p>
+
+<div class="code">
+<p class="quoted">
+The maximum load is a weight that varies. The maximum load is 8000kg.
+</p>
+<p class="quoted">
+if the maximum load is greater than 8000kg, ...
+</p>
+</div>
+<p>Inform is then careful not to allow weights to be mixed up with other numerical values. For instance, it won't allow "if the maximum load is 400", because 400 is a number, not a weight.</p>
+<p>More or less anything we can do with numbers, we can now do with weights. For instance, we can write:</p>
+
+<div class="code"><p class="quoted">
+The Weighbridge is a room. "A sign declares that the maximum load is [maximum load]."
+</p></div>
+<p>...which will produce the text "A sign declares that the maximum load is 8000kg."</p>
+<p>Numerical kinds of value are sometimes called "units", because one of their main uses is to allow us to write quantities using scientific units such as kilograms. But they have other uses too. We have a great deal of freedom in creating notations like "10kg", or "4 foot 10" - the main thing is that new notations must not already mean a value. So "10 specifies a weight" will not be allowed, because 10 specifies a number already.</p>
+<p><strong>By default we can only write whole-number values.</strong> As we've seen, Inform can handle both integer (whole-number) and real arithmetic, and they each have their advantages. The default here is to use whole numbers, so</p>
+
+<div class="code"><p class="quoted">
+10 kg specifies a weight.
+</p></div>
+<p>will store only whole numbers of kilograms (unless clever scaling tricks are used: see the next section). That may be fine, but if we need to handle a wider range of weights, or do scientific calculations that need to be more accurate, this is better:</p>
+
+<div class="code"><p class="quoted">
+1.0 kg specifies a weight.
+</p></div>
+<p>Here Inform can see from the decimal point in the prototype number that real numbers will be involved. We can still write "8000kg", but we can now also write "1.9885 x 10^30 kg" (the mass of the Sun) or "9.109383 x 10^−31 kg" (the mass of an electron). On the other hand, any calculations we do will be limited in accuracy to about 6 to 9 decimal places, exactly as for real numbers.</p>
+<p><strong>By default we can only write positive values when whole numbers are used.</strong> Sometimes it is unnatural to write negative values, and so Inform will issue a Problem message if this is tried - for instance, Inform would not allow us to write a weight of -4 kg. (This doesn't mean that arithmetic on units is forbidden to get a negative result: we may want to work out the difference between two weights. Inform's Problem message is simply to try to prevent the accidental writing of incorrect values.) If we do want the ability to write negative values in the source text, we signal that in the notation itself:</p>
+
+<div class="code"><p class="quoted">
+-10 kg specifies a weight.
+</p></div>
+<p>That alerts Inform that both positive and negative values for this unit make sense.</p>
+<p>If we set up a spread of multiple notations (see the next section) then this is automatically enabled, because then we're clearly dealing with proper physics, where negative values are common; and similarly if we use real numbers (as above).</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-254"><p class="example-p"><span class="example-short-start">254. <a href="rb_5.html#example-254" class="example-link" onClick="(function() { document.getElementById('example-254').setAttribute('open','open'); return true; })();">rBGH</a></span> <span class="example-difficulty">★</span>  <span class="example-description">The player character's height is selected randomly at the start of play.</span> (c.f. <a href="rb_5.html#rb-5.1">RB §5.1. The Human Body</a>)</p></div>
+<div class="example-short" id="example-short-255"><p class="example-p"><span class="example-short-start">255. <a href="rb_10.html#example-255" class="example-link" onClick="(function() { document.getElementById('example-255').setAttribute('open','open'); return true; })();">Lethal Concentration 1</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">A poisonous gas that spreads from room to room, incapacitating or killing the player when it reaches sufficient levels.</span> (c.f. <a href="rb_10.html#rb-10.1">RB §10.1. Gases</a>)</p></div>
+<div class="example-short" id="example-short-256"><p class="example-p"><span class="example-short-start">256. <a href="rb_6.html#example-256" class="example-link" onClick="(function() { document.getElementById('example-256').setAttribute('open','open'); return true; })();">Wonderland</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">Hiking Mount Rainier, with attention to which locations are higher and which lower than the present location.</span> (c.f. <a href="rb_6.html#rb-6.9">RB §6.9. Going, Pushing Things in Directions</a>)</p></div>
+<div class="example-short" id="example-short-257"><p class="example-p"><span class="example-short-start">257. <a href="rb_10.html#example-257" class="example-link" onClick="(function() { document.getElementById('example-257').setAttribute('open','open'); return true; })();">Lethal Concentration 2</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">Poisonous gas again, only this time it sinks.</span> (c.f. <a href="rb_10.html#rb-10.1">RB §10.1. Gases</a>)</p></div>
+</div></section>
+<section class="section" id="wi-15.9"><div>
+
+
+
+
+
+<h3>WI §15.9. Multiple notations</h3>
+<p>Going back to our weight example:</p>
+
+<div class="code"><p class="quoted">
+A weight is a kind of value. 10kg specifies a weight.
+</p></div>
+<p>The notation here is a single word, even if it contains digits as well as letters - "10kg". But it doesn't have to be one word. These would have worked, too:</p>
+
+<div class="code"><p class="quoted">
+10kg net specifies a weight.
+<br>10 kg specifies a weight.
+</p></div>
+<p>In fact, we are allowed to have all three at once, as alternatives:</p>
+
+<div class="code"><p class="quoted">
+A weight is a kind of value. 10kg specifies a weight. 10kg net specifies a weight. 10 kg specifies a weight.
+</p></div>
+<p>If we often have to deal with large weights, it becomes a little cumbersome to keep on writing something like "80000kg". An engineer would write "80 tonnes" for this. Similarly, we wouldn't like road maps to use light years, or speed limit signs to use furlongs per fortnight. So it's sometimes useful to provide a spread of different notations, at different scale factors, for the same kind of value. Here's one way of setting up the tonne, that is, the metric ton:</p>
+
+<div class="code"><p class="quoted">
+1 tonne specifies a weight scaled up by 1000.
+</p></div>
+<p>This really is an alternative way to write the same thing: for instance, Inform will allow "25kg plus 3 tonne", the result being "3.025 tonne".</p>
+<p>That's all very well, but a value like "3 tonne" reads a little oddly, even if it's correct in theory. Outside of scientific journals with old-school copy editing, most people would write "3 tonnes", not "3 tonne". Here's a better try:</p>
+
+<div class="code"><p class="quoted">
+1 tonne (singular) specifies a weight scaled up by 1000.
+<br>2 tonnes (plural) specifies a weight scaled up by 1000.
+</p></div>
+<p>Now Inform will not only recognise both forms, but also use the right one when printing back.</p>
+
+
+</div></section>
+<section class="section" id="wi-15.10"><div>
+
+
+
+
+
+<h3>WI §15.10. Scaling and equivalents</h3>
+<p>As we've seen, there are two ways to store values like lengths or weights: as whole numbers, or as real numbers. If we prefer to use whole numbers, or if real numbers aren't available (for example if we're using the Z-machine setting), then we might run into an awkward problem: when we write</p>
+
+<div class="code"><p class="quoted">
+1 kg specifies a weight.
+</p></div>
+<p>we make this correspond to the whole number "1", and that means Inform can never handle weights smaller than 1 kg.</p>
+<p>But as we've seen, we can provide differently scaled notations for the same unit:</p>
+
+<div class="code"><p class="quoted">
+A length is a kind of value. 1m specifies a length.
+<br>1km specifies a length scaled up by 1000.
+</p></div>
+<p>And this allows us to write "0.45km" instead of "450m", if we want to, both having the same effect. "0.45km" doesn't make a real number, despite the decimal point - it's simply another way to write "450m", stored internally as the whole number 450.</p>
+<p>Just as we can scale up, so we can also scale down:</p>
+
+<div class="code"><p class="quoted">
+1cm specifies a length scaled down by 100.
+</p></div>
+<p>Now we have a spread of three notations, so "3cm", "0.03m" and "0.00003km" all mean the same thing. But something quite interesting happened at the same time: Inform realised that we want to know lengths to a greater accuracy than just a whole number of meters.</p>
+<p>If we're using whole numbers, and we want to resolve down to very small values, that reduces the size of the largest value we can have. For instance, with the Glulx format setting, writing just</p>
+
+<div class="code"><p class="quoted">
+A length is a kind of value. 1m specifies a length.
+</p></div>
+<p>gives us a range of 1m up to 2147483647m, which is plenty - it's about six times the distance from the Earth to the Moon. Going down to centimeters:</p>
+
+<div class="code"><p class="quoted">
+A length is a kind of value. 1m specifies a length. 1cm specifies a length scaled down by 100.
+</p></div>
+<p>gives us instead 1cm up to 21474836.47m, which is still enough to represent any possible distance on the Earth's surface. For instance, London to Sydney is about 17000000m.</p>
+<p>Left to itself, Inform chooses the scaling for a unit so that it can represent exactly 1 of the smallest notation - so in our example Inform resolves down to 0.01m, not 1m, in order that it can represent 1cm accurately. But we can also fix the scaling ourselves:</p>
+
+<div class="code"><p class="quoted">
+A length is a kind of value. 1m specifies a length scaled at 10000.
+</p></div>
+<p>Notice "scaled at", not "scaled down" or "scaled up" - this is now the first notation for length, so there's no existing notation which it could scale up or down. Anyway, now the range is 0.0001m, the width of a human hair, up to 214748.3647m, which is about 130 miles. (The Kinds index automatically keeps track of the range of values represented exactly.) The "scaled at" feature is meaningless if we're using real numbers, so it throws a Problem message.</p>
+<p>Finally, for a really deluxe kind of value, we can also provide "equivalent" notations. The idea here is that we might want both miles and kilometers to work, even though they aren't direct scalings of each other. We can only do this approximately, but:</p>
+
+<div class="code"><p class="quoted">
+1 mile specifies a length equivalent to 1609m.
+</p></div>
+<p>Equivalent notations are never normally used in printing values back (but see the next section) - we wouldn't want Inform to print a sequence of values such as "1.6km", "1.65km", "1.056 miles", ... in an effort to be helpful.</p>
+
+
+</div></section>
+<section class="section" id="wi-15.11"><div>
+
+
+
+
+
+<h3>WI §15.11. Named notations</h3>
+<p>When it has a variety of notations to choose from, Inform will normally use the neatest one given the size of the value it is printing. Suppose we've set up "weight", with three notations:</p>
+
+<div class="code"><p class="quoted">
+A weight is a kind of value. 10kg specifies a weight.
+<br>1 tonne (singular) specifies a weight scaled up by 1000.
+<br>2 tonnes (plural) specifies a weight scaled up by 1000.
+</p></div>
+<p>Inform will then print back values like so:</p>
+
+<div class="code"><p class="quoted">
+45kg -&gt; "45kg"
+<br>1000kg -&gt; "1 tonne"
+<br>2500kg -&gt; "2.5 tonnes"
+<br>80000kg -&gt; "80 tonnes"
+</p></div>
+<p>Note the way Inform goes into decimal places in order to talk about 2500kg in terms of tonnes rather than kilograms - it is minimising the integer part of the unit, but trying to keep it non-zero. So Inform prefers "45kg" to "0.045 tonnes".</p>
+<p>Although Inform's habit of choosing the best notation available is usually just what we want, we sometimes want to make the choice ourselves. For instance, if we were printing out a table of different weights, we might want to give all of them in kilograms, whatever their size. In that case we can, if we want, give names to our different notations:</p>
+
+<div class="code"><p class="quoted">
+1 tonne (singular, in tonnes) specifies a weight scaled up by 1000.
+<br>2 tonnes (plural, in tonnes) specifies a weight scaled up by 1000.
+</p></div>
+<p>Now we could write, for instance:</p>
+
+<div class="code"><p class="quoted">
+"The weighbridge warns you not to exceed [the maximum load in tonnes]."
+</p></div>
+<p>And the figure will always use tonnes now, even if Inform would normally think it odd: "The weighbridge warns you not to exceed 0.001 tonnes." But it will still correctly use "tonne" or "tonnes" as appropriate - what has changed is that instead of choosing from all of the weight notations, Inform now chooses from the notations labelled as "in tonnes".</p>
+
+
+</div></section>
+<section class="section" id="wi-15.12"><div>
+
+
+
+
+
+<h3>WI §15.12. Making the verb "to weigh"</h3>
+<p>So now we can invent notations for weight. We could, for instance, write:</p>
+
+<div class="code"><p class="quoted">
+Weight is a kind of value. 1kg specifies a weight. Every thing has a weight.
+</p></div>
+<p>And that allows us to write:</p>
+
+<div class="code"><p class="quoted">
+The lead pig is in the Salt Mine. The weight of the lead pig is 45kg.
+</p></div>
+<p>But nobody would say it that way: they'd say "The lead pig weighs 45kg." So what we really need to complete our setup is a verb "to weigh".</p>
+<p>We have already created new verbs, but none of those methods are quite convenient for this. We want to relate something tangible (the lead pig) to something intangible (45kg), and there's no convenient relation to express this; if we set it up as a condition, we'd get something we couldn't assert, only test. Instead, we'll do something different this time:</p>
+
+<div class="code"><p class="quoted">
+The verb to weigh means the weight property.
+</p></div>
+<p>Previous definitions like this ended "means the ... relation", rather than "means the ... property", but the idea is the same. The meaning of "X weighs Y" is that the weight property of X is equal to Y. So we can now write:</p>
+
+<div class="code"><p class="quoted">
+A thing usually weighs 1kg. The lead pig weighs 45kg.
+<br>something weighing 20kg
+<br>if three things weigh 5kg, ...
+</p></div>
+<p>And as we saw in the <a href="wi_6.html#wi-chapter-6-descriptions">chapter on Descriptions</a>, we can also set up adjectives, comparatives and superlatives:</p>
+
+<div class="code"><p class="quoted">
+Definition: A thing is heavy if its weight is 20kg or more.
+</p></div>
+<p>which creates "heavy", "heavier" and "heaviest".</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-258"><p class="example-p"><span class="example-short-start">258. <a href="rb_10.html#example-258" class="example-link" onClick="(function() { document.getElementById('example-258').setAttribute('open','open'); return true; })();">Dimensions</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">This example draws together the previous snippets into a working implementation of the weighbridge.</span> (c.f. <a href="rb_10.html#rb-10.5">RB §10.5. Volume, Height, Weight</a>)</p></div>
+<div class="example-short" id="example-short-259"><p class="example-p"><span class="example-short-start">259. <a href="rb_10.html#example-259" class="example-link" onClick="(function() { document.getElementById('example-259').setAttribute('open','open'); return true; })();">Lead Cuts Paper</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">To give every container a breaking strain, that is, a maximum weight of contents which it can bear - so that to put the lead pig into a paper bag invites disaster.</span> (c.f. <a href="rb_10.html#rb-10.5">RB §10.5. Volume, Height, Weight</a>)</p></div>
+</div></section>
+<section class="section" id="wi-15.13"><div>
+
+
+
+
+
+<h3>WI §15.13. The Metric Units extension</h3>
+<p>To sum all of this up, what started out as a simple business of setting a notation for lengths becomes something quite elaborate when we try to match the actual notations used by scientists and engineers. It's all optional, of course, but as we want more and more of this, we might find ourselves with a spread of notations like this:</p>
+
+<div class="code"><p class="quoted">
+1mm ... 1cm ... 1m ... 1km
+</p></div>
+<p>In addition we might want equivalents for the inch, the yard and the mile; and verbal forms like the meter and the millimeter, and then alternate spellings like the kilometre; and then both singular and plural forms. And that's just length - what about density, area, pressure, velocity and a dozen other physical quantities? After a while these declarations start to look as vastly fussy as a box of presentation cutlery.</p>
+<p>Fortunately the whole set is indeed available in a presentation box, and at no extra charge.</p>
+<p>(a) The built-in extension "Metric Units by Graham Nelson" sets up a whole range of scientific units, with all the notations we are likely to want. Real numbers are used throughout, so large and small-scale calculations can be carried out quite accurately. Like the other built-in extensions, it has its own documentation and examples.</p>
+<p>(b) The built-in extension "Approximate Metric Units by Graham Nelson" does the same but using whole numbers, scaled about right for human situations. This won't be much use for extensive calculations, and won't be as accurate, but it will work reasonably well if real arithmetic isn't available.</p>
+
+
+</div></section>
+<section class="section" id="wi-15.14"><div>
+
+
+
+
+
+<h3>WI §15.14. Notations including more than one number</h3>
+<p>We've seen quite enough scientific notation for the time being. There are plenty of other notations used in natural language, for everyday concepts, where people don't use a tidy spread of powers of 10. Instead they use mixtures, with some sort of punctuation or text to divide them. For instance, the running time of a piece of music is easier to follow in minutes and seconds than in seconds alone: old-fashioned LP sleeves used to quote running times in the form 4'33.</p>
+
+<div class="code"><p class="quoted">
+A running time is a kind of value. 3'59 specifies a running time.
+</p></div>
+<p>The choice of "3" here makes no difference, much as the choice of "10" in the weight examples was arbitrary. But the "59" is significant. Numbers after the first one are expected to range from 0 up to the value we quote - so in this case, the number of seconds can be anything from 0 to 59. Or, for instance:</p>
+
+<div class="code"><p class="quoted">
+A height is a kind of value. 5 foot 11 specifies a height.
+</p></div>
+<p>A specification can contain up to eight numbers like this, but once again we might need to worry about the maximum value which can be stored. For instance, using the 3'59 notation, we can only go up to 546'07 (if we're using the Z-machine format setting) - a little over 9 hours, so the new Tori Amos album will not be a problem, but some of the more punishing German operas might break the bank.</p>
+<p>In notations like this, only the first-appearing number part is allowed to be negative, and then only when declared with a minus sign:</p>
+
+<div class="code"><p class="quoted">
+A secret sign is a kind of value. -2x17 specifies a secret sign with parts mystery and enigma.
+</p></div>
+<p>Here, the mystery can be negative, but not the enigma.</p>
+<p>Notations must not contain double-quotation marks because, even though people did once use these to denote minutes of arc, they would simply confuse programs like Inform's user interface which have to keep track of what is quoted text and what is not. But other punctuation marks are fine <em>provided they occur between two digits</em>. For instance, in</p>
+
+<div class="code"><p class="quoted">
+A monetary value is a kind of value. $1.99 specifies a monetary value.
+</p></div>
+<p>the full stop between the 1 and the 99 is not interpreted as a division of two sentences; and similarly for colons in examples such as</p>
+
+<div class="code"><p class="quoted">
+An aspect ratio is a kind of value. 16:9 specifies an aspect ratio.
+</p></div>
+</div></section>
+<section class="section" id="wi-15.15"><div>
+
+
+
+
+
+<h3>WI §15.15. The parts of a number specification</h3>
+<p>We often need to break up a number specification into its pieces. For instance, suppose we want to know the dollars part of $1.99? We can do this by naming the parts:</p>
+
+<div class="code"><p class="quoted">
+A monetary value is a kind of value. $1.99 specifies a monetary value with parts dollars and cents.
+</p></div>
+<p>We can now find the relevant parts like so. Suppose that "sum" is a monetary value. Then:</p>
+
+<div class="code"><p class="quoted">
+dollars part of sum
+<br>cents part of sum
+</p></div>
+<p>are both numbers, so for instance we can</p>
+
+<div class="code"><p class="quoted">
+say "Looks like around [dollars part of sum in words] dollar[s]."
+</p></div>
+<p>We can also go the other way:</p>
+
+<div class="code"><p class="quoted">
+monetary value with dollars part 4 cents part 72
+</p></div>
+<p>produces the monetary value $4.72. (Note the lack of commas or "and"s, and that the parts have to be given in the right order.) This is really intended to be useful when we manipulate such values in unusual ways:</p>
+
+<div class="code">
+<p class="quoted">
+An aspect ratio is a kind of value. 16:20 specifies an aspect ratio with parts width and height.
+</p>
+<p class="quoted">
+To decide which aspect ratio is the wider version of (AR - an aspect ratio):
+<br>    let W be the width part of AR multiplied by 2;
+<br>    let H be the height part of AR;
+<br>    let the wider ratio be the aspect ratio with width part W height part H;
+<br>    decide on the wider ratio.
+</p>
+</div>
+<p>Declaring the parts of a number specification individually also enables us to tack one or more options onto any of the parts:</p>
+
+<div class="code"><p class="quoted">
+A monetary value is a kind of value. $1.99 specifies a monetary value with parts dollars and cents (optional, preamble optional).
+</p></div>
+<p>This declares that the "cents" part is optional - it will be 0 if not specified - and that if omitted, the non-numeric "preamble" before it should also be omitted. Thus "$3" is now valid and equivalent to "$3.00": indeed it will be the preferred form when Inform prints out a monetary value which is an exact number of dollars. If we had said that "cents" was optional, but not said that the preamble was optional, then "$3." would have been the form - which is less satisfactory.</p>
+<p>There is only one other option: "without leading zeros", as in the following.</p>
+
+<div class="code"><p class="quoted">
+An aspect ratio is a kind of value. 16:20 specifies an aspect ratio with parts width and height (without leading zeros).
+</p></div>
+<p>This ensures that when the ratio 4:3 is printed, it will be printed as "4:3" and not "4:03" as would otherwise happen.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-260"><p class="example-p"><span class="example-short-start">260. <a href="rb_4.html#example-260" class="example-link" onClick="(function() { document.getElementById('example-260').setAttribute('open','open'); return true; })();">Zqlran Era 8</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">Creating an alternative system of time for our game, using new units.</span> (c.f. <a href="rb_4.html#rb-4.1">RB §4.1. The Passage Of Time</a>)</p></div>
+</div></section>
+<section class="section" id="wi-15.16"><div>
+
+
+
+
+
+<h3>WI §15.16. Understanding specified numbers</h3>
+<p>It may be worth noting in passing that number specifications, like all other kinds of value, can be understood in typed commands. (See the <a href="wi_17.html#wi-chapter-17-understanding">chapter on Understanding</a> for more on what can go in such square brackets.) For instance:</p>
+
+<div class="code">
+<p class="quoted">
+ "America Stands Tall"
+</p>
+<p class="quoted">
+The Oval Office is a room. Josh and Toby are men in the Oval. A height is a kind of value. 5 foot 11 specifies a height. A person has a height. Josh is 5 foot 8. Toby is 5 foot 10.
+</p>
+<p class="quoted">
+Height guessing is an action applying to one thing and one height. Understand "guess [someone] is [height]" as height guessing.
+</p>
+<p class="quoted">
+Check height guessing: if the noun is not a person, say "You can only guess the height of people." instead. Carry out height guessing: if the height of the noun is the height understood, say "Spot on!"; if the height of the noun is greater than the height understood, say "No, [the noun] is taller than that."; if the height of the noun is less than the height understood, say "No, [the noun] is shorter than that."
+</p>
+<p class="quoted">
+Test me with "guess josh is 6 foot 3 / guess josh is 5 foot 9 / guess josh is 5 foot 3 / guess josh is 5 foot 8".
+</p>
+</div>
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-261"><p class="example-p"><span class="example-short-start">261. <a href="rb_10.html#example-261" class="example-link" onClick="(function() { document.getElementById('example-261').setAttribute('open','open'); return true; })();">Snip</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">A string which can be cut into arbitrary lengths, and then tied back together.</span> (c.f. <a href="rb_10.html#rb-10.6">RB §10.6. Ropes</a>)</p></div>
+</div></section>
+<section class="section" id="wi-15.17"><div>
+
+
+
+
+
+<h3>WI §15.17. Totals</h3>
+<p>This chapter began by mentioning arithmetic, and then went on a long diversion to create scientific units, everyday weights and measures, and other notational conveniences. Putting all of that together, it's time now to calculate something with all of these numerical quantities.</p>
+<p>Suppose we invent the idea of weight, and give everything a weight of its own. Most items will have a nominal weight of 1kg, but people will be heavier. Going on actuarial tables, we might say:</p>
+
+<div class="code">
+<p class="quoted">
+A weight is a kind of value. 10kg specifies a weight. Everything has a weight. A thing usually has weight 1kg. A man usually has weight 80kg. A woman usually has weight 67kg.
+</p>
+<p class="quoted">
+Definition: A thing is light if its weight is 3kg or less.
+<br>Definition: A thing is heavy if its weight is 10kg or more.
+</p>
+</div>
+<p>and this provides us with "lighter", "lightest", "heavier" and "heaviest" as before. Now we could say "if Peter is heavier than Paul", or even "if Peter is heavier than 75kg", and so forth. We need one more tool:</p>
+
+<div class="definition" id="defn218">
+<p class="defnprototype"><strong>total </strong>(arithmetic values valued property)<strong> of </strong>(description of values)<strong> ... value</strong></p>
+
+
+
+<p>This phrase produces the total of some property held by all of the values matching the description. A problem message is produced if the values in question can't have that property ("the total carrying capacity of scenes"), or if it holds a kind of value which can't meaningfully be added up ("the total description of open doors"). Example:</p>
+
+<blockquote class="code"><p class="quoted">
+total carrying capacity of people in the Deep Pool
+</p></blockquote>
+
+
+
+</div>
+
+<p>That gives us everything we need for a working balance platform:</p>
+
+<div class="code"><p class="quoted">
+The balance platform is a supporter in the Weighbridge. "The balance platform is currently weighing [the list of things on the platform]. The scale alongside reads: [total weight of things on the platform]."
+</p></div>
+<p>Note that this only works because we said that "everything has a weight": otherwise it would make no sense to add up the weights of things.</p>
+<p>This enables us to get the average weight of a group of things, too:</p>
+
+<div class="code"><p class="quoted">
+the total weight of things on the platform divided by the number of things on the platform
+</p></div>
+<p>But we should be careful that this does not accidentally divide by zero, which it will if the platform has nothing on it! As well as the average, we could find the maximum and minimum weights:</p>
+
+<div class="code"><p class="quoted">
+the weight of the heaviest thing on the platform
+<br>the weight of the lightest thing on the platform
+</p></div>
+<p>We should remember that "the heaviest thing on the platform" may be ambiguous, because there may be several equally heavy things there. That means</p>
+
+<div class="code"><p class="quoted">
+if the lead pig is the heaviest thing on the platform
+</p></div>
+<p>will only reliably work if there is no possibility of a tie. A safer bet is:</p>
+
+<div class="code"><p class="quoted">
+if the lead pig is the weight of the heaviest thing on the platform
+</p></div>
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-262"><p class="example-p"><span class="example-short-start">262. <a href="rb_9.html#example-262" class="example-link" onClick="(function() { document.getElementById('example-262').setAttribute('open','open'); return true; })();">Nickel and Dimed</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">A more intricate system of money, this time keeping track of the individual denominations of coins and bills, specifying what gets spent at each transaction, and calculating appropriate change.</span> (c.f. <a href="rb_9.html#rb-9.4">RB §9.4. Money</a>)</p></div>
+</div></section>
+<section class="section" id="wi-15.18"><div>
+
+
+
+
+
+<h3>WI §15.18. Equations</h3>
+<p>Forming totals is all very interesting in its way, but it's book-keeping rather than physics. As a glance at any school science textbook shows, the way to apply physics is to work out an unknown quantity - say, the time taken for a dropped ball to hit the ground - by combining known quantities into an equation - the height it is dropped from, and the strength of gravity.</p>
+<p>It's a convention centuries old now that textbooks and research papers never describe these equations in running text. Even for simple formulae, we like to write "F=ma", not "let the force be the mass times the acceleration". And the standard way to print this is to break off and display an equation, not to squeeze it into the text as if it were ordinary verbiage. Just as Inform's Tables imitate those in printed books (see the <a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables"></a><a href="wi_16.html#wi-chapter-16-tables">next chapter</a>), so its Equations do.</p>
+<p>In this section, we'll use a combination of three equations to work out how soon and how hard an object pushed off a table will hit the floor. First, we'll include Metric Units, to define all of the kinds of value and notations we need.</p>
+
+<div class="code"><p class="quoted">
+ Include Metric Units by Graham Nelson.
+</p></div>
+<p>Now we'll give everything a mass (Metric Units likes to talk about mass instead of weight, but on Earth it's the same thing) and also set up a typical strength for gravity - it's a little less at the poles, a little more at the equator, but this is the conventional approximate value to use.</p>
+
+<div class="code"><p class="quoted">
+The acceleration due to gravity is an acceleration that varies. The acceleration due to gravity is usually 9.807 m/ss. A thing has a mass. The mass of a thing is usually 10g.
+</p></div>
+<p>To a Renaissance scientist, typically living in a walled European town, a cannon ball was a familiar thing, and it often featured in imaginary experiments:</p>
+
+<div class="code"><p class="quoted">
+Laboratory is a room. The cannon ball is in the Laboratory. "A cannon ball perches delicately on a lab bench." The mass of the cannon ball is 2kg.
+</p></div>
+<p>And now we're ready for the three equations. These will all have names, but we could just as easily have numbered them, calling them (say) "Equation 1", "Equation 2" and "Equation 3".</p>
+
+<div class="code">
+<p class="quoted">
+Equation - Newton's Second Law
+<br>    F=ma
+<br>where F is a force, m is a mass, a is an acceleration.
+</p>
+<p class="quoted">
+Equation - Principle of Conservation of Energy
+<br>    mgh = mv^2/2
+<br>where m is a mass, h is a length, v is a velocity, and g is the acceleration due to gravity.
+</p>
+<p class="quoted">
+Equation - Galilean Equation for a Falling Body
+<br>    v = gt
+<br>where g is the acceleration due to gravity, v is a velocity, and t is an elapsed time.
+</p>
+</div>
+<p>An equation has to take the form of one formula equals another, where each formula is made up from symbols defined afterwards. The symbols can be defined as definite values (as "g" is defined in the Galilean Equation), or just by telling Inform their kinds of value (as "v" and "t" are defined).</p>
+<p>Equations are read using standard mathematical conventions. So "x + yz" means that we multiply y and z, then add that to x; "ab/cd" divides the product of a and b by the product of c and d. Multiplication signs can be omitted, just as science books normally do (though we can always write them if we want to, using the asterisk *, as usual in computing). The need for brackets is minimised, with any luck, but we can use them if we need to: "x(y+ab)" is legal, for instance.</p>
+<p>One difference between Inform's conventions and mathematical ones, though, is that Inform generally ignores upper-versus-lower-case when reading variable names, so it wouldn't be a good idea to write "F = gMm/r^2" and expect "M" and "m" to be different from each other.</p>
+<p>Here is the calculation:</p>
+
+<div class="code"><p class="quoted">
+Instead of pushing the cannon ball:
+<br>    let the falling body be the cannon ball;
+<br>    let m be the mass of the falling body;
+<br>    let h be 1.2m;
+<br>    let F be given by Newton's Second Law where a is the acceleration due to gravity;
+<br>    let v be given by the Principle of Conservation of Energy;
+<br>    let t be given by the Galilean Equation for a Falling Body;
+<br>    say "You push [the falling body] off the bench, at a height of [h], and, subject to a downward force of [F], it falls. [t to the nearest 0.01s] later, this mass of [m] hits the floor at [v].";
+<br>    now the falling body is in the location.
+</p></div>
+<p>And the result is:</p>
+
+<div class="code"><p class="quoted">
+You push the cannon ball off the bench, at a height of 1.2m, and, subject to a downward force of 19.614N, it falls. 0.49s later, this mass of 2.0kg hits the floor at 4.85147 m/s.
+</p></div>
+<p>Not all that fast-moving - it's only about 10 mph, ten times slower than one fired by a Renaissance cannon - but half a second wouldn't give you long to get your foot out of the way.</p>
+<p>How was that done? The crucial lines are the ones in the form "let X be given by E...", which is a new form of "let".</p>
+
+<div class="definition" id="defn219">
+<p class="defnprototype"><strong>let </strong>(a name not so far used)<strong> be given by </strong>(equation name)<strong></strong></p>
+<br><em>or:</em>   <p class="defnprototype"><strong>let </strong>(a temporary named value)<strong> be given by </strong>(equation name)<strong></strong></p>
+
+
+
+<p>This phrase creates a new temporary variable, starting it with the value found by solving the given equation. The variable lasts only for the present block of phrases, which certainly means that it lasts only for the current rule. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+let F be given by Newton's Second Law where a is the acceleration due to gravity;
+</p></blockquote>
+
+<p>There is also a more compact syntax, giving the equation explicitly:</p>
+
+<blockquote class="code"><p class="quoted">
+let KE be given by KE = mv^2/2 where KE is an energy;
+</p></blockquote>
+
+
+
+</div>
+
+<p>When we solve with "let", then, all of the other symbols should either already have values (because they exist as "let" values already made) or else be specified in the line. For instance,</p>
+
+<div class="code"><p class="quoted">
+let F be given by Newton's Second Law where a is the acceleration due to gravity;
+</p></div>
+<p>is allowed because "F" is one of the symbols in "F = ma"; of the other two symbols, we have a "let" variable called "m" already - it's the mass of the cannon ball - and we declare exactly what "a" is.</p>
+<p>The next calculation is more interesting:</p>
+
+<div class="code"><p class="quoted">
+let v be given by the Principle of Conservation of Energy;
+</p></div>
+<p>Since the equation here is "mgh = mv^2/2", Inform has to do some algebra to work out "v" in terms of the other unknowns - it's the square root of 2gh, but we don't need to work that out. Inform can't always solve implicit equations - for instance, it can't deduce "m" from this equation - but it's correct on all the easy cases which occur in basic physics, and that enables us to write equations in their most natural form, which is easier to read and understand.</p>
+<p>The advantage of setting out an equation formally is that it can be used in many places - we could use Newton's Second Law again for something quite different, for example. But it's a little cumbersome for something simple which we only need once, so this is neater:</p>
+
+<div class="code"><p class="quoted">
+let KE be given by KE = mv^2/2 where KE is an energy;
+</p></div>
+<p>Here the equation is written out explicitly instead of being named, but otherwise everything works in the same way.</p>
+<p>Equations can also contain many of our standard functions, which are written for this purpose with their standard mathematical abbreviations. For example:</p>
+
+<div class="code"><p class="quoted">
+let x be given by sin x = 1 where x is a real number;
+</p></div>
+<p>works out x as pi divided by 4, which is to say, 90 degrees. The Phrasebook entries on the mathematical functions give their abbreviations, but here they all are as a list:</p>
+
+<div class="code"><p class="quoted">
+abs, root, ceiling, floor, int, log, exp, sin, cos, tan, arcsin, arccos, arctan, sinh, cosh, tanh, arcsinh, arccosh, arctanh
+</p></div>
+<p>As an example, here's the definition of arcsinh given in the Standard Rules:</p>
+
+<div class="code"><p class="quoted">
+To decide which real number is the hyperbolic arcsine of (R - a real number):
+<br>    let x be given by x = log(R + root(R^2 + 1)) where x is a real number;
+<br>    decide on x.
+</p></div>
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-263"><p class="example-p"><span class="example-short-start">263. <a href="rb_9.html#example-263" class="example-link" onClick="(function() { document.getElementById('example-263').setAttribute('open','open'); return true; })();">Widget Enterprises</a></span> <span class="example-difficulty">★</span>  <span class="example-description">Allowing the player to set a price for a widget on sale, then determining the resulting sales based on consumer demand, and the resulting profit and loss.</span> (c.f. <a href="rb_9.html#rb-9.4">RB §9.4. Money</a>)</p></div>
+</div></section>
+<section class="section" id="wi-15.19"><div>
+
+
+
+
+
+<h3>WI §15.19. Arithmetic with units</h3>
+<p>The example equations in the previous section carried out quite a lot of arithmetic, but they may have given the impression that Inform always allows arithmetic - which is not true.</p>
+<p>This is actually a good thing, because it keeps us from error. For instance, Inform will not allow:</p>
+
+<div class="code"><p class="quoted">
+Equation - Newton's Totally Bogus Law
+<br>    F = m^2
+<br>where F is a force, m is a mass.
+</p></div>
+<p>because whatever you get when you square a mass, you don't get a force - in the same way that a length times another length makes an area, not another length. Physicists call this "dimensional analysis", and it often provides clues about which equations are right. Just after the Second World War, someone correctly worked out the explosive power of an atomic bomb without any classified information simply by guessing what values would appear in the formula, and then finding the simplest equation they could appear in.</p>
+<p>In general, Inform will not allow numerical kinds of value to be multiplied or divided by each other (or square or cube rooted) unless we give it instructions that this would make sense.</p>
+<p>Of course, there's plenty we can still do without any need for such instructions. For instance, going back to weight,</p>
+
+<div class="code"><p class="quoted">
+ The Weighbridge is a room. "A sign declares that the maximum load is [100kg multiplied by 3]."
+</p></div>
+<p>...will produce the text "A sign declares that the maximum load is 300kg." Here Inform knows that it makes sense to multiply a weight by 3, and that the result will be a weight. Similarly, Inform allows us to add and subtract weights, and several different forms of division are allowed:</p>
+
+<div class="code"><p class="quoted">
+ The blackboard is in the Weighbridge. "A blackboard propped against one wall reads: '122 / 10 is [122 divided by 10] remainder [remainder after dividing 122 by 10]; but 122kg / 10kg is [122kg divided by 10kg] remainder [remainder after dividing 122kg by 10kg]; and 122kg / 10 is [122kg divided by 10] remainder [remainder after dividing 122kg by 10].'"
+</p></div>
+<p>When we visit the Weighbridge, we find:</p>
+
+<div class="code"><p class="quoted">
+A blackboard propped against one wall reads: "122 / 10 is 12 remainder 2; but 122kg / 10kg is 12 remainder 2kg; and 122kg / 10 is 12kg remainder 2kg."
+</p></div>
+<p>Whereas we are not allowed to divide 122 by 10kg: that would make no sense, since 122 is a number and not made up of kilograms. Inform will produce a problem message if we try. Similarly, Inform won't normally allow us to multiply two weights together - but see the next section.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-264"><p class="example-p"><span class="example-short-start">264. <a href="rb_9.html#example-264" class="example-link" onClick="(function() { document.getElementById('example-264').setAttribute('open','open'); return true; })();">Frozen Assets</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A treatment of money which keeps track of how much the player has on him, and a BUY command which lets him go shopping.</span> (c.f. <a href="rb_9.html#rb-9.4">RB §9.4. Money</a>)</p></div>
+<div class="example-short" id="example-short-265"><p class="example-p"><span class="example-short-start">265. <a href="rb_9.html#example-265" class="example-link" onClick="(function() { document.getElementById('example-265').setAttribute('open','open'); return true; })();">Money for Nothing</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">An OFFER price FOR command, allowing the player to bargain with a flexible seller.</span> (c.f. <a href="rb_9.html#rb-9.4">RB §9.4. Money</a>)</p></div>
+<div class="example-short" id="example-short-266"><p class="example-p"><span class="example-short-start">266. <a href="rb_10.html#example-266" class="example-link" onClick="(function() { document.getElementById('example-266').setAttribute('open','open'); return true; })();">Lemonade</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">Containers for liquid which keep track of how much liquid they are holding and of what kind, and allow quantities to be moved from one container to another.</span> (c.f. <a href="rb_10.html#rb-10.2">RB §10.2. Liquids</a>)</p></div>
+<div class="example-short" id="example-short-267"><p class="example-p"><span class="example-short-start">267. <a href="rb_10.html#example-267" class="example-link" onClick="(function() { document.getElementById('example-267').setAttribute('open','open'); return true; })();">Savannah</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">Using the liquid implementation demonstrated in Lemonade for putting out fires.</span> (c.f. <a href="rb_10.html#rb-10.2">RB §10.2. Liquids</a>)</p></div>
+</div></section>
+<section class="section" id="wi-15.20"><div>
+
+
+
+
+
+<h3>WI §15.20. Multiplication of units</h3>
+<p>To recap, then, it is forbidden to multiply 122kg and 10kg, not because it could never make sense (a scientist might occasionally multiply two weights) but because the result is - what? Not a number, and not a weight any more. But we are allowed to tell Inform what the result ought to be, and once we have done so, the multiplication will be allowed:</p>
+
+<div class="code">
+<p class="quoted">
+ A length is a kind of value. 10m specifies a length. An area is a kind of value. 10 sq m specifies an area.
+</p>
+<p class="quoted">
+A length times a length specifies an area.
+</p>
+<p class="quoted">
+The balance platform is in the Weighbridge. "The balance platform is 10m by 8m, giving it an area of [10m multiplied by 8m]."
+</p>
+</div>
+<p>which will turn up as:</p>
+
+<div class="code"><p class="quoted">
+The balance platform is 10m by 8m, giving it an area of 80 sq m.
+</p></div>
+<p>And having told Inform that lengths multiply to area, we could also divide an area by a length to get a length: no further instructions would be needed.</p>
+<p>The built-in "Metric Units" extension includes all of the standard ways that physical quantities are multiplied, and a good way to see these is to try out one of the Metric Units examples and look at the Kinds index, which includes a table showing how all of this works.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-268"><p class="example-p"><span class="example-short-start">268. <a href="rb_10.html#example-268" class="example-link" onClick="(function() { document.getElementById('example-268').setAttribute('open','open'); return true; })();">Depth</a></span> <span class="example-difficulty">★</span>  <span class="example-description">Receptacles that calculate internal volume and the amount of room available, and  cannot be overfilled.</span> (c.f. <a href="rb_10.html#rb-10.5">RB §10.5. Volume, Height, Weight</a>)</p></div>
+<div class="example-short" id="example-short-269"><p class="example-p"><span class="example-short-start">269. <a href="rb_10.html#example-269" class="example-link" onClick="(function() { document.getElementById('example-269').setAttribute('open','open'); return true; })();">The Speed of Thought</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">Describing scientifically-measured objects in units more familiar to the casual audience.</span> (c.f. <a href="rb_10.html#rb-10.5">RB §10.5. Volume, Height, Weight</a>)</p></div>
+<div class="example-short" id="example-short-270"><p class="example-p"><span class="example-short-start">270. <a href="rb_9.html#example-270" class="example-link" onClick="(function() { document.getElementById('example-270').setAttribute('open','open'); return true; })();">Fabrication</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">A system of assembling clothing from a pattern and materials; both the pattern and the different fabrics have associated prices.</span> (c.f. <a href="rb_9.html#rb-9.4">RB §9.4. Money</a>)</p></div>
+</div></section>
+</section>
+
+<footer>
+<div class="linkback"><a href="http://inform7.com/book/WI_15_1.html">WI Chapter 15 on inform7.com</a></div>
+<div class="doc-navbar">
+<div>
+<div class="doc-navbar-left"><a class="nav-left" href="wi_14.html#wi-chapter-14-adaptive-text-and-responses">14. Adaptive Text and Responses</a></div>
+<div class="doc-navbar-right"><a class="nav-right" href="wi_16.html#wi-chapter-16-tables">16. Tables</a></div>
+</div>
+<div>
+<div class="doc-navbar-left"><a href="index.html">Table of Contents</a></div>
+<div class="doc-navbar-right"><a href="index.html#general-index">General Index</a></div>
+</div>
+</div>
+
+</footer>
+</main></body></html>
+

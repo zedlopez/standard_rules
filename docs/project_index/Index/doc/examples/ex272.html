@@ -1,0 +1,180 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../style.css">
+<script>function toggle_details() {
+   var openness, toggle_link;
+   toggle_link = document.getElementById("toggle");
+   openness = toggle_link.classList.toggle("open");
+document.querySelectorAll("details.full-example").forEach(detail => { if (openness) { detail.setAttribute("open", true); } else { detail.removeAttribute("open");} });
+   toggle_link.innerText = (openness ? "Close" : "Open") + " all examples";
+   }
+
+
+function copyCode(text) { navigator.clipboard.writeText(text); }
+
+
+var links = document.getElementsByTagName('a');
+for (var i = 0; i < links.length; i++) {
+    if (links[i].href.match(/^#example-\d+/)) {
+	links[i].onClick = function() { links[i].href.match(/^#example-(\d+)$/); var example = document.getElementById($1).setAttribute('open'); return true; };
+    }
+}
+
+function add_bar(update) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let navbar = document.querySelector('div.index-navbar');
+
+    if (navbar && urlParams.has('project')) {
+        navbar.setAttribute('class', 'index-navbar'); // removes hidden
+        let project = decodeURIComponent(urlParams.get('project'));
+        let index_root = project + '/.index/';
+        let build = project + '/Build/';
+        let query_arg = "?project="+encodeURIComponent(project);
+
+        let links = [
+            { "General Index": document.getElementById('general_index').href },
+            { "Docs": document.getElementById('docs').href },
+            { "Extensions": index_root + 'doc/Extensions.html' },
+            { "Definitions": index_root + 'doc/ExtIndex.html' },
+            { "Debug Log": build + 'debug_log.html' },
+            { "Problems": build + 'problems.html' },
+            { "Source": index_root + 'story.html' },
+            { "Project Index": index_root + 'Index/Welcome.html' } ];
+        let sp = document.createTextNode(" ");
+        links.forEach(h => {
+            Object.entries(h).forEach(([text, url]) => {
+                let my_id = text.toLowerCase().replace(' ', '_');
+                let a = document.querySelector('#'+my_id);
+                let url_target = "file://"+url+query_arg;
+                if (a) {
+                    let parts = a.href.split('#');
+                    let qparts = parts[0].split('?');
+                    a.href = qparts[0] +  (qparts[1] ? ('?' + qparts[1]) : query_arg) + (parts[1] ? ('#' + parts[1]) : "");
+                }
+                else {
+                    a = document.createElement('a');
+                    let href = document.createAttribute("href");
+                    href.value = url_target;
+                    a.setAttributeNode(href);
+                    let elem_id = document.createAttribute("id");
+                    elem_id.value = my_id;
+                    a.setAttributeNode(elem_id);
+                    let linktext = document.createTextNode(text);
+                    a.appendChild(linktext);
+                    navbar.insertBefore(sp.cloneNode(), navbar.firstChild);
+                    navbar.insertBefore(a, navbar.firstChild);
+                }
+            })});
+        if (update) {
+            let main_links = document.querySelectorAll('main a');
+            main_links.forEach(a => {
+                if (!a.href.startsWith('javascript:') || (a.href.match(/[^:]+:\/\// && !a.href.startsWith('file:')))) {
+                    let parts = a.href.split('#')
+                    a.href = parts[0] + query_arg + (parts[1] ? ('#' + parts[1]) : "");
+                } });
+        }
+    }
+}
+
+
+
+document.addEventListener("DOMContentLoaded", add_bar);</script>
+<title>Example #272</title></head>
+<body class="inform7-source">
+
+<div class="inform7-source"><div class="pseudo">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;Waiting for Godot, Chyrurgeon&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">New New Prison is a room. <span class="i7sx">&quot;You have a not very interesting room. Through the window you see passing </span><span class="i7si">[current denizen]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of waiting:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	increment the current year;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;It is now the year </span><span class="i7si">[the current year]</span><span class="i7sx">.&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	try looking.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">When play begins: now the right hand status line is <span class="i7sx">&quot;</span><span class="i7si">[current year]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Every turn:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the current year is 1692:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;It turns out you have remained imprisoned until the great earthquake of 1692! Oops.&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	end the story.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Current year is a number that varies. The current year is 1664.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To say current denizen:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	repeat through the Table of Occupations and People:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if the date attested entry is the current year:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[nickname entry]</span><span class="i7sx"> </span><span class="i7si">[family entry]</span><span class="i7sx">, </span><span class="i7si">[trade entry]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	blank out the whole row;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	rule succeeds;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;absolutely no one&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[It is possible to look up a row corresponding to, say, a specific year value using &quot;listed in&quot;, but repeat through is convenient here because we know that we will never wind up trying to print entries when no row can be successfully selected.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line">Table of Occupations and People</span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">Trade</span><span class="td">nickname</span><span class="td">family</span><span class="td">Date attested</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;architect&quot;</span></span><span class="td"><span class="i7sx">&quot;Robert&quot;</span></span><span class="td"><span class="i7sx">&quot;Snead&quot;</span></span><span class="td">1684</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;baker&quot;</span></span><span class="td"><span class="i7sx">&quot;William&quot;</span></span><span class="td"><span class="i7sx">&quot;Wingar&quot;</span></span><span class="td">1683</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;barber&quot;</span></span><span class="td"><span class="i7sx">&quot;William&quot;</span></span><span class="td"><span class="i7sx">&quot;Alcocke&quot;</span></span><span class="td">1676</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;blacksmith&quot;</span></span><span class="td"><span class="i7sx">&quot;William&quot;</span></span><span class="td"><span class="i7sx">&quot;Davidson&quot;</span></span><span class="td">1679</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;bricklayer&quot;</span></span><span class="td"><span class="i7sx">&quot;Samuel&quot;</span></span><span class="td"><span class="i7sx">&quot;Richardson&quot;</span></span><span class="td">1683</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;butcher&quot;</span></span><span class="td"><span class="i7sx">&quot;John&quot;</span></span><span class="td"><span class="i7sx">&quot;Dennis&quot;</span></span><span class="td">1676</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;carpenter&quot;</span></span><span class="td"><span class="i7sx">&quot;John&quot;</span></span><span class="td"><span class="i7sx">&quot;Albert&quot;</span></span><span class="td">1675</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;cabinet-maker&quot;</span></span><span class="td"><span class="i7sx">&quot;Robert&quot;</span></span><span class="td"><span class="i7sx">&quot;Avis&quot;</span></span><span class="td">1666</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;joiner&quot;</span></span><span class="td"><span class="i7sx">&quot;Peter&quot;</span></span><span class="td"><span class="i7sx">&quot;Bartaboa&quot;</span></span><span class="td">1666</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;chandler&quot;</span></span><span class="td"><span class="i7sx">&quot;William&quot;</span></span><span class="td"><span class="i7sx">&quot;Bates&quot;</span></span><span class="td">1674</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;chyrurgeon&quot;</span></span><span class="td"><span class="i7sx">&quot;William&quot;</span></span><span class="td"><span class="i7sx">&quot;Axtell&quot;</span></span><span class="td">1674</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;chyrurgeon&quot;</span></span><span class="td"><span class="i7sx">&quot;Thomas&quot;</span></span><span class="td"><span class="i7sx">&quot;Trapham&quot;</span></span><span class="td">1678</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;combmaker&quot;</span></span><span class="td"><span class="i7sx">&quot;Paul&quot;</span></span><span class="td"><span class="i7sx">&quot;Bennett&quot;</span></span><span class="td">1673</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;cooper&quot;</span></span><span class="td"><span class="i7sx">&quot;James&quot;</span></span><span class="td"><span class="i7sx">&quot;Hall&quot;</span></span><span class="td">1676</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;cooper&quot;</span></span><span class="td"><span class="i7sx">&quot;Henry&quot;</span></span><span class="td"><span class="i7sx">&quot;Pullein&quot;</span></span><span class="td">1675</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;cordwainer&quot;</span></span><span class="td"><span class="i7sx">&quot;George&quot;</span></span><span class="td"><span class="i7sx">&quot;Barnard&quot;</span></span><span class="td">1675</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;cordwainer&quot;</span></span><span class="td"><span class="i7sx">&quot;Edward&quot;</span></span><span class="td"><span class="i7sx">&quot;Skannon&quot;</span></span><span class="td">1680</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;cordwainer&quot;</span></span><span class="td"><span class="i7sx">&quot;John&quot;</span></span><span class="td"><span class="i7sx">&quot;Wilmott&quot;</span></span><span class="td">1675</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;drugster&quot;</span></span><span class="td"><span class="i7sx">&quot;William&quot;</span></span><span class="td"><span class="i7sx">&quot;Mathews&quot;</span></span><span class="td">1682</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;fisherman&quot;</span></span><span class="td"><span class="i7sx">&quot;Richard&quot;</span></span><span class="td"><span class="i7sx">&quot;Collingwood&quot;</span></span><span class="td">1674</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;glazier&quot;</span></span><span class="td"><span class="i7sx">&quot;Thomas&quot;</span></span><span class="td"><span class="i7sx">&quot;Hudson&quot;</span></span><span class="td">1684</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;goldsmith&quot;</span></span><span class="td"><span class="i7sx">&quot;Richard&quot;</span></span><span class="td"><span class="i7sx">&quot;Lord&quot;</span></span><span class="td">1677</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;gunsmith&quot;</span></span><span class="td"><span class="i7sx">&quot;Stephen&quot;</span></span><span class="td"><span class="i7sx">&quot;Massey&quot;</span></span><span class="td">1664</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;hatmaker&quot;</span></span><span class="td"><span class="i7sx">&quot;John&quot;</span></span><span class="td"><span class="i7sx">&quot;Rosewell&quot;</span></span><span class="td">1683</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;ivory turner&quot;</span></span><span class="td"><span class="i7sx">&quot;William&quot;</span></span><span class="td"><span class="i7sx">&quot;Clifton&quot;</span></span><span class="td">1691</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;labourer&quot;</span></span><span class="td"><span class="i7sx">&quot;John&quot;</span></span><span class="td"><span class="i7sx">&quot;Dennis&quot;</span></span><span class="td">1674</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;limeburner&quot;</span></span><span class="td"><span class="i7sx">&quot;John&quot;</span></span><span class="td"><span class="i7sx">&quot;Hardwick&quot;</span></span><span class="td">1675</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;mariner&quot;</span></span><span class="td"><span class="i7sx">&quot;Alexander&quot;</span></span><span class="td"><span class="i7sx">&quot;Bailing&quot;</span></span><span class="td">1680</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;mariner&quot;</span></span><span class="td"><span class="i7sx">&quot;Thomas&quot;</span></span><span class="td"><span class="i7sx">&quot;Bowtell&quot;</span></span><span class="td">1675</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;mariner&quot;</span></span><span class="td"><span class="i7sx">&quot;Peter&quot;</span></span><span class="td"><span class="i7sx">&quot;Claiton&quot;</span></span><span class="td">1675</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;mariner&quot;</span></span><span class="td"><span class="i7sx">&quot;Joseph&quot;</span></span><span class="td"><span class="i7sx">&quot;Cupid&quot;</span></span><span class="td">1672</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;mariner&quot;</span></span><span class="td"><span class="i7sx">&quot;Michael&quot;</span></span><span class="td"><span class="i7sx">&quot;Dunn&quot;</span></span><span class="td">1675</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;mason&quot;</span></span><span class="td"><span class="i7sx">&quot;John&quot;</span></span><span class="td"><span class="i7sx">&quot;Stone&quot;</span></span><span class="td">1673</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;merchant&quot;</span></span><span class="td"><span class="i7sx">&quot;John&quot;</span></span><span class="td"><span class="i7sx">&quot;Agard&quot;</span></span><span class="td">1680</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;merchant&quot;</span></span><span class="td"><span class="i7sx">&quot;David Lopez&quot;</span></span><span class="td"><span class="i7sx">&quot;Narbona&quot;</span></span><span class="td">1674</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;merchant&quot;</span></span><span class="td"><span class="i7sx">&quot;Abraham&quot;</span></span><span class="td"><span class="i7sx">&quot;Langford&quot;</span></span><span class="td">1675</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;merchant&quot;</span></span><span class="td"><span class="i7sx">&quot;John&quot;</span></span><span class="td"><span class="i7sx">&quot;Sweeting&quot;</span></span><span class="td">1675</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;merchant&quot;</span></span><span class="td"><span class="i7sx">&quot;Charles&quot;</span></span><span class="td"><span class="i7sx">&quot;Knight&quot;</span></span><span class="td">1680</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;merchant&quot;</span></span><span class="td"><span class="i7sx">&quot;Cornelius&quot;</span></span><span class="td"><span class="i7sx">&quot;Vandananker&quot;</span></span><span class="td">1670</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;merchant&quot;</span></span><span class="td"><span class="i7sx">&quot;Moses Jesurum&quot;</span></span><span class="td"><span class="i7sx">&quot;Cordova&quot;</span></span><span class="td">1675</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;pewterer&quot;</span></span><span class="td"><span class="i7sx">&quot;Simon&quot;</span></span><span class="td"><span class="i7sx">&quot;Benning&quot;</span></span><span class="td">1667</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;pipemaker&quot;</span></span><span class="td"><span class="i7sx">&quot;John&quot;</span></span><span class="td"><span class="i7sx">&quot;Pope&quot;</span></span><span class="td">1680</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;porter&quot;</span></span><span class="td"><span class="i7sx">&quot;George&quot;</span></span><span class="td"><span class="i7sx">&quot;Paul&quot;</span></span><span class="td">1670</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;poulterer&quot;</span></span><span class="td"><span class="i7sx">&quot;Richard&quot;</span></span><span class="td"><span class="i7sx">&quot;Jeffreys&quot;</span></span><span class="td">1677</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;sailmaker&quot;</span></span><span class="td"><span class="i7sx">&quot;Adam&quot;</span></span><span class="td"><span class="i7sx">&quot;Brewer&quot;</span></span><span class="td">1671</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;schoolmaster&quot;</span></span><span class="td"><span class="i7sx">&quot;Peter&quot;</span></span><span class="td"><span class="i7sx">&quot;Bird&quot;</span></span><span class="td">1677</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;shipwright&quot;</span></span><span class="td"><span class="i7sx">&quot;William&quot;</span></span><span class="td"><span class="i7sx">&quot;Cavell&quot;</span></span><span class="td">1676</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;tailor&quot;</span></span><span class="td"><span class="i7sx">&quot;William&quot;</span></span><span class="td"><span class="i7sx">&quot;Case&quot;</span></span><span class="td">1676</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;tailor&quot;</span></span><span class="td"><span class="i7sx">&quot;Pewter&quot;</span></span><span class="td"><span class="i7sx">&quot;Ebden&quot;</span></span><span class="td">1683</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;waterman&quot;</span></span><span class="td"><span class="i7sx">&quot;William&quot;</span></span><span class="td"><span class="i7sx">&quot;Brocke&quot;</span></span><span class="td">1674</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;waterman&quot;</span></span><span class="td"><span class="i7sx">&quot;Joel&quot;</span></span><span class="td"><span class="i7sx">&quot;Clements&quot;</span></span><span class="td">1668</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;wherryman&quot;</span></span><span class="td"><span class="i7sx">&quot;John&quot;</span></span><span class="td"><span class="i7sx">&quot;Grant&quot;</span></span><span class="td">1669</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;victualler&quot;</span></span><span class="td"><span class="i7sx">&quot;Barnaby&quot;</span></span><span class="td"><span class="i7sx">&quot;Adams&quot;</span></span><span class="td">1675</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;vintner&quot;</span></span><span class="td"><span class="i7sx">&quot;Gabriel&quot;</span></span><span class="td"><span class="i7sx">&quot;Adkins&quot;</span></span><span class="td">1668</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;tavern-keeper&quot;</span></span><span class="td"><span class="i7sx">&quot;John&quot;</span></span><span class="td"><span class="i7sx">&quot;Baldwin&quot;</span></span><span class="td">1670</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;tavern-keeper&quot;</span></span><span class="td"><span class="i7sx">&quot;Mary&quot;</span></span><span class="td"><span class="i7sx">&quot;Dayton&quot;</span></span><span class="td">1664</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;tavern-keeper&quot;</span></span><span class="td"><span class="i7sx">&quot;James&quot;</span></span><span class="td"><span class="i7sx">&quot;Turpin&quot;</span></span><span class="td">1679</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;tavern-keeper&quot;</span></span><span class="td"><span class="i7sx">&quot;Christopher&quot;</span></span><span class="td"><span class="i7sx">&quot;Mayham&quot;</span></span><span class="td">1664</span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Test me with <span class="i7sx">&quot;wait / wait / wait / wait / wait / wait / wait / wait / wait / wait&quot;</span>.</span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

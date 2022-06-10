@@ -1,0 +1,199 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../style.css">
+<script>function toggle_details() {
+   var openness, toggle_link;
+   toggle_link = document.getElementById("toggle");
+   openness = toggle_link.classList.toggle("open");
+document.querySelectorAll("details.full-example").forEach(detail => { if (openness) { detail.setAttribute("open", true); } else { detail.removeAttribute("open");} });
+   toggle_link.innerText = (openness ? "Close" : "Open") + " all examples";
+   }
+
+
+function copyCode(text) { navigator.clipboard.writeText(text); }
+
+
+var links = document.getElementsByTagName('a');
+for (var i = 0; i < links.length; i++) {
+    if (links[i].href.match(/^#example-\d+/)) {
+	links[i].onClick = function() { links[i].href.match(/^#example-(\d+)$/); var example = document.getElementById($1).setAttribute('open'); return true; };
+    }
+}
+
+function add_bar(update) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let navbar = document.querySelector('div.index-navbar');
+
+    if (navbar && urlParams.has('project')) {
+        navbar.setAttribute('class', 'index-navbar'); // removes hidden
+        let project = decodeURIComponent(urlParams.get('project'));
+        let index_root = project + '/.index/';
+        let build = project + '/Build/';
+        let query_arg = "?project="+encodeURIComponent(project);
+
+        let links = [
+            { "General Index": document.getElementById('general_index').href },
+            { "Docs": document.getElementById('docs').href },
+            { "Extensions": index_root + 'doc/Extensions.html' },
+            { "Definitions": index_root + 'doc/ExtIndex.html' },
+            { "Debug Log": build + 'debug_log.html' },
+            { "Problems": build + 'problems.html' },
+            { "Source": index_root + 'story.html' },
+            { "Project Index": index_root + 'Index/Welcome.html' } ];
+        let sp = document.createTextNode(" ");
+        links.forEach(h => {
+            Object.entries(h).forEach(([text, url]) => {
+                let my_id = text.toLowerCase().replace(' ', '_');
+                let a = document.querySelector('#'+my_id);
+                let url_target = "file://"+url+query_arg;
+                if (a) {
+                    let parts = a.href.split('#');
+                    let qparts = parts[0].split('?');
+                    a.href = qparts[0] +  (qparts[1] ? ('?' + qparts[1]) : query_arg) + (parts[1] ? ('#' + parts[1]) : "");
+                }
+                else {
+                    a = document.createElement('a');
+                    let href = document.createAttribute("href");
+                    href.value = url_target;
+                    a.setAttributeNode(href);
+                    let elem_id = document.createAttribute("id");
+                    elem_id.value = my_id;
+                    a.setAttributeNode(elem_id);
+                    let linktext = document.createTextNode(text);
+                    a.appendChild(linktext);
+                    navbar.insertBefore(sp.cloneNode(), navbar.firstChild);
+                    navbar.insertBefore(a, navbar.firstChild);
+                }
+            })});
+        if (update) {
+            let main_links = document.querySelectorAll('main a');
+            main_links.forEach(a => {
+                if (!a.href.startsWith('javascript:') || (a.href.match(/[^:]+:\/\// && !a.href.startsWith('file:')))) {
+                    let parts = a.href.split('#')
+                    a.href = parts[0] + query_arg + (parts[1] ? ('#' + parts[1]) : "");
+                } });
+        }
+    }
+}
+
+
+
+document.addEventListener("DOMContentLoaded", add_bar);</script>
+<title>Example #293</title></head>
+<body class="inform7-source">
+
+<div class="inform7-source"><div class="pseudo">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;Lanista, Part Two&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Arena is a room. <span class="i7sx">&quot;Sand, blood, iron. These festivals are normally held on hot days, but the sun has gone behind a cloud and fat drops of rain now and then spatter the arena floor.&quot;</span> The gladiator is a man in the Arena. <span class="i7sx">&quot;A bare-chested Scythian gladiator faces you, wielding </span><span class="i7si">[a list of weapons carried by the gladiator]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7gh">Section 1 - Hit Points</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A person has a number called maximum hit points. A person has a number called current hit points.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The maximum hit points of the player is 35. The maximum hit points of the gladiator is 25.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[In our simpler version of this example we set the current hit points by hand, but in a game with many characters this would get dull and repetitive, so here we&#39;ll use a &quot;when play begins&quot; to set all current hit point values automatically to maximum:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">When play begins:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	repeat with victim running through people:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	now the current hit points of the victim is the maximum hit points of the victim.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Definition: a person is dead if his current hit points are less than 0.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7gh">Section 2 - Diagnosis</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Diagnosing is an action applying to one visible thing. Understand <span class="i7sx">&quot;diagnose </span><span class="i7si">[something]</span><span class="i7sx">&quot;</span> as diagnosing.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Check diagnosing:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the noun is not a person, say <span class="i7sx">&quot;Only people can have diagnoses.&quot;</span> instead.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Carry out diagnosing:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[if the noun is the player]</span><span class="i7sx">You have</span><span class="i7si">[otherwise][The noun]</span><span class="i7sx"> has</span><span class="i7si">[end if]</span><span class="i7sx"> </span><span class="i7si">[current hit points of the noun]</span><span class="i7sx"> out of a possible </span><span class="i7si">[maximum hit points of the noun]</span><span class="i7sx"> hit points remaining.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7gh">Section 3 - Weapons</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A weapon is a kind of thing. A weapon has a number called the maximum damage. The maximum damage of a weapon is usually 4.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The gladiator carries a weapon called a trident. The maximum damage of the trident is 5. The gladiator carries a weapon called a net. The maximum damage of the net is 1.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The player carries a weapon called a mace. The maximum damage of the mace is 3.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7gh">Section 4 - Attacking it with</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[In our new system, we want to specify what is being used for an attack. This means that we need to create a new &quot;attacking it with&quot; action, and also that we should disable the existing &quot;attacking...&quot; command.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Here&#39;s why: If we leave the default attack command in place, Inform will continue to accept commands like &gt;ATTACK GLADIATOR, but reply foolishly with the default &quot;Violence is not the answer...&quot; response.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[A somewhat better approach would be to change the reply of &gt;ATTACK GLADIATOR to say something like &quot;You must specify a weapon to attack with.&quot; But this is still less than ideal, because it means that the player has to then rewrite his entire command. If, on the other hand, we take out &quot;ATTACK GLADIATOR&quot; entirely, the game will always prompt &quot;What do you want to attack the gladiator with?&quot; -- which teaches the player the correct command structure for this particular game, and avoids pretending to understand any command that is not meaningful within this game.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[This is a little bit of work because ATTACK has a lot of synonyms in the default library, but if we look through the actions index we can find them all:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand the commands <span class="i7sx">&quot;attack&quot;</span> and <span class="i7sx">&quot;punch&quot;</span> and <span class="i7sx">&quot;destroy&quot;</span> and <span class="i7sx">&quot;kill&quot;</span> and <span class="i7sx">&quot;murder&quot;</span> and <span class="i7sx">&quot;hit&quot;</span> and <span class="i7sx">&quot;thump&quot;</span> and <span class="i7sx">&quot;break&quot;</span> and <span class="i7sx">&quot;smash&quot;</span> and <span class="i7sx">&quot;torture&quot;</span> and <span class="i7sx">&quot;wreck&quot;</span> as something new.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Now we make our new command:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Attacking it with is an action applying to one visible thing and one carried thing. Understand <span class="i7sx">&quot;attack </span><span class="i7si">[someone]</span><span class="i7sx"> with </span><span class="i7si">[something preferably held]</span><span class="i7sx">&quot;</span> as attacking it with.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Note that we&#39;ve specified &quot;one carried thing&quot;, because we want the player to pick up a weapon to use if necessary. And now we assign all the old attack vocabulary to apply to the new command:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand the commands <span class="i7sx">&quot;punch&quot;</span> and <span class="i7sx">&quot;destroy&quot;</span> and <span class="i7sx">&quot;kill&quot;</span> and <span class="i7sx">&quot;murder&quot;</span> and <span class="i7sx">&quot;hit&quot;</span> and <span class="i7sx">&quot;thump&quot;</span> and <span class="i7sx">&quot;break&quot;</span> and <span class="i7sx">&quot;smash&quot;</span> and <span class="i7sx">&quot;torture&quot;</span> and <span class="i7sx">&quot;wreck&quot;</span> as <span class="i7sx">&quot;attack&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[This may seem counter-intuitive, but order of source code matters here: we first get rid of the old, default vocabulary, then define our new action, then make the vocabulary apply to that new action. Inform will now understand &gt;HIT GLADIATOR WITH TRIDENT, &gt;BREAK GLADIATOR WITH TRIDENT, and so on.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Our new action is also a perfect place to use an action variable: we&#39;re going to need to choose an amount of damage done and refer to that several times in our action rules. So let&#39;s set that up first:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The attacking it with action has a number called the damage inflicted.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Setting action variables for attacking something with something:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the second noun is a weapon:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	let the maximum attack be the maximum damage of the second noun;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	now the damage inflicted is a random number between 1 and the maximum attack.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Check an actor attacking something with something (this is the can&#39;t attack with something that isn&#39;t a weapon rule):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the second noun is not a weapon:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if the actor is the player, say <span class="i7sx">&quot;</span><span class="i7si">[The second noun]</span><span class="i7sx"> does not qualify as a weapon.&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	stop the action.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Check an actor attacking something with something (this is the can&#39;t attack a non-person rule):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the noun is not a person:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if the actor is the player, say <span class="i7sx">&quot;</span><span class="i7si">[The noun]</span><span class="i7sx"> has no life to lose.&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	stop the action.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Carry out an actor attacking something with something (this is the standard attacking it with a weapon rule):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	decrease the current hit points of the noun by the damage inflicted;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the noun is dead:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	now the noun is nowhere.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Though our checks and carry-out rules are similar regardless of who is acting, we&#39;re going to want actions to be described differently for different actors, so we&#39;ll use separate &quot;report attacking&quot; and &quot;report someone attacking&quot; rules. We&#39;ll also make some special cases for when the character has died as a result of the attack:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Report attacking a dead person with something (this is the death-report priority rule):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;You attack with </span><span class="i7si">[the second noun]</span><span class="i7sx">, killing </span><span class="i7si">[the noun]</span><span class="i7sx">!&quot;</span> instead.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Report attacking someone with something (this is the normal attacking report rule):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;You attack </span><span class="i7si">[the noun]</span><span class="i7sx"> with </span><span class="i7si">[the second noun]</span><span class="i7sx">, causing </span><span class="i7si">[damage inflicted]</span><span class="i7sx"> point</span><span class="i7si">[s]</span><span class="i7sx"> of damage!&quot;</span> instead.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Report someone attacking the player with something when the player is dead (this is the player&#39;s-death priority rule):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[The actor]</span><span class="i7sx"> attacks you with </span><span class="i7si">[the second noun]</span><span class="i7sx">, finishing you off!&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	end the story;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	stop the action</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Report someone attacking the player with something (this is the standard report someone attacking the player with rule):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[The actor]</span><span class="i7sx"> attacks you with </span><span class="i7si">[the second noun]</span><span class="i7sx">, causing </span><span class="i7si">[damage inflicted]</span><span class="i7sx"> point</span><span class="i7si">[s]</span><span class="i7sx"> of damage!&quot;</span> instead.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Report someone attacking something with something (this is the standard report attacking it with rule):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[The actor]</span><span class="i7sx"> attacks </span><span class="i7si">[the noun]</span><span class="i7sx"> with </span><span class="i7si">[the second noun]</span><span class="i7sx">, causing </span><span class="i7si">[damage inflicted]</span><span class="i7sx"> point</span><span class="i7si">[s]</span><span class="i7sx"> of damage!&quot;</span> instead.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">When play begins:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the left hand status line is <span class="i7sx">&quot;You: </span><span class="i7si">[current hit points of player]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the right hand status line is <span class="i7sx">&quot;Gladiator: </span><span class="i7si">[current hit points of gladiator]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Every turn (this is the gladiator-attack rule):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the gladiator is not dead, try the gladiator attacking the player with a random weapon which is carried by the gladiator.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Test me with <span class="i7sx">&quot;hit gladiator with mace / kill gladiator / drop mace / attack gladiator / attack gladiator with mace / g / g&quot;</span>.</span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

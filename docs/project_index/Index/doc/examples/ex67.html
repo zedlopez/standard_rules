@@ -1,0 +1,130 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../style.css">
+<script>function toggle_details() {
+   var openness, toggle_link;
+   toggle_link = document.getElementById("toggle");
+   openness = toggle_link.classList.toggle("open");
+document.querySelectorAll("details.full-example").forEach(detail => { if (openness) { detail.setAttribute("open", true); } else { detail.removeAttribute("open");} });
+   toggle_link.innerText = (openness ? "Close" : "Open") + " all examples";
+   }
+
+
+function copyCode(text) { navigator.clipboard.writeText(text); }
+
+
+var links = document.getElementsByTagName('a');
+for (var i = 0; i < links.length; i++) {
+    if (links[i].href.match(/^#example-\d+/)) {
+	links[i].onClick = function() { links[i].href.match(/^#example-(\d+)$/); var example = document.getElementById($1).setAttribute('open'); return true; };
+    }
+}
+
+function add_bar(update) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let navbar = document.querySelector('div.index-navbar');
+
+    if (navbar && urlParams.has('project')) {
+        navbar.setAttribute('class', 'index-navbar'); // removes hidden
+        let project = decodeURIComponent(urlParams.get('project'));
+        let index_root = project + '/.index/';
+        let build = project + '/Build/';
+        let query_arg = "?project="+encodeURIComponent(project);
+
+        let links = [
+            { "General Index": document.getElementById('general_index').href },
+            { "Docs": document.getElementById('docs').href },
+            { "Extensions": index_root + 'doc/Extensions.html' },
+            { "Definitions": index_root + 'doc/ExtIndex.html' },
+            { "Debug Log": build + 'debug_log.html' },
+            { "Problems": build + 'problems.html' },
+            { "Source": index_root + 'story.html' },
+            { "Project Index": index_root + 'Index/Welcome.html' } ];
+        let sp = document.createTextNode(" ");
+        links.forEach(h => {
+            Object.entries(h).forEach(([text, url]) => {
+                let my_id = text.toLowerCase().replace(' ', '_');
+                let a = document.querySelector('#'+my_id);
+                let url_target = "file://"+url+query_arg;
+                if (a) {
+                    let parts = a.href.split('#');
+                    let qparts = parts[0].split('?');
+                    a.href = qparts[0] +  (qparts[1] ? ('?' + qparts[1]) : query_arg) + (parts[1] ? ('#' + parts[1]) : "");
+                }
+                else {
+                    a = document.createElement('a');
+                    let href = document.createAttribute("href");
+                    href.value = url_target;
+                    a.setAttributeNode(href);
+                    let elem_id = document.createAttribute("id");
+                    elem_id.value = my_id;
+                    a.setAttributeNode(elem_id);
+                    let linktext = document.createTextNode(text);
+                    a.appendChild(linktext);
+                    navbar.insertBefore(sp.cloneNode(), navbar.firstChild);
+                    navbar.insertBefore(a, navbar.firstChild);
+                }
+            })});
+        if (update) {
+            let main_links = document.querySelectorAll('main a');
+            main_links.forEach(a => {
+                if (!a.href.startsWith('javascript:') || (a.href.match(/[^:]+:\/\// && !a.href.startsWith('file:')))) {
+                    let parts = a.href.split('#')
+                    a.href = parts[0] + query_arg + (parts[1] ? ('#' + parts[1]) : "");
+                } });
+        }
+    }
+}
+
+
+
+document.addEventListener("DOMContentLoaded", add_bar);</script>
+<title>Example #67</title></head>
+<body class="inform7-source">
+
+<div class="inform7-source"><div class="pseudo">
+      <span class="tr"><span class="th"></span><span class="td line"> <span class="i7sx">&quot;Camp Bethel&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Camp Bethel Kitchen is a room.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[One use for text alternatives is to change the description of a room after first visiting. We&#39;ve already seen, in the example &quot;Slightly Wrong&quot;, how to do this with &quot;[if visited] ... [otherwise] ... [end if]&quot;. But since the first description is printed once and the second description on all subsequent occasions, we could equally well write]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The description of Camp Kitchen is <span class="i7sx">&quot;</span><span class="i7si">[one of]</span><span class="i7sx">You&#39;ve never been into the kitchen before, though you&#39;ve spent many an hour in the dining lodge. The place is larger than you would have expected, and it has none of the fake rustic touches of the rest of the camp</span><span class="i7si">[or]</span><span class="i7sx">A tidy, efficient industrial kitchen, without any of the kitsch rusticity found elsewhere</span><span class="i7si">[stopping]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[We might also want to liven up the behavior of people and animals, who are probably not doing the exact same thing every time we glance in their direction. There are more complex techniques for modeling the behavior of characters, as we will see in the chapters on Advanced Actions and Activities; but if we just want some textual variety, we might write something like:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Jeremy is a man in the Camp Bethel Kitchen. <span class="i7sx">&quot;Jeremy stands at his station, </span><span class="i7si">[one of]</span><span class="i7sx">peeling white onions</span><span class="i7si">[or]</span><span class="i7sx">briskly dicing onions</span><span class="i7si">[or]</span><span class="i7sx">chopping celery</span><span class="i7si">[or]</span><span class="i7sx">peeling carrots</span><span class="i7si">[or]</span><span class="i7sx">tying fresh herbs together with string</span><span class="i7si">[or]</span><span class="i7sx">putting all the vegetables into a large stock pot</span><span class="i7si">[or]</span><span class="i7sx">watching over his boiling vegetable stock</span><span class="i7si">[cycling]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[And since (textual variation or not) we do want the player to be able to see all these objects:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Jeremy carries white onions, celery, carrots, and herbs. Jeremy&#39;s station is scenery in the kitchen. It is a supporter.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Jeremy is following a sequence of actions to do an implied task (still somewhat robotically, but it will do for now). Animals might be a bit more capricious, though:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Fluffy is an animal in the Camp Bethel Kitchen. <span class="i7sx">&quot;</span><span class="i7si">[one of]</span><span class="i7sx">Fluffy is chasing its tail</span><span class="i7si">[or]</span><span class="i7sx">Fluffy is staring out the window</span><span class="i7si">[or]</span><span class="i7sx">Fluffy is rubbing itself against your leg</span><span class="i7si">[purely at random]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A housefly is an animal in the Camp Bethel Kitchen. <span class="i7sx">&quot;A large housefly </span><span class="i7si">[one of]</span><span class="i7sx">lands on a countertop</span><span class="i7si">[or]</span><span class="i7sx">flies around noisily</span><span class="i7si">[or]</span><span class="i7sx">circles Jeremy&#39;s chef hat</span><span class="i7si">[at random]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[The housefly&#39;s description is merely &quot;at random&quot; rather than &quot;purely at random&quot; because we want to show it doing a different thing each turn, whereas Fluffy could plausibly stare out the window for five turns in a row.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[There are more complex ways to change and override the initial descriptions of people and things; if text alternatives do not get us far enough, we can turn to the &quot;rule for writing a paragraph about,&quot; documented in the Activities chapter.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Another frequent use of text alternatives is to give characters a bit of variety in things they&#39;re likely to say many times in the course of a game:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of telling Jeremy about something:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;Jeremy looks </span><span class="i7si">[one of]</span><span class="i7sx">surprised</span><span class="i7si">[or]</span><span class="i7sx">intrigued</span><span class="i7si">[or]</span><span class="i7sx">nonplussed</span><span class="i7si">[at random]</span><span class="i7sx">. &#39;</span><span class="i7si">[one of]</span><span class="i7sx">You don&#39;t say</span><span class="i7si">[or]</span><span class="i7sx">That&#39;s very interesting</span><span class="i7si">[or]</span><span class="i7sx">Do go on</span><span class="i7si">[or]</span><span class="i7sx">I wish I&#39;d known that sooner</span><span class="i7si">[at random]</span><span class="i7sx">!&#39;&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Or, with somewhat more complexity:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of asking Jeremy about something:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;&#39;</span><span class="i7si">[one of]</span><span class="i7sx">Sorry,</span><span class="i7si">[or]</span><span class="i7sx">I&#39;m afraid</span><span class="i7si">[or]</span><span class="i7sx">Hm,</span><span class="i7si">[at random]</span><span class="i7sx"> </span><span class="i7si">[one of]</span><span class="i7sx">I don&#39;t know much about that</span><span class="i7si">[or]</span><span class="i7sx">you&#39;ve got me there</span><span class="i7si">[or]</span><span class="i7sx">I haven&#39;t the faintest</span><span class="i7si">[at random]</span><span class="i7sx">,&#39; Jeremy </span><span class="i7si">[one of]</span><span class="i7sx">drawls</span><span class="i7si">[or]</span><span class="i7sx">replies</span><span class="i7si">[or]</span><span class="i7sx">comments</span><span class="i7si">[or]</span><span class="i7sx">exclaims</span><span class="i7si">[at random]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[one of][or]</span><span class="i7sx"> huskily</span><span class="i7si">[or]</span><span class="i7sx"> throatily</span><span class="i7si">[or]</span><span class="i7sx"> silkily</span><span class="i7si">[or]</span><span class="i7sx"> in a deep manly voice</span><span class="i7si">[as decreasingly likely outcomes]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Notice that, in that last line, our first option is entirely blank. If we put nothing as an element of the text alternatives list, this means that printing nothing at all is a viable alternative. In fact, we&#39;ve made this the most common probability out of the decreasingly likely outcomes, so that five times in fifteen, or a third of the time the text is run, there will be no modifier printed at all.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Test me with <span class="i7sx">&quot;look / g / g / g / ask Jeremy about his feelings for me / ask jeremy about his amnesia / tell Jeremy about my unborn child&quot;</span>.</span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

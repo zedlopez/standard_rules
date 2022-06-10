@@ -1,0 +1,1305 @@
+<!doctype html>
+<meta charset="utf-8"><html lang="en"><head><title>Writing in Inform 11. Phrases</title><link rel="stylesheet" href="style.css"><script src="chapter.js"></script></head><body>
+<nav><div class="index-navbar hidden">
+<a id="project_index" href="../Welcome.html"> Project Index</a><a id="source" href="../../story.html"> Source</a><a id="problems" href="../../Build/problems.html"> Problems</a><a id="debug_log" href="../../Build/debug_log.html"> Debug Log</a><a id="definitions" href="./ExtIndex.html"> Definitions</a><a id="extensions" href="./Extensions.html"> Extensions</a><a id="docs" href="./index.html"> Docs</a><a id="general_index" href="./index.html#general-index"> General Index</a>
+
+</div>
+</nav>
+<main>
+<header>
+
+<div class="toc">
+<h1>Writing in Inform</h1>
+<div class="doc-navbar">
+<div>
+<div class="doc-navbar-left"><a class="nav-left" href="wi_10.html#wi-chapter-10-scenes">10. Scenes</a></div>
+<div class="doc-navbar-right"><a class="nav-right" href="wi_12.html#wi-chapter-12-advanced-actions">12. Advanced Actions</a></div>
+</div>
+<div>
+<div class="doc-navbar-left"><a href="index.html">Table of Contents</a></div>
+<div class="doc-navbar-right"><a href="index.html#general-index">General Index</a></div>
+</div>
+</div>
+
+<div><a id="toggle" href="javascript:toggle_details('examples')">Open all examples</a></div>
+<h2>11. Phrases</h2>
+<div class="toc-section">11.1 <a href="wi_11.html#wi-11.1">What are phrases?</a></div>
+<div class="toc-section">11.2 <a href="wi_11.html#wi-11.2">The phrasebook</a></div>
+<div class="toc-section">11.3 <a href="wi_11.html#wi-11.3">Pattern matching</a></div>
+<div class="toc-section">11.4 <a href="wi_11.html#wi-11.4">The showme phrase</a></div>
+<div class="toc-section">11.5 <a href="wi_11.html#wi-11.5">Conditions and questions</a></div>
+<div class="toc-section">11.6 <a href="wi_11.html#wi-11.6">If</a></div>
+<div class="toc-section">11.7 <a href="wi_11.html#wi-11.7">Begin and end</a></div>
+<div class="toc-section">11.8 <a href="wi_11.html#wi-11.8">Otherwise</a></div>
+<div class="toc-section">11.9 <a href="wi_11.html#wi-11.9">While</a></div>
+<div class="toc-section">11.10 <a href="wi_11.html#wi-11.10">Repeat</a></div>
+<div class="toc-section">11.11 <a href="wi_11.html#wi-11.11">Repeat running through</a></div>
+<div class="toc-section">11.12 <a href="wi_11.html#wi-11.12">Next and break</a></div>
+<div class="toc-section">11.13 <a href="wi_11.html#wi-11.13">Stop</a></div>
+<div class="toc-section">11.14 <a href="wi_11.html#wi-11.14">Phrase options</a></div>
+<div class="toc-section">11.15 <a href="wi_11.html#wi-11.15">Let and temporary variables</a></div>
+<div class="toc-section">11.16 <a href="wi_11.html#wi-11.16">New conditions, new adjectives</a></div>
+<div class="toc-section">11.17 <a href="wi_11.html#wi-11.17">Phrases to decide other things</a></div>
+<div class="toc-section">11.18 <a href="wi_11.html#wi-11.18">The value after and the value before</a></div>
+</header>
+<main>
+<section class="chapter" id="wi-chapter-11-phrases">
+<section class="section" id="wi-11.1"><div>
+
+
+
+<h3>WI §11.1. What are phrases?</h3>
+<p>Phrases are instructions to Inform to do something, or to decide whether something is true or false, or to produce a value, or to say something. Inform has around 350 phrases built-in, and the chapters so far have already defined about 100 of those. In this chapter we'll see some key phrases for organising instructions of what to do, and also see how to define entirely new phrases.</p>
+<p>Just to run through the four sorts of phrase with examples:</p>
+<p>(a) Phrases to do something. These are the ones used in the body of a rule. For example,</p>
+
+<div class="code"><p class="quoted">
+When Train Stop begins:
+<br>    move the Flying Scotsman to the Station;
+<br>    say "The Flying Scotsman pulls up at the platform."
+</p></div>
+<p>Rules like this begin with a "preamble", the beginning part which tells Inform when or how they apply, and then follow on with a list of instructions - here, just two of them. "move ... to ..." and "say ..." are both phrases. Inform provides about 130 of these built-in. It's actually not quite true that they all do something, because one of them is:</p>
+
+<div class="definition" id="defn119">
+<p class="defnprototype"><strong>do nothing</strong></p>
+
+
+
+<p>This phrase does nothing at all. It is very occasionally useful to make a rule which does nothing:</p>
+
+<blockquote class="code"><p class="quoted">
+This is the largely ineffective rule:
+<br>    do nothing.
+</p></blockquote>
+
+
+
+</div>
+
+<p>(b) Phrases to decide whether a condition is true. These are the ones which can  be used in an "if":</p>
+
+<div class="code"><p class="quoted">
+if action requires light: ...
+</p></div>
+<p>Not all conditions come from phrases. For example, "if the front door is closed" and "if Peter is wearing the sandals" have meanings which come from the verbs "to be" and "to wear". Inform provides about 60 built-in conditions, which give a friendly wording for questions which would be lengthy or difficult to write in any other way.</p>
+<p>(c) Phrases to decide a value. For example:</p>
+
+<div class="code"><p class="quoted">
+square root of 16
+</p></div>
+<p>produces a number, 4 of course, and can be used whenever a number is expected. Inform provides about 100 built-in phrases like this.</p>
+<p>(d) Text substitutions. These are actually just phrases whose definition begins with "To say ...". Example:</p>
+
+<div class="code"><p class="quoted">
+"It's now [time of day in words]."
+</p></div>
+<p>Inform provides about 60 built-in text substitutions.</p>
+
+
+</div></section>
+<section class="section" id="wi-11.2"><div>
+
+
+
+
+
+<h3>WI §11.2. The phrasebook</h3>
+<p>The Phrasebook is Inform's collection of recognised phrases, and it can always be browsed using the Index panel of the same name. Even the smallest project has a good-sized phrasebook, since it contains all of the built-in phrases. But most projects also define new phrases of their own.</p>
+<p>Here is a simple definition of a new phrase:</p>
+
+<div class="code"><p class="quoted">
+To spring the trap:
+<br>    say "'Sproing!' go the hinges and, with a flash of silver, the enormous blades whisk together!";
+<br>    end the story.
+</p></div>
+<p>Inform allows us to use whatever conventions of layout we prefer, but it's customary to use indentation like this, dividing off the preamble from the phrases which follow. As can be seen, definitions of new phrases look very like rules.</p>
+<p>What makes this definition a simple one is that the wording is fixed. The only way to use this would be from another phrase or rule, like so:</p>
+
+<div class="code"><p class="quoted">
+Instead of entering the cage:
+<br>    spring the trap.
+</p></div>
+<p>In the next section we'll see how to give more complicated definitions which, like "move ... to ...", allow for the wording to change with the circumstances.</p>
+
+
+</div></section>
+<section class="section" id="wi-11.3"><div>
+
+
+
+
+
+<h3>WI §11.3. Pattern matching</h3>
+<p>In this section, let's make the following new phrase:</p>
+
+<div class="code"><p class="quoted">
+To admire (item - an object):
+<br>    say "You take a long look at [item].".
+</p></div>
+<p>This does very little, of course, but it does allow the wording to be different each time the phrase is used:</p>
+
+<div class="code"><p class="quoted">
+admire the diamonds;
+<br>admire Mr Cogito;
+<br>admire the honey sandwich;
+</p></div>
+<p>and our single definition covers all of these possibilities. The bracketed part of the definition, "(item - an object)", tells Inform to expect an object in that position, and Inform enforces this carefully. So this definition might tell Inform what "admire the barricade" means, but not what</p>
+
+<div class="code"><p class="quoted">
+admire "blue cheese";
+<br>admire 63;
+</p></div>
+<p>mean. Unless some other definition sorts the matter out, Inform will reply to uses like this with a Problem message:</p>
+
+<div class="code"><p class="quoted">
+<strong>Problem.</strong> You wrote 'admire 63' <img alt="Reveal.png" src="doc_images/Reveal.png">, but '63' has the wrong kind of value: a number rather than an object.
+</p></div>
+<p>The object does not need to be named literally, but can be anything which works out to be an object: for instance,</p>
+
+<div class="code"><p class="quoted">
+After dropping something in the Auction House:
+<br>    admire the noun.
+</p></div>
+<p>which Inform allows because "noun", here, is a name for the object which is being acted on.</p>
+<p>Inform decides which definition to apply in a process called "pattern matching".</p>
+<p>The bracketed part of the example definition has the form "(name - kind)". The definition only applies if the text supplied agrees with the "kind" part - for instance, the diamonds agreed with "object", but 63 did not. If the definition  does apply, then the Inform works through the rest of the phrase using "name" to mean whatever value matched. For example:</p>
+
+<div class="code"><p class="quoted">
+To slam shut (box - an open container):
+<br>    say "With great panache, you slam shut [the box].";
+<br>    now the box is closed.
+</p></div>
+<p>When this phrase is followed, "box" means whatever open container the pattern-matcher found when it was called for. For example, if Inform reads</p>
+
+<div class="code"><p class="quoted">
+slam shut the Dutch armoire;
+</p></div>
+<p>then it acts on this by following the definition of "slam shut ...", using the Dutch armoire object as the value of "box", so it prints:</p>
+
+<div class="code"><p class="quoted">
+With great panache, you slam shut the Dutch armoire.
+</p></div>
+<p>and renders it closed.</p>
+<p>In fact any description can be given in the definition, and that includes a single, specific value. For instance, we could define:</p>
+
+<div class="code">
+<p class="quoted">
+To grant (bonus - a number) points:
+<br>    increase the score by the bonus.
+</p>
+<p class="quoted">
+To grant (bonus - 7) points:
+<br>    say "You shiver uncontrollably."
+</p>
+</div>
+<p>which would withhold this unlucky bounty. That would mean that:</p>
+
+<div class="code"><p class="quoted">
+grant 7 points;
+<br>grant seven points;
+</p></div>
+<p>would each produce uncontrollable shivers, because Inform uses the definition applying to the number 7; but</p>
+
+<div class="code"><p class="quoted">
+grant six points;
+</p></div>
+<p>would increase the score by 6. In general Inform always follows the principle that more specific definitions take priority over more general ones. So although the definitions:</p>
+
+<div class="code"><p class="quoted">
+To grant (bonus - a number) points: ...
+<br>To grant (bonus - 7) points: ...
+</p></div>
+<p>both apply to the case of "grant 7 points", Inform uses the second, because it's the more specific of the two possibilities.</p>
+<p>Sometimes it will not be possible to tell if the value supplied meets the requirements until the story is actually playing. If, at run-time, no definition fits some phrase which has to be carried out, a run-time problem message is produced.</p>
+<p>Finally, and more straightforwardly, we can specify variations in wording using slashes between alternative words in a "To ..." definition. For instance:</p>
+
+<div class="code"><p class="quoted">
+To grant (bonus - a number) point/points: ...
+</p></div>
+<p>allows the final word to be either "point" or "points". Slashes like this can only be used with literal words, not bracketed values, and give alternative forms only of a single word at a time; the alternative "--" means "no word at all", and thus makes it optional:</p>
+
+<div class="code"><p class="quoted">
+To grant (bonus - a number) point/points/--: ...
+</p></div>
+<p>makes "grant 3" do the same as "grant 3 points".</p>
+<p>If we need more variation than that, we should make more than one definition.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-169"><p class="example-p"><span class="example-short-start">169. <a href="rb_2.html#example-169" class="example-link" onClick="(function() { document.getElementById('example-169').setAttribute('open','open'); return true; })();">Ahem</a></span> <span class="example-difficulty">★</span>  <span class="example-description">Writing a phrase, with several variant forms, whose function is to follow a rule several times.</span> (c.f. <a href="rb_2.html#rb-2.1">RB §2.1. Varying What Is Written</a>)</p></div>
+<div class="example-short" id="example-short-170"><p class="example-p"><span class="example-short-start">170. <a href="rb_7.html#example-170" class="example-link" onClick="(function() { document.getElementById('example-170').setAttribute('open','open'); return true; })();">Ferragamo Again</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">Using the same phrase to produce different results with different characters.</span> (c.f. <a href="rb_7.html#rb-7.10">RB §7.10. Character Emotion</a>)</p></div>
+</div></section>
+<section class="section" id="wi-11.4"><div>
+
+
+
+
+
+<h3>WI §11.4. The showme phrase</h3>
+<p>We've already seen the SHOWME command, which can be typed into the Story panel to look at the state of something, usually a thing or room. SHOWME is a testing command which has no effect once the work is released; eventual players can't use it.</p>
+<p>Inform also has a phrase called "showme", which works in much the same way:</p>
+
+<div class="definition" id="defn120">
+<p class="defnprototype"><strong>showme </strong>(value)<strong></strong></p>
+
+
+
+<p>This phrase is intended for testing purposes only. If used in a story file running inside the Inform application, it prints a line of text showing the given value and its kind; in a Released story file, it does nothing at all. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+When play begins: showme 11.
+</p></blockquote>
+
+<p>produces</p>
+
+<blockquote class="code"><p class="quoted">
+number: 11
+</p></blockquote>
+
+<p>More usefully:</p>
+
+<blockquote class="code"><p class="quoted">
+Every turn: showme the score.
+</p></blockquote>
+
+<p>Now, every turn, we get a line in the story's transcript like so:</p>
+
+<blockquote class="code"><p class="quoted">
+"score" = number: 0
+</p></blockquote>
+
+<p>Inform uses the quotation marks and equals sign to show that it had to do some work to find the answer. "score" wasn't a constant value - it was a variable, and Inform had to look up the current value.</p>
+
+
+</div>
+
+<p>"showme" is a convenient way to see what's going on inside a phrase which isn't behaving as expected, or to find out the kind of a value. Here are some trickier examples. Suppose our design includes:</p>
+
+<div class="code"><p class="quoted">
+The matching key of the blue door is the brass Yale key.
+</p></div>
+<p>If we then try this:</p>
+
+<div class="code"><p class="quoted">
+When play begins:
+<br>    showme matching key of the blue door.
+</p></div>
+<p>we get, when the story starts up,</p>
+
+<div class="code"><p class="quoted">
+"matching key of the blue door" = object: brass Yale key
+</p></div>
+<p>Why is this an "object", when we know that the key is actually a "thing"? After all, if we "showme key" instead, we get:</p>
+
+<div class="code"><p class="quoted">
+thing: brass Yale key
+</p></div>
+<p>The answer is a little technical: it's because Inform guarantees that the matching key is always an object, but not that it's always a thing - it just happens to be a thing at the moment. There's not really a contradiction, because a "thing" is a kind of "object", so in fact the key is both. If we try "showme matching key", we get something like this:</p>
+
+<div class="code"><p class="quoted">
+objects valued property: property 23
+</p></div>
+<p>which is even more technical - people never need to print the names of abstract property names during play, so Inform doesn't provide any good way of doing it. It is reduced to printing out an internal ID number ("property 23") instead of the name ("matching key"). This can't be helped: "showme" is a way to lift the lid and see what's going on inside Inform's machinery, and some of the corners are dark.</p>
+<p>All the same, "showme" can be very useful in tinkering with rules to make them work properly. It prints nothing at all in a Release version of a project, so it's impossible for these private notes to be shown accidentally to our eventual readers.</p>
+
+
+</div></section>
+<section class="section" id="wi-11.5"><div>
+
+
+
+
+
+<h3>WI §11.5. Conditions and questions</h3>
+<p>A variety of "conditions" have already appeared in this documentation. A condition is a phrase which describes a situation which might be true, or might be false, and examples might include:</p>
+
+<div class="code"><p class="quoted">
+Mr Kite is in Bishopsgate
+<br>the score is greater than 10
+<br>Sherlock Holmes suspects a woman
+</p></div>
+<p>These are all examples of sentences, formed by putting nouns either side of a verb, and clearly a wide range of conditions can be written this way. But there are also a few special conditions built into Inform which have a fixed wording, and test questions difficult to address with ordinary sentences. For instance:</p>
+
+<div class="definition" id="defn121">
+<p class="defnprototype"><strong>if in darkness:</strong></p>
+
+
+
+<p>This condition is true if the player currently has no light to see by. Note that the test is more complicated than simply testing</p>
+
+<blockquote class="code"><p class="quoted">
+if the player is in a dark room, ...
+</p></blockquote>
+
+<p>since the player might have a torch, or be inside a cage which is itself in a dark room, and so on.</p>
+
+
+</div>
+
+<p>Another example of a condition not easily written as a sentence is:</p>
+
+<div class="definition" id="defn122">
+<p class="defnprototype"><strong>if player consents:</strong></p>
+
+
+
+<p>This condition is unusual in doing something and not simply making a silent check: it waits for the player to type YES (or Y) or NO (or N) at the keyboard, and then is true if the answer was yes. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+say "Are you quite sure you want to kiss the Queen? ";
+<br>if the player consents:
+<br>    ...
+</p></blockquote>
+
+
+
+</div>
+
+<p>Whether it's put to the player like this or not, testing a condition is really asking a question, and there is always a yes/no answer. In Inform this answer is not usually a value (unlike in some other computer programming languages), but it can be made into one.</p>
+<p>Firstly, we need a special kind of value to hold answers like this. It's called "truth state", and it has just two possible values, written as "true" and "false". We then need:</p>
+
+<div class="definition" id="defn123">
+<p class="defnprototype"><strong>whether or not </strong>(a condition)<strong> ... truth state</strong></p>
+
+
+
+<p>This phrase converts a condition into its result as a value, which is always either "true" or "false". Example:</p>
+
+<blockquote class="code"><p class="quoted">
+whether or not 20 is an odd number
+</p></blockquote>
+
+<p>produces the truth state "false". This is mostly useful for storing up results to look at later:</p>
+
+<blockquote class="code"><p class="quoted">
+let victory be whether or not all the treasures are in the cabinet;
+</p></blockquote>
+
+<p>and then subsequently:</p>
+
+<blockquote class="code"><p class="quoted">
+if victory is true, ...
+</p></blockquote>
+
+
+
+</div>
+
+<p>As another example, in most stories this:</p>
+
+<div class="code"><p class="quoted">
+When play begins:
+<br>    showme whether or not in darkness.
+</p></div>
+<p>...will produce a line:</p>
+
+<div class="code"><p class="quoted">
+"whether or not in darkness" = truth state: false
+</p></div>
+<p>In short, "truth state" is a kind of value like any other. That means it can be the kind of a variable:</p>
+
+<div class="code"><p class="quoted">
+Salvation earned is a truth state that varies.
+</p></div>
+<p>and it can similarly be used in table columns, lists, or anywhere else where values are allowed.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-171"><p class="example-p"><span class="example-short-start">171. <a href="rb_7.html#example-171" class="example-link" onClick="(function() { document.getElementById('example-171').setAttribute('open','open'); return true; })();">Proposal</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">Asking the player a yes/no question which he must answer, and another which he may answer or not as he chooses.</span> (c.f. <a href="rb_7.html#rb-7.7">RB §7.7. Saying Simple Things</a>)</p></div>
+</div></section>
+<section class="section" id="wi-11.6"><div>
+
+
+
+
+
+<h3>WI §11.6. If</h3>
+<p>Inform's most powerful phrases are those which control the others, making them repeat, or be skipped.</p>
+
+<div class="definition" id="defn124">
+<p class="defnprototype"><strong>if </strong>(a condition)<strong> , </strong>(a phrase)<strong></strong></p>
+<br><em>or:</em>   <p class="defnprototype"><strong>if </strong>(a condition)<strong>:</strong></p>
+
+
+
+<p>This phrase causes the single phrase, or block of phrases, following it to be obeyed only if the condition is true. (If the condition must contain a comma for some reason, the block form should be used.) Example:</p>
+
+<blockquote class="code"><p class="quoted">
+if the red door is open, say "You could try going east?"
+</p></blockquote>
+
+
+
+</div>
+
+<p>The sense of an "if" can be reversed by using the word "unless" instead:</p>
+
+<div class="definition" id="defn125">
+<p class="defnprototype"><strong>unless </strong>(a condition)<strong> , </strong>(a phrase)<strong></strong></p>
+<br><em>or:</em>   <p class="defnprototype"><strong>unless </strong>(a condition)<strong>:</strong></p>
+
+
+
+<p>This phrase causes the single phrase, or block of phrases, following it to be obeyed only if the condition is false. (If the condition must contain a comma for some reason, the block form should be used.) Example:</p>
+
+<blockquote class="code"><p class="quoted">
+unless the red door is closed, say "You could try going east?"
+</p></blockquote>
+
+
+
+</div>
+
+<p>"Unless" is clearly unnecessary, but it can be a good way to make the source text easier for humans to read.</p>
+<p>As we have seen, there are many different forms of condition in Inform. They usually take a form quite like an assertion sentence, except that they're questions and not statements of fact. For example:</p>
+
+<div class="code"><p class="quoted">
+if the score is 10, ...
+<br>if all of the people are in the Atrium, ...
+</p></div>
+<p>Questions like this are checked by Inform to see if they make sense. The following doesn't, for instance:</p>
+
+<div class="code"><p class="quoted">
+if 10 is a door, say "Huzzah!";
+</p></div>
+<p>This produces the baffled reply:</p>
+
+<div class="code"><p class="quoted">
+<strong>Problem.</strong> In the line 'if 10 is a door, say "Huzzah!"' <img alt="Reveal.png" src="doc_images/Reveal.png">, I can't determine whether or not '10 is a door', because it seems to ask if a number is some sort of door.
+</p></div>
+</div></section>
+<section class="section" id="wi-11.7"><div>
+
+
+
+
+
+<h3>WI §11.7. Begin and end</h3>
+<p>In practice it is not enough to apply "if" to a single phrase alone: we want to give a whole list of phrases to be followed repeatedly, or to be followed only if a condition holds.</p>
+<p>We do this by grouping them together, and there are two ways to do this. One is as follows:</p>
+
+<div class="code"><p class="quoted">
+To comment upon (whatever - a thing):
+<br>    if whatever is transparent, say "I see right through this!";
+<br>    if whatever is an open door:
+<br>        say "Oh look, an open door!";
+<br>        if whatever is openable, say "But you could always shut it."
+</p></div>
+<p>Here we group two phrases together under the same "if". Note that the comma has been replaced by a colon, and that the indentation in the list of phrases shows how they are grouped together. In the example above, the source moves two tabs in from the margin; the maximum allowed is 25.</p>
+<p>Indentation is the convention used in this manual and in the examples, but not everybody likes this Pythonesque syntax. So Inform also recognises a more explicit form, in which the beginning and ending are marked with the words "begin" and "end":</p>
+
+<div class="code"><p class="quoted">
+To comment upon (whatever - a thing):
+<br>    if whatever is transparent, say "I see right through this!";
+<br>    if whatever is an open door
+<br>    begin;
+<br>        say "Oh look, an open door!";
+<br>        if whatever is openable, say "But you could always shut it.";
+<br>    end if.
+</p></div>
+<p>(Pythonesque because it's a style popularised by the programming language Python, named in turn after "Monty Python's Flying Circus".)</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-172"><p class="example-p"><span class="example-short-start">172. <a href="rb_8.html#example-172" class="example-link" onClick="(function() { document.getElementById('example-172').setAttribute('open','open'); return true; })();">Princess and the Pea</a></span> <span class="example-difficulty">★</span>  <span class="example-description">The player is unable to sleep on a mattress (or stack of mattresses) because the bottom one has something uncomfortable under it.</span> (c.f. <a href="rb_8.html#rb-8.4">RB §8.4. Furniture</a>)</p></div>
+<div class="example-short" id="example-short-173"><p class="example-p"><span class="example-short-start">173. <a href="rb_6.html#example-173" class="example-link" onClick="(function() { document.getElementById('example-173').setAttribute('open','open'); return true; })();">Matreshka</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A SEARCH [room] action that will open every container the player can see, stopping only when there don't remain any that are closed, unlocked, and openable.</span> (c.f. <a href="rb_6.html#rb-6.6">RB §6.6. Looking Under and Hiding</a>)</p></div>
+</div></section>
+<section class="section" id="wi-11.8"><div>
+
+
+
+
+
+<h3>WI §11.8. Otherwise</h3>
+<p>We often need code which does one thing in one circumstance, and another the rest of the time. We could do this like so:</p>
+
+<div class="code"><p class="quoted">
+if N is 2:
+<br>    ...
+<br>if N is not 2:
+<br>    ...
+</p></div>
+<p>but this is not very elegant, and besides, what if the action we take when N is 2 changes N so that it becomes something else?</p>
+<p>Instead we use "otherwise":</p>
+
+<div class="definition" id="defn126">
+<p class="defnprototype"><strong>otherwise if </strong>(a condition)<strong></strong></p>
+<br><em>or:</em>   <p class="defnprototype"><strong>otherwise unless </strong>(a condition)<strong></strong></p>
+<br><em>or:</em>   <p class="defnprototype"><strong>otherwise </strong>(a phrase)<strong></strong></p>
+<br><em>or:</em>   <p class="defnprototype"><strong>else if </strong>(a condition)<strong></strong></p>
+<br><em>or:</em>   <p class="defnprototype"><strong>else unless </strong>(a condition)<strong></strong></p>
+<br><em>or:</em>   <p class="defnprototype"><strong>else </strong>(a phrase)<strong></strong></p>
+
+
+
+<p>This phrase can only be used as part of an "if ...:" or "unless: ...", and provides an alternative block of phrases to follow if the first block isn't followed. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+if N is 2:
+<br>    ...
+<br>otherwise:
+<br>    ...
+</p></blockquote>
+
+<p>When there is only a single phrase we can use the shortened form:</p>
+
+<blockquote class="code"><p class="quoted">
+if N is 2, say "Hooray, N is 2!";
+<br>otherwise say "Boo, N is not 2...";
+</p></blockquote>
+
+<p>We can also supply an alternative condition:</p>
+
+<blockquote class="code"><p class="quoted">
+if N is 1:
+<br>    ...
+<br>otherwise if N is 2:
+<br>    ...
+<br>otherwise if N is greater than 4:
+<br>    ...
+</p></blockquote>
+
+<p>At most one of the "..." clauses is ever reached - the first which works out.</p>
+
+
+</div>
+
+<p>If the chain of conditions being tried consists of checking the same value over and over, we can use a convenient abbreviated form:</p>
+
+<div class="definition" id="defn127">
+<p class="defnprototype"><strong>if </strong>(value)<strong> is:</strong></p>
+
+
+
+<p>This phrase switches between a variety of possible blocks of phrases to follow, depending on the value given. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+if the dangerous item is:
+<br>    -- the electric hairbrush:
+<br>        say "Mind your head.";
+<br>    -- the silver spoon:
+<br>        say "Steer clear of the cutlery drawer."
+</p></blockquote>
+
+<p>One alternative is allowed to be "otherwise", which is used only if none of the other cases apply, and which therefore guarantees that in any situation exactly one of the blocks will be followed.</p>
+
+<blockquote class="code"><p class="quoted">
+if N is:
+<br>    -- 1: say "1.";
+<br>    -- 2: say "2.";
+<br>    -- otherwise: say "Neither 1 nor 2.";
+</p></blockquote>
+
+
+
+</div>
+
+<p>This form of "if" layout is not allowed to use "begin" and "end" instead of indentation: it would look too messy, and would scarcely be an abbreviation. It is also not allowed to use "unless" instead of "if", because the result would be too tangled to follow.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-174"><p class="example-p"><span class="example-short-start">174. <a href="rb_2.html#example-174" class="example-link" onClick="(function() { document.getElementById('example-174').setAttribute('open','open'); return true; })();">Numberless</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A simple exercise in printing the names of random numbers, comparing the use of "otherwise if...", a switch statement, or a table-based alternative.</span> (c.f. <a href="rb_2.html#rb-2.1">RB §2.1. Varying What Is Written</a>)</p></div>
+</div></section>
+<section class="section" id="wi-11.9"><div>
+
+
+
+
+
+<h3>WI §11.9. While</h3>
+<p>The next control phrase is "while", which has the form:</p>
+
+<div class="definition" id="defn128">
+<p class="defnprototype"><strong>while </strong>(a condition)<strong>:</strong></p>
+
+
+
+<p>This phrase causes the block of phrases following it to be repeated over and over for as long the condition is true. If it isn't even true the first time, the block is skipped over and nothing happens. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+while someone (called the victim) is in the Crypt:
+<br>    say "A bolt of lightning strikes [the victim]!";
+<br>    now the victim is in the Afterlife;
+</p></blockquote>
+
+
+
+</div>
+
+<p>We must be careful not to commit mistakes like the following:</p>
+
+<div class="code"><p class="quoted">
+while eggs is eggs:
+<br>    say "again and ";
+</p></div>
+<p>which, as sure as eggs is eggs (which is very sure indeed), writes out</p>
+
+<div class="code"><p class="quoted">
+again and again and again and again and again and ...
+</p></div>
+<p>forever. (Inform won't prevent this: we will find out the hard way when the story is played.) While we would probably never write anything so blatant as that, the mistake is all too easy to commit in disguised form. We should never design a loop, as repetitions like this are called, without worrying about if and when it will finish.</p>
+<p>As with "if", we can use "begin" and "end" instead of a tabulated layout if we want to --</p>
+
+<div class="code"><p class="quoted">
+while ...
+<br>begin;
+<br>    ...
+<br>end while.
+</p></div>
+<p>(The "begin" of an "if" must of course match an "end if", not an "end while", and so on.)</p>
+<p>Experience shows that it is much more legible to lay out "while" loops as blocks, even in these rare cases when only a single phrase forms the body of the block.</p>
+
+
+</div></section>
+<section class="section" id="wi-11.10"><div>
+
+
+
+
+
+<h3>WI §11.10. Repeat</h3>
+<p>The other kind of loop in Inform is "repeat". The trouble with "while" is that it's not obvious at a glance when or whether the loop will finish, and nor is there any book-keeping to measure progress. A "repeat" loop is much more predictable, and is more or less certain to finish.</p>
+<p>There are several forms of "repeat", of which the simplest is similar to the old FOR/NEXT loop from the home-computer programming language BASIC, for those with long memories:</p>
+
+<div class="definition" id="defn129">
+<p class="defnprototype"><strong>repeat with </strong>(a name not so far used)<strong> running from </strong>(arithmetic value)<strong> to </strong>(arithmetic value)<strong></strong></p>
+<br><em>or:</em>   <p class="defnprototype"><strong>repeat with </strong>(a name not so far used)<strong> running from </strong>(enumerated value)<strong> to </strong>(enumerated value)<strong>:</strong></p>
+
+
+
+<p>This phrase causes the block of phrases following it to be repeated once for each value in the given range, storing that value in the named variable. (The variable exists only temporarily, within the repetition.) Example:</p>
+
+<blockquote class="code"><p class="quoted">
+repeat with counter running from 1 to 10:
+<br>    ...
+</p></blockquote>
+
+<p>This, and runs through the given phrases ten times. Within those phrases, a special value called "counter" has the value 1 the first time through, then the value 2, then 3 and so on up to 10. (It can of course be called whatever we like: this is only an example.) The range can be from any kind where ranges make sense - anything on which arithmetic can be done, so for instance</p>
+
+<blockquote class="code"><p class="quoted">
+repeat with moment running from 4 PM to 4:07 PM:
+<br>    ...
+</p></blockquote>
+
+<p>and also any enumeration:</p>
+
+<blockquote class="code"><p class="quoted">
+Colour is a kind of value. The colours are red, orange, yellow, green, blue, indigo and violet.
+</p></blockquote>
+
+
+<blockquote class="code"><p class="quoted">
+...
+<br>    repeat with hue running from orange to indigo:
+<br>        ...
+</p></blockquote>
+
+
+
+</div>
+
+<p>We are allowed to "nest" loops, that is, to put one inside another.</p>
+
+<div class="code"><p class="quoted">
+ To plot a grid with size (S - a number):
+<br>    repeat with x running from 1 to S:
+<br>        say "Row [x]:";
+<br>        repeat with y running from 1 to S:
+<br>            say " [y]";
+<br>        say "."
+</p></div>
+<p>If we then write</p>
+
+<div class="code"><p class="quoted">
+plot a grid with size 5;
+</p></div>
+<p>then the result is</p>
+
+<div class="code"><p class="quoted">
+Row 1: 1 2 3 4 5.
+<br>Row 2: 1 2 3 4 5.
+<br>Row 3: 1 2 3 4 5.
+<br>Row 4: 1 2 3 4 5.
+<br>Row 5: 1 2 3 4 5.
+</p></div>
+<p>Thus the innermost phrase, the say which mentions "y", happens 25 times.</p>
+<p>Whenever dealing with numbers in Inform we may need to remember that if the Settings for the project are set to use the Z-machine, the range is restricted to -32768 up to 32767. Repeating with a counter up to exactly 32767 is hazardous, because the counter can never break through this barrier: it's infinity, so far as Inform is concerned, and that can cause the repetitions to go on forever. (On Glulx, numbers can be very much larger.)</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-175"><p class="example-p"><span class="example-short-start">175. <a href="rb_9.html#example-175" class="example-link" onClick="(function() { document.getElementById('example-175').setAttribute('open','open'); return true; })();">Wonka's Revenge</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A lottery drum which redistributes the tickets inside whenever the player spins it.</span> (c.f. <a href="rb_9.html#rb-9.5">RB §9.5. Dice and Playing Cards</a>)</p></div>
+</div></section>
+<section class="section" id="wi-11.11"><div>
+
+
+
+
+
+<h3>WI §11.11. Repeat running through</h3>
+<p>Inform is not used very much for numerical work, so the kind of repeat loop described in the previous section is not much used. Inform's natural domain is really the world of things and rooms, so the following kind of repeat is much more useful.</p>
+
+<div class="definition" id="defn130">
+<p class="defnprototype"><strong>repeat with </strong>(a name not so far used)<strong> running through </strong>(description of values)<strong>:</strong></p>
+
+
+
+<p>This phrase causes the block of phrases following it to be repeated once for each value matching the description, storing that value in the named variable. (The variable exists only temporarily, within the repetition.) Example:</p>
+
+<blockquote class="code"><p class="quoted">
+repeat with item running through open containers:
+<br>    ...
+</p></blockquote>
+
+<p>If there are no containers, or they are all closed, the phrases will not be followed at all. Inform will issue a Problem message if the range of the loop may be infinite: for example, it won't allow:</p>
+
+<blockquote class="code"><p class="quoted">
+repeat with X running through odd numbers:
+<br>    ...
+</p></blockquote>
+
+<p>On the other hand it will allow:</p>
+
+<blockquote class="code"><p class="quoted">
+repeat with T running through times:
+<br>    ...
+</p></blockquote>
+
+<p>which repeats 1440 times, starting with T at midnight and finishing at 11:59 PM. See the Kinds index for which kinds of value can be repeated through.</p>
+
+
+</div>
+
+<p>As with counting the "number of ..." objects satisfying some property, we can run through a wide variety of possibilities - any description whose range is possible for Inform to search. For example:</p>
+
+<div class="code">
+<p class="quoted">
+repeat with dinner guest running through the people in the Dining Room:
+<br>    ...
+</p>
+<p class="quoted">
+repeat with possession running through things carried:
+<br>    ...
+</p>
+<p class="quoted">
+repeat with event running through non-recurring scenes which are happening:
+<br>    ...
+</p>
+</div>
+<p>The following lists the whereabouts of all men in lighted rooms:</p>
+
+<div class="code"><p class="quoted">
+ repeat with suspect running through the men who are in a lighted room:
+<br>    say "[The suspect] is in [the location of the suspect].";
+</p></div>
+<p>One small note of caution: if what the "repeat" loop does is to change the things being repeated through, changing in particular whether items not yet reached will qualify to be repeated through, the results can be unexpected. Rather than writing "repeat with X running through D", it may be safer to try "while there is D (called X)", though note that this will only finish if X is always changed so that it no longer qualifies.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-176"><p class="example-p"><span class="example-short-start">176. <a href="rb_7.html#example-176" class="example-link" onClick="(function() { document.getElementById('example-176').setAttribute('open','open'); return true; })();">Strictly Ballroom</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">People who select partners for dance lessons each turn.</span> (c.f. <a href="rb_7.html#rb-7.16">RB §7.16. Social Groups</a>)</p></div>
+</div></section>
+<section class="section" id="wi-11.12"><div>
+
+
+
+
+
+<h3>WI §11.12. Next and break</h3>
+<p>So "repeat" and "while" phrases cause a block of other phrases to be repeated, over and over. The number of repetitions and the flow of "control" has so far been controlled only by the way the original loop was described.</p>
+<p>But in fact it's also possible to change this from inside the block being repeated, using these:</p>
+
+<div class="definition" id="defn131">
+<p class="defnprototype"><strong>next</strong></p>
+
+
+
+<p>This phrase can only be used inside a "repeat" or "while" block, and causes the current repetition of the block to finish immediately. That either means the next repetition begins, or (if we are already at the last one) the loop ends too. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+repeat with X running from 1 to 10:
+<br>    if X is 4, next;
+<br>    say "[X] ".
+</p></blockquote>
+
+<p>produces the text "1 2 3 5 6 7 8 9 10 ", with no "4" because the "say" phrase was never reached on the fourth repetition.</p>
+
+
+</div>
+
+<p>In Monopoly terms, "next" is "Advance to Go" rather than "go directly, do not pass Go, do not collect $200" - the next iteration begins with the variable, if there is one, having cleanly moved on to the next value, just as if the loop had been run through in the normal way. ("Next" is called "continue" in a fair number of programming languages, so Inform issues a specific problem message to help people who forget this.)</p>
+
+<div class="definition" id="defn132">
+<p class="defnprototype"><strong>break</strong></p>
+
+
+
+<p>This phrase can only be used inside "repeat", "while" block, and causes both the current repetition and the entire loop to finish immediately. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+repeat with X running from 1 to 10:
+<br>    if X is 7, break;
+<br>    say "[X] ".
+</p></blockquote>
+
+<p>produces the text "1 2 3 4 5 6 ", with nothing after "6" because the loop was broken at that point. The "say" wasn't reached on the 7th repetition, and the 8th, 9th and 10th never happened.</p>
+
+
+</div>
+
+
+
+</div></section>
+<section class="section" id="wi-11.13"><div>
+
+
+
+
+
+<h3>WI §11.13. Stop</h3>
+<p>Now that it's possible to define phrases where different things are done in different circumstances, we sometimes want to halt early. This is what "stop" is for.</p>
+
+<div class="definition" id="defn133">
+<p class="defnprototype"><strong>stop</strong></p>
+
+
+
+<p>This phrase causes the current rule to end immediately. It is most often used in the definition of other phrases:</p>
+
+<blockquote class="code"><p class="quoted">
+To judge the score:
+<br>    if the score is 0, stop;
+<br>    say "The score is [score in words] more than it was a half-hour ago."
+</p></blockquote>
+
+<p>In the case when the score is 0, the "stop" ends the phrase immediately, so that the subsequent text is printed only if the score is not 0.</p>
+<p>"Stop" can also be used in action rules, though this is not very good style - it's clearer to use "stop the action", which is exactly equivalent.</p>
+
+
+</div>
+
+
+
+</div></section>
+<section class="section" id="wi-11.14"><div>
+
+
+
+
+
+<h3>WI §11.14. Phrase options</h3>
+<p>There are sometimes several slightly different ways to perform a given task but which have substantially the same definition. In the following example:</p>
+
+<div class="code"><p class="quoted">
+To go hiking, into the woods or up the mountain:
+<br>    if into the woods, say "Watch out for badgers.";
+<br>    if up the mountain, say "Better take your compass.";
+<br>    say "You go hiking."
+</p></div>
+<p>...a phrase has been set up which can be used in three ways:</p>
+
+<div class="code"><p class="quoted">
+go hiking;
+<br>go hiking, into the woods;
+<br>go hiking, up the mountain;
+</p></div>
+<p>Note that commas must be used to divide these "phrase options" from the rest of the text of the phrase. Within the definition of the phrase, the option's name is a valid condition, and</p>
+
+<div class="code"><p class="quoted">
+if up the mountain, ...
+</p></div>
+<p>tests whether it is set; we can also test if it is not set using:</p>
+
+<div class="code"><p class="quoted">
+if not up the mountain, ...
+</p></div>
+<p>A more substantial example from the Standard Rules is given by a phrase used mostly for internal, technical reasons:</p>
+
+<div class="definition" id="defn134">
+<p class="defnprototype"><strong>list the contents of </strong>(object)<strong></strong></p>
+
+
+
+<p>This phrase produces a list of all things whose holder is the given object, according to Inform's traditional conventions for room descriptions and inventory listings. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+list the contents of Marley Wood, as a sentence, with newlines
+<br>and including all contents;
+</p></blockquote>
+
+<p>Where this is possible, it's generally better to use "[list of things in ...]" instead, which produces the same result in an acceptable way for the middle of a sentence.</p>
+
+
+</div>
+
+<p>Note that this phrase is allowed to have multiple options specified, whereas "go hiking" above was not: this is because it was defined thus:</p>
+
+<div class="code"><p class="quoted">
+To list the contents of (something - an object), with newlines, indented, as a sentence, including contents, including all contents, giving inventory information, giving brief inventory information, using the definite article, listing marked items only, prefacing with is/are, not listing concealed items, suppressing all articles and/or with extra indentation: ...
+</p></div>
+<p>The significant difference is the word "and/or" instead of "or", which signals that more than one option can apply at a time.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-177"><p class="example-p"><span class="example-short-start">177. <a href="rb_6.html#example-177" class="example-link" onClick="(function() { document.getElementById('example-177').setAttribute('open','open'); return true; })();">Equipment List</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">Overview of all the phrase options associated with listing, and examples of how to change the inventory list into some other standard formats.</span> (c.f. <a href="rb_6.html#rb-6.7">RB §6.7. Inventory</a>)</p></div>
+</div></section>
+<section class="section" id="wi-11.15"><div>
+
+
+
+
+
+<h3>WI §11.15. Let and temporary variables</h3>
+<p>A variable, as we have seen, is a name for a value which changes, though always remaining of the same kind. For instance, if "target" is a number variable (or "number that varies") then it may change value from 2 to 4, but not from 2 to "fishknife".</p>
+<p>To make complicated decisions, phrases often need to remember values on a temporary basis. We have already seen this for the counter in a "repeat" loop, which exists only inside that loop, and then is no longer needed.</p>
+<p>We can also make temporary variables using "let":</p>
+
+<div class="definition" id="defn135">
+<p class="defnprototype"><strong>let </strong>(a name not so far used)<strong> be </strong>(value)<strong></strong></p>
+<br><em>or:</em>   <p class="defnprototype"><strong>let </strong>(a temporary named value)<strong> be </strong>(value)<strong></strong></p>
+
+
+
+<p>This phrase creates a new temporary variable, starting it with the value supplied. The variable lasts only for the present block of phrases, which certainly means that it lasts only for the current rule. Examples:</p>
+
+<blockquote class="code"><p class="quoted">
+let outer bull be 25;
+<br>let the current appearance be "reddish brown";
+<br>let the special room be Marley Wood;
+</p></blockquote>
+
+<p>The kinds of these are deduced from the values given, so that, for instance,</p>
+
+<blockquote class="code"><p class="quoted">
+say "The outer bull scores [the outer bull in words] when you practice archery in [special room]."
+</p></blockquote>
+
+<p>produces</p>
+
+<blockquote class="code"><p class="quoted">
+The outer bull scores twenty-five when you practice archery in Marley Wood.
+</p></blockquote>
+
+<p>The variable name should be a new one; if it's the name of an existing one, then the kinds must agree. So:</p>
+
+<blockquote class="code"><p class="quoted">
+let outer bull be 25;
+<br>let outer bull be 50;
+</p></blockquote>
+
+<p>is a legal combination, because the second "let" simply changes the value of the existing "outer bull" variable to a different number.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn136">
+<p class="defnprototype"><strong>let </strong>(a name not so far used)<strong> be </strong>(name of kind)<strong></strong></p>
+
+
+
+<p>This phrase creates a new temporary variable of the given kind. The variable lasts only for the present block of phrases, which certainly means that it lasts only for the current rule. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+let inner bull be a number;
+</p></blockquote>
+
+<p>The variable created holding the default value for that kind - in this case, the number 0. A handful of very obscure kinds have no default values, and then a problem message is produced. Inform also disallows:</p>
+
+<blockquote class="code"><p class="quoted">
+let the conveyance be a vehicle;
+</p></blockquote>
+
+<p>because temporary variables aren't allowed to have kinds more specific than "object". (This is a good thing: suppose there are no vehicles in the world?) It's quite safe in such cases to use</p>
+
+<blockquote class="code"><p class="quoted">
+let the conveyance be an object;
+</p></blockquote>
+
+<p>instead, which creates it as the special object value "nothing".</p>
+
+
+</div>
+
+<p>Temporary variables made by "let" are only temporarily in existence while a phrase is being carried out. Their values often change: we could say</p>
+
+<div class="code"><p class="quoted">
+let x be 10;
+<br>now x is 11;
+</p></div>
+<p>for instance, or indeed we could "let x be 10" and then "let x be 11". But although we are allowed to change the value, we are not allowed to change the kind of value. The name "x" must always have the same kind of value throughout the phrase to which it belongs, so the following will not be allowed:</p>
+
+<div class="code"><p class="quoted">
+let x be 45;
+<br>now x is "Norway";
+</p></div>
+<p>(The difference between using "let" and "now" here is that "let" can create a new temporary variable, whereas "now" can only alter things already existing: on the other hand, "now" can change many other things as well, whereas "let" applies only to temporary variables.)</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-178"><p class="example-p"><span class="example-short-start">178. <a href="rb_2.html#example-178" class="example-link" onClick="(function() { document.getElementById('example-178').setAttribute('open','open'); return true; })();">M. Melmoth's Duel</a></span> <span class="example-difficulty">★</span>  <span class="example-description">Three basic ways to inject random or not-so-random variations into text.</span> (c.f. <a href="rb_2.html#rb-2.1">RB §2.1. Varying What Is Written</a>)</p></div>
+</div></section>
+<section class="section" id="wi-11.16"><div>
+
+
+
+
+
+<h3>WI §11.16. New conditions, new adjectives</h3>
+<p>We can create new conditions by defining a phrase with "to decide whether" (or equivalently "to decide if"):</p>
+
+<div class="code"><p class="quoted">
+To decide whether danger lurks:
+<br>    if in darkness, decide yes;
+<br>    if the Control Room has been visited, decide no;
+<br>    decide yes.
+</p></div>
+<p>If the player is indeed in darkness, the decision is "yes" because the "decide yes" stops the process right there. We can now write, for instance,</p>
+
+<div class="code"><p class="quoted">
+if danger lurks, ...
+</p></div>
+<p>In fact, "danger lurks" is now a condition as good as any other, and can be used wherever a condition would be given. Rules can apply only "when danger lurks", for instance.</p>
+
+<div class="definition" id="defn137">
+<p class="defnprototype"><strong>yes</strong></p>
+<br><em>or:</em>   <p class="defnprototype"><strong>decide yes</strong></p>
+
+
+
+<p>This phrase can only be used in the definition of a phrase to decide whether a condition holds. It ends the decision process immediately and makes the condition true.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn138">
+<p class="defnprototype"><strong>no</strong></p>
+<br><em>or:</em>   <p class="defnprototype"><strong>decide no</strong></p>
+
+
+
+<p>This phrase can only be used in the definition of a phrase to decide whether a condition holds. It ends the decision process immediately and makes the condition false.</p>
+
+
+</div>
+
+<p>We can also supply definitions of adjectives like this. So far, new adjectives have been defined like so:</p>
+
+<div class="code"><p class="quoted">
+ Definition: a supporter is occupied if it is described and something is on it.
+</p></div>
+<p>If we want to give a definition which involves more complex logic, we can use a special form allowing us to make arbitrary decisions. In this longer format, the same definition would look like so:</p>
+
+<div class="code"><p class="quoted">
+ Definition: a supporter is occupied:
+<br>    if it is undescribed, decide no;
+<br>    if something is on it, decide yes;
+<br>    decide no.
+</p></div>
+<p>Here "it" refers to the supporter in question. Note that there are now two colons in this sentence, one after "Definition", the other after the clause being defined. But that apart, it's a phrase like any other: it must end in "yes" or "no" just as the "danger lurks" example must. "Decide no" and "decide yes" are needed so often that they can be abbreviated by leaving out "decide":</p>
+
+<div class="code"><p class="quoted">
+Definition: a supporter is occupied:
+<br>    if it is undescribed, no;
+<br>    if something is on it, yes;
+<br>    no.
+</p></div>
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-179"><p class="example-p"><span class="example-short-start">179. <a href="rb_6.html#example-179" class="example-link" onClick="(function() { document.getElementById('example-179').setAttribute('open','open'); return true; })();">Owen's Law</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">OUT always means "move to an outdoors room, or else to a room with more exits than this one has"; IN always means the opposite.</span> (c.f. <a href="rb_6.html#rb-6.9">RB §6.9. Going, Pushing Things in Directions</a>)</p></div>
+</div></section>
+<section class="section" id="wi-11.17"><div>
+
+
+
+
+
+<h3>WI §11.17. Phrases to decide other things</h3>
+<p>A condition is a yes/no decision, but we can also take decisions where the result is a value. Suppose we want to create a concept of the "grand prize", which will have different values at different times in play. Each time the "grand prize" is referred to, Inform will have to decide what its value is, and the following tells Inform how to make that decision:</p>
+
+<div class="code"><p class="quoted">
+To decide which treasure is the grand prize:
+<br>    if the Dark Room has been visited, decide on the silver bars;
+<br>    decide on the plover's egg.
+</p></div>
+<p>Note that we have to say what kind the answer will be: here it's a kind of thing called "treasure" (which we're supposing has already been created), and as it turns out only two treasures are ever eligible anyway (we're also supposing that the plover's egg and the silver bars are treasures already created, of course). And note also that the phrase must in all cases end with a "decide on ..." to say what the answer is:</p>
+
+<div class="definition" id="defn139">
+<p class="defnprototype"><strong>decide on </strong>(value)<strong></strong></p>
+
+
+
+<p>This phrase can only be used in the body of a definition of a phrase to decide a value. It causes the calculation to end immediately, with the outcome being the given value, which must be of the kind expected. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+To decide which number is double (N - a number):
+<br>    let D be N times N;
+<br>    decide on D.
+</p></blockquote>
+
+
+
+</div>
+
+<p>Now that we have "grand prize" created, we can use it just as we would use any other value, so for instance:</p>
+
+<div class="code"><p class="quoted">
+if taking the grand prize, ...
+</p></div>
+<p>As this is something of a dialect difference between English speakers, "what" and "which" are synonymous here, i.e., we could equally well write something like:</p>
+
+<div class="code"><p class="quoted">
+To decide what number is the target score: ...
+</p></div>
+<p>(A phrase to decide if something-or-other is exactly the same thing as a phrase to decide a truth state, and indeed, if we want to then we can use "decide on T", where T is a truth state, in its definition. For instance:</p>
+
+<div class="code"><p class="quoted">
+To decide if time is short:
+<br>    if the time of day is after 10 PM, decide on true;
+<br>    ...
+<br>    decide on whether or not Jennifer is hurried.
+</p></div>
+<p>"Decide on true" is exactly equivalent to the more normally used "decide yes", and of course it is optional. The last line is more interesting since it effectively delegates the answer to another condition.)</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-180"><p class="example-p"><span class="example-short-start">180. <a href="rb_9.html#example-180" class="example-link" onClick="(function() { document.getElementById('example-180').setAttribute('open','open'); return true; })();">Witnessed 2</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A piece of ghost-hunting equipment that responds depending on whether or not the meter is on and a ghost is visible or touchable from the current location.</span> (c.f. <a href="rb_9.html#rb-9.11">RB §9.11. Clocks and Scientific Instruments</a>)</p></div>
+<div class="example-short" id="example-short-181"><p class="example-p"><span class="example-short-start">181. <a href="rb_3.html#example-181" class="example-link" onClick="(function() { document.getElementById('example-181').setAttribute('open','open'); return true; })();">A Haughty Spirit</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">Windows overlooking lower spaces which will prevent the player from climbing through if the lower space is too far below.</span> (c.f. <a href="rb_3.html#rb-3.6">RB §3.6. Windows</a>)</p></div>
+</div></section>
+<section class="section" id="wi-11.18"><div>
+
+
+
+
+
+<h3>WI §11.18. The value after and the value before</h3>
+<p>A point which has come up several times in recent chapters is that enumerated kinds of value have a natural ordering. For example, if we write:</p>
+
+<div class="code"><p class="quoted">
+Colour is a kind of value. The colours are red, orange, yellow, green, blue, indigo and violet.
+</p></div>
+<p>...then we not only have seven possible values, we have put them into a sequence, in order of their naming. We can't perform arithmetic on colours, of course, but we can perform comparisons on them. Thus "red &lt; yellow" is true, while "green &gt;= violet" is not. (More on comparisons in the <a href="wi_15.html#wi-chapter-15-numbers-and-equations">chapter on Numbers and Equations</a>, which also covers arithmetic.)</p>
+<p>It's also sometimes useful to get at the sequence directly. First, the two ends:</p>
+
+<div class="definition" id="defn140">
+<p class="defnprototype"><strong>first value of </strong>(name of kind)<strong> ... value</strong></p>
+
+
+
+<p>This phrase produces the first-created value of the given kind, which should be an enumeration. Example: if we have</p>
+
+<blockquote class="code"><p class="quoted">
+Colour is a kind of value. The colours are red, orange, yellow, green, blue, indigo and violet.
+</p></blockquote>
+
+<p>then "first value of colour" is red.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn141">
+<p class="defnprototype"><strong>last value of </strong>(name of kind)<strong> ... value</strong></p>
+
+
+
+<p>This phrase produces the last-created value of the given kind, which should be an enumeration. Example: if we have</p>
+
+<blockquote class="code"><p class="quoted">
+Colour is a kind of value. The colours are red, orange, yellow, green, blue, indigo and violet.
+</p></blockquote>
+
+<p>then "last value of colour" is violet.</p>
+
+
+</div>
+
+<p>And now how to step forward and back:</p>
+
+<div class="definition" id="defn142">
+<p class="defnprototype"><strong></strong>(name of kind)<strong> after </strong>(enumerated value)<strong> ... value</strong></p>
+
+
+
+<p>This phrase produces the next-created value of the given kind, which should be an enumeration. Example: if we have</p>
+
+<blockquote class="code"><p class="quoted">
+Colour is a kind of value. The colours are red, orange, yellow, green, blue, indigo and violet.
+</p></blockquote>
+
+<p>then "colour after orange" is yellow.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn143">
+<p class="defnprototype"><strong></strong>(name of kind)<strong> before </strong>(enumerated value)<strong> ... value</strong></p>
+
+
+
+<p>This phrase produces the previous-created value of the given kind, which should be an enumeration. Example: if we have</p>
+
+<blockquote class="code"><p class="quoted">
+Colour is a kind of value. The colours are red, orange, yellow, green, blue, indigo and violet.
+</p></blockquote>
+
+<p>then "colour before blue" is green.</p>
+
+
+</div>
+
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-182"><p class="example-p"><span class="example-short-start">182. <a href="rb_10.html#example-182" class="example-link" onClick="(function() { document.getElementById('example-182').setAttribute('open','open'); return true; })();">Entropy</a></span> <span class="example-difficulty">★</span>  <span class="example-description">All objects in the game have a heat, but if not kept insulated they will tend toward room temperature (and at a somewhat exaggerated rate).</span> (c.f. <a href="rb_10.html#rb-10.9">RB §10.9. Heat</a>)</p></div>
+<div class="example-short" id="example-short-183"><p class="example-p"><span class="example-short-start">183. <a href="rb_4.html#example-183" class="example-link" onClick="(function() { document.getElementById('example-183').setAttribute('open','open'); return true; })();">The Hang of Thursdays</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">Turns take a quarter day each, and the game rotates through the days of the week.</span> (c.f. <a href="rb_4.html#rb-4.1">RB §4.1. The Passage Of Time</a>)</p></div>
+</div></section>
+</section>
+
+<footer>
+<div class="linkback"><a href="http://inform7.com/book/WI_11_1.html">WI Chapter 11 on inform7.com</a></div>
+<div class="doc-navbar">
+<div>
+<div class="doc-navbar-left"><a class="nav-left" href="wi_10.html#wi-chapter-10-scenes">10. Scenes</a></div>
+<div class="doc-navbar-right"><a class="nav-right" href="wi_12.html#wi-chapter-12-advanced-actions">12. Advanced Actions</a></div>
+</div>
+<div>
+<div class="doc-navbar-left"><a href="index.html">Table of Contents</a></div>
+<div class="doc-navbar-right"><a href="index.html#general-index">General Index</a></div>
+</div>
+</div>
+
+</footer>
+</main></body></html>
+

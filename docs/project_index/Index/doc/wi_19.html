@@ -1,0 +1,992 @@
+<!doctype html>
+<meta charset="utf-8"><html lang="en"><head><title>Writing in Inform 19. Rulebooks</title><link rel="stylesheet" href="style.css"><script src="chapter.js"></script></head><body>
+<nav><div class="index-navbar hidden">
+<a id="project_index" href="../Welcome.html"> Project Index</a><a id="source" href="../../story.html"> Source</a><a id="problems" href="../../Build/problems.html"> Problems</a><a id="debug_log" href="../../Build/debug_log.html"> Debug Log</a><a id="definitions" href="./ExtIndex.html"> Definitions</a><a id="extensions" href="./Extensions.html"> Extensions</a><a id="docs" href="./index.html"> Docs</a><a id="general_index" href="./index.html#general-index"> General Index</a>
+
+</div>
+</nav>
+<main>
+<header>
+
+<div class="toc">
+<h1>Writing in Inform</h1>
+<div class="doc-navbar">
+<div>
+<div class="doc-navbar-left"><a class="nav-left" href="wi_18.html#wi-chapter-18-activities">18. Activities</a></div>
+<div class="doc-navbar-right"><a class="nav-right" href="wi_20.html#wi-chapter-20-advanced-text">20. Advanced Text</a></div>
+</div>
+<div>
+<div class="doc-navbar-left"><a href="index.html">Table of Contents</a></div>
+<div class="doc-navbar-right"><a href="index.html#general-index">General Index</a></div>
+</div>
+</div>
+
+<div><a id="toggle" href="javascript:toggle_details('examples')">Open all examples</a></div>
+<h2>19. Rulebooks</h2>
+<div class="toc-section">19.1 <a href="wi_19.html#wi-19.1">On rules</a></div>
+<div class="toc-section">19.2 <a href="wi_19.html#wi-19.2">Named rules and rulebooks</a></div>
+<div class="toc-section">19.3 <a href="wi_19.html#wi-19.3">New rules</a></div>
+<div class="toc-section">19.4 <a href="wi_19.html#wi-19.4">Listing rules explicitly</a></div>
+<div class="toc-section">19.5 <a href="wi_19.html#wi-19.5">Changing the behaviour of rules</a></div>
+<div class="toc-section">19.6 <a href="wi_19.html#wi-19.6">Sorting and indexing of rules</a></div>
+<div class="toc-section">19.7 <a href="wi_19.html#wi-19.7">The preamble of a rule</a></div>
+<div class="toc-section">19.8 <a href="wi_19.html#wi-19.8">New rulebooks</a></div>
+<div class="toc-section">19.9 <a href="wi_19.html#wi-19.9">Basis of a rulebook</a></div>
+<div class="toc-section">19.10 <a href="wi_19.html#wi-19.10">Rulebook variables</a></div>
+<div class="toc-section">19.11 <a href="wi_19.html#wi-19.11">Success and failure</a></div>
+<div class="toc-section">19.12 <a href="wi_19.html#wi-19.12">Named outcomes</a></div>
+<div class="toc-section">19.13 <a href="wi_19.html#wi-19.13">Rulebooks producing values</a></div>
+<div class="toc-section">19.14 <a href="wi_19.html#wi-19.14">Abide by</a></div>
+<div class="toc-section">19.15 <a href="wi_19.html#wi-19.15">Two rulebooks used internally</a></div>
+<div class="toc-section">19.16 <a href="wi_19.html#wi-19.16">The Laws for Sorting Rulebooks</a></div>
+</header>
+<main>
+<section class="chapter" id="wi-chapter-19-rulebooks">
+<section class="section" id="wi-19.1"><div>
+
+
+
+<h3>WI §19.1. On rules</h3>
+<p>When we open the casing and look inside the machinery of Inform, what we see are rules and rulebooks. We seldom need to know how this machinery works, but every once in a while we want to replace components, or even install new mechanisms of our own. And as we shall see, creating new rulebooks can be a neat way to tackle complicated simulations full of exceptions and special cases.</p>
+<p>So far we have seen many rules, and the term "rulebook" has frequently but vaguely been used. Here is a summary of the rulebooks seen so far:</p>
+
+<div class="code">
+<p class="quoted">
+before
+<br>instead
+<br>after
+<br>check taking, carry out taking, report taking
+<br><em>and three similar rulebooks for each of the 90 or so actions</em>
+<br>persuasion
+<br>unsuccessful attempt
+<br>reaching inside
+<br>reaching outside
+<br>visibility
+<br>does the player mean
+</p>
+<p class="quoted">
+when play begins
+<br>when play ends
+<br>every turn
+<br>when Confrontation Scene begins
+<br>when Confrontation Scene ends
+<br><em>and two similar rulebooks for each scene we create, if any</em>
+</p>
+<p class="quoted">
+before printing the name of
+<br>for printing the name of
+<br>after printing the name of
+<br><em>and three similar rulebooks for each of the 20 or so activities</em>
+</p>
+</div>
+<p>Which makes around 340 rulebooks before we even start to write. All the same, not everything in Inform belongs to a rulebook - timed events, for example, are rules which normally live outside of rulebooks; and other constructions, such as newly-created phrases, or definitions, may look vaguely like rules, but they aren't. So the following are not rulebooks:</p>
+
+<div class="code"><p class="quoted">
+At 11:10 PM: ...
+<br>To dislodge the shelf: ...
+<br>Definition: ...
+</p></div>
+</div></section>
+<section class="section" id="wi-19.2"><div>
+
+
+
+
+
+<h3>WI §19.2. Named rules and rulebooks</h3>
+<p>Most of the rules built into Inform have names. For instance, a rule called "the advance time rule" is the one which increments the number of turns and advances the clock, values which are usually not visible, but are ticking away behind the scenes.</p>
+<p>A rulebook is a list of rules to be followed in sequence until one of them makes a decision. For instance, when actions get to the "instead" stage, each "instead" rule is tried until one of them chooses to do something. If the source text contains the rules</p>
+
+<div class="code"><p class="quoted">
+Instead of taking something: say "You have no particular need just now."
+<br>Instead of taking a fish: say "It's all slimy."
+</p></div>
+<p>and a command to TAKE something is tried, then only one of these rules will have any effect. The "instead" rulebook contains:</p>
+
+<div class="code"><p class="quoted">
+Rule (1) to be applied if the action matches "taking a fish"
+<br>Rule (2) to be applied if the action matches "taking something"
+</p></div>
+<p>Inside their rulebook, the rules are not listed in the order of definition in the source text. Rule (1) comes before rule (2) because it applies in more specific circumstances. This is the main idea: a rulebook gathers together rules about making some decision, or taking some action, and sorts them in order to give the more specific rules first choice about whether they want to intervene.</p>
+<p>Whereas only some rules are named (the two "instead" rules above have no name, for instance), every rulebook has a name. For convenience, the following forms of rule and rulebook name are synonymous:</p>
+
+<div class="code">
+<p class="quoted">
+advance time = the advance time rule
+</p>
+<p class="quoted">
+the instead rules = instead rulebook = instead
+</p>
+</div>
+<p>The names of built-in rules have been chosen as descriptively as possible: the "can't go through closed doors rule", for instance. Names for rules tend to be verbose, but this is a situation where clarity is very much better than brevity.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-388"><p class="example-p"><span class="example-short-start">388. <a href="rb_6.html#example-388" class="example-link" onClick="(function() { document.getElementById('example-388').setAttribute('open','open'); return true; })();">Nine AM Appointment</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A WAIT [number] MINUTES command which advances through an arbitrary number of turns.</span> (c.f. <a href="rb_6.html#rb-6.11">RB §6.11. Waiting, Sleeping</a>)</p></div>
+<div class="example-short" id="example-short-389"><p class="example-p"><span class="example-short-start">389. <a href="rb_6.html#example-389" class="example-link" onClick="(function() { document.getElementById('example-389').setAttribute('open','open'); return true; })();">Delayed Gratification</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">A WAIT UNTIL [time] command which advances until the game clock reaches the correct hour.</span> (c.f. <a href="rb_6.html#rb-6.11">RB §6.11. Waiting, Sleeping</a>)</p></div>
+</div></section>
+<section class="section" id="wi-19.3"><div>
+
+
+
+
+
+<h3>WI §19.3. New rules</h3>
+<p>Stretching a point seasonally, we might write:</p>
+
+<div class="code"><p class="quoted">
+Every turn, say "The summer breeze shakes the apple-blossom."
+</p></div>
+<p>This rule is nameless. It needs no name because it will never need to be referred to: by identifying it as an every turn rule we have already said enough to lodge it in the "every turn" rulebook. In fact, though, it is easy to create a named rule:</p>
+
+<div class="code"><p class="quoted">
+This is the blossom shaking rule: say "The summer breeze shakes the apple-blossom."
+</p></div>
+<p>The name of a rule must always end with the word "rule", for clarity's sake. (The phrasing "This is the ... rule" is used because "The ... rule" would be open to misinterpretation.)</p>
+<p>Previously we had a rule which had no name, but belonged to a rulebook: now we have the opposite, because although the "blossom shaking rule" has a name, it has not been placed in any rulebook. That means it will probably never be applied, unless we give specific instructions for that.</p>
+<p>Alternatively, it is possible to both name and place a rule in a single sentence:</p>
+
+<div class="code"><p class="quoted">
+Every turn (this is the alternative blossom rule): say "The summer breeze shakes the apple-blossom."
+</p></div>
+<p>Now the "alternative blossom rule" is a named rule in the "every turn" rulebook.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-390"><p class="example-p"><span class="example-short-start">390. <a href="rb_9.html#example-390" class="example-link" onClick="(function() { document.getElementById('example-390').setAttribute('open','open'); return true; })();">Stone</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A soup to which the player can add ingredients, which will have different effects when the player eats.</span> (c.f. <a href="rb_9.html#rb-9.1">RB §9.1. Food</a>)</p></div>
+<div class="example-short" id="example-short-391"><p class="example-p"><span class="example-short-start">391. <a href="rb_5.html#example-391" class="example-link" onClick="(function() { document.getElementById('example-391').setAttribute('open','open'); return true; })();">The Crane's Leg 2</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A description text generated based on the propensities of the player-character, following different rulebooks for different characters.</span> (c.f. <a href="rb_5.html#rb-5.6">RB §5.6. Viewpoint</a>)</p></div>
+<div class="example-short" id="example-short-392"><p class="example-p"><span class="example-short-start">392. <a href="rb_7.html#example-392" class="example-link" onClick="(function() { document.getElementById('example-392').setAttribute('open','open'); return true; })();">Bribery</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">A GIVE command that gets rid of Inform's default refusal message in favor of something a bit more sophisticated.</span> (c.f. <a href="rb_7.html#rb-7.4">RB §7.4. Barter and Exchange</a>)</p></div>
+</div></section>
+<section class="section" id="wi-19.4"><div>
+
+
+
+
+
+<h3>WI §19.4. Listing rules explicitly</h3>
+<p>If rules can manage perfectly well without, why bother to have names for rules?</p>
+<p>The answer is that although Inform contains an elaborate mechanism for placing rules into the correct rulebook at the correct position, and this happens automatically, Inform will sometimes get it wrong. It will use a rule we do not want, or place them in an order which does not suit us. To put this right, we can give explicit instructions which take precedence over Inform's normal practice. This is done with the "to list" verb, as in the following examples.</p>
+<p>1. The simplest usage is to place a named rule, which currently has no home, in any rulebook of our choice. (This looks redundant, but just occasionally we want the same rule to appear in two different rulebooks.)</p>
+
+<div class="code"><p class="quoted">
+The blossom rule is listed in the every turn rules.
+</p></div>
+<p>A rule can appear in more than one rulebook, but within any single rulebook it can only appear once.</p>
+<p>2. We can also specify that the rule needs to appear before, or after, some other named rule in the same rulebook:</p>
+
+<div class="code"><p class="quoted">
+The collapsing bridge rule is listed before the moving doorways rule in the instead rules.
+</p></div>
+<p>Instead of being placed in specificity order in the whole "instead" rulebook, the "collapsing bridge" rule would now be placed in specificity order only in the first half of the "instead" rulebook - the rules from the start up to (but not including) the "moving doorways" rule. To reiterate: that doesn't necessarily mean it will be immediately before the "moving doorways" rule; it will be placed according to Inform's usual sorting rules within that range.</p>
+<p>"Listed" sentences are obeyed by Inform in sequence, so if later ones issue instructions contradicting earlier ones, it's the later ones which win out. Thus if we say "A is listed before B in X" and then "B is listed before A in X", the result is that B comes before A.</p>
+<p>3. We can specify that a rule needs to appear first or last in a given rulebook:</p>
+
+<div class="code"><p class="quoted">
+The collapsing bridge rule is listed first in the instead rules.
+</p></div>
+<p>Again, if we make several such instructions about the same rulebook then the most recent one wins: "A is listed first in X. B is listed first in X. C is listed first in X." causes rulebook X to begin C, B, A.</p>
+<p>4. We can also substitute one rule for another:</p>
+
+<div class="code"><p class="quoted">
+My darkness rule is listed instead of the can't act in the dark rule in the visibility rules.
+</p></div>
+<p>If rule A is listed instead of rule B in rulebook X, and A was already a rule in rulebook X, then A will move from its previous position to occupy the place where B was, and B will disappear. (In particular rule A will not be duplicated, which would break the principle that no rule occurs twice in the same rulebook.)</p>
+<p>5. And we can strike down existing rules, either specifically or in all their applications:</p>
+
+<div class="code"><p class="quoted">
+The can't act in the dark rule is not listed in the visibility rules.
+<br>The can't remove from people rule is not listed in any rulebook.
+</p></div>
+<p>This does not actually destroy the rules in question: they could still, for instance, be put into another rulebook, or even be applied explicitly, as we shall see. But unless we take deliberate action to the contrary, un-listing a rule amounts to abolishing it forever. This is a little drastic, and more subtle effects can be seen in the next section.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-393"><p class="example-p"><span class="example-short-start">393. <a href="rb_4.html#example-393" class="example-link" onClick="(function() { document.getElementById('example-393').setAttribute('open','open'); return true; })();">Uptempo</a></span> <span class="example-difficulty">★</span>  <span class="example-description">Adjust time advancement so the game clock moves fifteen minutes each turn.</span> (c.f. <a href="rb_4.html#rb-4.1">RB §4.1. The Passage Of Time</a>)</p></div>
+<div class="example-short" id="example-short-394"><p class="example-p"><span class="example-short-start">394. <a href="rb_6.html#example-394" class="example-link" onClick="(function() { document.getElementById('example-394').setAttribute('open','open'); return true; })();">Saint Eligius</a></span> <span class="example-difficulty">★</span>  <span class="example-description">Adding a first look rule that comments on locations when we visit them for the first time, inserting text after objects are listed but before any "every turn" rules might occur.</span> (c.f. <a href="rb_6.html#rb-6.9">RB §6.9. Going, Pushing Things in Directions</a>)</p></div>
+<div class="example-short" id="example-short-395"><p class="example-p"><span class="example-short-start">395. <a href="rb_6.html#example-395" class="example-link" onClick="(function() { document.getElementById('example-395').setAttribute('open','open'); return true; })();">Verbosity 2</a></span> <span class="example-difficulty">★</span>  <span class="example-description">Making rooms give full descriptions each time we enter, even if we have visited before, and disallowing player use of BRIEF and SUPERBRIEF.</span> (c.f. <a href="rb_6.html#rb-6.4">RB §6.4. Looking</a>)</p></div>
+<div class="example-short" id="example-short-396"><p class="example-p"><span class="example-short-start">396. <a href="rb_8.html#example-396" class="example-link" onClick="(function() { document.getElementById('example-396').setAttribute('open','open'); return true; })();">Swigmore U.</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">Adding a new kind of supporter called a perch, where everything dropped lands on the floor.</span> (c.f. <a href="rb_8.html#rb-8.4">RB §8.4. Furniture</a>)</p></div>
+<div class="example-short" id="example-short-397"><p class="example-p"><span class="example-short-start">397. <a href="rb_5.html#example-397" class="example-link" onClick="(function() { document.getElementById('example-397').setAttribute('open','open'); return true; })();">Slouching</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">A system of postures allowing the player and other characters to sit, stand, or lie down explicitly or implicitly on a variety of enterable supporters or containers, or in location.</span> (c.f. <a href="rb_5.html#rb-5.1">RB §5.1. The Human Body</a>)</p></div>
+</div></section>
+<section class="section" id="wi-19.5"><div>
+
+
+
+
+
+<h3>WI §19.5. Changing the behaviour of rules</h3>
+<p>Here is another way to abolish an already-existing rule:</p>
+
+<div class="code"><p class="quoted">
+The print final score rule does nothing.
+</p></div>
+<p>The rule continues to be listed in any rulebook it would normally be listed in: but now it doesn't do anything. More usefully, we can attach a condition:</p>
+
+<div class="code"><p class="quoted">
+The print final score rule does nothing if the score is 0.
+</p></div>
+<p>or:</p>
+
+<div class="code"><p class="quoted">
+The print final score rule does nothing unless the score is 100.
+</p></div>
+<p>We can also substitute a rule of our own:</p>
+
+<div class="code">
+<p class="quoted">
+This is the print fancy final score rule:
+<br>    say "Oh my, you scored a mammoth [score]!"
+</p>
+<p class="quoted">
+The print fancy final score rule substitutes for the print final score rule.
+</p>
+</div>
+<p>and once again a condition can be applied:</p>
+
+<div class="code"><p class="quoted">
+The print fancy final score rule substitutes for the print final score rule when the score is greater than 100.
+</p></div>
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-398"><p class="example-p"><span class="example-short-start">398. <a href="rb_10.html#example-398" class="example-link" onClick="(function() { document.getElementById('example-398').setAttribute('open','open'); return true; })();">Access All Areas</a></span> <span class="example-difficulty">★</span>  <span class="example-description">The Pointy Hat of Liminal Transgression allows its wearer to walk clean through closed doors.</span> (c.f. <a href="rb_10.html#rb-10.10">RB §10.10. Magic (Breaking the Laws of Physics)</a>)</p></div>
+</div></section>
+<section class="section" id="wi-19.6"><div>
+
+
+
+
+
+<h3>WI §19.6. Sorting and indexing of rules</h3>
+<p>The Rules page of the index for a project offers a view of the rulebooks and their contents, with two major exceptions: built-in rules for specific actions are left to the Actions page, and any rules for scene endings or beginnings are left to the Scenes page.</p>
+<p>As we have seen, we need to know the name of a rule before we can change its rulebook listing or alter its applicability. The Rules and Actions index pages show the names of the built-in rules, which are not worth memorising. (Typing can be saved by using the paste-into-source buttons, or by selecting a rule's name and copying and pasting it by hand.)</p>
+<p>In the Rules index, each rulebook is named and then followed by a list of the rules within it, one on each line: if nothing follows, then the rulebook is currently empty. The rules are given in order, and icons are used which indicate which rules are more specific than which others. Hovering the mouse over such an icon should bring up a "tooltip" which explains Inform's reasoning.</p>
+<p>As this suggests, Inform performs its automatic sorting using a precise collection of Laws (the term "rules" would be ambiguous here, so we call these guidelines Laws instead), and the tooltip shows which Law was applied. It is bad style to write source text which absolutely depends on detailed points of these Laws, but they are documented at the end of this chapter for those who do wish to see the full details.</p>
+
+
+</div></section>
+<section class="section" id="wi-19.7"><div>
+
+
+
+
+
+<h3>WI §19.7. The preamble of a rule</h3>
+<p>In general, a rule looks like this:</p>
+
+<div class="code"><p class="quoted">
+preamble : list of one or more phrases divided by semicolons
+</p></div>
+<p>though in a few common cases (where the preamble begins with Before, After, Instead of, Every turn, or When, and there is only one phrase in the list) the colon can be replaced with a comma. Three kinds of declaration are special, and these we can tell apart by the first word:</p>
+
+<div class="code"><p class="quoted">
+To ... - a new phrase: see the chapter on Phrases
+<br>At ... - something due to happen at a given time: see Time
+<br>Definition: ... - a new adjective: see Descriptions
+</p></div>
+<p>All other declarations (that is, starting with any other word) create rules fit for going into rulebooks. The preamble can either just be a name, which is required to end with the word "rule", or it can give circumstances and have no name, or it can do both:</p>
+
+<div class="code"><p class="quoted">
+This is the ...name of rule...
+<br>...circumstances...
+<br>...circumstances... (this is the ...name of rule...)
+</p></div>
+<p>The circumstances should be a sequence of the following ingredients, each of which is optional except the name of the rulebook:</p>
+
+<div class="code"><p class="quoted">
+first <em>or</em> last
+<br><em>followed by</em> ...rulebook name...
+<br><em>followed by</em> about <em>or</em> for <em>or</em> of <em>or</em> on <em>or</em> rule
+<br><em>followed by</em> ...what to apply to...
+<br><em>followed by</em> while <em>or</em> when ...condition...
+<br><em>followed by</em> during ...a scene...
+</p></div>
+<p>The word "first" or "last", if present, is significant: it tells Inform exactly where the new rule should be placed into its rulebook, and so overrides the normal practice of placing the rule according to how specific it is.</p>
+<p>On the other hand, the use of any of the following:</p>
+
+<div class="code"><p class="quoted">
+for
+<br>of
+<br>rule about
+<br>rule for
+<br>rule on
+</p></div>
+<p>is purely to make the text easier to read: Inform does not make any direct use of these words (except perhaps that it may help to avoid ambiguities by separating the rulebook name from what is being applied to). Thus in the rule</p>
+
+<div class="code"><p class="quoted">
+Instead of kissing Clark: ...
+</p></div>
+<p>the word "instead" is the rulebook's name, while "of" is technically optional. "Instead rule about kissing Clark: ..." would work just as well.</p>
+<p>In this whole list of possible ingredients, only the rulebook name is compulsory. We could define a rule called simply "Instead: ..." if we wanted - though its universal applicability would make it pretty disruptive, with every action stopped in its tracks.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-399"><p class="example-p"><span class="example-short-start">399. <a href="rb_1.html#example-399" class="example-link" onClick="(function() { document.getElementById('example-399').setAttribute('open','open'); return true; })();">Backus-Naur form for rules</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">The full grammar Inform uses to parse rule definitions, in a standard computer-science notation.</span> (c.f. <a href="rb_1.html#rb-1.4">RB §1.4. Information Only</a>)</p></div>
+</div></section>
+<section class="section" id="wi-19.8"><div>
+
+
+
+
+
+<h3>WI §19.8. New rulebooks</h3>
+<p>Creating a new rulebook is also straightforward, as we see in the following modest example story:</p>
+
+<div class="code">
+<p class="quoted">
+ "Appraisal"
+</p>
+<p class="quoted">
+The Passage is east of the Tomb. The green-eyed idol is in the Tomb. A Speak-Your-Progress machine is in the Passage.
+</p>
+<p class="quoted">
+Appraisal rules is a rulebook.
+</p>
+<p class="quoted">
+An appraisal rule: say "Click... whirr... the score is [the score in words] points."
+</p>
+<p class="quoted">
+An appraisal rule:
+<br>    if we have taken the idol, say "Most importantly of all, the idol has been found."
+</p>
+<p class="quoted">
+Instead of switching on the machine, follow the appraisal rules.
+</p>
+</div>
+<p>The creation of the rulebook is all very well, but without the final sentence it would never be used. The crucial new phrase here is:</p>
+
+<div class="definition" id="defn273">
+<p class="defnprototype"><strong>follow </strong>(rule)<strong></strong></p>
+
+
+
+<p>This phrase causes the rule to be obeyed immediately (rather than simply at predetermined times such as when a particular action is being tried, or at the end of every turn, and such). Example:</p>
+
+<blockquote class="code"><p class="quoted">
+follow the advance time rule;
+<br>follow the appraisal rulebook;
+</p></blockquote>
+
+
+
+</div>
+
+<p>Like "number" or "text", "rule" and "rulebook" are kinds of value built into Inform: "the blossom rule" is a value whose kind is "rule", whereas "the every turn rules" is a value whose kind is "rulebook". In fact, Inform considers a rulebook to be a special case of a rule, so that whenever a rule is required it is legal to name a rulebook instead, but not vice versa. The "follow" phrase here...</p>
+
+<div class="code"><p class="quoted">
+Instead of switching on the machine, follow the appraisal rules.
+</p></div>
+<p>...expects to be applied to a value of kind "rule"; "the appraisal rules" is in fact a rulebook, but since that counts as a rule the phrase makes sense to Inform. To follow a rulebook means to run through all its rules in turn, stopping when one rule reaches an outcome; to follow a single rule means just that one, of course.</p>
+<p>When created, a rulebook starts out with no rules in it - in this example, of course, we quickly defined a couple of rules to go into it. But it's often the case in Inform that a rulebook exists without ever being stocked up, especially if the rulebook is for some obscure purpose never needed. The built-in adjectives "empty" and "non-empty", applied to a rulebook, test whether any rule is present or not.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-400"><p class="example-p"><span class="example-short-start">400. <a href="rb_11.html#example-400" class="example-link" onClick="(function() { document.getElementById('example-400').setAttribute('open','open'); return true; })();">Solitude</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">Novice mode that prefaces every prompt with a list of possible commands the player could try, and highlights every important word used, to alert players to interactive items in the scenery.</span> (c.f. <a href="rb_11.html#rb-11.3">RB §11.3. Helping and Hinting</a>)</p></div>
+<div class="example-short" id="example-short-401"><p class="example-p"><span class="example-short-start">401. <a href="rb_10.html#example-401" class="example-link" onClick="(function() { document.getElementById('example-401').setAttribute('open','open'); return true; })();">In Fire or in Flood</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">A BURN command; flammable objects which light other items in their vicinity and can burn for different periods of time; the possibility of having parts or contents of a flaming item which survive being burnt.</span> (c.f. <a href="rb_10.html#rb-10.8">RB §10.8. Fire</a>)</p></div>
+<div class="example-short" id="example-short-402"><p class="example-p"><span class="example-short-start">402. <a href="rb_7.html#example-402" class="example-link" onClick="(function() { document.getElementById('example-402').setAttribute('open','open'); return true; })();">Patient Zero</a></span> <span class="example-difficulty">★★★★</span>  <span class="example-description">People who wander around the map performing various errands, and in the process spread a disease which only the player can eradicate.</span> (c.f. <a href="rb_7.html#rb-7.13">RB §7.13. Traveling Characters</a>)</p></div>
+</div></section>
+<section class="section" id="wi-19.9"><div>
+
+
+
+
+
+<h3>WI §19.9. Basis of a rulebook</h3>
+<p>Every rulebook works on a value supplied to it, though it doesn't always look that way. The kind of the value is called its "basis"; for example, if a rulebook works on a number, it's called a "number based rulebook". Most of the rulebooks seen up to now have been action based rulebooks:</p>
+
+<div class="code"><p class="quoted">
+Instead of eating the cake: ...
+</p></div>
+<p>"Instead" is an action based rulebook, and the action it works on is the one currently being processed. Besides before, after and instead, other action based rulebooks include the check, carry out, and report rules; general rulebooks such as every turn rules, the visibility rules, the turn sequence rules; and rules specially for dealing with the actions of other characters, such as the persuasion and unsuccessful attempt rules. But we have also seen object based rulebooks:</p>
+
+<div class="code"><p class="quoted">
+Rule for reaching inside the flask: ...
+</p></div>
+<p>"Reaching inside" is an object based rulebook, and here we're giving it a rule which applies if the object is the flask. Inform would reject something like:</p>
+
+<div class="code"><p class="quoted">
+Rule for reaching inside 100: ...
+</p></div>
+<p>because 100 has the wrong kind to fit - it's a number, not an object. There are many object based rulebooks, because most activities built-in to Inform act on objects. For example, the "printing the name of" activity has three rulebooks attached to it: before printing the name of, for printing the name of, after printing the name of. All of these are object based rulebooks.</p>
+<p>Finally, we've also seen scene based rulebooks (which is how rules like "when a recurring scene ends" worked, in the <a href="wi_10.html#wi-chapter-10-scenes">Scenes chapter</a>).</p>
+<p>If a rulebook is declared like so:</p>
+
+<div class="code"><p class="quoted">
+Marvellous reasoning is a rulebook.
+</p></div>
+<p>then it is an action based rulebook. If we want something different, we must write something like this:</p>
+
+<div class="code">
+<p class="quoted">
+Grading is a number based rulebook.
+<br>Grading 5: say "It's five. What can I say?" instead.
+<br>Grading an odd number (called N): say "There's something odd about [N]." instead.
+<br>Grading a number (called N): say "Just [N]." instead.
+</p>
+<p class="quoted">
+When play begins:
+<br>repeat with N running from 1 to 10:
+<br>    say "Grading [N]: ";
+<br>    follow the grading rulebook for N.
+</p>
+</div>
+<p>which produces:</p>
+
+<div class="code"><p class="quoted">
+Grading 1: There's something odd about 1.
+<br>Grading 2: Just 2.
+<br>Grading 3: There's something odd about 3.
+<br>Grading 4: Just 4.
+<br>Grading 5: It's five. What can I say?
+<br>Grading 6: Just 6.
+<br>Grading 7: There's something odd about 7.
+<br>Grading 8: Just 8.
+<br>Grading 9: There's something odd about 9.
+<br>Grading 10: Just 10.
+</p></div>
+<p>Here we needed a variation on "follow" which supplies the value to apply to:</p>
+
+<div class="definition" id="defn274">
+<p class="defnprototype"><strong>follow </strong>(values based rule producing values)<strong> for </strong>(value)<strong></strong></p>
+
+
+
+<p>This phrase causes the rule to be obeyed immediately (rather than simply at predetermined times such as when a particular action is being tried, or at the end of every turn, and such), and applies it to the value given, which must be of a matching kind. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+follow the reaching inside rulebook for the electrified cage;
+</p></blockquote>
+
+
+
+</div>
+
+<p>And here is an example based on objects:</p>
+
+<div class="code"><p class="quoted">
+The flotation rules are an object based rulebook.
+<br>A flotation rule for the cork: rule succeeds.
+<br>A flotation rule for an inflated thing: rule succeeds.
+<br>A flotation rule: rule fails.
+</p></div>
+<p>And we might use the flotation rules in a circumstance like this:</p>
+
+<div class="code"><p class="quoted">
+After inserting something into the well:
+<br>    follow the flotation rules for the noun;
+<br>    if the rule succeeded:
+<br>        say "[The noun] bobs on the surface.";
+<br>    otherwise:
+<br>        now the noun is nowhere;
+<br>        say "[The noun] sinks out of sight."
+</p></div>
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-403"><p class="example-p"><span class="example-short-start">403. <a href="rb_10.html#example-403" class="example-link" onClick="(function() { document.getElementById('example-403').setAttribute('open','open'); return true; })();">Flotation</a></span> <span class="example-difficulty">★</span>  <span class="example-description">Objects that can sink or float in a well, depending on their own properties and the state of the surrounding environment.</span> (c.f. <a href="rb_10.html#rb-10.2">RB §10.2. Liquids</a>)</p></div>
+</div></section>
+<section class="section" id="wi-19.10"><div>
+
+
+
+
+
+<h3>WI §19.10. Rulebook variables</h3>
+<p>When a rulebook is intended to perform some complicated task or calculation, it is sometimes useful for earlier rules to be able to leave information which will help later ones.</p>
+<p>For instance, suppose we want a rulebook which is intended to print out the player's current aptitude. We will suppose that this is a number from 0 upwards: the higher, the apter. The player gets bonus aptitude marks for achievements, but marks deducted for accidents, and so on. Moreover, we want to design this system so that it's easy to add further rules. The natural solution is to have a number which varies (or 'variable') acting as the running aptitude total: it should start at 0 and be altered up or down by subsequent rules. First, we should make the rulebook, and then add a variable:</p>
+
+<div class="code"><p class="quoted">
+Aptitude is a rulebook. The aptitude rulebook has a number called the aptitude mark.
+</p></div>
+<p>The new value 'aptitude mark' is shared by the rules of the rulebook: nobody else can see it. It is created at the start of the rulebook being followed, and destroyed at the end. (If the rulebook should be followed a second time inside of itself, a new copy is created which does not disturb the old one.) So, in this case, 'aptitude mark' is started as 0 (since it is a number) each time the aptitude rules run. We can then write whatever rules we please to modify it:</p>
+
+<div class="code">
+<p class="quoted">
+An aptitude rule:
+<br>    if in darkness:
+<br>        decrease the aptitude mark by 3.
+</p>
+<p class="quoted">
+An aptitude rule:
+<br>    if we have taken the idol:
+<br>        increase the aptitude mark by 10.
+</p>
+</div>
+<p>And we had better do something with the result:</p>
+
+<div class="code"><p class="quoted">
+The last aptitude rule: say "Your aptitude rating is [aptitude mark]."
+</p></div>
+<p>A rulebook can have any number of variables like this. They behave much like "let" values except that they last for a whole rulebook, not an individual rule or To phrase definition. (Well, strictly speaking they are accessible not just to the rules which belong to the rulebook, but also to any rules which previously belonged to the rulebook but were kicked out by means of an explicit rule-listing sentence. This is good because otherwise they will suddenly cause problem messages when unlisted.)</p>
+
+
+</div></section>
+<section class="section" id="wi-19.11"><div>
+
+
+
+
+
+<h3>WI §19.11. Success and failure</h3>
+<p>Though we have blurred over this point so far, each rule must ordinarily end with one of three outcomes: success, failure and neither ("no outcome").</p>
+<p>When a rulebook is followed, what happens is that each of its rules is followed in turn <strong>until one of them ends in success or failure</strong> - if ever: it is possible that each rule is tried and each ends with no outcome, so that the rulebook simply runs out of rules to try.</p>
+<p>For some rulebooks, these are not useful ideas: "every turn" rules, for instance, by default never produce an outcome, which is why the "every turn" rulebook normally runs through all its rules at the end of each turn. (Use of the phrases below can change that, so it's best not to use them in "every turn" rules.) But for other rulebooks, such as "check taking", it's important that a rule which fails will stop the whole rulebook. For instance, we might find that the "can't take yourself rule" produces no outcome (because we aren't trying to do that), and then likewise the "can't take other people rule" (ditto) but that the "can't take component parts rule" prints up a complaint, and fails the action: the rulebook stops, and never goes on to (for instance) the "can't take scenery rule". This is good, because an impossible action often fails for several reasons at once, and we only want to print up one objection, not a whole list.</p>
+<p>To follow the working of this mechanism, we need to be able to predict the outcome of any given rule. Sometimes this is easy to spot. For instance, in a rule which works on actions:</p>
+
+<div class="code"><p class="quoted">
+continue the action; <em>means</em> "end this rule with no outcome"
+<br>stop the action; <em>means</em> "end this rule in failure"
+<br>... instead; <em>means</em> "end this rule in failure"
+</p></div>
+<p>("Success" and "failure" are technical terms here: they do not mean that the player has or hasn't got what he wanted.) This is why the rule:</p>
+
+<div class="code"><p class="quoted">
+Before taking something: say "The sentry won't let you!" instead.
+</p></div>
+<p>ends in failure, and therefore stops the "before" rulebook. Another easy-to-spot case is when a rule makes use of the explicit phrases:</p>
+
+<div class="definition" id="defn275">
+<p class="defnprototype"><strong>rule succeeds</strong></p>
+
+
+
+<p>This causes the current rule to end immediately, with its outcome considered to be a success. The rulebook being worked through also ends, and is also a success.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn276">
+<p class="defnprototype"><strong>rule fails</strong></p>
+
+
+
+<p>This causes the current rule to end immediately, with its outcome considered to be a failure. The rulebook being worked through also ends, and is also a failure.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn277">
+<p class="defnprototype"><strong>make no decision</strong></p>
+
+
+
+<p>This causes the current rule to end immediately, but with no outcome. That means the rulebook being worked through will continue to run on, beginning with the next rule.</p>
+
+
+</div>
+
+<p>But what happens if a rule simply doesn't say whether it succeeds, fails or has no outcome? In that case <strong>it depends on the rulebook</strong>. For almost all rulebooks, a rule which doesn't make a choice has no outcome, as in the following example:</p>
+
+<div class="code"><p class="quoted">
+Before taking something: say "The sentry looks at you anxiously!"
+</p></div>
+<p>This rule, if it takes effect, ends with no outcome - so the action continues. But other rulebooks have a different convention: the most important is "instead", where a rule making no explicit choice is deemed to end in failure. For instance:</p>
+
+<div class="code"><p class="quoted">
+Instead of taking something: say "The sentry prods you with his rifle!"
+</p></div>
+<p>This rule, if it takes effect, ends in failure and therefore stops the action.</p>
+<p>We call this the <strong>default outcome</strong> of a rulebook. The default outcome of "before" (and of almost all rulebooks, in fact) is no outcome; the default outcome of "instead" is failure; the default outcome of "after" is success. The few exceptional cases with default outcome success or failure are marked as such in the Rules index.</p>
+<p>When we create a rulebook, it will default to "no outcome". But we can specify otherwise with sentences like so:</p>
+
+<div class="code"><p class="quoted">
+The cosmic analysis rules are a rulebook. The cosmic analysis rules have default failure.
+</p></div>
+<p>Finally, note that the default outcome for a rulebook is really the default outcome for any rule in that rulebook: if no rules in the rulebook ever apply, for instance if there aren't any and the rulebook is empty, then the rulebook ends with no outcome at all.</p>
+<p>We can test the latest outcome like so:</p>
+
+<div class="definition" id="defn278">
+<p class="defnprototype"><strong>if rule succeeded:</strong></p>
+
+
+
+<p>This condition is true if the most recently followed rule or rulebook ended in success. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+follow the hypothetical clever rule;
+<br>if rule succeeded:
+<br>    ...
+</p></blockquote>
+
+
+
+</div>
+
+
+<div class="definition" id="defn279">
+<p class="defnprototype"><strong>if rule failed:</strong></p>
+
+
+
+<p>This condition is true if the most recently followed rule or rulebook ended in failure. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+follow the hypothetical clever rule;
+<br>if rule failed:
+<br>    ...
+</p></blockquote>
+
+<p>Note that this is not the opposite of "rule succeeded", because there's a third possibility: that it ended with no outcome.</p>
+
+
+</div>
+
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-404"><p class="example-p"><span class="example-short-start">404. <a href="rb_10.html#example-404" class="example-link" onClick="(function() { document.getElementById('example-404').setAttribute('open','open'); return true; })();">Kyoto</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">Expanding the effects of the THROW something AT something command so that objects do make contact with one another.</span> (c.f. <a href="rb_10.html#rb-10.4">RB §10.4. Glass and Other Damage-Prone Substances</a>)</p></div>
+</div></section>
+<section class="section" id="wi-19.12"><div>
+
+
+
+
+
+<h3>WI §19.12. Named outcomes</h3>
+<p>We have seen that the terms "success" and "failure" can be misleading - after all, it might be a good thing for a particular rulebook to "fail". At any rate, these are vague terms, and we don't want to have to remember the conventions used by every rulebook. This is why certain rulebooks have explicitly named outcomes instead. For instance, the "visibility" rules are allowed to have the outcomes:</p>
+
+<div class="code"><p class="quoted">
+there is sufficient light;
+<br>there is insufficient light;
+</p></div>
+<p>These look like phrases, but are in fact named outcomes which can only be used in visibility rules. (They would make no sense elsewhere, and Inform will not allow their use if they are clearly out of context.) Such named outcomes are listed in the Rules index.</p>
+<p>There can be any number of named outcomes. For instance, the Standard Rules define:</p>
+
+<div class="code"><p class="quoted">
+The does the player mean rules are a rulebook. The does the player mean rules have outcomes it is very likely, it is likely, it is possible, it is unlikely and it is very unlikely.
+</p></div>
+<p>which makes five possible outcomes. Five outcomes seems to contradict the principle that there are only three possible outcomes for a rule: in fact, though, the five are counted as five different forms of "success", and any of them will cause a "does the player mean" rule to succeed. If we do not want this, we can instead specify explicitly how the named outcomes correspond to success, failure or "no outcome":</p>
+
+<div class="code"><p class="quoted">
+Visibility rules have outcomes there is sufficient light (failure) and there is insufficient light (success).
+</p></div>
+<p>Again, see the Rules index for examples.</p>
+<p>The same named outcome can be used for more than one rulebook, and can have different meanings in the context of different rulebooks - "good news" could be defined as success in one rulebook and failure in another, for instance. (This means that rulebook creators need not worry about name clashes and is an important difference in behaviour between rulebook outcomes and kinds of value.) We can even name a specific named outcome as the default outcome for rules in this rulebook:</p>
+
+<div class="code"><p class="quoted">
+Audibility rules have outcomes high background noise (failure), low background noise (success - the default) and absolute silence (success).
+</p></div>
+<p>After a rulebook using named outcomes has run, we can test which outcome occurred by using the phrase:</p>
+
+<div class="definition" id="defn280">
+<p class="defnprototype"><strong>outcome of the rulebook ... rulebook outcome</strong></p>
+
+
+
+<p>This phrase produces the (named) outcome of the phrase most recently followed. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+follow the audibility rules;
+<br>if the outcome of the rulebook is the absolute silence outcome:
+<br>    say "You could hear a pin drop in here."
+</p></blockquote>
+
+
+
+</div>
+
+<p>Each named outcome is a value if followed by the word "outcome", which is how "absolute silence" has become "the absolute silence outcome". Named outcomes can be said, so we could use the text substitution "[outcome of the rulebook]", for instance. A final caveat: it is perfectly legal to create a named outcome which means "no outcome", but if so then this will never be "the outcome of the rulebook" because "no outcome" is not an outcome.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-405"><p class="example-p"><span class="example-short-start">405. <a href="rb_7.html#example-405" class="example-link" onClick="(function() { document.getElementById('example-405').setAttribute('open','open'); return true; })();">Being Peter</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A set of rules determining the attitude a character will take when asked about certain topics.</span> (c.f. <a href="rb_7.html#rb-7.10">RB §7.10. Character Emotion</a>)</p></div>
+</div></section>
+<section class="section" id="wi-19.13"><div>
+
+
+
+
+
+<h3>WI §19.13. Rulebooks producing values</h3>
+<p>We have now seen two ways to write the outcome of a rule: as simple success or failure, with more or less explicit phrases like:</p>
+
+<div class="code"><p class="quoted">
+rule succeeds;
+<br>rule fails;
+<br>continue the action;
+<br>stop the action;
+</p></div>
+<p>and by using a named outcome for the current rulebook as if it were a phrase, as in:</p>
+
+<div class="code"><p class="quoted">
+low background noise;
+</p></div>
+<p>There is still a third way: we can stop a rule and at the same time produce a value. This isn't needed very often - none of the built-in rulebooks in the Standard Rules produces a value.</p>
+<p>As we've seen, every rulebook has one kind of value as its basis, and it also has another kind of value for it to produce. If we call these K and L, then we have altogether four ways to write down the kind of a rulebook:</p>
+
+<div class="code"><p class="quoted">
+rulebook
+<br>K based rulebook
+<br>rulebook producing L
+<br>K based rulebook producing L
+</p></div>
+<p>If we don't mention K, Inform assumes the rulebook is action based. If we don't mention L, Inform assumes L is "nothing", that is, Inform assumes no value is ever produced. Thus</p>
+
+<div class="code"><p class="quoted">
+Drum summons rules is a rulebook.
+</p></div>
+<p>is equivalent to</p>
+
+<div class="code"><p class="quoted">
+Drum summons rules is an action based rulebook producing nothing.
+</p></div>
+<p>But let's now look at a rulebook which does produce something.</p>
+
+<div class="code"><p class="quoted">
+The cat behavior rules is a rulebook producing an object.
+</p></div>
+<p>This rulebook works out which thing the cat will destroy next. We might have rules like this one:</p>
+
+<div class="code"><p class="quoted">
+Cat behavior when Austin can see the ball of wool:
+<br>    rule succeeds with result the ball of wool.
+</p></div>
+<p>The value is produced only when a rule succeeds, using this phrase:</p>
+
+<div class="definition" id="defn281">
+<p class="defnprototype"><strong>rule succeeds with result </strong>(value)<strong></strong></p>
+
+
+
+<p>This phrase can only be used in a rule which produces a value, and the value given must be of the right kind. It causes the current rule to finish immediately, to succeed, and to produce the value given.</p>
+
+
+</div>
+
+<p>How are we to use the cat behavior rulebook? If we write:</p>
+
+<div class="code"><p class="quoted">
+follow cat behavior
+</p></div>
+<p>then the rulebook runs just as any other rulebook would, but the value produced is lost at the end, which defeats the point. Instead, we might write:</p>
+
+<div class="code"><p class="quoted">
+Every turn:
+<br>    let the destroyed object be the object produced by the cat behavior rules;
+<br>    if the destroyed object is not nothing:
+<br>        say "Austin pounces on [the destroyed object] in a flurry.";
+<br>        now the destroyed object is nowhere.
+</p></div>
+<p>The key phrase here is</p>
+
+<div class="code"><p class="quoted">
+object produced by the cat behavior rules
+</p></div>
+<p>which accesses the value this rulebook produces. In general, we write:</p>
+
+<div class="definition" id="defn282">
+<p class="defnprototype"><strong></strong>(name of kind)<strong> produced by </strong>(rule producing values)<strong> ... value</strong></p>
+
+
+
+<p>This phrase is used to follow the named rule, and to collect the resulting value.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn283">
+<p class="defnprototype"><strong></strong>(name of kind)<strong> produced by </strong>(values based rule producing values)<strong> for </strong>(value)<strong> ... value</strong></p>
+
+
+
+<p>This phrase is used to follow the named rule based on the value given, and to collect the resulting value.</p>
+
+
+</div>
+
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-406"><p class="example-p"><span class="example-short-start">406. <a href="rb_8.html#example-406" class="example-link" onClick="(function() { document.getElementById('example-406').setAttribute('open','open'); return true; })();">Feline Behavior</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A cat which reacts to whatever items it has handy, returning the result of a rulebook for further processing.</span> (c.f. <a href="rb_8.html#rb-8.3">RB §8.3. Animals</a>)</p></div>
+<div class="example-short" id="example-short-407"><p class="example-p"><span class="example-short-start">407. <a href="rb_9.html#example-407" class="example-link" onClick="(function() { document.getElementById('example-407').setAttribute('open','open'); return true; })();">Tilt 2</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">A deck of cards with fully implemented individual cards; when the player has a full poker hand, the inventory listing describes the resulting hand accordingly.</span> (c.f. <a href="rb_9.html#rb-9.5">RB §9.5. Dice and Playing Cards</a>)</p></div>
+</div></section>
+<section class="section" id="wi-19.14"><div>
+
+
+
+
+
+<h3>WI §19.14. Abide by</h3>
+<p>It often happens that one rule needs to invoke another one. Most of the time, the best way to do this is with "follow":</p>
+
+<div class="code"><p class="quoted">
+follow the magical mystery tour rule;
+</p></div>
+<p>More often, though, we want not only to invoke another rule, but also to be guided by its advice. For this, we use the otherwise identical phrase:</p>
+
+<div class="definition" id="defn284">
+<p class="defnprototype"><strong>abide by </strong>(rule)<strong></strong></p>
+
+
+
+<p>This phrase applies the given rule, and makes its result the result of the present rule. If the rule being abided by succeeds or fails then the original rule also stops, at once and without going on to any further instructions. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+The omnibus rule:
+<br>    abide by the first rule;
+<br>    abide by the second rule;
+<br>    abide by the third rule;
+<br>    abide by the fourth rule.
+</p></blockquote>
+
+<p>This duplicates the effect of a rulebook of four rules: the "omnibus rule" tries each in turn, and stops as soon as any of them stop.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn285">
+<p class="defnprototype"><strong>abide by </strong>(values based rule producing values)<strong> for </strong>(value)<strong></strong></p>
+
+
+
+<p>This phrase applies the given rule to the given value, and makes its result the result of the present rule. If the rule being abided by succeeds or fails then the original rule also stops, at once and without going on to any further instructions.</p>
+
+
+</div>
+
+<p>Abide might be used in examples like this one:</p>
+
+<div class="code"><p class="quoted">
+A thing can be fragile or robust.
+<br>This is the can't handle fragile things roughly rule: if the noun is fragile, say "[The noun] is too fragile for such rough handling." instead.
+<br>A check dropping rule: abide by the can't handle fragile things roughly rule. A check throwing it at rule: abide by the can't handle fragile things roughly rule.
+</p></div>
+<p>Had we used "follow" instead of "abide by", then in the event of the player typing "drop angel" the text "The glass angel is too fragile for such rough handling" would be printed, which is correct - but then the action would continue as though no difficulty had occurred, which is definitely not correct.</p>
+<p>Finally, we can "anonymously abide":</p>
+
+<div class="definition" id="defn286">
+<p class="defnprototype"><strong>anonymously abide by </strong>(rule)<strong></strong></p>
+<br><em>or:</em>   <p class="defnprototype"><strong>anonymously abide by </strong>(values based rule producing values)<strong> for </strong>(value)<strong></strong></p>
+
+
+
+<p>This phrase applies the given rule, and makes its result the result of the present rule. If the rule being abided by succeeds or fails then the original rule also stops, at once and without going on to any further instructions. However, the rule deemed to have decided the outcome is the one abided by, not the one doing the abiding.</p>
+
+
+</div>
+
+<p>This is only useful in complicated situations where one rulebook uses another which... and so on. Its effect is exactly the same as "abide", except that the rule deemed to have decided the outcome is the one abided by, not the one doing the abiding. It thus allows a rule or rulebook to act purely as a middle-man, never getting the blame or the credit for what happens. The rule which made the decision is often not very relevant anyway, but it's used as the source of the value "reason the action failed" (see the <a href="wi_12.html#wi-chapter-12-advanced-actions">Advanced Actions chapter</a>).</p>
+
+
+</div></section>
+<section class="section" id="wi-19.15"><div>
+
+
+
+
+
+<h3>WI §19.15. Two rulebooks used internally</h3>
+<p>Rulebooks handle almost all of the important tasks which an Inform work of IF must carry out in order to keep play going. We have seen them used in clarifying the player's command, supplying missing ingredients, processing the action to see what should happen, responding, and so on: by this point in the documentation, it must look as if Inform uses rulebooks for everything.</p>
+<p>This is nearly true. There is not actually a super-rulebook controlling everything. (Such a super-rulebook would need to repeat itself and never finish, something a rulebook is not allowed to do.) Instead, what happens during play looks like so:</p>
+
+<div class="code"><p class="quoted">
+1. Following the "when play begins" rulebook.
+<br>2. Repeating:
+<br>    2(a). Reading and parsing a command into an action;
+<br>    2(b). Following the "action processing" rulebook;
+<br>    2(c). Following the "turn sequence" rulebook.
+<br>until the story has finished.
+<br>3. Following the "when play ends" rulebook.
+</p></div>
+<p>The command parser occasionally calls on the services of activity rulebooks to help it, but otherwise gets on with its job in ways that we do not "see" as Inform 7 users. The rest of what happens involves rulebooks, and in particular two important beneath-the-surface rulebooks: action processing and turn sequence.</p>
+<p>The <strong>action processing rules</strong> are used whenever an action must be tried, by whoever tries it. This usually happens in response to player commands, but not always: it might happen because of a "try...", and it can certainly interrupt an existing action.</p>
+<p>The <strong>turn sequence rules</strong> are used at the end of each turn, and include housekeeping as well as timekeeping. They consult the "every turn" rulebook, and advance the time of day, among other useful tasks.</p>
+<p>In general, we should only modify the operation of these two crucial rulebooks as a last resort. Play can evidently fall to pieces if they cease to work normally.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-408"><p class="example-p"><span class="example-short-start">408. <a href="rb_10.html#example-408" class="example-link" onClick="(function() { document.getElementById('example-408').setAttribute('open','open'); return true; })();">Electrified</a></span> <span class="example-difficulty">★</span>  <span class="example-description">Adding a rule before the basic accessibility rule that will prevent the player from touching electrified objects under the wrong circumstances.</span> (c.f. <a href="rb_10.html#rb-10.7">RB §10.7. Electricity and Magnetism</a>)</p></div>
+<div class="example-short" id="example-short-409"><p class="example-p"><span class="example-short-start">409. <a href="rb_4.html#example-409" class="example-link" onClick="(function() { document.getElementById('example-409').setAttribute('open','open'); return true; })();">Timeless</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A set of actions which do not take any game time at all.</span> (c.f. <a href="rb_4.html#rb-4.1">RB §4.1. The Passage Of Time</a>)</p></div>
+<div class="example-short" id="example-short-410"><p class="example-p"><span class="example-short-start">410. <a href="rb_4.html#example-410" class="example-link" onClick="(function() { document.getElementById('example-410').setAttribute('open','open'); return true; })();">Endurance</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">Giving different actions a range of durations using a time allotment rulebook.</span> (c.f. <a href="rb_4.html#rb-4.1">RB §4.1. The Passage Of Time</a>)</p></div>
+<div class="example-short" id="example-short-411"><p class="example-p"><span class="example-short-start">411. <a href="rb_6.html#example-411" class="example-link" onClick="(function() { document.getElementById('example-411').setAttribute('open','open'); return true; })();">Escape from the Seraglio</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">Replacing the usual response to TAKE ALL so that instead of output such as "grapes: Taken. orange: Taken.", Inform produces variable responses in place of "grapes:".</span> (c.f. <a href="rb_6.html#rb-6.15">RB §6.15. Actions on Multiple Objects</a>)</p></div>
+</div></section>
+<section class="section" id="wi-19.16"><div>
+
+
+
+
+
+<h3>WI §19.16. The Laws for Sorting Rulebooks</h3>
+<p>Large works created by Inform are heaped high with rules, most of them instead rules, but with a leavening of befores and afters as well. What will happen if these conflict with each other? For instance:</p>
+
+<div class="code">
+<p class="quoted">
+Instead of opening a container, say "Your mother-in-law looks on with such evident disappointment that you withdraw your hand again."
+</p>
+<p class="quoted">
+Instead of opening an open container, say "Your daughter tuts in theatrical exasperation at your, like, lameness."
+</p>
+</div>
+<p>Such clashes are resolved by sorting the rulebooks in order of specificity: thus your daughter gets in before your mother-in-law, because although both have rules hanging on the "opening" action, "an open container" is more specific than "a container". The full set of Laws used by Inform to sort rulebooks is quite elaborate. As we've seen, practical consequences can be investigated using the Rules index; and in most cases, the results are either natural (as above) or irrelevant (because the two rules being compared could not both activate at the same time anyway); but the full set of Laws is laid out below, for reference. It is probably a bad idea to write source text which absolutely relies on non-obvious rule sorting conventions, just the same, because this will make the source text harder to read and understand.</p>
+<p>Sorting is done by comparing rules in pairs to decide which is more specific. We shall call these rules X and Y. The Laws are tried in sequence; the first Law to distinguish X and Y gets to decide which is more specific. If no Law is able to decide, X and Y go into the rulebook in order of their appearance in the source text - that is, whichever is defined first appears earlier in the rulebook and therefore takes priority.</p>
+<p><strong>Law I - Number of aspects constrained</strong>. For action-based rulebooks, rules are scored from 0 to 6 according to whether they constrain any of: (i) the exotic "going" clauses (pushing, by and through), (ii) the location of the action (in, from and to), (iii) the things directly involved (actor, noun, second noun, "nowhere" in the case of "going"), (iv) the presence of others (in the presence of...), (v) the time at which the action occurs (when, or "for the nth time" or "for the nth turn"), and/or (vi) the scene the action occurs in (during). For value based rulebooks, rules are scored from 0 to 3 according to whether they constrain: (i) the value parameter, (ii) the scene in which the rulebook is followed (when, during), and/or (iii) any condition which must hold or activities going on at the same time (when/while). A higher score is more specific than a lower one.</p>
+<p><strong>Law II - When/while requirement</strong>. A rule with a when/while restriction beats one without.</p>
+<p><strong>Law III - Action requirement</strong>. A rule with a more specific action requirement beats one with a more general action requirement. (Or similarly, for value based rulebooks, a rule with a more specific parameter requirement beats a more general one.) Details are given below.</p>
+<p><strong>Law IV - Scene requirement</strong>. A rule with a scene restriction ("during") beats one without.</p>
+<p>Details of Law III now follow:</p>
+<p><strong>Law III.1 - Object To Which Rule Applies</strong>. For value based rulebooks only: the more specific value requirement wins.</p>
+<p><strong>Law III.2.1 - Action/Where/Going In Exotic Ways</strong>. A more specific combination of "...pushing...", "... by ...", and "... through ..." clauses in a "going" action beats a less specific. (Placing conditions on all three of these clauses beats placing conditions on any two, which beats any one, which beats none at all.) In cases where X and Y each place, let's say, two such conditions, they are considered in the order "...pushing...", "...by..." and then "...through..." until one wins. (The idea here is that pushing something from room to room is rarer than travelling in a vehicle, which in turn is rarer than going through a door. The rarer action goes first, as more specific.)</p>
+<p><strong>Law III.2.2 - Action/Where/Room Where Action Takes Place</strong>. A more specific combination of conditions on the room in which the action starts, and in which it ends, beats a less specific. For all actions other than "going", there is no combination to be considered, and what we do is to look at the specificity of the "... in ..." clause. (So "Before looking in the Taj Mahal" beats "Before looking".)</p>
+<p>For "going" actions, there are strictly speaking three possible room clauses: "... in ...", "... from ..." and "... to ...". However, "... in ..." and "... from ..." cannot both be present, so that in practice a "going" rule constraining two rooms beats a "going" rule constraining only one.</p>
+<p>If both the room gone from (the "...in..." or "...from..." room, whichever is given) and the room gone to (the "... to..." room) are constrained, then the constraints are looked at in the order from-room followed by to-room, since an action which goes to room Z could start in many different places and thus is likely to be more general.</p>
+<p>Giving a place as a specific room beats giving only the name of a region; if region R is entirely within region S, then a rule applying in R beats a rule applying in S. (Note that regions can only overlap if one is contained in the other, so this does not lead to ambiguity.)</p>
+<p><strong>Law III.2.3 - Action/Where/In The Presence Of</strong>. A more specific "...in the presence of..." clause beats a less specific one. (This is again a constraint on where the action can take place, but it's now a potentially a constraint which could be passed in many different places at different times, so it's the most likely to be achieved and therefore the last to be considered of the Laws on Where.)</p>
+<p><strong>Law III.3.1 - Action/What/Second Thing Acted On</strong>. A more specific constraint on the second noun beats a less specific. Thus "putting something in the wooden box" beats "putting something in a container".</p>
+<p><strong>Law III.3.2 - Action/What/Thing Acted On</strong>. A more specific constraint on the first noun beats a less specific. Thus "taking a container which is on a supporter" beats "taking a container".</p>
+<p>In the case of "going" actions, the first noun is a direction. The special constraint "going nowhere" (which means: a direction in which the actor's location has no map connection) is considered more general than any other constraint placed on the first noun, but more specific than having no constraint at all. Thus "Instead of going north" beats "Instead of going nowhere" which beats "Instead of going".</p>
+<p><strong>Law III.3.3 - Action/What/Actor Performing Action</strong>. A more specific constraint on the actor beats a less specific.</p>
+<p><strong>Law III.4.1 - Action/How/What Happens</strong>. A more specific set of actions beats a less specific. For instance, "taking" beats "taking or dropping" beats "doing something other than looking" beats "doing something". A named kind of action (such as "behaving badly") is more specific than "doing something", but considered less specific than any explicitly spelled out list of actions.</p>
+<p><strong>Law III.5.1 - Action/When/Duration</strong>. An action with a constraint on its history ("for the fifth time", say, or "for the fifth turn") beats one without. If both rules place constraints on history, then the one occurring on the smaller number of possible turns wins (thus "for the third to seventh time" - 5 possible turns of applicability - beats "for less than the tenth turn" - 9 possible turns).</p>
+<p><strong>Law III.5.2 - Action/When/Circumstances</strong>. A more specific condition under "...when..." beats a less specific one. These conditions could potentially be complex: Inform judges how specific they are by counting the clauses found in them. The more clauses, the more specific the condition, it is assumed.</p>
+<p><strong>Law III.6.1 - Action/Name/Is This Named</strong>. A rule with a name ("the apple blossom rule", say) beats a rule without.</p>
+
+
+</div></section>
+</section>
+
+<footer>
+<div class="linkback"><a href="http://inform7.com/book/WI_19_1.html">WI Chapter 19 on inform7.com</a></div>
+<div class="doc-navbar">
+<div>
+<div class="doc-navbar-left"><a class="nav-left" href="wi_18.html#wi-chapter-18-activities">18. Activities</a></div>
+<div class="doc-navbar-right"><a class="nav-right" href="wi_20.html#wi-chapter-20-advanced-text">20. Advanced Text</a></div>
+</div>
+<div>
+<div class="doc-navbar-left"><a href="index.html">Table of Contents</a></div>
+<div class="doc-navbar-right"><a href="index.html#general-index">General Index</a></div>
+</div>
+</div>
+
+</footer>
+</main></body></html>
+

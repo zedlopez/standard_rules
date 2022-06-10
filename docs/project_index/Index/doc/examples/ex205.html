@@ -1,0 +1,247 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../style.css">
+<script>function toggle_details() {
+   var openness, toggle_link;
+   toggle_link = document.getElementById("toggle");
+   openness = toggle_link.classList.toggle("open");
+document.querySelectorAll("details.full-example").forEach(detail => { if (openness) { detail.setAttribute("open", true); } else { detail.removeAttribute("open");} });
+   toggle_link.innerText = (openness ? "Close" : "Open") + " all examples";
+   }
+
+
+function copyCode(text) { navigator.clipboard.writeText(text); }
+
+
+var links = document.getElementsByTagName('a');
+for (var i = 0; i < links.length; i++) {
+    if (links[i].href.match(/^#example-\d+/)) {
+	links[i].onClick = function() { links[i].href.match(/^#example-(\d+)$/); var example = document.getElementById($1).setAttribute('open'); return true; };
+    }
+}
+
+function add_bar(update) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let navbar = document.querySelector('div.index-navbar');
+
+    if (navbar && urlParams.has('project')) {
+        navbar.setAttribute('class', 'index-navbar'); // removes hidden
+        let project = decodeURIComponent(urlParams.get('project'));
+        let index_root = project + '/.index/';
+        let build = project + '/Build/';
+        let query_arg = "?project="+encodeURIComponent(project);
+
+        let links = [
+            { "General Index": document.getElementById('general_index').href },
+            { "Docs": document.getElementById('docs').href },
+            { "Extensions": index_root + 'doc/Extensions.html' },
+            { "Definitions": index_root + 'doc/ExtIndex.html' },
+            { "Debug Log": build + 'debug_log.html' },
+            { "Problems": build + 'problems.html' },
+            { "Source": index_root + 'story.html' },
+            { "Project Index": index_root + 'Index/Welcome.html' } ];
+        let sp = document.createTextNode(" ");
+        links.forEach(h => {
+            Object.entries(h).forEach(([text, url]) => {
+                let my_id = text.toLowerCase().replace(' ', '_');
+                let a = document.querySelector('#'+my_id);
+                let url_target = "file://"+url+query_arg;
+                if (a) {
+                    let parts = a.href.split('#');
+                    let qparts = parts[0].split('?');
+                    a.href = qparts[0] +  (qparts[1] ? ('?' + qparts[1]) : query_arg) + (parts[1] ? ('#' + parts[1]) : "");
+                }
+                else {
+                    a = document.createElement('a');
+                    let href = document.createAttribute("href");
+                    href.value = url_target;
+                    a.setAttributeNode(href);
+                    let elem_id = document.createAttribute("id");
+                    elem_id.value = my_id;
+                    a.setAttributeNode(elem_id);
+                    let linktext = document.createTextNode(text);
+                    a.appendChild(linktext);
+                    navbar.insertBefore(sp.cloneNode(), navbar.firstChild);
+                    navbar.insertBefore(a, navbar.firstChild);
+                }
+            })});
+        if (update) {
+            let main_links = document.querySelectorAll('main a');
+            main_links.forEach(a => {
+                if (!a.href.startsWith('javascript:') || (a.href.match(/[^:]+:\/\// && !a.href.startsWith('file:')))) {
+                    let parts = a.href.split('#')
+                    a.href = parts[0] + query_arg + (parts[1] ? ('#' + parts[1]) : "");
+                } });
+        }
+    }
+}
+
+
+
+document.addEventListener("DOMContentLoaded", add_bar);</script>
+<title>Example #205</title></head>
+<body class="inform7-source">
+
+<div class="inform7-source"><div class="pseudo">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;Under Contract&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Sound Stage is a room. The description is <span class="i7sx">&quot;A somewhat creaky and unconvincing reproduction of the docks of San Francisco.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Clark Gable is a man in the Sound Stage. <span class="i7sx">&quot;Clark is here, carrying </span><span class="i7si">[the list of things carried by Clark][if Clark wears anything]</span><span class="i7sx"> and wearing </span><span class="i7si">[the list of things worn by Clark][end if]</span><span class="i7sx">.&quot;</span> Clark carries a swagger stick. Clark carries an open openable player&#39;s holdall called a briefcase. The briefcase contains a signed contract. Clark wears a fedora and a pair of pants. A handle is part of the briefcase.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The player carries an open openable player&#39;s holdall called a frilly bag. The carrying capacity of the player is 2. The player wears a sparkly scarf and a slinky dress. A strap is part of the bag. The tent is a portable enterable container.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of taking off the slinky dress: say <span class="i7sx">&quot;Rowr! Not that kind of movie, babe.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of taking off the pants: say <span class="i7sx">&quot;That&#39;s not your job, whatever the society pages might suggest.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Unsuccessful attempt by Clark doing something:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	repeat through table of Clark Retorts:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if the reason the action failed is the cause entry:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[response entry][paragraph break]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	rule succeeds;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;&#39;I don&#39;t think that&#39;s in the script,&#39; says Clark dubiously.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line">Table of Clark Retorts</span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">cause</span><span class="td">response</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t take yourself rule</span><span class="td"><span class="i7sx">&quot;&#39;I&#39;m always self-possessed,&#39; Clark remarks. You&#39;ve heard that line before, but it sounds so much more convincing from him.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t take other people rule</span><span class="td"><span class="i7sx">&quot;&#39;I don&#39;t think it would be appreciated if I tried to do that to </span></span><span class="td"><span class="i7si">[the noun]</span></span><span class="td"><span class="i7sx">,&#39; he rumbles.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t take component parts rule</span><span class="td"><span class="i7sx">&quot;&#39;I don&#39;t want to rip </span></span><span class="td"><span class="i7si">[the noun]</span></span><span class="td"><span class="i7sx"> out,&#39; Clark remarks.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t take people&#39;s possessions rule</span><span class="td"><span class="i7sx">&quot;&#39;I don&#39;t cotton to acting like a thief,&#39; Clark replies. &#39;It ain&#39;t proper.&#39;&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t take what you&#39;re inside rule</span><span class="td"><span class="i7sx">&quot;&#39;Do you see where I am, babe?&#39; Clark demands.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t take what&#39;s already taken rule</span><span class="td"><span class="i7sx">&quot;</span></span><span class="td"><span class="i7si">[already done]</span></span><span class="td"><span class="i7sx">&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t take scenery rule</span><span class="td"><span class="i7sx">&quot;&#39;I&#39;m not the stunt man, darling,&#39; he says with a wry twinkle.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t take what&#39;s fixed in place rule</span><span class="td"><span class="i7sx">&quot;&#39;I&#39;m not the stunt man, darling,&#39; he says with a wry twinkle.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t exceed carrying capacity rule</span><span class="td"><span class="i7sx">&quot;Clark grins. &#39;I&#39;ve only got so many hands, darling,&#39; he says.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t insert into closed containers rule</span><span class="td"><span class="i7sx">&quot;</span></span><span class="td"><span class="i7si">[physical impossibility]</span></span><span class="td"><span class="i7sx">&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t go that way rule</span><span class="td"><span class="i7sx">&quot;</span></span><span class="td"><span class="i7si">[physical impossibility]</span></span><span class="td"><span class="i7sx">&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t go through closed doors rule</span><span class="td"><span class="i7sx">&quot;</span></span><span class="td"><span class="i7si">[physical impossibility]</span></span><span class="td"><span class="i7sx">&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t enter closed containers rule</span><span class="td"><span class="i7sx">&quot;</span></span><span class="td"><span class="i7si">[physical impossibility]</span></span><span class="td"><span class="i7sx">&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t exit closed containers rule</span><span class="td"><span class="i7sx">&quot;</span></span><span class="td"><span class="i7si">[physical impossibility]</span></span><span class="td"><span class="i7sx">&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t drop yourself rule</span><span class="td"><span class="i7sx">&quot;&#39;We&#39;re inseparable, me and me,&#39; Clark replies, with a smile.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t drop what&#39;s already dropped rule</span><span class="td"><span class="i7sx">&quot;</span></span><span class="td"><span class="i7si">[already done]</span></span><span class="td"><span class="i7sx">&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t drop what&#39;s not held rule</span><span class="td"><span class="i7sx">&quot;&#39;Not under my control, </span></span><span class="td"><span class="i7si">[the noun]</span></span><span class="td"><span class="i7sx">,&#39; replies Clark.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t drop clothes being worn rule</span><span class="td"><span class="i7sx">&quot;</span></span><span class="td"><span class="i7si">[salacious retort]</span></span><span class="td"><span class="i7sx">&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t put something on itself rule</span><span class="td"><span class="i7sx">&quot;&#39;I lack the dexterity,&#39; says Clark. Oh, he&#39;s so modest.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t put onto what&#39;s not a supporter rule</span><span class="td"><span class="i7sx">&quot;&#39;</span></span><span class="td"><span class="i7si">[The second noun]</span></span><span class="td"><span class="i7sx"> won&#39;t support a thing,&#39; says Clark reprovingly.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t put clothes being worn rule</span><span class="td"><span class="i7sx">&quot;</span></span><span class="td"><span class="i7si">[salacious retort]</span></span><span class="td"><span class="i7sx">&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t insert clothes being worn rule</span><span class="td"><span class="i7sx">&quot;</span></span><span class="td"><span class="i7si">[salacious retort]</span></span><span class="td"><span class="i7sx">&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t give worn items rule</span><span class="td"><span class="i7sx">&quot;</span></span><span class="td"><span class="i7si">[salacious retort]</span></span><span class="td"><span class="i7sx">&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t wear what&#39;s not clothing rule</span><span class="td"><span class="i7sx">&quot;&#39;Costuming just gets stranger every year,&#39; says Clark. &#39;In short: no.&#39;&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t wear what&#39;s already worn rule</span><span class="td"><span class="i7sx">&quot;</span></span><span class="td"><span class="i7si">[already done]</span></span><span class="td"><span class="i7sx">&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t eat unless edible rule</span><span class="td"><span class="i7sx">&quot;&#39;What&#39;re you trying to do, poison me?&#39;&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t eat clothing without removing it first rule</span><span class="td"><span class="i7sx">&quot;</span></span><span class="td"><span class="i7si">[salacious retort]</span></span><span class="td"><span class="i7sx">&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t take off what&#39;s not worn rule</span><span class="td"><span class="i7sx">&quot;</span></span><span class="td"><span class="i7si">[already done]</span></span><span class="td"><span class="i7sx">&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t close what&#39;s already closed rule</span><span class="td"><span class="i7sx">&quot;</span></span><span class="td"><span class="i7si">[already done]</span></span><span class="td"><span class="i7sx">&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t open what&#39;s already open rule</span><span class="td"><span class="i7sx">&quot;</span></span><span class="td"><span class="i7si">[already done]</span></span><span class="td"><span class="i7sx">&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t switch off what&#39;s already off rule</span><span class="td"><span class="i7sx">&quot;</span></span><span class="td"><span class="i7si">[already done]</span></span><span class="td"><span class="i7sx">&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t switch on what&#39;s already on rule</span><span class="td"><span class="i7sx">&quot;</span></span><span class="td"><span class="i7si">[already done]</span></span><span class="td"><span class="i7sx">&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t unlock what&#39;s already unlocked rule</span><span class="td"><span class="i7sx">&quot;</span></span><span class="td"><span class="i7si">[already done]</span></span><span class="td"><span class="i7sx">&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">can&#39;t lock what&#39;s already locked rule</span><span class="td"><span class="i7sx">&quot;</span></span><span class="td"><span class="i7si">[already done]</span></span><span class="td"><span class="i7sx">&quot;</span></span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To say already done:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	repeat through Table of Clark&#39;s Bored Remarks:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[response entry]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	blank out the whole row;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	rule succeeds;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;&#39;Already done.&#39; &quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line">Table of Clark&#39;s Bored Remarks</span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">response</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;&#39;I have anticipated your every demand.&#39;&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;&#39;We&#39;ve been through this part of the script already,&#39; Clark remarks, with just a hint of creeping tedium.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;&#39;Right right, already taken care of...&#39;&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;&#39;I&#39;m a believer in rehearsal,&#39; Clark says, sounding more bored than ever, &#39;but we really have got all this done already.&#39;&quot;</span></span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To say salacious retort:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	repeat through Table of Clark&#39;s Flirtatious Remarks:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[response entry]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	blank out the whole row;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	rule succeeds;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;Clark, driven past the point of endurance, seizes you in his arms and kisses you.&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	end the story finally.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line">Table of Clark&#39;s Flirtatious Remarks</span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">response</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;Clark allows his mustache to quirk at the suggestion.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;Clark wiggles his eyebrows at you.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;&#39;That kind of thing isn&#39;t in my contract, sweetie,&#39; says Clark. &#39;If you&#39;re interested you&#39;ll have to ask off-camera.&#39;&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;&#39;I&#39;d feel so... bare,&#39; Clark says, with a sidelong look at you.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;&#39;You first,&#39; says Clark.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;Clark&#39;s stare is intense. You may be on the verge of breaking him.&quot;</span></span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To say physical impossibility:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	repeat through Table of Clark&#39;s Frustrated Denials:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[response entry]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	blank out the whole row;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	rule succeeds;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;Clark makes a helpless gesture about his ability to move himself, or parts of himself, through solid objects. &quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line">Table of Clark&#39;s Frustrated Denials</span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">response</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;Clark frowns. &#39;I can&#39;t reach through things -- unless you were planning a special effect?&#39;&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&ensp;<span class="td"><span class="i7sx">&quot;&#39;Look,&#39; says Clark. &#39;If you want a stage magician, hire one.&#39;&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;Clark just groans.&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td"><span class="i7sx">&quot;Clark says drily, &#39;Is this in the script, or are we doing improvisation now?&#39;&quot;</span></span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The block giving rule is not listed in the check giving it to rules. The block showing rule is not listed in the check showing it to rules. The report smelling rule is not listed in the report smelling rules. The report listening rule is not listed in the report listening to rules.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Carry out listening to something:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	do nothing.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Report listening to something: say <span class="i7sx">&quot;Your attention bears no interesting result.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Carry out smelling something:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	do nothing.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Report smelling something:  say <span class="i7sx">&quot;Your attention bears no interesting result.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Report someone listening to something: say <span class="i7sx">&quot;</span><span class="i7si">[The person asked]</span><span class="i7sx"> concentrates, listening.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Report someone smelling something: say <span class="i7sx">&quot;</span><span class="i7si">[The person asked]</span><span class="i7sx"> sniffs at </span><span class="i7si">[the noun]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of asking someone for something: try asking the noun to try giving the second noun to the player.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Carry out showing something to someone: say <span class="i7sx">&quot;You reveal </span><span class="i7si">[the noun]</span><span class="i7sx"> to </span><span class="i7si">[the second noun]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Carry out Clark showing something to someone:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the second noun is the player:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;Clark shows you </span><span class="i7si">[the noun]</span><span class="i7sx">. </span><span class="i7si">[run paragraph on]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	try examining the noun;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	otherwise:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;Clark reveals </span><span class="i7si">[the noun]</span><span class="i7sx"> to </span><span class="i7si">[the second noun]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of asking someone to try saying yes: try saying yes. Instead of asking someone to try saying no: try saying no. Instead of asking someone to try saying sorry, try saying sorry.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[And now we make Clark a very amenable type:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A persuasion rule for asking people to try doing something: persuasion succeeds.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[There are quite a few actions for which no automatic other-character behavior is provided at all, because they always end in failure when the player tries them. Currently the response is not very interesting. Let&#39;s spice it up a bit:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Burning something is useless action. Waking up is useless action. Thinking is useless action. Cutting is useless action. Jumping is useless action. Tying something to something is useless action. Drinking something is useless action. Swinging is useless action.  Rubbing is useless action. Setting something to something is useless action. Waving hands is useless action. Buying is useless action. Climbing is useless action. Sleeping is useless action. Kissing is useless action. Throwing something at something is useless action. Attacking is useless action. Asking something about something is useless action. Telling something about something is useless action. Answering something that something is useless action. Waking something is useless action.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A persuasion rule for asking people to try useless action:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;Clark Gable frowns. &#39;I don&#39;t mean to be difficult, but I can&#39;t see any point in that.&#39;&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	persuasion fails.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A persuasion rule for asking Clark to try taking off the pants:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;He gives you a look of mocking exasperation. Apparently you&#39;ll have to take a (slightly) more subtle approach.&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	persuasion fails.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	Check someone giving something to someone (this is the can&#39;t give worn items rule):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if the person asked wears the noun, stop the action.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[And because we do not want Clark automatically taking off the pants as the result of a drop action:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of Clark taking off the pants: do nothing.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[We know that this can only come about as a default action, because we have arranged matters so that he cannot be persuaded directly.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Test me with <span class="i7sx">&quot;give dress to clark / clark, take off pants / clark, eat pants / clark, give me the pants / clark, drop pants / clark, put the pants in the briefcase / again / g / g / g&quot;</span></span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

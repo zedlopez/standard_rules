@@ -1,0 +1,2003 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../../../Index/doc/style.css">
+<script src="../../../Index/doc/chapter.js"></script>
+<title>Approximate Metric Units by Graham Nelson</title></head>
+<body>
+<div class="index-navbar hidden">
+<a id="project_index" href="../../../Index/Welcome.html"> Project Index</a><a id="source" href="../../../story.html"> Source</a><a id="problems" href="../../../Build/problems.html"> Problems</a><a id="debug_log" href="../../../Build/debug_log.html"> Debug Log</a><a id="definitions" href="../../../Index/doc/ExtIndex.html"> Definitions</a><a id="extensions" href="../../../Index/doc/Extensions.html"> Extensions</a><a id="docs" href="../../../Index/doc/index.html"> Docs</a><a id="general_index" href="../../../Index/doc/index.html#general-index"> General Index</a>
+
+</div>
+
+
+<div class="pseudo">
+<span class="tr"><span class="th"></span><span class="td"><a href="javascript:copyCode(`Include Approximate Metric Units by Graham Nelson.`)"><img border="0" src="/home/zed/.local/share/inf7/doc/doc_images/paste.png" alt="Copy Include Approximate Metric Units by Graham Nelson to clipboard"></a> Include Approximate Metric Units by Graham Nelson.</span></span></div><div class="ext-front-matter">
+<div>Documentation for Approximate Metric Units by Graham Nelson</div>
+<a href="#line1">Jump to code</a></div>
+<div class="pseudo">
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">(Note: This extension uses integer arithmetic for its calculations, which was the best that could be done until June 2012. The new version of <span class="i7sx">&quot;Metric Units&quot;</span> uses floating-point calculations and is much more accurate, though it only works on versions of the Glulx virtual machine dating from 2011. This is a renamed copy of the old <span class="i7sx">&quot;Metric Units&quot;</span>, and is preserved in case people need it to keep older works running.)</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">The metric system provides a consistent set of units for scientific measurement of the world. Though often associated with the French Revolution or with Napoleon, the system of metric units only really began to displace existing units in May 1875, when it was made official by an international treaty. In 1960, it was renamed the <span class="i7sx">&quot;Système international d&#39;unités&quot;</span>, which is usually abbreviated <span class="i7sx">&quot;SI&quot;</span>.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">This extension is a kit for writers who want to make realistic simulations, backed up by some quantitative physics. It defines kinds of values for the 25 or so SI units in common usage, and more than 100 notations for them. It also makes sure they multiply correctly. For instance, a mass times an acceleration produces a force, so</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	say <span class="i7sx">&quot;You feel a force of </span><span class="i7si">[2kg times 5 m/ss]</span><span class="i7sx">.&quot;</span></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">will produce the text <span class="i7sx">&quot;You feel a force of 10N.&quot;</span> The easiest way to see how all these units combine is to run one of the examples below and look at the Kinds index which results.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">For each unit, both names and notations are allowed. Thus &#39;2 kilograms&#39; is</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">equivalent to &#39;2kg&#39;. Both English and French spellings of &#39;meter&#39;/&#39;metre&#39; and &#39;liter&#39;/&#39;litre&#39; are allowed, but we insist on &#39;gram&#39; not &#39;gramme&#39; and &#39;tonne&#39; not &#39;ton&#39;. (&#39;Ton&#39; is too easily confused with the Imperial measure, which is not quite the same.) We can print back the same value in a variety of ways. For instance:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[m0 in metric units]</span><span class="i7sx">&quot;</span>;</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[m0 in kg]</span><span class="i7sx">&quot;</span>;</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[m0 in g]</span><span class="i7sx">&quot;</span>;</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[m0 in kilograms]</span><span class="i7sx">&quot;</span>;</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">might produce: &#39;2.04kg&#39;, &#39;2.04kg&#39;, &#39;2040g&#39;, &#39;2.04 kilograms&#39;. The text expansion &#39;... in metric units&#39; prints any value of any of these units in its most natural notation: 2.04kg is thought to be better than 2040g, but 981g would be better than 0.981kg. Or in the case of our variant spellings:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[C in metric units]</span><span class="i7sx">&quot;</span>;</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[C in milliliters]</span><span class="i7sx">&quot;</span>;</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[C in millilitres]</span><span class="i7sx">&quot;</span>;</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">might produce &#39;47 ml&#39;, &#39;47 milliliters&#39;, &#39;47 millilitres&#39;. It&#39;s also worth remembering that any value can be rounded:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[C to the nearest 5 ml]</span><span class="i7sx">&quot;</span>;</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">would produce &#39;45 ml&#39;, for instance.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">For detailed notes on each of the units, consult the Kinds index for any project using this extension.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">There are three main restrictions. First, Inform can only represent numbers within a certain range. Each kind of value is set up on the assumption that writers will want it to model human-scale situations - length, for instance, varies from 1mm, the smallest conscious movement a human can make, up to 2150km or so, the length of a continent-spanning footpath. &#39;Approximate Metric Units&#39; is an extension to help with real-world physics questions like how long a plate dropped off the roof takes to hit the ground, or when a rope will break, or how long a saucepan of water will take to boil. It won&#39;t be much use for celestial events like lightning strikes, where enormous energies are released for fleeting periods of time, or for tiny subatomic events.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Secondly, calculations are done with fixed-point arithmetic and will inevitably involve small rounding errors. Working out the same quantity by two different methods, which ought to have the same result according to physics, will often produce slightly different answers because these errors accumulate differently. &#39;Approximate Metric Units&#39; aspires to help the writer to get physical answers which are about right, not to be a precision tool.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Thirdly, we haven&#39;t included every SI unit. There are hundreds of kinds of value which turn up in physics, and we only include the commonest 25 or so. The missing ones which have named SI units are:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	solid angle (measured in steradians), luminous flux (lux), electric capacitance (Farads), electric resistance (Ohms), electric conductance (Siemens), magnetic flux (Webers), magnetic field (Teslas), inductance (Henries), radioactivity (Becquerels), absorbed radioactive dose (Grays), equivalent radioactive dose (Sieverts), chemical quantity (mole), catalytic activity (katals).</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">As can be seen, we&#39;ve missed out units for chemistry, electromagnetic effects beyond the basic ones, and radioactivity. It would be easy to add any of these which might be needed:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	Electric resistance is a kind of value.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	1 Ohm (in metric units, in Ohms, singular) or 2 Ohms (in metric units, in Ohms, plural) specifies an electric resistance scaled at 1000.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	Electric resistance times electric current specifies a voltage.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Similarly, there are many kinds of value which don&#39;t have named SI units, but where physicists write them down as compounds. These are also easy to add as needed:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	Angular momentum is a kind of value.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	1 Nms specifies an angular momentum scaled at 1000.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	Momentum times length specifies an angular momentum.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Besides angular momentum, &#39;Approximate Metric Units&#39; also leaves out:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">&ensp;&ensp;	<span class="i7gh">volumetric flow (cu m/s), jerk (m/sss), snap (m/ssss), angular velocity (rad/s, though Inform would probably use degrees/s), torque (Nm), wavenumber (1/m), specific volume (cu m/kg), molar volume (cu m/mole), molar heat capacity (J/K/mol), molar energy (J/mol), specific energy (J/kg), energy density (J/cu m), surface tension (J/sq m), thermal conductivity (W/m/C), viscosity (sq m/s), conductivity (S/m), permittivity (F/m), permeability (H/m), electric field strength (V/m), magnetic field strength (A/m), resistivity (Ohm metre).</span></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">This extension is pretty faithful to SI conventions. It chooses degrees rather than radians for angle, and centigrade rather than Kelvin for temperature, because these are more useful for humans and easier to represent in text. But otherwise it&#39;s strictly metric, and does not define Imperial measures. See the example below for how to add these.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Example: ** Galileo, Galileo - Dropping a cannonball or a feather from a variety of heights.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">This experiment was first proposed in Pisa in the 1630s, but more definitively carried out by the crew of Apollo 15 in 1971, using a geological hammer and the feather of a falcon. Galileo&#39;s point was that heavy objects and light objects fall at the same speed because of gravity, and that only air resistance makes us think feathers fall more slowly than cannonballs. (Of course, heavy objects do land harder; the hammer kicked up a lot more lunar dust than the feather did.)</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"> "Galileo, Galileo"</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Include Approximate Metric Units by Graham Nelson.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">The acceleration due to gravity is an acceleration that varies.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Laboratory is a room. "An elegant Pisan room, with fine Renaissance panels, except for the teleport corridor to the east." A cannon ball and a feather are in the Laboratory.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Martian Outpost is east of the Laboratory. "A reddish-lit room with steel walls, whose only exit is the teleport corridor to west."</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">A room has an acceleration called gravitational field. The gravitational field of a room is usually 9.807 m/ss. The gravitational field of the Martian Outpost is 3.69 m/ss.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">A thing has a mass. The mass of a thing is usually 10g. The mass of the cannon ball is 2kg.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Dropping it from is an action applying to one thing and one length.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Understand "drop [thing] from [length]" as dropping it from.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Check dropping it from:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	if the player is not holding the noun:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">		say "You would need to be holding that first." instead.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Check dropping it from:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	if the length understood is greater than 3m:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">		say "Just how tall are you, exactly?" instead.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Check dropping it from:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	if the length understood is 0m:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">		try dropping the noun instead.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Equation - Newton's Second Law</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">		F=ma</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">where F is a force, m is a mass, a is an acceleration.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Equation - Principle of Conservation of Energy</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">		mgh = mv^2/2</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">where m is a mass, h is a length, v is a velocity, and g is the acceleration due to gravity.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Equation - Galilean Equation for a Falling Body</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">		v = gt</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">where g is the acceleration due to gravity, v is a velocity, and t is an elapsed time.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Carry out dropping something (called the falling body) from:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	now the acceleration due to gravity is the gravitational field of the location;</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	let m be the mass of the falling body;</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	let h be the length understood;	</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	let F be given by Newton's Second Law where a is the acceleration due to gravity;</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	say "You let go [the falling body] from a height of [the length understood], and, subject to a downward force of [F], it falls. ";</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	now the noun is in the location;</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	let v be given by the Principle of Conservation of Energy;</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	let t be given by the Galilean Equation for a Falling Body;</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	let KE be given by KE = mv^2/2 where KE is an energy;</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	say "[t to the nearest 0.01s] later, this mass of [m] hits the floor at [v] with a kinetic energy of [KE].";</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	if the KE is greater than 50J:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">		say "[line break]This is not doing either the floor or your ears any favours."</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Test me with "get ball / drop it from 1m / get ball / drop it from 2m / get ball / drop it from 3m / get ball / drop it from 3.2m / get ball / drop it from 0m / get all / east / drop ball from 3m / drop feather from 3m".</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Example: ** The Empire Strikes Back - Using good old Imperial measures of length and area alongside these Frenchified metric ones.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Imperial measures, often going back to obscure customs in Anglo-Saxon England, were inflicted across much of the world in the heyday of the British Empire.  Some are still very much alive in England and its former colonies (Australia, India, New Zealand, Canada, Ireland, the USA and so on) - miles and feet, for instance. Others continue only in unscientific social customs, like sport: horse-races are measured in furlongs; the running distance between the two wickets of a cricket pitch is 22 yards, which is 1 chain exactly; and even in France, a football goal must be 8 feet high and 8 yards wide.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	*: <span class="i7sx">&quot;The Empire Strikes Back&quot;</span></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	Include Approximate Metric Units by Graham Nelson.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	Steeple Aston Cricket Pitch is a room.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	1 inch (in imperial units, in inches, singular) or 2 inches (in imperial units, in inches, plural) specifies a length equivalent to 2.5cm.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	1 foot (in imperial units, in feet, singular) or 2 feet (in imperial units, in feet, plural) specifies a length equivalent to 12 inches.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	1 yard (in imperial units, in yards, singular) or 2 yards (in imperial units, in yards, plural) specifies a length equivalent to 3 feet.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	1 chain (in imperial units, in chains, singular) or 2 chains (in imperial units, in chains, plural) specifies a length equivalent to 22 yards.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	1 furlong (in imperial units, in furlongs, singular) or 2 furlongs (in imperial units, in furlongs, plural) specifies a length equivalent to 10 chains.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	1 mile (in imperial units, in miles, singular) or 2 miles (in imperial units, in miles, plural) specifies a length equivalent to 8 furlongs.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	1 league (in imperial units, in leagues, singular) or 2 leagues (in imperial units, in leagues, plural) specifies a length equivalent to 3 miles.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	1 square foot (in imperial units, in square feet, singular) or 2 square feet (in imperial units, in square feet, plural) specifies an area equivalent to 900 sq cm.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	1 square yard (in imperial units, in square yards, singular) or 2 square yards (in imperial units, in square yards, plural) specifies an area equivalent to 9 square feet.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	1 acre (in imperial units, in acres, singular) or 2 acres (in imperial units, in acres, plural) specifies an area equivalent to 4840 square yards.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"> "The Empire Strikes Back"</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Include Approximate Metric Units by Graham Nelson.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Steeple Aston Cricket Pitch is a room.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">1 inch (in imperial units, in inches, singular) or 2 inches (in imperial units, in inches, plural) specifies a length equivalent to 2.5cm.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">1 foot (in imperial units, in feet, singular) or 2 feet (in imperial units, in feet, plural) specifies a length equivalent to 12 inches.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">1 yard (in imperial units, in yards, singular) or 2 yards (in imperial units, in yards, plural) specifies a length equivalent to 3 feet.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">1 chain (in imperial units, in chains, singular) or 2 chains (in imperial units, in chains, plural) specifies a length equivalent to 22 yards.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">1 furlong (in imperial units, in furlongs, singular) or 2 furlongs (in imperial units, in furlongs, plural) specifies a length equivalent to 10 chains.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">1 mile (in imperial units, in miles, singular) or 2 miles (in imperial units, in miles, plural) specifies a length equivalent to 8 furlongs.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">1 league (in imperial units, in leagues, singular) or 2 leagues (in imperial units, in leagues, plural) specifies a length equivalent to 3 miles.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">1 square foot (in imperial units, in square feet, singular) or 2 square feet (in imperial units, in square feet, plural) specifies an area equivalent to 900 sq cm.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">1 square yard (in imperial units, in square yards, singular) or 2 square yards (in imperial units, in square yards, plural) specifies an area equivalent to 9 square feet.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">1 acre (in imperial units, in acres, singular) or 2 acres (in imperial units, in acres, plural) specifies an area equivalent to 4840 square yards.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Understand "convert [a length]" as converting. Converting is an action applying to one length.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Carry out converting:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	let A be the length understood;</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	say "Measuring A = [A], which ";</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	say "= [A in millimetres] ";</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	say "= [A in centimetres] ";</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	say "= [A in metres] ";</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	say "= [A in kilometres] ";</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	say "= [A in inches] ";</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	say "= [A in feet] ";</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	say "= [A in yards] ";</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	say "= [A in chains] ";</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	say "= [A in furlongs] ";</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	say "= [A in miles] ";</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	say "= [A in leagues].";</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	say "Metric: [A in metric units].";</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	say "Imperial: [A in Imperial units].[paragraph break]";</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Test me with "convert 1.2m / convert 2m / convert 30cm / convert 20 chains".</span><br></span>
+</div><div class="inform7-source"><div class="pseudo">
+<span class="tr line_no" id="line1">
+<!-- <span class="tr line_no" id="line1"> -->
+<span class="td">Version 1 of Approximate Metric Units (for Glulx only) by Graham Nelson begins here.</span><br></span>
+<span class="tr line_no" id="line2">
+<!-- <span class="tr line_no" id="line2"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line3">
+<!-- <span class="tr line_no" id="line3"> -->
+<span class="td"><span class="i7sx">&quot;Scientific kinds of value for simulations. Use Metric Units instead for better accuracy.&quot;</span></span><br></span>
+<span class="tr line_no" id="line4">
+<!-- <span class="tr line_no" id="line4"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line5">
+<!-- <span class="tr line_no" id="line5"> -->
+<span class="td">Use authorial modesty.</span><br></span>
+<span class="tr line_no" id="line6">
+<!-- <span class="tr line_no" id="line6"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line7">
+<!-- <span class="tr line_no" id="line7"> -->
+<span class="td"><span class="i7gh">Part I - SI Base Units</span></span><br></span>
+<span class="tr line_no" id="line8">
+<!-- <span class="tr line_no" id="line8"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line9">
+<!-- <span class="tr line_no" id="line9"> -->
+<span class="td">Length is a kind of value.</span><br></span>
+<span class="tr line_no" id="line10">
+<!-- <span class="tr line_no" id="line10"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line11">
+<!-- <span class="tr line_no" id="line11"> -->
+<span class="td">The specification of length is <span class="i7sx">&quot;Used to measure heights, widths, distances,</span></span><br></span>
+<span class="tr line_no" id="line12">
+<!-- <span class="tr line_no" id="line12"> -->
+<span class="td"><span class="i7sx">thicknesses and so on. Inform measures down to about the thickness of the</span></span><br></span>
+<span class="tr line_no" id="line13">
+<!-- <span class="tr line_no" id="line13"> -->
+<span class="td"><span class="i7sx">metal in a paper clip, or up to about the length of the GR5 trail from</span></span><br></span>
+<span class="tr line_no" id="line14">
+<!-- <span class="tr line_no" id="line14"> -->
+<span class="td"><span class="i7sx">Holland to the Mediterranean.&quot;</span></span><br></span>
+<span class="tr line_no" id="line15">
+<!-- <span class="tr line_no" id="line15"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line16">
+<!-- <span class="tr line_no" id="line16"> -->
+<span class="td">1m (in metric units, in m) or 1 meter (in meters, singular) or 1 metre</span><br></span>
+<span class="tr line_no" id="line17">
+<!-- <span class="tr line_no" id="line17"> -->
+<span class="td">(in metres, singular) or 2 meters (in meters, plural) or 2 metres (in</span><br></span>
+<span class="tr line_no" id="line18">
+<!-- <span class="tr line_no" id="line18"> -->
+<span class="td">metres, plural) specifies a length.</span><br></span>
+<span class="tr line_no" id="line19">
+<!-- <span class="tr line_no" id="line19"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line20">
+<!-- <span class="tr line_no" id="line20"> -->
+<span class="td">1mm (in metric units, in mm) or 1 millimeter (in millimeters,</span><br></span>
+<span class="tr line_no" id="line21">
+<!-- <span class="tr line_no" id="line21"> -->
+<span class="td">singular) or 1 millimetre (in millimetres, singular) or 2 millimeters</span><br></span>
+<span class="tr line_no" id="line22">
+<!-- <span class="tr line_no" id="line22"> -->
+<span class="td">(in millimeters, plural) or 2 millimetres (in millimetres, plural)</span><br></span>
+<span class="tr line_no" id="line23">
+<!-- <span class="tr line_no" id="line23"> -->
+<span class="td">specifies a length scaled down by 1000.</span><br></span>
+<span class="tr line_no" id="line24">
+<!-- <span class="tr line_no" id="line24"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line25">
+<!-- <span class="tr line_no" id="line25"> -->
+<span class="td">1cm (in metric units, in cm) or 1 centimeter (in centimeters,</span><br></span>
+<span class="tr line_no" id="line26">
+<!-- <span class="tr line_no" id="line26"> -->
+<span class="td">singular) or 1 centimetre (in centimetres, singular) or 2 centimeters</span><br></span>
+<span class="tr line_no" id="line27">
+<!-- <span class="tr line_no" id="line27"> -->
+<span class="td">(in centimeters, plural) or 2 centimetres (in centimetres, plural)</span><br></span>
+<span class="tr line_no" id="line28">
+<!-- <span class="tr line_no" id="line28"> -->
+<span class="td">specifies a length scaled down by 100.</span><br></span>
+<span class="tr line_no" id="line29">
+<!-- <span class="tr line_no" id="line29"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line30">
+<!-- <span class="tr line_no" id="line30"> -->
+<span class="td">1km (in metric units, in km) or 1 kilometer (in kilometers, singular)</span><br></span>
+<span class="tr line_no" id="line31">
+<!-- <span class="tr line_no" id="line31"> -->
+<span class="td">or 1 kilometre (in kilometres, singular) or 2 kilometers (in</span><br></span>
+<span class="tr line_no" id="line32">
+<!-- <span class="tr line_no" id="line32"> -->
+<span class="td">kilometers, plural) or 2 kilometres (in kilometres, plural) specifies</span><br></span>
+<span class="tr line_no" id="line33">
+<!-- <span class="tr line_no" id="line33"> -->
+<span class="td">a length scaled up by 1000.</span><br></span>
+<span class="tr line_no" id="line34">
+<!-- <span class="tr line_no" id="line34"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line35">
+<!-- <span class="tr line_no" id="line35"> -->
+<span class="td">Mass is a kind of value.</span><br></span>
+<span class="tr line_no" id="line36">
+<!-- <span class="tr line_no" id="line36"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line37">
+<!-- <span class="tr line_no" id="line37"> -->
+<span class="td">The specification of mass is <span class="i7sx">&quot;Used to measure how much of something is</span></span><br></span>
+<span class="tr line_no" id="line38">
+<!-- <span class="tr line_no" id="line38"> -->
+<span class="td"><span class="i7sx">present. Start fights with other nerds by deliberately mixing this up with</span></span><br></span>
+<span class="tr line_no" id="line39">
+<!-- <span class="tr line_no" id="line39"> -->
+<span class="td"><span class="i7sx">weight, which comes to the same thing for everyday purposes at ground level.</span></span><br></span>
+<span class="tr line_no" id="line40">
+<!-- <span class="tr line_no" id="line40"> -->
+<span class="td"><span class="i7sx">Inform measures down to about the weight of a paper clip, or up to about</span></span><br></span>
+<span class="tr line_no" id="line41">
+<!-- <span class="tr line_no" id="line41"> -->
+<span class="td"><span class="i7sx">the weight of the Space Shuttle stack at liftoff (including fuel</span></span><br></span>
+<span class="tr line_no" id="line42">
+<!-- <span class="tr line_no" id="line42"> -->
+<span class="td"><span class="i7sx">tanks, rocket boosters and fuel).&quot;</span></span><br></span>
+<span class="tr line_no" id="line43">
+<!-- <span class="tr line_no" id="line43"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line44">
+<!-- <span class="tr line_no" id="line44"> -->
+<span class="td">1kg (in metric units, in kg) or 1 kilogram (in kilograms, singular) or</span><br></span>
+<span class="tr line_no" id="line45">
+<!-- <span class="tr line_no" id="line45"> -->
+<span class="td">2 kilograms (in kilograms, plural) specifies a mass.</span><br></span>
+<span class="tr line_no" id="line46">
+<!-- <span class="tr line_no" id="line46"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line47">
+<!-- <span class="tr line_no" id="line47"> -->
+<span class="td">1g (in metric units, in g) or 1 gram (in grams, singular) or 2 grams</span><br></span>
+<span class="tr line_no" id="line48">
+<!-- <span class="tr line_no" id="line48"> -->
+<span class="td">(in grams, plural) specifies a mass scaled down by 1000.</span><br></span>
+<span class="tr line_no" id="line49">
+<!-- <span class="tr line_no" id="line49"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line50">
+<!-- <span class="tr line_no" id="line50"> -->
+<span class="td">1 tonne (in metric units, in tonnes, singular) or 2 tonnes (in metric units,</span><br></span>
+<span class="tr line_no" id="line51">
+<!-- <span class="tr line_no" id="line51"> -->
+<span class="td">in tonnes, plural) specifies a mass scaled up by 1000.</span><br></span>
+<span class="tr line_no" id="line52">
+<!-- <span class="tr line_no" id="line52"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line53">
+<!-- <span class="tr line_no" id="line53"> -->
+<span class="td">Elapsed time is a kind of value.</span><br></span>
+<span class="tr line_no" id="line54">
+<!-- <span class="tr line_no" id="line54"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line55">
+<!-- <span class="tr line_no" id="line55"> -->
+<span class="td">The specification of elapsed time is <span class="i7sx">&quot;Used to measure how much time something takes.</span></span><br></span>
+<span class="tr line_no" id="line56">
+<!-- <span class="tr line_no" id="line56"> -->
+<span class="td"><span class="i7sx">Inform already has a built-in kind of value called &#39;time&#39;, which counts in</span></span><br></span>
+<span class="tr line_no" id="line57">
+<!-- <span class="tr line_no" id="line57"> -->
+<span class="td"><span class="i7sx">minutes and keeps track of the time of day - which is fine for most stories,</span></span><br></span>
+<span class="tr line_no" id="line58">
+<!-- <span class="tr line_no" id="line58"> -->
+<span class="td"><span class="i7sx">but not good enough for science. So we call this more precise version</span></span><br></span>
+<span class="tr line_no" id="line59">
+<!-- <span class="tr line_no" id="line59"> -->
+<span class="td"><span class="i7sx">&#39;elapsed time&#39;. It measures down to one jiffy (0.01s), briefer than one frame</span></span><br></span>
+<span class="tr line_no" id="line60">
+<!-- <span class="tr line_no" id="line60"> -->
+<span class="td"><span class="i7sx">of a Hollywood movie, or up to about nine months, the time it takes for</span></span><br></span>
+<span class="tr line_no" id="line61">
+<!-- <span class="tr line_no" id="line61"> -->
+<span class="td"><span class="i7sx">a child to be conceived and born.&quot;</span></span><br></span>
+<span class="tr line_no" id="line62">
+<!-- <span class="tr line_no" id="line62"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line63">
+<!-- <span class="tr line_no" id="line63"> -->
+<span class="td">1s (in metric units, in s) or 1 second (in seconds, singular) or 2 seconds</span><br></span>
+<span class="tr line_no" id="line64">
+<!-- <span class="tr line_no" id="line64"> -->
+<span class="td">(in seconds, plural) specifies an elapsed time scaled at 100.</span><br></span>
+<span class="tr line_no" id="line65">
+<!-- <span class="tr line_no" id="line65"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line66">
+<!-- <span class="tr line_no" id="line66"> -->
+<span class="td">1 min (in metric units, in min) specifies an elapsed time scaled up by 60.</span><br></span>
+<span class="tr line_no" id="line67">
+<!-- <span class="tr line_no" id="line67"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line68">
+<!-- <span class="tr line_no" id="line68"> -->
+<span class="td">1 hr (in metric units, in hr) specifies an elapsed time scaled up by 3600.</span><br></span>
+<span class="tr line_no" id="line69">
+<!-- <span class="tr line_no" id="line69"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line70">
+<!-- <span class="tr line_no" id="line70"> -->
+<span class="td">1 day (in metric units, in days, singular) or 2 days (in metric units,</span><br></span>
+<span class="tr line_no" id="line71">
+<!-- <span class="tr line_no" id="line71"> -->
+<span class="td">in days, plural) specifies an elapsed time scaled up by 86400.</span><br></span>
+<span class="tr line_no" id="line72">
+<!-- <span class="tr line_no" id="line72"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line73">
+<!-- <span class="tr line_no" id="line73"> -->
+<span class="td">1 week (in metric units, in weeks, singular) or 2 weeks (in metric units,</span><br></span>
+<span class="tr line_no" id="line74">
+<!-- <span class="tr line_no" id="line74"> -->
+<span class="td">in weeks, plural) specifies an elapsed time scaled up by 604800.</span><br></span>
+<span class="tr line_no" id="line75">
+<!-- <span class="tr line_no" id="line75"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line76">
+<!-- <span class="tr line_no" id="line76"> -->
+<span class="td">Electric current is a kind of value.</span><br></span>
+<span class="tr line_no" id="line77">
+<!-- <span class="tr line_no" id="line77"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line78">
+<!-- <span class="tr line_no" id="line78"> -->
+<span class="td">The specification of electric current is <span class="i7sx">&quot;Used to measure the amount of</span></span><br></span>
+<span class="tr line_no" id="line79">
+<!-- <span class="tr line_no" id="line79"> -->
+<span class="td"><span class="i7sx">electricity flowing through something at any given moment. It measures down to</span></span><br></span>
+<span class="tr line_no" id="line80">
+<!-- <span class="tr line_no" id="line80"> -->
+<span class="td"><span class="i7sx">1mA, roughly the tiniest amount of current which human skin can feel at</span></span><br></span>
+<span class="tr line_no" id="line81">
+<!-- <span class="tr line_no" id="line81"> -->
+<span class="td"><span class="i7sx">all, and right up to the current in a really strong lightning bolt, which</span></span><br></span>
+<span class="tr line_no" id="line82">
+<!-- <span class="tr line_no" id="line82"> -->
+<span class="td"><span class="i7sx">the human skin would probably not have time to feel. (Actually, 100mA or</span></span><br></span>
+<span class="tr line_no" id="line83">
+<!-- <span class="tr line_no" id="line83"> -->
+<span class="td"><span class="i7sx">0.1A is enough to make a fatal shock; electric eels produce about 70mA,</span></span><br></span>
+<span class="tr line_no" id="line84">
+<!-- <span class="tr line_no" id="line84"> -->
+<span class="td"><span class="i7sx">which humans can just about survive.)&quot;</span></span><br></span>
+<span class="tr line_no" id="line85">
+<!-- <span class="tr line_no" id="line85"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line86">
+<!-- <span class="tr line_no" id="line86"> -->
+<span class="td">1A (in metric units, in A) or 1 amp (in amps, singular) or 2 amps</span><br></span>
+<span class="tr line_no" id="line87">
+<!-- <span class="tr line_no" id="line87"> -->
+<span class="td">(in amps, plural) specifies an electric current.</span><br></span>
+<span class="tr line_no" id="line88">
+<!-- <span class="tr line_no" id="line88"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line89">
+<!-- <span class="tr line_no" id="line89"> -->
+<span class="td">1mA (in metric units, in mA) or 1 milliamp (in milliamps, singular) or</span><br></span>
+<span class="tr line_no" id="line90">
+<!-- <span class="tr line_no" id="line90"> -->
+<span class="td">2 milliamps (in milliamps, plural) specifies an electric current scaled</span><br></span>
+<span class="tr line_no" id="line91">
+<!-- <span class="tr line_no" id="line91"> -->
+<span class="td">down by 1000.</span><br></span>
+<span class="tr line_no" id="line92">
+<!-- <span class="tr line_no" id="line92"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line93">
+<!-- <span class="tr line_no" id="line93"> -->
+<span class="td">Temperature is a kind of value.</span><br></span>
+<span class="tr line_no" id="line94">
+<!-- <span class="tr line_no" id="line94"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line95">
+<!-- <span class="tr line_no" id="line95"> -->
+<span class="td">The specification of temperature is <span class="i7sx">&quot;Used to measure how hot or cold</span></span><br></span>
+<span class="tr line_no" id="line96">
+<!-- <span class="tr line_no" id="line96"> -->
+<span class="td"><span class="i7sx">something is. Inform measures down to thousandths of a degree centigrade</span></span><br></span>
+<span class="tr line_no" id="line97">
+<!-- <span class="tr line_no" id="line97"> -->
+<span class="td"><span class="i7sx">and can hold a range from liquid helium (just above absolute zero, which is</span></span><br></span>
+<span class="tr line_no" id="line98">
+<!-- <span class="tr line_no" id="line98"> -->
+<span class="td"><span class="i7sx">-273.15C) up to several hundred times hotter than the surface of the Sun</span></span><br></span>
+<span class="tr line_no" id="line99">
+<!-- <span class="tr line_no" id="line99"> -->
+<span class="td"><span class="i7sx">(5800C). Water freezes and boils at 0C and 100C respectively. SI officially</span></span><br></span>
+<span class="tr line_no" id="line100">
+<!-- <span class="tr line_no" id="line100"> -->
+<span class="td"><span class="i7sx">uses degrees Kelvin, not centigrade, but for human situations centigrade is</span></span><br></span>
+<span class="tr line_no" id="line101">
+<!-- <span class="tr line_no" id="line101"> -->
+<span class="td"><span class="i7sx">more convenient, and it amounts to the same thing in most calculations</span></span><br></span>
+<span class="tr line_no" id="line102">
+<!-- <span class="tr line_no" id="line102"> -->
+<span class="td"><span class="i7sx">since the two scales are identical except for their start point. Antarctica</span></span><br></span>
+<span class="tr line_no" id="line103">
+<!-- <span class="tr line_no" id="line103"> -->
+<span class="td"><span class="i7sx">has been recorded at -89C, the Libyan desert at 58C, but the average</span></span><br></span>
+<span class="tr line_no" id="line104">
+<!-- <span class="tr line_no" id="line104"> -->
+<span class="td"><span class="i7sx">surface temperature on Earth is 15C. (Note that Inform writes &#39;1 C&#39; for one</span></span><br></span>
+<span class="tr line_no" id="line105">
+<!-- <span class="tr line_no" id="line105"> -->
+<span class="td"><span class="i7sx">coulomb, and &#39;1C&#39; for one degree centigrade.)&quot;</span></span><br></span>
+<span class="tr line_no" id="line106">
+<!-- <span class="tr line_no" id="line106"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line107">
+<!-- <span class="tr line_no" id="line107"> -->
+<span class="td">1C (in metric units, in C) or 1 degree centigrade (in degrees centigrade, singular)</span><br></span>
+<span class="tr line_no" id="line108">
+<!-- <span class="tr line_no" id="line108"> -->
+<span class="td">or 2 degrees centigrade (in degrees centigrade, plural) or 1 degree Celsius</span><br></span>
+<span class="tr line_no" id="line109">
+<!-- <span class="tr line_no" id="line109"> -->
+<span class="td">(in degrees Celsius, singular) or 2 degrees Celsius (in degrees Celsius, plural)</span><br></span>
+<span class="tr line_no" id="line110">
+<!-- <span class="tr line_no" id="line110"> -->
+<span class="td">specifies a temperature scaled at 1000.</span><br></span>
+<span class="tr line_no" id="line111">
+<!-- <span class="tr line_no" id="line111"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line112">
+<!-- <span class="tr line_no" id="line112"> -->
+<span class="td">Luminosity is a kind of value.</span><br></span>
+<span class="tr line_no" id="line113">
+<!-- <span class="tr line_no" id="line113"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line114">
+<!-- <span class="tr line_no" id="line114"> -->
+<span class="td">The specification of luminosity is <span class="i7sx">&quot;Used to measure the total amount of</span></span><br></span>
+<span class="tr line_no" id="line115">
+<!-- <span class="tr line_no" id="line115"> -->
+<span class="td"><span class="i7sx">light. (This is not quite the same thing as brightness - that&#39;s the amount</span></span><br></span>
+<span class="tr line_no" id="line116">
+<!-- <span class="tr line_no" id="line116"> -->
+<span class="td"><span class="i7sx">of light produced per unit of area, and is called luminance.) Candela is a</span></span><br></span>
+<span class="tr line_no" id="line117">
+<!-- <span class="tr line_no" id="line117"> -->
+<span class="td"><span class="i7sx">term adopted in 1948 to replace the old &#39;candlepower&#39;, but 1 cd remains</span></span><br></span>
+<span class="tr line_no" id="line118">
+<!-- <span class="tr line_no" id="line118"> -->
+<span class="td"><span class="i7sx">about the light of a single candle. A strong light-bulb produces about 100</span></span><br></span>
+<span class="tr line_no" id="line119">
+<!-- <span class="tr line_no" id="line119"> -->
+<span class="td"><span class="i7sx">cd. Inform measures down to a thousandth of a candela, the light from a</span></span><br></span>
+<span class="tr line_no" id="line120">
+<!-- <span class="tr line_no" id="line120"> -->
+<span class="td"><span class="i7sx">very small indicator LED, and up to about the light from the traditional</span></span><br></span>
+<span class="tr line_no" id="line121">
+<!-- <span class="tr line_no" id="line121"> -->
+<span class="td"><span class="i7sx">Blackpool Illuminations. (It&#39;s all lasers, low-power bulbs and</span></span><br></span>
+<span class="tr line_no" id="line122">
+<!-- <span class="tr line_no" id="line122"> -->
+<span class="td"><span class="i7sx">carbon-neutral turbines today, but it used to be done with about 20,000</span></span><br></span>
+<span class="tr line_no" id="line123">
+<!-- <span class="tr line_no" id="line123"> -->
+<span class="td"><span class="i7sx">ordinary light bulbs.)&quot;</span></span><br></span>
+<span class="tr line_no" id="line124">
+<!-- <span class="tr line_no" id="line124"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line125">
+<!-- <span class="tr line_no" id="line125"> -->
+<span class="td">1 cd (in metric units, in cd) or 1 candela (in candelas, singular) or 2 candelas</span><br></span>
+<span class="tr line_no" id="line126">
+<!-- <span class="tr line_no" id="line126"> -->
+<span class="td">(in candelas, plural) specifies a luminosity scaled at 1000.</span><br></span>
+<span class="tr line_no" id="line127">
+<!-- <span class="tr line_no" id="line127"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line128">
+<!-- <span class="tr line_no" id="line128"> -->
+<span class="td"><span class="i7cm">[There is also the mole, an amount of substance, as used in chemistry.]</span></span><br></span>
+<span class="tr line_no" id="line129">
+<!-- <span class="tr line_no" id="line129"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line130">
+<!-- <span class="tr line_no" id="line130"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line131">
+<!-- <span class="tr line_no" id="line131"> -->
+<span class="td"><span class="i7gh">Part II - SI Derived Units</span></span><br></span>
+<span class="tr line_no" id="line132">
+<!-- <span class="tr line_no" id="line132"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line133">
+<!-- <span class="tr line_no" id="line133"> -->
+<span class="td">Angle is a kind of value.</span><br></span>
+<span class="tr line_no" id="line134">
+<!-- <span class="tr line_no" id="line134"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line135">
+<!-- <span class="tr line_no" id="line135"> -->
+<span class="td">The specification of angle is <span class="i7sx">&quot;Used to measure a proportion of a complete</span></span><br></span>
+<span class="tr line_no" id="line136">
+<!-- <span class="tr line_no" id="line136"> -->
+<span class="td"><span class="i7sx">circle of turning. Properly speaking the SI unit for angle is the radian, but</span></span><br></span>
+<span class="tr line_no" id="line137">
+<!-- <span class="tr line_no" id="line137"> -->
+<span class="td"><span class="i7sx">though mathematically elegant this is not very convenient for computer use,</span></span><br></span>
+<span class="tr line_no" id="line138">
+<!-- <span class="tr line_no" id="line138"> -->
+<span class="td"><span class="i7sx">so Inform uses degrees: there are 360 degrees in a circle, 60 arc-minutes in</span></span><br></span>
+<span class="tr line_no" id="line139">
+<!-- <span class="tr line_no" id="line139"> -->
+<span class="td"><span class="i7sx">each degree, 60 arc-seconds in each arc-minute. An arc-minute is already very</span></span><br></span>
+<span class="tr line_no" id="line140">
+<!-- <span class="tr line_no" id="line140"> -->
+<span class="td"><span class="i7sx">small - it&#39;s about the width of a coin seen from 100m away. (American gun</span></span><br></span>
+<span class="tr line_no" id="line141">
+<!-- <span class="tr line_no" id="line141"> -->
+<span class="td"><span class="i7sx">manufacturers use the term MOA, &#39;minute of arc&#39;, to measure accuracy.) So</span></span><br></span>
+<span class="tr line_no" id="line142">
+<!-- <span class="tr line_no" id="line142"> -->
+<span class="td"><span class="i7sx">Inform measures down to the width of a coin seen from 6km away.&quot;</span></span><br></span>
+<span class="tr line_no" id="line143">
+<!-- <span class="tr line_no" id="line143"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line144">
+<!-- <span class="tr line_no" id="line144"> -->
+<span class="td">1 deg (in metric units, in deg) or 1 degree (in degrees, singular) or 2 degrees</span><br></span>
+<span class="tr line_no" id="line145">
+<!-- <span class="tr line_no" id="line145"> -->
+<span class="td">(in degrees, plural) specifies an angle.</span><br></span>
+<span class="tr line_no" id="line146">
+<!-- <span class="tr line_no" id="line146"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line147">
+<!-- <span class="tr line_no" id="line147"> -->
+<span class="td">1 arcmin (in metric units, in arcmin) or 1 arc-minute (in arc-minutes, singular)</span><br></span>
+<span class="tr line_no" id="line148">
+<!-- <span class="tr line_no" id="line148"> -->
+<span class="td">or 2 arc-minutes (in arc-minutes, plural) specifies an angle scaled down by 60.</span><br></span>
+<span class="tr line_no" id="line149">
+<!-- <span class="tr line_no" id="line149"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line150">
+<!-- <span class="tr line_no" id="line150"> -->
+<span class="td">1 arcsec (in metric units, in arcsec) or 1 arc-second (in arc-seconds, singular)</span><br></span>
+<span class="tr line_no" id="line151">
+<!-- <span class="tr line_no" id="line151"> -->
+<span class="td">or 2 arc-seconds (in arc-seconds, plural) specifies an angle scaled down by 3600.</span><br></span>
+<span class="tr line_no" id="line152">
+<!-- <span class="tr line_no" id="line152"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line153">
+<!-- <span class="tr line_no" id="line153"> -->
+<span class="td">Length times angle specifies a length.</span><br></span>
+<span class="tr line_no" id="line154">
+<!-- <span class="tr line_no" id="line154"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line155">
+<!-- <span class="tr line_no" id="line155"> -->
+<span class="td">Frequency is a kind of value. </span><br></span>
+<span class="tr line_no" id="line156">
+<!-- <span class="tr line_no" id="line156"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line157">
+<!-- <span class="tr line_no" id="line157"> -->
+<span class="td">The specification of frequency is <span class="i7sx">&quot;Used to measure how often a series of events</span></span><br></span>
+<span class="tr line_no" id="line158">
+<!-- <span class="tr line_no" id="line158"> -->
+<span class="td"><span class="i7sx">takes place, with 1 Hertz meaning once per second. Inform measures down to</span></span><br></span>
+<span class="tr line_no" id="line159">
+<!-- <span class="tr line_no" id="line159"> -->
+<span class="td"><span class="i7sx">1 mHz, which is about the frequency of a bus arriving at an urban stop in</span></span><br></span>
+<span class="tr line_no" id="line160">
+<!-- <span class="tr line_no" id="line160"> -->
+<span class="td"><span class="i7sx">daytime, and up to about 2000 kHz. This isn&#39;t all that high in the world of</span></span><br></span>
+<span class="tr line_no" id="line161">
+<!-- <span class="tr line_no" id="line161"> -->
+<span class="td"><span class="i7sx">telecommunications, where the &#39;events&#39; are peaks of radio waves - FM radio</span></span><br></span>
+<span class="tr line_no" id="line162">
+<!-- <span class="tr line_no" id="line162"> -->
+<span class="td"><span class="i7sx">broadcasts at higher frequencies - but Inform&#39;s units are designed for human</span></span><br></span>
+<span class="tr line_no" id="line163">
+<!-- <span class="tr line_no" id="line163"> -->
+<span class="td"><span class="i7sx">situations. Human eyes can&#39;t detect flickering faster than around 100 Hz, which is</span></span><br></span>
+<span class="tr line_no" id="line164">
+<!-- <span class="tr line_no" id="line164"> -->
+<span class="td"><span class="i7sx">why high-end television sets refresh at about that rate.&quot;</span></span><br></span>
+<span class="tr line_no" id="line165">
+<!-- <span class="tr line_no" id="line165"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line166">
+<!-- <span class="tr line_no" id="line166"> -->
+<span class="td">1 Hz (in metric units, in Hz) or 1 Hertz (in Hertz) specifies</span><br></span>
+<span class="tr line_no" id="line167">
+<!-- <span class="tr line_no" id="line167"> -->
+<span class="td">a frequency.</span><br></span>
+<span class="tr line_no" id="line168">
+<!-- <span class="tr line_no" id="line168"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line169">
+<!-- <span class="tr line_no" id="line169"> -->
+<span class="td">1 mHz (in metric units, in mHz) or 1 millihertz (in millihertz)</span><br></span>
+<span class="tr line_no" id="line170">
+<!-- <span class="tr line_no" id="line170"> -->
+<span class="td">specifies a frequency scaled down by 1000.</span><br></span>
+<span class="tr line_no" id="line171">
+<!-- <span class="tr line_no" id="line171"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line172">
+<!-- <span class="tr line_no" id="line172"> -->
+<span class="td">1 kHz (in metric units, in kHz) or 1 kilohertz (in kilohertz)</span><br></span>
+<span class="tr line_no" id="line173">
+<!-- <span class="tr line_no" id="line173"> -->
+<span class="td">specifies a frequency scaled up by 1000.</span><br></span>
+<span class="tr line_no" id="line174">
+<!-- <span class="tr line_no" id="line174"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line175">
+<!-- <span class="tr line_no" id="line175"> -->
+<span class="td">Elapsed time times frequency specifies a number.</span><br></span>
+<span class="tr line_no" id="line176">
+<!-- <span class="tr line_no" id="line176"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line177">
+<!-- <span class="tr line_no" id="line177"> -->
+<span class="td">Force is a kind of value.</span><br></span>
+<span class="tr line_no" id="line178">
+<!-- <span class="tr line_no" id="line178"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line179">
+<!-- <span class="tr line_no" id="line179"> -->
+<span class="td">1N (in metric units, in N) or 1 Newton (in Newtons, singular) or 2 Newtons</span><br></span>
+<span class="tr line_no" id="line180">
+<!-- <span class="tr line_no" id="line180"> -->
+<span class="td">(in Newtons, plural) specifies a force scaled at 1000.</span><br></span>
+<span class="tr line_no" id="line181">
+<!-- <span class="tr line_no" id="line181"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line182">
+<!-- <span class="tr line_no" id="line182"> -->
+<span class="td">1kN (in metric units, in kN) or 1 kilonewton (in kilonewtons, singular) or 2 kilonewtons</span><br></span>
+<span class="tr line_no" id="line183">
+<!-- <span class="tr line_no" id="line183"> -->
+<span class="td">(in kilonewtons, plural) specifies a force scaled up by 1000.</span><br></span>
+<span class="tr line_no" id="line184">
+<!-- <span class="tr line_no" id="line184"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line185">
+<!-- <span class="tr line_no" id="line185"> -->
+<span class="td">The specification of force is <span class="i7sx">&quot;Used to measure how much push or pull is</span></span><br></span>
+<span class="tr line_no" id="line186">
+<!-- <span class="tr line_no" id="line186"> -->
+<span class="td"><span class="i7sx">needed to make something move (properly speaking, accelerate). 1N is about</span></span><br></span>
+<span class="tr line_no" id="line187">
+<!-- <span class="tr line_no" id="line187"> -->
+<span class="td"><span class="i7sx">the force of Earth&#39;s gravity acting on a typical apple. Inform measures</span></span><br></span>
+<span class="tr line_no" id="line188">
+<!-- <span class="tr line_no" id="line188"> -->
+<span class="td"><span class="i7sx">down to 0.001N, a tug which would barely make a small stone move in any</span></span><br></span>
+<span class="tr line_no" id="line189">
+<!-- <span class="tr line_no" id="line189"> -->
+<span class="td"><span class="i7sx">visible way. A climber&#39;s rope will typically break under a force of about</span></span><br></span>
+<span class="tr line_no" id="line190">
+<!-- <span class="tr line_no" id="line190"> -->
+<span class="td"><span class="i7sx">20kN, or half that if it&#39;s knotted. (Stylishly if bizarrely, some people</span></span><br></span>
+<span class="tr line_no" id="line191">
+<!-- <span class="tr line_no" id="line191"> -->
+<span class="td"><span class="i7sx">call the kilonewton the &#39;sthène&#39;, but Inform doesn&#39;t.) Inform goes up to</span></span><br></span>
+<span class="tr line_no" id="line192">
+<!-- <span class="tr line_no" id="line192"> -->
+<span class="td"><span class="i7sx">over 2000kN, roughly the thrust of one of the Space Shuttle Main Engines,</span></span><br></span>
+<span class="tr line_no" id="line193">
+<!-- <span class="tr line_no" id="line193"> -->
+<span class="td"><span class="i7sx">which is about the most violent machine ever built.&quot;</span></span><br></span>
+<span class="tr line_no" id="line194">
+<!-- <span class="tr line_no" id="line194"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line195">
+<!-- <span class="tr line_no" id="line195"> -->
+<span class="td">Energy is a kind of value.</span><br></span>
+<span class="tr line_no" id="line196">
+<!-- <span class="tr line_no" id="line196"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line197">
+<!-- <span class="tr line_no" id="line197"> -->
+<span class="td">1J (in metric units, in J) or 1 Joule (in Joules, singular) or 2 Joules</span><br></span>
+<span class="tr line_no" id="line198">
+<!-- <span class="tr line_no" id="line198"> -->
+<span class="td">(in Joules, plural) specifies an energy.</span><br></span>
+<span class="tr line_no" id="line199">
+<!-- <span class="tr line_no" id="line199"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line200">
+<!-- <span class="tr line_no" id="line200"> -->
+<span class="td">1mJ (in metric units, in mJ) or 1 millijoule (in millijoules, singular) or 2 millijoules</span><br></span>
+<span class="tr line_no" id="line201">
+<!-- <span class="tr line_no" id="line201"> -->
+<span class="td">(in millijoules, plural) specifies an energy scaled down by 1000.</span><br></span>
+<span class="tr line_no" id="line202">
+<!-- <span class="tr line_no" id="line202"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line203">
+<!-- <span class="tr line_no" id="line203"> -->
+<span class="td">1kJ (in metric units, in kJ) or 1 kilojoule (in kilojoules, singular) or 2 kilojoules</span><br></span>
+<span class="tr line_no" id="line204">
+<!-- <span class="tr line_no" id="line204"> -->
+<span class="td">(in kilojoules, plural) specifies an energy scaled up by 1000.</span><br></span>
+<span class="tr line_no" id="line205">
+<!-- <span class="tr line_no" id="line205"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line206">
+<!-- <span class="tr line_no" id="line206"> -->
+<span class="td">The specification of energy is <span class="i7sx">&quot;Used to measure how much ability something</span></span><br></span>
+<span class="tr line_no" id="line207">
+<!-- <span class="tr line_no" id="line207"> -->
+<span class="td"><span class="i7sx">has to do work. Inform measures down to 1mJ, which is a tiny amount: human</span></span><br></span>
+<span class="tr line_no" id="line208">
+<!-- <span class="tr line_no" id="line208"> -->
+<span class="td"><span class="i7sx">beings give off about 100J in body heat every second just sitting still.</span></span><br></span>
+<span class="tr line_no" id="line209">
+<!-- <span class="tr line_no" id="line209"> -->
+<span class="td"><span class="i7sx">It measures up to about 2000kJ, twice the food energy stored in a Mars bar, or </span></span><br></span>
+<span class="tr line_no" id="line210">
+<!-- <span class="tr line_no" id="line210"> -->
+<span class="td"><span class="i7sx">enough to run a typical electric radiant heater for an hour.&quot;</span></span><br></span>
+<span class="tr line_no" id="line211">
+<!-- <span class="tr line_no" id="line211"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line212">
+<!-- <span class="tr line_no" id="line212"> -->
+<span class="td">Force times length specifies an energy.</span><br></span>
+<span class="tr line_no" id="line213">
+<!-- <span class="tr line_no" id="line213"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line214">
+<!-- <span class="tr line_no" id="line214"> -->
+<span class="td">Pressure is a kind of value.</span><br></span>
+<span class="tr line_no" id="line215">
+<!-- <span class="tr line_no" id="line215"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line216">
+<!-- <span class="tr line_no" id="line216"> -->
+<span class="td">1Pa (in metric units, in Pa) or 1 Pascal (in Pascals, singular) or 2 Pascals</span><br></span>
+<span class="tr line_no" id="line217">
+<!-- <span class="tr line_no" id="line217"> -->
+<span class="td">(in Pascals, plural) specifies a pressure.</span><br></span>
+<span class="tr line_no" id="line218">
+<!-- <span class="tr line_no" id="line218"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line219">
+<!-- <span class="tr line_no" id="line219"> -->
+<span class="td">1kPa (in metric units, in kPa) or 1 kilopascal (in kilopascals, singular) or 2 kilopascals</span><br></span>
+<span class="tr line_no" id="line220">
+<!-- <span class="tr line_no" id="line220"> -->
+<span class="td">(in kilopascals, plural) specifies a pressure scaled up by 1000.</span><br></span>
+<span class="tr line_no" id="line221">
+<!-- <span class="tr line_no" id="line221"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line222">
+<!-- <span class="tr line_no" id="line222"> -->
+<span class="td">1MPa (in metric units, in MPa) or 1 megapascal (in megapascals, singular) or 2 megapascals</span><br></span>
+<span class="tr line_no" id="line223">
+<!-- <span class="tr line_no" id="line223"> -->
+<span class="td">(in megapascals, plural) specifies a pressure scaled up by 1000000.</span><br></span>
+<span class="tr line_no" id="line224">
+<!-- <span class="tr line_no" id="line224"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line225">
+<!-- <span class="tr line_no" id="line225"> -->
+<span class="td">The specification of pressure is <span class="i7sx">&quot;Used to measure how much force is being</span></span><br></span>
+<span class="tr line_no" id="line226">
+<!-- <span class="tr line_no" id="line226"> -->
+<span class="td"><span class="i7sx">applied per unit of area, sometimes by one object pulled against another,</span></span><br></span>
+<span class="tr line_no" id="line227">
+<!-- <span class="tr line_no" id="line227"> -->
+<span class="td"><span class="i7sx">sometimes by gas or water pressing in on things inside it. Inform measures</span></span><br></span>
+<span class="tr line_no" id="line228">
+<!-- <span class="tr line_no" id="line228"> -->
+<span class="td"><span class="i7sx">down to 1Pa, the tiny pressure which a bank note applies to a table it&#39;s</span></span><br></span>
+<span class="tr line_no" id="line229">
+<!-- <span class="tr line_no" id="line229"> -->
+<span class="td"><span class="i7sx">sitting on top of, and right up to 20000MPa, which can compress carbon into</span></span><br></span>
+<span class="tr line_no" id="line230">
+<!-- <span class="tr line_no" id="line230"> -->
+<span class="td"><span class="i7sx">diamonds. Atmospheric pressure at sea level is about 100kPa; water pressure</span></span><br></span>
+<span class="tr line_no" id="line231">
+<!-- <span class="tr line_no" id="line231"> -->
+<span class="td"><span class="i7sx">at the bottom of the Mariana Trench a thousand times greater, at about</span></span><br></span>
+<span class="tr line_no" id="line232">
+<!-- <span class="tr line_no" id="line232"> -->
+<span class="td"><span class="i7sx">100MPa.&quot;</span></span><br></span>
+<span class="tr line_no" id="line233">
+<!-- <span class="tr line_no" id="line233"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line234">
+<!-- <span class="tr line_no" id="line234"> -->
+<span class="td">Power is a kind of value.</span><br></span>
+<span class="tr line_no" id="line235">
+<!-- <span class="tr line_no" id="line235"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line236">
+<!-- <span class="tr line_no" id="line236"> -->
+<span class="td">1W (in metric units, in W) or 1 Watt (in Watts, singular) or 2 Watts</span><br></span>
+<span class="tr line_no" id="line237">
+<!-- <span class="tr line_no" id="line237"> -->
+<span class="td">(in Watts, plural) specifies a power.</span><br></span>
+<span class="tr line_no" id="line238">
+<!-- <span class="tr line_no" id="line238"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line239">
+<!-- <span class="tr line_no" id="line239"> -->
+<span class="td">1mW (in metric units, in mW) or 1 milliwatt (in milliwatts, singular) or 2 milliwatts</span><br></span>
+<span class="tr line_no" id="line240">
+<!-- <span class="tr line_no" id="line240"> -->
+<span class="td">(in milliwatts, plural) specifies a power scaled down by 1000.</span><br></span>
+<span class="tr line_no" id="line241">
+<!-- <span class="tr line_no" id="line241"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line242">
+<!-- <span class="tr line_no" id="line242"> -->
+<span class="td">1kW (in metric units, in kW) or 1 kilowatt (in kilowatts, singular) or 2 kilowatts</span><br></span>
+<span class="tr line_no" id="line243">
+<!-- <span class="tr line_no" id="line243"> -->
+<span class="td">(in kilowatts, plural) specifies a power scaled up by 1000.</span><br></span>
+<span class="tr line_no" id="line244">
+<!-- <span class="tr line_no" id="line244"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line245">
+<!-- <span class="tr line_no" id="line245"> -->
+<span class="td">Elapsed time times power specifies an energy.</span><br></span>
+<span class="tr line_no" id="line246">
+<!-- <span class="tr line_no" id="line246"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line247">
+<!-- <span class="tr line_no" id="line247"> -->
+<span class="td">The specification of power is <span class="i7sx">&quot;Used to measure how much energy something can</span></span><br></span>
+<span class="tr line_no" id="line248">
+<!-- <span class="tr line_no" id="line248"> -->
+<span class="td"><span class="i7sx">apply in a given time - in the same period of time powerful things can do a lot</span></span><br></span>
+<span class="tr line_no" id="line249">
+<!-- <span class="tr line_no" id="line249"> -->
+<span class="td"><span class="i7sx">while feeble things much less. Typical domestic light bulbs take 60W of power</span></span><br></span>
+<span class="tr line_no" id="line250">
+<!-- <span class="tr line_no" id="line250"> -->
+<span class="td"><span class="i7sx">to run (twice as much as the human brain), and electric heaters perhaps 3kW.</span></span><br></span>
+<span class="tr line_no" id="line251">
+<!-- <span class="tr line_no" id="line251"> -->
+<span class="td"><span class="i7sx">Inform measures down to the power of the tiny laser in a CD player, or up to</span></span><br></span>
+<span class="tr line_no" id="line252">
+<!-- <span class="tr line_no" id="line252"> -->
+<span class="td"><span class="i7sx">the power of a small aircraft or diesel train.&quot;</span></span><br></span>
+<span class="tr line_no" id="line253">
+<!-- <span class="tr line_no" id="line253"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line254">
+<!-- <span class="tr line_no" id="line254"> -->
+<span class="td">Electric charge is a kind of value.</span><br></span>
+<span class="tr line_no" id="line255">
+<!-- <span class="tr line_no" id="line255"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line256">
+<!-- <span class="tr line_no" id="line256"> -->
+<span class="td">1 C (in metric units, in C) or 1 Coulomb (in Coulombs, singular) or 2 Coulombs</span><br></span>
+<span class="tr line_no" id="line257">
+<!-- <span class="tr line_no" id="line257"> -->
+<span class="td">(in Coulombs, plural) specifies an electric charge scaled at 1000.</span><br></span>
+<span class="tr line_no" id="line258">
+<!-- <span class="tr line_no" id="line258"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line259">
+<!-- <span class="tr line_no" id="line259"> -->
+<span class="td">1 kC (in metric units, in kC) or 1 kilocoulomb (in kilocoulombs, singular)</span><br></span>
+<span class="tr line_no" id="line260">
+<!-- <span class="tr line_no" id="line260"> -->
+<span class="td">or 2 kilocoulombs (in kilocoulombs, plural) specifies an electric charge</span><br></span>
+<span class="tr line_no" id="line261">
+<!-- <span class="tr line_no" id="line261"> -->
+<span class="td">scaled up by 1000.</span><br></span>
+<span class="tr line_no" id="line262">
+<!-- <span class="tr line_no" id="line262"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line263">
+<!-- <span class="tr line_no" id="line263"> -->
+<span class="td">The specification of electric charge is <span class="i7sx">&quot;Electricity works because,</span></span><br></span>
+<span class="tr line_no" id="line264">
+<!-- <span class="tr line_no" id="line264"> -->
+<span class="td"><span class="i7sx">although matter is usually &#39;neutral&#39;, electric charge can flow between one</span></span><br></span>
+<span class="tr line_no" id="line265">
+<!-- <span class="tr line_no" id="line265"> -->
+<span class="td"><span class="i7sx">thing and another so that this balance is broken, and then a force is felt</span></span><br></span>
+<span class="tr line_no" id="line266">
+<!-- <span class="tr line_no" id="line266"> -->
+<span class="td"><span class="i7sx">between them. Electric forces are very strong, so even a small charge has a</span></span><br></span>
+<span class="tr line_no" id="line267">
+<!-- <span class="tr line_no" id="line267"> -->
+<span class="td"><span class="i7sx">big effect - a storm cloud might only have a charge of 20 C, but that&#39;s</span></span><br></span>
+<span class="tr line_no" id="line268">
+<!-- <span class="tr line_no" id="line268"> -->
+<span class="td"><span class="i7sx">enough to cause thunder and lightning. On the other hand batteries store</span></span><br></span>
+<span class="tr line_no" id="line269">
+<!-- <span class="tr line_no" id="line269"> -->
+<span class="td"><span class="i7sx">very large charges, but of course release them much more slowly - a typical</span></span><br></span>
+<span class="tr line_no" id="line270">
+<!-- <span class="tr line_no" id="line270"> -->
+<span class="td"><span class="i7sx">car battery holds about 200 kC. (Note that Inform writes &#39;1 C&#39; for one</span></span><br></span>
+<span class="tr line_no" id="line271">
+<!-- <span class="tr line_no" id="line271"> -->
+<span class="td"><span class="i7sx">coulomb, and &#39;1C&#39; for one degree centigrade.)&quot;</span></span><br></span>
+<span class="tr line_no" id="line272">
+<!-- <span class="tr line_no" id="line272"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line273">
+<!-- <span class="tr line_no" id="line273"> -->
+<span class="td">Elapsed time times electric current specifies an electric charge.</span><br></span>
+<span class="tr line_no" id="line274">
+<!-- <span class="tr line_no" id="line274"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line275">
+<!-- <span class="tr line_no" id="line275"> -->
+<span class="td">Voltage is a kind of value.</span><br></span>
+<span class="tr line_no" id="line276">
+<!-- <span class="tr line_no" id="line276"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line277">
+<!-- <span class="tr line_no" id="line277"> -->
+<span class="td">1V (in metric units, in V) or 1 volt (in volts, singular) or 2 volts</span><br></span>
+<span class="tr line_no" id="line278">
+<!-- <span class="tr line_no" id="line278"> -->
+<span class="td">(in volts, plural) specifies a voltage.</span><br></span>
+<span class="tr line_no" id="line279">
+<!-- <span class="tr line_no" id="line279"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line280">
+<!-- <span class="tr line_no" id="line280"> -->
+<span class="td">1mV (in metric units, in mV) or 1 millivolt (in millivolts, singular) or 2 millivolts</span><br></span>
+<span class="tr line_no" id="line281">
+<!-- <span class="tr line_no" id="line281"> -->
+<span class="td">(in millivolts, plural) specifies a voltage scaled down by 1000.</span><br></span>
+<span class="tr line_no" id="line282">
+<!-- <span class="tr line_no" id="line282"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line283">
+<!-- <span class="tr line_no" id="line283"> -->
+<span class="td">1kV (in metric units, in kV) or 1 kilovolt (in kilovolts, singular) or 2 kilovolts</span><br></span>
+<span class="tr line_no" id="line284">
+<!-- <span class="tr line_no" id="line284"> -->
+<span class="td">(in kilovolts, plural) specifies a voltage scaled up by 1000.</span><br></span>
+<span class="tr line_no" id="line285">
+<!-- <span class="tr line_no" id="line285"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line286">
+<!-- <span class="tr line_no" id="line286"> -->
+<span class="td">Voltage times electric current specifies a power. Voltage times electric</span><br></span>
+<span class="tr line_no" id="line287">
+<!-- <span class="tr line_no" id="line287"> -->
+<span class="td">charge specifies energy.</span><br></span>
+<span class="tr line_no" id="line288">
+<!-- <span class="tr line_no" id="line288"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line289">
+<!-- <span class="tr line_no" id="line289"> -->
+<span class="td">The specification of voltage is <span class="i7sx">&quot;Measures the &#39;potential difference&#39;</span></span><br></span>
+<span class="tr line_no" id="line290">
+<!-- <span class="tr line_no" id="line290"> -->
+<span class="td"><span class="i7sx">between two points, a sort of pulling power for electricity. Inform</span></span><br></span>
+<span class="tr line_no" id="line291">
+<!-- <span class="tr line_no" id="line291"> -->
+<span class="td"><span class="i7sx">measures down below the voltage across a human nerve cell, and up to twice</span></span><br></span>
+<span class="tr line_no" id="line292">
+<!-- <span class="tr line_no" id="line292"> -->
+<span class="td"><span class="i7sx">the maximum voltage ever applied on overhead power lines carried by</span></span><br></span>
+<span class="tr line_no" id="line293">
+<!-- <span class="tr line_no" id="line293"> -->
+<span class="td"><span class="i7sx">electric pylons. Quite low voltages can be dangerous on human skin - a 50V</span></span><br></span>
+<span class="tr line_no" id="line294">
+<!-- <span class="tr line_no" id="line294"> -->
+<span class="td"><span class="i7sx">potential difference between two points on the body can cause enough charge</span></span><br></span>
+<span class="tr line_no" id="line295">
+<!-- <span class="tr line_no" id="line295"> -->
+<span class="td"><span class="i7sx">to flow to electrocute somebody.&quot;</span></span><br></span>
+<span class="tr line_no" id="line296">
+<!-- <span class="tr line_no" id="line296"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line297">
+<!-- <span class="tr line_no" id="line297"> -->
+<span class="td">Luminance is a kind of value.</span><br></span>
+<span class="tr line_no" id="line298">
+<!-- <span class="tr line_no" id="line298"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line299">
+<!-- <span class="tr line_no" id="line299"> -->
+<span class="td">The specification of luminance is <span class="i7sx">&quot;Used to measure the brightness of something:</span></span><br></span>
+<span class="tr line_no" id="line300">
+<!-- <span class="tr line_no" id="line300"> -->
+<span class="td"><span class="i7sx">how much light it produces per unit of its surface area. (The actual amount</span></span><br></span>
+<span class="tr line_no" id="line301">
+<!-- <span class="tr line_no" id="line301"> -->
+<span class="td"><span class="i7sx">of light produced is luminosity. A fully lit computer display of 2008 has a</span></span><br></span>
+<span class="tr line_no" id="line302">
+<!-- <span class="tr line_no" id="line302"> -->
+<span class="td"><span class="i7sx">brightness of about 330 cd/sq m, and has a surface area of maybe 0.5 sq m,</span></span><br></span>
+<span class="tr line_no" id="line303">
+<!-- <span class="tr line_no" id="line303"> -->
+<span class="td"><span class="i7sx">so pours out about 150 cd. This is more than a domestic light bulb</span></span><br></span>
+<span class="tr line_no" id="line304">
+<!-- <span class="tr line_no" id="line304"> -->
+<span class="td"><span class="i7sx">produces, but the bulb is much, much brighter - maybe 150000 cd/sq m -</span></span><br></span>
+<span class="tr line_no" id="line305">
+<!-- <span class="tr line_no" id="line305"> -->
+<span class="td"><span class="i7sx">because the light comes out of a smaller area.) Inform&#39;s implementation of</span></span><br></span>
+<span class="tr line_no" id="line306">
+<!-- <span class="tr line_no" id="line306"> -->
+<span class="td"><span class="i7sx">luminance is meant for light sources of a reasonable size, quite near to the</span></span><br></span>
+<span class="tr line_no" id="line307">
+<!-- <span class="tr line_no" id="line307"> -->
+<span class="td"><span class="i7sx">player: it measures down to 0.001 cd/sq m, which is so dim it can barely be</span></span><br></span>
+<span class="tr line_no" id="line308">
+<!-- <span class="tr line_no" id="line308"> -->
+<span class="td"><span class="i7sx">seen, and up to about 2000000 cd/sq m, which would be painful to look at.&quot;</span></span><br></span>
+<span class="tr line_no" id="line309">
+<!-- <span class="tr line_no" id="line309"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line310">
+<!-- <span class="tr line_no" id="line310"> -->
+<span class="td">1 cd/sq m (in metric units, in cd/sq m) or 1 candela per square meter (in</span><br></span>
+<span class="tr line_no" id="line311">
+<!-- <span class="tr line_no" id="line311"> -->
+<span class="td">candelas per square meter, singular) or 2 candelas per square meter</span><br></span>
+<span class="tr line_no" id="line312">
+<!-- <span class="tr line_no" id="line312"> -->
+<span class="td">(in candelas per square meter, plural) specifies a luminance scaled at 1000.</span><br></span>
+<span class="tr line_no" id="line313">
+<!-- <span class="tr line_no" id="line313"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line314">
+<!-- <span class="tr line_no" id="line314"> -->
+<span class="td"><span class="i7cm">[I&#39;m leaving out capacitance, resistance, conductance, magnetic flux, magnetic</span></span><br></span>
+<span class="tr line_no" id="line315">
+<!-- <span class="tr line_no" id="line315"> -->
+<span class="td"><span class="i7cm">field, and inductance for now, but they could easily be added.]</span></span><br></span>
+<span class="tr line_no" id="line316">
+<!-- <span class="tr line_no" id="line316"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line317">
+<!-- <span class="tr line_no" id="line317"> -->
+<span class="td"><span class="i7cm">[There are also solid angle, luminous flux, and some</span></span><br></span>
+<span class="tr line_no" id="line318">
+<!-- <span class="tr line_no" id="line318"> -->
+<span class="td"><span class="i7cm">specialist measures of radioactive dosage and level of catalysis.]</span></span><br></span>
+<span class="tr line_no" id="line319">
+<!-- <span class="tr line_no" id="line319"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line320">
+<!-- <span class="tr line_no" id="line320"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line321">
+<!-- <span class="tr line_no" id="line321"> -->
+<span class="td"><span class="i7gh">Part III - SI Compound Units</span></span><br></span>
+<span class="tr line_no" id="line322">
+<!-- <span class="tr line_no" id="line322"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line323">
+<!-- <span class="tr line_no" id="line323"> -->
+<span class="td">Area is a kind of value.</span><br></span>
+<span class="tr line_no" id="line324">
+<!-- <span class="tr line_no" id="line324"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line325">
+<!-- <span class="tr line_no" id="line325"> -->
+<span class="td">1 sq m (in metric units, in sq m) or 1 square meter (in square meters,</span><br></span>
+<span class="tr line_no" id="line326">
+<!-- <span class="tr line_no" id="line326"> -->
+<span class="td">singular) or 2 square meters (in square meters, plural) or 1 square metre</span><br></span>
+<span class="tr line_no" id="line327">
+<!-- <span class="tr line_no" id="line327"> -->
+<span class="td">(in square metres, singular) or 2 square metres (in square metres, plural)</span><br></span>
+<span class="tr line_no" id="line328">
+<!-- <span class="tr line_no" id="line328"> -->
+<span class="td">specifies an area.</span><br></span>
+<span class="tr line_no" id="line329">
+<!-- <span class="tr line_no" id="line329"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line330">
+<!-- <span class="tr line_no" id="line330"> -->
+<span class="td">1 sq cm (in metric units, in sq cm) or 1 square centimeter (in square</span><br></span>
+<span class="tr line_no" id="line331">
+<!-- <span class="tr line_no" id="line331"> -->
+<span class="td">centimeters, singular) or 2 square centimeters (in square centimeters,</span><br></span>
+<span class="tr line_no" id="line332">
+<!-- <span class="tr line_no" id="line332"> -->
+<span class="td">plural) or 1 square centimetre (in square centimetres, singular) or 2</span><br></span>
+<span class="tr line_no" id="line333">
+<!-- <span class="tr line_no" id="line333"> -->
+<span class="td">square centimetres (in square centimetres, plural) specifies an area scaled</span><br></span>
+<span class="tr line_no" id="line334">
+<!-- <span class="tr line_no" id="line334"> -->
+<span class="td">down by 10000.</span><br></span>
+<span class="tr line_no" id="line335">
+<!-- <span class="tr line_no" id="line335"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line336">
+<!-- <span class="tr line_no" id="line336"> -->
+<span class="td">1 hectare (in metric units, in hectares, singular) or 2 hectares (in metric units,</span><br></span>
+<span class="tr line_no" id="line337">
+<!-- <span class="tr line_no" id="line337"> -->
+<span class="td">in hectares, plural) specifies an area scaled up by 10000.</span><br></span>
+<span class="tr line_no" id="line338">
+<!-- <span class="tr line_no" id="line338"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line339">
+<!-- <span class="tr line_no" id="line339"> -->
+<span class="td">The specification of area is <span class="i7sx">&quot;Measures the extent of a two-dimensional surface,</span></span><br></span>
+<span class="tr line_no" id="line340">
+<!-- <span class="tr line_no" id="line340"> -->
+<span class="td"><span class="i7sx">usually a patch of land or the covering of an object. Inform measures down to</span></span><br></span>
+<span class="tr line_no" id="line341">
+<!-- <span class="tr line_no" id="line341"> -->
+<span class="td"><span class="i7sx">1 sq cm, the area of a small coin, or up to 21 hectares, the grounds of a large</span></span><br></span>
+<span class="tr line_no" id="line342">
+<!-- <span class="tr line_no" id="line342"> -->
+<span class="td"><span class="i7sx">country house or a typical French vineyard. A boxing ring is 36 sq m; a sports</span></span><br></span>
+<span class="tr line_no" id="line343">
+<!-- <span class="tr line_no" id="line343"> -->
+<span class="td"><span class="i7sx">field about 6000 sq m.&quot;</span></span><br></span>
+<span class="tr line_no" id="line344">
+<!-- <span class="tr line_no" id="line344"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line345">
+<!-- <span class="tr line_no" id="line345"> -->
+<span class="td">Length times length specifies an area. Pressure times area specifies</span><br></span>
+<span class="tr line_no" id="line346">
+<!-- <span class="tr line_no" id="line346"> -->
+<span class="td">a force. Area times luminance specifies a luminosity.</span><br></span>
+<span class="tr line_no" id="line347">
+<!-- <span class="tr line_no" id="line347"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line348">
+<!-- <span class="tr line_no" id="line348"> -->
+<span class="td">A Volume is a kind of value. <span class="i7cm">[That &quot;A&quot; prevents Inform mistaking the line for</span></span><br></span>
+<span class="tr line_no" id="line349">
+<!-- <span class="tr line_no" id="line349"> -->
+<span class="td"><span class="i7cm">a volume heading, in the literary sense.]</span></span><br></span>
+<span class="tr line_no" id="line350">
+<!-- <span class="tr line_no" id="line350"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line351">
+<!-- <span class="tr line_no" id="line351"> -->
+<span class="td">1 cu m (in metric units, in cu m) or 1 cubic meter (in cubic meters,</span><br></span>
+<span class="tr line_no" id="line352">
+<!-- <span class="tr line_no" id="line352"> -->
+<span class="td">singular) or 2 cubic meters (in cubic meters, plural) or 1 cubic metre</span><br></span>
+<span class="tr line_no" id="line353">
+<!-- <span class="tr line_no" id="line353"> -->
+<span class="td">(in cubic metres, singular) or 2 cubic metres (in cubic metres, plural)</span><br></span>
+<span class="tr line_no" id="line354">
+<!-- <span class="tr line_no" id="line354"> -->
+<span class="td">specifies an volume.</span><br></span>
+<span class="tr line_no" id="line355">
+<!-- <span class="tr line_no" id="line355"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line356">
+<!-- <span class="tr line_no" id="line356"> -->
+<span class="td">1 l (in metric units, in l) or 1 liter (in liters, singular) or 2 liters</span><br></span>
+<span class="tr line_no" id="line357">
+<!-- <span class="tr line_no" id="line357"> -->
+<span class="td">(in liters, plural) or 1 litre (in litres, singular) or 2 litres (in</span><br></span>
+<span class="tr line_no" id="line358">
+<!-- <span class="tr line_no" id="line358"> -->
+<span class="td">litres, plural) specifies a volume scaled down by 1000.</span><br></span>
+<span class="tr line_no" id="line359">
+<!-- <span class="tr line_no" id="line359"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line360">
+<!-- <span class="tr line_no" id="line360"> -->
+<span class="td">1 cc (in metric units, in cc) or 1 cubic centimeter (in cubic centimeters,</span><br></span>
+<span class="tr line_no" id="line361">
+<!-- <span class="tr line_no" id="line361"> -->
+<span class="td">singular) or 2 cubic centimeters (in cubic centimeters, plural) or 1 cubic</span><br></span>
+<span class="tr line_no" id="line362">
+<!-- <span class="tr line_no" id="line362"> -->
+<span class="td">centimetre (in cubic centimetres, singular) or 2 cubic centimetres (in</span><br></span>
+<span class="tr line_no" id="line363">
+<!-- <span class="tr line_no" id="line363"> -->
+<span class="td">cubic centimetres, plural) or 1 ml (in ml) or 1 millilitre (in millilitres,</span><br></span>
+<span class="tr line_no" id="line364">
+<!-- <span class="tr line_no" id="line364"> -->
+<span class="td">singular) or 2 millilitres (in millilitres, plural) or 1 milliliter (in</span><br></span>
+<span class="tr line_no" id="line365">
+<!-- <span class="tr line_no" id="line365"> -->
+<span class="td">milliliters, singular) or 2 milliliters (in milliliters, plural) specifies</span><br></span>
+<span class="tr line_no" id="line366">
+<!-- <span class="tr line_no" id="line366"> -->
+<span class="td">a volume scaled down by 1000000.</span><br></span>
+<span class="tr line_no" id="line367">
+<!-- <span class="tr line_no" id="line367"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line368">
+<!-- <span class="tr line_no" id="line368"> -->
+<span class="td">The specification of volume is <span class="i7sx">&quot;Measures the extent of a three-dimensional</span></span><br></span>
+<span class="tr line_no" id="line369">
+<!-- <span class="tr line_no" id="line369"> -->
+<span class="td"><span class="i7sx">space, usually the space taken up by an object or the space inside a</span></span><br></span>
+<span class="tr line_no" id="line370">
+<!-- <span class="tr line_no" id="line370"> -->
+<span class="td"><span class="i7sx">container. Inform measures down to 1 cc (or 1 ml - same thing), about a</span></span><br></span>
+<span class="tr line_no" id="line371">
+<!-- <span class="tr line_no" id="line371"> -->
+<span class="td"><span class="i7sx">teaspoon-full, or up to 2100 cu m, twice the capacity of an Olympic</span></span><br></span>
+<span class="tr line_no" id="line372">
+<!-- <span class="tr line_no" id="line372"> -->
+<span class="td"><span class="i7sx">swimming pool.&quot;</span></span><br></span>
+<span class="tr line_no" id="line373">
+<!-- <span class="tr line_no" id="line373"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line374">
+<!-- <span class="tr line_no" id="line374"> -->
+<span class="td">Length times area specifies a volume.</span><br></span>
+<span class="tr line_no" id="line375">
+<!-- <span class="tr line_no" id="line375"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line376">
+<!-- <span class="tr line_no" id="line376"> -->
+<span class="td">Velocity is a kind of value.</span><br></span>
+<span class="tr line_no" id="line377">
+<!-- <span class="tr line_no" id="line377"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line378">
+<!-- <span class="tr line_no" id="line378"> -->
+<span class="td">1 m/s (in metric units, in m/s) or 1 meter per second (in meters per</span><br></span>
+<span class="tr line_no" id="line379">
+<!-- <span class="tr line_no" id="line379"> -->
+<span class="td">second, singular) or 1 metre per second (in metres per second, plural)</span><br></span>
+<span class="tr line_no" id="line380">
+<!-- <span class="tr line_no" id="line380"> -->
+<span class="td">specifies a velocity scaled at 100.</span><br></span>
+<span class="tr line_no" id="line381">
+<!-- <span class="tr line_no" id="line381"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line382">
+<!-- <span class="tr line_no" id="line382"> -->
+<span class="td">1 km/s (in metric units, in km/s) or 1 kilometer per second (in kilometers per</span><br></span>
+<span class="tr line_no" id="line383">
+<!-- <span class="tr line_no" id="line383"> -->
+<span class="td">second, singular) or 1 kilometre per second (in kilometres per second, plural)</span><br></span>
+<span class="tr line_no" id="line384">
+<!-- <span class="tr line_no" id="line384"> -->
+<span class="td">specifies a velocity scaled up by 1000.</span><br></span>
+<span class="tr line_no" id="line385">
+<!-- <span class="tr line_no" id="line385"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line386">
+<!-- <span class="tr line_no" id="line386"> -->
+<span class="td">The specification of velocity is <span class="i7sx">&quot;Measures how fast something is moving</span></span><br></span>
+<span class="tr line_no" id="line387">
+<!-- <span class="tr line_no" id="line387"> -->
+<span class="td"><span class="i7sx">relative to something else - usually something apparently fixed, like the ground. </span></span><br></span>
+<span class="tr line_no" id="line388">
+<!-- <span class="tr line_no" id="line388"> -->
+<span class="td"><span class="i7sx">Inform measures down to 0.01 m/s, the speed of a garden snail, and up to about</span></span><br></span>
+<span class="tr line_no" id="line389">
+<!-- <span class="tr line_no" id="line389"> -->
+<span class="td"><span class="i7sx">7% of the speed of light. People walk at about 1.2 m/s, and cars drive at</span></span><br></span>
+<span class="tr line_no" id="line390">
+<!-- <span class="tr line_no" id="line390"> -->
+<span class="td"><span class="i7sx">about 30 m/s; high speed trains are up to 160 m/s. The speed of sound is</span></span><br></span>
+<span class="tr line_no" id="line391">
+<!-- <span class="tr line_no" id="line391"> -->
+<span class="td"><span class="i7sx">around 330 m/s at sea level on a cool day.&quot;</span></span><br></span>
+<span class="tr line_no" id="line392">
+<!-- <span class="tr line_no" id="line392"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line393">
+<!-- <span class="tr line_no" id="line393"> -->
+<span class="td">Velocity times elapsed time specifies a length.</span><br></span>
+<span class="tr line_no" id="line394">
+<!-- <span class="tr line_no" id="line394"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line395">
+<!-- <span class="tr line_no" id="line395"> -->
+<span class="td">Acceleration is a kind of value.</span><br></span>
+<span class="tr line_no" id="line396">
+<!-- <span class="tr line_no" id="line396"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line397">
+<!-- <span class="tr line_no" id="line397"> -->
+<span class="td">1 m/ss (in metric units, in m/ss) or 1 meter per second squared (in meters</span><br></span>
+<span class="tr line_no" id="line398">
+<!-- <span class="tr line_no" id="line398"> -->
+<span class="td">per second squared, singular) or 2 meters per second squared (in meters per</span><br></span>
+<span class="tr line_no" id="line399">
+<!-- <span class="tr line_no" id="line399"> -->
+<span class="td">second squared, plural) or 1 metre per second squared (in metres</span><br></span>
+<span class="tr line_no" id="line400">
+<!-- <span class="tr line_no" id="line400"> -->
+<span class="td">per second squared, singular) or 2 metres per second squared (in metres per</span><br></span>
+<span class="tr line_no" id="line401">
+<!-- <span class="tr line_no" id="line401"> -->
+<span class="td">second squared, plural) specifies an acceleration scaled at 1000.</span><br></span>
+<span class="tr line_no" id="line402">
+<!-- <span class="tr line_no" id="line402"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line403">
+<!-- <span class="tr line_no" id="line403"> -->
+<span class="td">The specification of acceleration is <span class="i7sx">&quot;Measures the rate at which something</span></span><br></span>
+<span class="tr line_no" id="line404">
+<!-- <span class="tr line_no" id="line404"> -->
+<span class="td"><span class="i7sx">is gaining velocity - a positive acceleration makes something speed up,</span></span><br></span>
+<span class="tr line_no" id="line405">
+<!-- <span class="tr line_no" id="line405"> -->
+<span class="td"><span class="i7sx">negative makes it slow down. Accelerations look small, numerically, but have</span></span><br></span>
+<span class="tr line_no" id="line406">
+<!-- <span class="tr line_no" id="line406"> -->
+<span class="td"><span class="i7sx">large effects very quickly in practice - a high-performance Bugatti sports</span></span><br></span>
+<span class="tr line_no" id="line407">
+<!-- <span class="tr line_no" id="line407"> -->
+<span class="td"><span class="i7sx">car accelerates at only about 6 m/ss, but you&#39;d notice all right if it</span></span><br></span>
+<span class="tr line_no" id="line408">
+<!-- <span class="tr line_no" id="line408"> -->
+<span class="td"><span class="i7sx">happened in front of you. The smallest acceleration Inform measures,</span></span><br></span>
+<span class="tr line_no" id="line409">
+<!-- <span class="tr line_no" id="line409"> -->
+<span class="td"><span class="i7sx">0.001 m/ss, is about half the level of gravity on the tiny asteroid Gaspra</span></span><br></span>
+<span class="tr line_no" id="line410">
+<!-- <span class="tr line_no" id="line410"> -->
+<span class="td"><span class="i7sx">(which is about 20km long); on Earth, gravity accelerates falling objects</span></span><br></span>
+<span class="tr line_no" id="line411">
+<!-- <span class="tr line_no" id="line411"> -->
+<span class="td"><span class="i7sx">at about 9.789 m/ss at the equator, 9.832 m/ss at the poles, so people</span></span><br></span>
+<span class="tr line_no" id="line412">
+<!-- <span class="tr line_no" id="line412"> -->
+<span class="td"><span class="i7sx">usually calculate with an average mid-latitudes value of 9.807 m/ss.&quot;</span></span><br></span>
+<span class="tr line_no" id="line413">
+<!-- <span class="tr line_no" id="line413"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line414">
+<!-- <span class="tr line_no" id="line414"> -->
+<span class="td">Acceleration times elapsed time specifies a velocity. Mass times</span><br></span>
+<span class="tr line_no" id="line415">
+<!-- <span class="tr line_no" id="line415"> -->
+<span class="td">acceleration specifies a force.</span><br></span>
+<span class="tr line_no" id="line416">
+<!-- <span class="tr line_no" id="line416"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line417">
+<!-- <span class="tr line_no" id="line417"> -->
+<span class="td">Momentum is a kind of value.</span><br></span>
+<span class="tr line_no" id="line418">
+<!-- <span class="tr line_no" id="line418"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line419">
+<!-- <span class="tr line_no" id="line419"> -->
+<span class="td">1 Ns (in metric units, in Ns) or 1 Newton-second (in Newton-seconds) specifies</span><br></span>
+<span class="tr line_no" id="line420">
+<!-- <span class="tr line_no" id="line420"> -->
+<span class="td">a momentum scaled at 1000.</span><br></span>
+<span class="tr line_no" id="line421">
+<!-- <span class="tr line_no" id="line421"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line422">
+<!-- <span class="tr line_no" id="line422"> -->
+<span class="td">The specification of momentum is <span class="i7sx">&quot;Momentum is the product of mass and velocity</span></span><br></span>
+<span class="tr line_no" id="line423">
+<!-- <span class="tr line_no" id="line423"> -->
+<span class="td"><span class="i7sx">for a moving object, so it measures in effect how hard it would shove you;</span></span><br></span>
+<span class="tr line_no" id="line424">
+<!-- <span class="tr line_no" id="line424"> -->
+<span class="td"><span class="i7sx">historical physicists had some trouble finding a good word for this concept,</span></span><br></span>
+<span class="tr line_no" id="line425">
+<!-- <span class="tr line_no" id="line425"> -->
+<span class="td"><span class="i7sx">but it&#39;s important because of the Principle of Conservation of Momentum -</span></span><br></span>
+<span class="tr line_no" id="line426">
+<!-- <span class="tr line_no" id="line426"> -->
+<span class="td"><span class="i7sx">the total momentum of all the bodies involved in a collision is constant</span></span><br></span>
+<span class="tr line_no" id="line427">
+<!-- <span class="tr line_no" id="line427"> -->
+<span class="td"><span class="i7sx">whatever happens in it. Billiard balls weigh about 150g, and travel at about</span></span><br></span>
+<span class="tr line_no" id="line428">
+<!-- <span class="tr line_no" id="line428"> -->
+<span class="td"><span class="i7sx">0.25 m/s, so each one has a momentum of about 0.038 Ns.&quot;</span></span><br></span>
+<span class="tr line_no" id="line429">
+<!-- <span class="tr line_no" id="line429"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line430">
+<!-- <span class="tr line_no" id="line430"> -->
+<span class="td">Mass times velocity specifies a momentum.</span><br></span>
+<span class="tr line_no" id="line431">
+<!-- <span class="tr line_no" id="line431"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line432">
+<!-- <span class="tr line_no" id="line432"> -->
+<span class="td">Density is a kind of value.</span><br></span>
+<span class="tr line_no" id="line433">
+<!-- <span class="tr line_no" id="line433"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line434">
+<!-- <span class="tr line_no" id="line434"> -->
+<span class="td">1 kg/cu m (in metric units, in kg/cu m) or 1 kilogram per cubic meter (in</span><br></span>
+<span class="tr line_no" id="line435">
+<!-- <span class="tr line_no" id="line435"> -->
+<span class="td">kilograms per cubic meter, singular) or 2 kilogram per cubic meters (in</span><br></span>
+<span class="tr line_no" id="line436">
+<!-- <span class="tr line_no" id="line436"> -->
+<span class="td">kilograms per cubic meter, plural) or 1 kilogram per cubic metre (in</span><br></span>
+<span class="tr line_no" id="line437">
+<!-- <span class="tr line_no" id="line437"> -->
+<span class="td">kilograms per cubic meter, singular) or 2 kilograms per cubic metre (in</span><br></span>
+<span class="tr line_no" id="line438">
+<!-- <span class="tr line_no" id="line438"> -->
+<span class="td">kilograms per cubic meter, plural) specifies a density.</span><br></span>
+<span class="tr line_no" id="line439">
+<!-- <span class="tr line_no" id="line439"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line440">
+<!-- <span class="tr line_no" id="line440"> -->
+<span class="td">1 g/cu m (in metric units, in kg/cu m) or 1 gram per cubic meter (in</span><br></span>
+<span class="tr line_no" id="line441">
+<!-- <span class="tr line_no" id="line441"> -->
+<span class="td">grams per cubic meter, singular) or 2 gram per cubic meters (in</span><br></span>
+<span class="tr line_no" id="line442">
+<!-- <span class="tr line_no" id="line442"> -->
+<span class="td">grams per cubic meter, plural) or 1 gram per cubic metre (in</span><br></span>
+<span class="tr line_no" id="line443">
+<!-- <span class="tr line_no" id="line443"> -->
+<span class="td">grams per cubic meter, singular) or 2 grams per cubic metre (in</span><br></span>
+<span class="tr line_no" id="line444">
+<!-- <span class="tr line_no" id="line444"> -->
+<span class="td">grams per cubic meter, plural) specifies a density scaled down by 1000.</span><br></span>
+<span class="tr line_no" id="line445">
+<!-- <span class="tr line_no" id="line445"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line446">
+<!-- <span class="tr line_no" id="line446"> -->
+<span class="td">1 g/cc (in metric units, in g/cc) or 1 gram per cubic centimeter (in</span><br></span>
+<span class="tr line_no" id="line447">
+<!-- <span class="tr line_no" id="line447"> -->
+<span class="td">grams per cubic centimeter, singular) or 2 gram per cubic centimeters (in</span><br></span>
+<span class="tr line_no" id="line448">
+<!-- <span class="tr line_no" id="line448"> -->
+<span class="td">grams per cubic centimeter, plural) or 1 gram per cubic centimetre (in</span><br></span>
+<span class="tr line_no" id="line449">
+<!-- <span class="tr line_no" id="line449"> -->
+<span class="td">grams per cubic centimeter, singular) or 2 grams per cubic centimetre (in</span><br></span>
+<span class="tr line_no" id="line450">
+<!-- <span class="tr line_no" id="line450"> -->
+<span class="td">grams per cubic centimeter, plural) specifies a density scaled up by 1000.</span><br></span>
+<span class="tr line_no" id="line451">
+<!-- <span class="tr line_no" id="line451"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line452">
+<!-- <span class="tr line_no" id="line452"> -->
+<span class="td">The specification of density is <span class="i7sx">&quot;Density is the amount of mass per unit volume.</span></span><br></span>
+<span class="tr line_no" id="line453">
+<!-- <span class="tr line_no" id="line453"> -->
+<span class="td"><span class="i7sx">(When people say that a substance is heavy, they usually mean it has a high</span></span><br></span>
+<span class="tr line_no" id="line454">
+<!-- <span class="tr line_no" id="line454"> -->
+<span class="td"><span class="i7sx">density.) The densest stuff on Earth is osmium metal, at 22610 kg/cu m; the</span></span><br></span>
+<span class="tr line_no" id="line455">
+<!-- <span class="tr line_no" id="line455"> -->
+<span class="td"><span class="i7sx">least dense is hydrogen gas, at 90 g/cu m. All else being equal, objects</span></span><br></span>
+<span class="tr line_no" id="line456">
+<!-- <span class="tr line_no" id="line456"> -->
+<span class="td"><span class="i7sx">whose density is below that of water - 1000 kg/cu m - will float up to the</span></span><br></span>
+<span class="tr line_no" id="line457">
+<!-- <span class="tr line_no" id="line457"> -->
+<span class="td"><span class="i7sx">surface if submerged. (That only includes human beings - 1010 kg/cu m - when</span></span><br></span>
+<span class="tr line_no" id="line458">
+<!-- <span class="tr line_no" id="line458"> -->
+<span class="td"><span class="i7sx">they have air in their lungs, reducing their density.)&quot;</span></span><br></span>
+<span class="tr line_no" id="line459">
+<!-- <span class="tr line_no" id="line459"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line460">
+<!-- <span class="tr line_no" id="line460"> -->
+<span class="td">Density times volume specifies a mass.</span><br></span>
+<span class="tr line_no" id="line461">
+<!-- <span class="tr line_no" id="line461"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line462">
+<!-- <span class="tr line_no" id="line462"> -->
+<span class="td">Heat capacity is a kind of value.</span><br></span>
+<span class="tr line_no" id="line463">
+<!-- <span class="tr line_no" id="line463"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line464">
+<!-- <span class="tr line_no" id="line464"> -->
+<span class="td">1 J/C (in metric units, in J/C) or 1 Joule per degree centigrade (in Joules per</span><br></span>
+<span class="tr line_no" id="line465">
+<!-- <span class="tr line_no" id="line465"> -->
+<span class="td">degree centigrade, singular) or 2 Joules per degree centigrade (in Joules per</span><br></span>
+<span class="tr line_no" id="line466">
+<!-- <span class="tr line_no" id="line466"> -->
+<span class="td">degree centigrade, plural) specifies a heat capacity scaled at 1000000.</span><br></span>
+<span class="tr line_no" id="line467">
+<!-- <span class="tr line_no" id="line467"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line468">
+<!-- <span class="tr line_no" id="line468"> -->
+<span class="td">The specification of heat capacity is <span class="i7sx">&quot;Heat capacity is also known as thermal</span></span><br></span>
+<span class="tr line_no" id="line469">
+<!-- <span class="tr line_no" id="line469"> -->
+<span class="td"><span class="i7sx">mass, and measures how much energy it takes to increase the temperature of</span></span><br></span>
+<span class="tr line_no" id="line470">
+<!-- <span class="tr line_no" id="line470"> -->
+<span class="td"><span class="i7sx">something by one degree. (See specific heat capacity for typical values.)</span></span><br></span>
+<span class="tr line_no" id="line471">
+<!-- <span class="tr line_no" id="line471"> -->
+<span class="td"><span class="i7sx">Entropy is also measured as a heat capacity.&quot;</span></span><br></span>
+<span class="tr line_no" id="line472">
+<!-- <span class="tr line_no" id="line472"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line473">
+<!-- <span class="tr line_no" id="line473"> -->
+<span class="td">Heat capacity times temperature specifies an energy.</span><br></span>
+<span class="tr line_no" id="line474">
+<!-- <span class="tr line_no" id="line474"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line475">
+<!-- <span class="tr line_no" id="line475"> -->
+<span class="td">Specific heat capacity is a kind of value.</span><br></span>
+<span class="tr line_no" id="line476">
+<!-- <span class="tr line_no" id="line476"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line477">
+<!-- <span class="tr line_no" id="line477"> -->
+<span class="td">1 J/kg/C (in metric units, in J/kg/C) or 1 Joule per kilogram per degree</span><br></span>
+<span class="tr line_no" id="line478">
+<!-- <span class="tr line_no" id="line478"> -->
+<span class="td">centigrade (in Joules per kilogram per degree centigrade, singular) or 2 Joules per</span><br></span>
+<span class="tr line_no" id="line479">
+<!-- <span class="tr line_no" id="line479"> -->
+<span class="td">kilogram per degree centigrade (in Joules per kilogram per degree centigrade,</span><br></span>
+<span class="tr line_no" id="line480">
+<!-- <span class="tr line_no" id="line480"> -->
+<span class="td">plural) specifies a specific heat capacity scaled at 1000.</span><br></span>
+<span class="tr line_no" id="line481">
+<!-- <span class="tr line_no" id="line481"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line482">
+<!-- <span class="tr line_no" id="line482"> -->
+<span class="td">Specific heat capacity times a mass specifies a heat capacity.</span><br></span>
+<span class="tr line_no" id="line483">
+<!-- <span class="tr line_no" id="line483"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line484">
+<!-- <span class="tr line_no" id="line484"> -->
+<span class="td">The specification of specific heat capacity is <span class="i7sx">&quot;Whereas heat capacity measures</span></span><br></span>
+<span class="tr line_no" id="line485">
+<!-- <span class="tr line_no" id="line485"> -->
+<span class="td"><span class="i7sx">the energy needed to heat up a specific object - say, a whole house - specific</span></span><br></span>
+<span class="tr line_no" id="line486">
+<!-- <span class="tr line_no" id="line486"> -->
+<span class="td"><span class="i7sx">heat capacity is the energy needed per kilogram of its mass. Thus wood, at</span></span><br></span>
+<span class="tr line_no" id="line487">
+<!-- <span class="tr line_no" id="line487"> -->
+<span class="td"><span class="i7sx">420 J/kg/C, heats up and cools down twice as fast as brick, marble, sand or</span></span><br></span>
+<span class="tr line_no" id="line488">
+<!-- <span class="tr line_no" id="line488"> -->
+<span class="td"><span class="i7sx">soil, all at about 800 J/kg/C; glass is somewhere in between. Liquid water</span></span><br></span>
+<span class="tr line_no" id="line489">
+<!-- <span class="tr line_no" id="line489"> -->
+<span class="td"><span class="i7sx">takes a lot more energy to heat up, at 4180 J/kg/C; but at least this means</span></span><br></span>
+<span class="tr line_no" id="line490">
+<!-- <span class="tr line_no" id="line490"> -->
+<span class="td"><span class="i7sx">that hot baths stay hot for a little while. Butters and oils tend to be in</span></span><br></span>
+<span class="tr line_no" id="line491">
+<!-- <span class="tr line_no" id="line491"> -->
+<span class="td"><span class="i7sx">the range 1500 to 2000 J/kg/C, and most foodstuffs in the 3000s: banana,</span></span><br></span>
+<span class="tr line_no" id="line492">
+<!-- <span class="tr line_no" id="line492"> -->
+<span class="td"><span class="i7sx">3350 J/kg/C; chicken, 3200 J/kg/C; eggs, 3180 J/kg/C and so forth.&quot;</span></span><br></span>
+<span class="tr line_no" id="line493">
+<!-- <span class="tr line_no" id="line493"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line494">
+<!-- <span class="tr line_no" id="line494"> -->
+<span class="td"><span class="i7cm">[That leaves torque, energy density, and a few other oddities.]</span></span><br></span>
+<span class="tr line_no" id="line495">
+<!-- <span class="tr line_no" id="line495"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line496">
+<!-- <span class="tr line_no" id="line496"> -->
+<span class="td">Approximate Metric Units ends here.</span><br></span>
+<span class="tr line_no" id="line497">
+<!-- <span class="tr line_no" id="line497"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line498">
+<!-- <span class="tr line_no" id="line498"> -->
+<span class="td">---- DOCUMENTATION ----</span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

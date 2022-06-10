@@ -1,0 +1,192 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../style.css">
+<script>function toggle_details() {
+   var openness, toggle_link;
+   toggle_link = document.getElementById("toggle");
+   openness = toggle_link.classList.toggle("open");
+document.querySelectorAll("details.full-example").forEach(detail => { if (openness) { detail.setAttribute("open", true); } else { detail.removeAttribute("open");} });
+   toggle_link.innerText = (openness ? "Close" : "Open") + " all examples";
+   }
+
+
+function copyCode(text) { navigator.clipboard.writeText(text); }
+
+
+var links = document.getElementsByTagName('a');
+for (var i = 0; i < links.length; i++) {
+    if (links[i].href.match(/^#example-\d+/)) {
+	links[i].onClick = function() { links[i].href.match(/^#example-(\d+)$/); var example = document.getElementById($1).setAttribute('open'); return true; };
+    }
+}
+
+function add_bar(update) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let navbar = document.querySelector('div.index-navbar');
+
+    if (navbar && urlParams.has('project')) {
+        navbar.setAttribute('class', 'index-navbar'); // removes hidden
+        let project = decodeURIComponent(urlParams.get('project'));
+        let index_root = project + '/.index/';
+        let build = project + '/Build/';
+        let query_arg = "?project="+encodeURIComponent(project);
+
+        let links = [
+            { "General Index": document.getElementById('general_index').href },
+            { "Docs": document.getElementById('docs').href },
+            { "Extensions": index_root + 'doc/Extensions.html' },
+            { "Definitions": index_root + 'doc/ExtIndex.html' },
+            { "Debug Log": build + 'debug_log.html' },
+            { "Problems": build + 'problems.html' },
+            { "Source": index_root + 'story.html' },
+            { "Project Index": index_root + 'Index/Welcome.html' } ];
+        let sp = document.createTextNode(" ");
+        links.forEach(h => {
+            Object.entries(h).forEach(([text, url]) => {
+                let my_id = text.toLowerCase().replace(' ', '_');
+                let a = document.querySelector('#'+my_id);
+                let url_target = "file://"+url+query_arg;
+                if (a) {
+                    let parts = a.href.split('#');
+                    let qparts = parts[0].split('?');
+                    a.href = qparts[0] +  (qparts[1] ? ('?' + qparts[1]) : query_arg) + (parts[1] ? ('#' + parts[1]) : "");
+                }
+                else {
+                    a = document.createElement('a');
+                    let href = document.createAttribute("href");
+                    href.value = url_target;
+                    a.setAttributeNode(href);
+                    let elem_id = document.createAttribute("id");
+                    elem_id.value = my_id;
+                    a.setAttributeNode(elem_id);
+                    let linktext = document.createTextNode(text);
+                    a.appendChild(linktext);
+                    navbar.insertBefore(sp.cloneNode(), navbar.firstChild);
+                    navbar.insertBefore(a, navbar.firstChild);
+                }
+            })});
+        if (update) {
+            let main_links = document.querySelectorAll('main a');
+            main_links.forEach(a => {
+                if (!a.href.startsWith('javascript:') || (a.href.match(/[^:]+:\/\// && !a.href.startsWith('file:')))) {
+                    let parts = a.href.split('#')
+                    a.href = parts[0] + query_arg + (parts[1] ? ('#' + parts[1]) : "");
+                } });
+        }
+    }
+}
+
+
+
+document.addEventListener("DOMContentLoaded", add_bar);</script>
+<title>Example #248</title></head>
+<body class="inform7-source">
+
+<div class="inform7-source"><div class="pseudo">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;Narrative Register&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7gh">Section 1 - Descriptive Functionality</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Describing relates various verbs to various action names. The verb to describe means the describing relation.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To take is a verb. To acquire is a verb. To get is a verb. To gain is a verb. To obtain is a verb. To pick up is a verb. To bag is a verb. To procure is a verb. To score is a verb. To grab is a verb. To snag is a verb. To snatch is a verb. To collect is a verb.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To drop is a verb. To put down is a verb. To discard is a verb. To throw away is a verb. To dispose of is a verb. To set down is a verb. To toss aside is a verb. To ditch is a verb. To abandon is a verb. To dump is a verb. To jettison is a verb. To abjure is a verb. To foresake is a verb. To dispense with is a verb.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">After an actor doing something to something when a verb describes (the action name part of the current action) (this is the apply random verbs to describing actions rule):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	score the relevant verbs;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	sort the Table of Verb Meanings in reverse relevance order;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	choose row 1 in the Table of Verb Meanings;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	let top score be the relevance entry;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	sort Table of Verb Meanings in random order;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	repeat through the Table of Verb Meanings:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if relevance entry is top score:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[The actor]</span><span class="i7sx"> </span><span class="i7si">[verb rendering applied to (word entry)]</span><span class="i7sx"> </span><span class="i7si">[the noun]</span><span class="i7sx">.&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	erase relevance;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	rule succeeds.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To decide which text is the rendering of (V - verb) (this is verb rendering):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	decide on <span class="i7sx">&quot;</span><span class="i7si">[adapt V]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To score the relevant verbs:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	repeat through the Table of Verb Meanings:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if the meaning entry is (the action name part of the current action):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	increase relevance entry by 1;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	repeat with chosen connotation running through connotations entry:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	if the chosen connotation is listed in the current register:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	increase relevance entry by 1;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	otherwise:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	decrease relevance entry by 1.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To erase relevance:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	repeat through Table of Verb Meanings:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	now relevance entry is 0.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A tonality is a kind of value. The tonalities are pompous, archaic, slangy, upbeat, downbeat.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Connoting relates various verbs to various tonalities. The verb to connote means the connoting relation.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The current register is a list of tonalities that varies. The current register is { }.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">When play begins:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	repeat through the Table of Verb Meanings:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	now the word entry describes the meaning entry;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	now relevance entry is 0;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	repeat with chosen tone running through the connotations entry:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	now the word entry connotes the chosen tone.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line">Table of Verb Meanings</span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">word</span><span class="td">meaning</span><span class="td">connotations</span><span class="td">relevance ( a number )</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">the verb take</span><span class="td">the taking action</span><span class="td">{ }</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">the verb acquire</span><span class="td">the taking action</span><span class="td">{ pompous }</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">the verb get</span><span class="td">the taking action</span><span class="td">{ }</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">the verb gain</span><span class="td">the taking action</span><span class="td">{ }</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">the verb obtain</span><span class="td">the taking action</span><span class="td">{ pompous }</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">the verb pick up </span><span class="td">the taking action</span><span class="td">{ }</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">the verb bag</span><span class="td">the taking action</span><span class="td">{ slangy }</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">the verb score</span><span class="td">the taking action</span><span class="td">{ slangy, upbeat }</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">the verb procure</span><span class="td">the taking action</span><span class="td">{ archaic }</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">the verb grab</span><span class="td">the taking action</span><span class="td">{ slangy }</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">the verb snag</span><span class="td">the taking action</span><span class="td">{ slangy }</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">the verb snatch</span><span class="td">the taking action</span><span class="td">{ slangy }</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">the verb collect</span><span class="td">the taking action</span><span class="td">{ }</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">the verb discard</span><span class="td">the dropping action</span><span class="td">{ pompous }</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">the verb drop</span><span class="td">the dropping action</span><span class="td">{ }</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">the verb put down</span><span class="td">the dropping action</span><span class="td">{ }</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">the verb toss aside</span><span class="td">the dropping action</span><span class="td">{ }</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">the verb ditch</span><span class="td">the dropping action</span><span class="td">{ slangy }</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">the verb throw away</span><span class="td">the dropping action</span><span class="td">{ }</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">the verb dispose of</span><span class="td">the dropping action</span><span class="td">{ }</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">the verb set down</span><span class="td">the dropping action</span><span class="td">{ }</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">the verb abandon</span><span class="td">the dropping action</span><span class="td">{ downbeat }</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">the verb dump</span><span class="td">the dropping action</span><span class="td">{ downbeat }</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">the verb abjure</span><span class="td">the dropping action</span><span class="td">{ archaic }</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">the verb foresake</span><span class="td">the dropping action</span><span class="td">{ archaic }</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">the verb jettison</span><span class="td">the dropping action</span><span class="td">{ pompous }</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">the verb dispense with</span><span class="td">the dropping action</span><span class="td">{ pompous }</span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Section 2 - Changing Tone Mid-Game</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;new tone&quot;</span> as changing the tone. Changing the tone is an action out of world.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Carry out changing the tone:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the current register is { };</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if a random chance of 1 in 4 succeeds:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;Your narrator will now adopt an ordinary tone.&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	rule succeeds;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	let rando be a random tonality;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	add rando to the current register, if absent;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;Your narrator will now be </span><span class="i7si">[rando]</span><span class="i7sx">.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7gh">Section 3 - Scenario</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Lab is a room. The table is here. The bat and the ball are on the table.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Test me with <span class="i7sx">&quot;get ball / drop ball / get bat / drop bat / new tone / get all / drop all / new tone / get all / drop all&quot;</span>.</span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

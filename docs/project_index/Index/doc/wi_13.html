@@ -1,0 +1,963 @@
+<!doctype html>
+<meta charset="utf-8"><html lang="en"><head><title>Writing in Inform 13. Relations</title><link rel="stylesheet" href="style.css"><script src="chapter.js"></script></head><body>
+<nav><div class="index-navbar hidden">
+<a id="project_index" href="../Welcome.html"> Project Index</a><a id="source" href="../../story.html"> Source</a><a id="problems" href="../../Build/problems.html"> Problems</a><a id="debug_log" href="../../Build/debug_log.html"> Debug Log</a><a id="definitions" href="./ExtIndex.html"> Definitions</a><a id="extensions" href="./Extensions.html"> Extensions</a><a id="docs" href="./index.html"> Docs</a><a id="general_index" href="./index.html#general-index"> General Index</a>
+
+</div>
+</nav>
+<main>
+<header>
+
+<div class="toc">
+<h1>Writing in Inform</h1>
+<div class="doc-navbar">
+<div>
+<div class="doc-navbar-left"><a class="nav-left" href="wi_12.html#wi-chapter-12-advanced-actions">12. Advanced Actions</a></div>
+<div class="doc-navbar-right"><a class="nav-right" href="wi_14.html#wi-chapter-14-adaptive-text-and-responses">14. Adaptive Text and Responses</a></div>
+</div>
+<div>
+<div class="doc-navbar-left"><a href="index.html">Table of Contents</a></div>
+<div class="doc-navbar-right"><a href="index.html#general-index">General Index</a></div>
+</div>
+</div>
+
+<div><a id="toggle" href="javascript:toggle_details('examples')">Open all examples</a></div>
+<h2>13. Relations</h2>
+<div class="toc-section">13.1 <a href="wi_13.html#wi-13.1">Sentence verbs</a></div>
+<div class="toc-section">13.2 <a href="wi_13.html#wi-13.2">What sentences are made up from</a></div>
+<div class="toc-section">13.3 <a href="wi_13.html#wi-13.3">What are relations?</a></div>
+<div class="toc-section">13.4 <a href="wi_13.html#wi-13.4">To carry, to wear, to have</a></div>
+<div class="toc-section">13.5 <a href="wi_13.html#wi-13.5">Making new relations</a></div>
+<div class="toc-section">13.6 <a href="wi_13.html#wi-13.6">Making reciprocal relations</a></div>
+<div class="toc-section">13.7 <a href="wi_13.html#wi-13.7">Relations in groups</a></div>
+<div class="toc-section">13.8 <a href="wi_13.html#wi-13.8">The built-in verbs and their meanings</a></div>
+<div class="toc-section">13.9 <a href="wi_13.html#wi-13.9">Defining new assertion verbs</a></div>
+<div class="toc-section">13.10 <a href="wi_13.html#wi-13.10">Defining new prepositions</a></div>
+<div class="toc-section">13.11 <a href="wi_13.html#wi-13.11">Indirect relations</a></div>
+<div class="toc-section">13.12 <a href="wi_13.html#wi-13.12">Relations which express conditions</a></div>
+<div class="toc-section">13.13 <a href="wi_13.html#wi-13.13">Relations involving values</a></div>
+<div class="toc-section">13.14 <a href="wi_13.html#wi-13.14">Relations as values in their own right</a></div>
+<div class="toc-section">13.15 <a href="wi_13.html#wi-13.15">Temporary relations</a></div>
+<div class="toc-section">13.16 <a href="wi_13.html#wi-13.16">What are relations for?</a></div>
+</header>
+<main>
+<section class="chapter" id="wi-chapter-13-relations">
+<section class="section" id="wi-13.1"><div>
+
+
+
+<h3>WI §13.1. Sentence verbs</h3>
+<p>Descriptions of things - "open door", "people in the Drawing Room" - have already had a whole chapter to themselves. But descriptions are only half of the story of Inform's highly flexible language for talking about places, things and circumstances: this chapter is the other half, and is about the "sentence". Of course all text is made up of sentences, but Inform has a more specific meaning than that. Consider the following pieces of source text:</p>
+
+<div class="code">
+<p class="quoted">
+The mouse is in the teapot.
+</p>
+<p class="quoted">
+Every turn when the mouse is in the teapot, say "A tail hangs out of the spout."
+</p>
+<p class="quoted">
+Instead of taking the mouse:
+<br>    say "The mouse slips from your hand and disappears into the teapot!";
+<br>    now the mouse is in the teapot.
+</p>
+</div>
+<p>What these three extracts have in common is the sentence "the mouse is in the teapot". Such a sentence can be used in three different ways: to declare the original state of the world, to ask during play if the world currently has that state, or to change things during play so that it does.</p>
+<p>Actually, though, only definite sentences about the present can be used in all three ways. A vague instruction like</p>
+
+<div class="code"><p class="quoted">
+now Mr Darcy can see the mouse;
+</p></div>
+<p>will fail, because there are so many ways in which Darcy might be able to see the mouse that Inform has no way to know how to arrange matters. And this by contrast is not merely difficult but impossible:</p>
+
+<div class="code"><p class="quoted">
+now Mr Darcy has never seen the mouse;
+</p></div>
+<p>Which cannot be arranged because the past cannot be changed.</p>
+<p>Verbs also turn up inside the more complicated descriptions. For instance,</p>
+
+<div class="code"><p class="quoted">
+things which are in the teapot
+<br>people who can see the mouse
+</p></div>
+<p>are both descriptions, not sentences, but they contain "to be" and "to be able to see" respectively.</p>
+<p>This chapter is about the verbs which can be used in sentences and descriptions. Inform involves many other features which use verbs - the action "taking the mouse" and the phrase "end the story" both use forms of verbs (to take and to end) - but this chapter has nothing to do with them: so for the sake of clarity, we will call verbs that occur in sentences "sentence verbs".</p>
+
+
+</div></section>
+<section class="section" id="wi-13.2"><div>
+
+
+
+
+
+<h3>WI §13.2. What sentences are made up from</h3>
+<p>A sentence consists of two nouns with a verb between them. Usually, the two nouns are descriptions, as in:</p>
+
+<div class="code"><p class="quoted">
+Mr Collins is in a lighted room.
+</p></div>
+<p>Here "Mr Collins" and "a lighted room" are descriptions. But there are sentences where one or both of the nouns is a value of some other kind. For instance, in</p>
+
+<div class="code"><p class="quoted">
+if the score is greater than 10, ...
+</p></div>
+<p>the sentence "the score is greater than 10" consists of two number values ("the score" and "10") connected by a verb part ("is greater than").</p>
+<p>This chapter is about getting the most out of sentences by defining new verbs to express ideas not already built in to Inform. Before we can define a new sentence verb, however, we must first look at the meanings of verbs: which Inform calls "relations".</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-223"><p class="example-p"><span class="example-short-start">223. <a href="rb_1.html#example-223" class="example-link" onClick="(function() { document.getElementById('example-223').setAttribute('open','open'); return true; })();">Formal syntax of sentences</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">A more formal description of the sentence grammar used by Inform for both assertions and conditions.</span> (c.f. <a href="rb_1.html#rb-1.4">RB §1.4. Information Only</a>)</p></div>
+</div></section>
+<section class="section" id="wi-13.3"><div>
+
+
+
+
+
+<h3>WI §13.3. What are relations?</h3>
+<p>Relations are what sentences express. They are yes/no questions about pairs of things: for example, to say that the coin is in the purse is to say that a particular relation ("being in") is true about a specific pair of things (the coin, the purse). It is neither a fact about the coin nor about the purse, but about the two together.</p>
+<p>Inform comes with a number of relations built in, almost all of which have been used in previous chapters already. The following table names some of the more useful ones, giving examples of sentences to bring them about:</p>
+
+<div class="code"><p class="quoted">
+containment relation - The coin is in the purse.
+<br>support relation - The coin is on the table.
+<br>incorporation relation - The coin is part of the sculpture.
+<br>carrying relation - The coin is carried by Peter.
+<br>wearing relation - The jacket is worn by Peter.
+<br>possession relation - if Mr Darcy has a rapier...
+<br>adjacency relation - The Study is east of the Hallway.
+<br>visibility relation - if Darcy can see Elizabeth...
+<br>touchability relation - if Darcy can touch Elizabeth...
+</p></div>
+<p>These relation names do not trip off the tongue, but they relatively seldom need to be referred to.</p>
+<p>The same meaning can often be expressed by using several different verbs, or using the same verb in several different ways, as in the following examples:</p>
+
+<div class="code"><p class="quoted">
+The coin is in the purse.
+<br>The purse contains the coin.
+<br>The coin is contained by the purse.
+</p></div>
+<p>all of which boil down to saying that the coin and purse satisfy the containment relation. Because of that, <em>relations are not the same as verbs</em>. To create a new idea, we will need first to create a new relation, and only then can we set up a verb which allows us to talk about that relation.</p>
+
+
+</div></section>
+<section class="section" id="wi-13.4"><div>
+
+
+
+
+
+<h3>WI §13.4. To carry, to wear, to have</h3>
+<p>Inform has altogether five mutually exclusive ways in which one thing can be physically joined to another one:</p>
+
+<div class="code"><p class="quoted">
+containment relation - The coin is in the purse.
+<br>support relation - The coin is on the table.
+<br>incorporation relation - The coin is part of the sculpture.
+<br>carrying relation - The coin is carried by Peter.
+<br>wearing relation - The jacket is worn by Peter.
+</p></div>
+<p>This is why we cannot have</p>
+
+<div class="code"><p class="quoted">
+The coin is on the table.
+<br>The coin is part of the table.
+</p></div>
+<p>simultaneously, and it is a rare exception to the general rule that having one relation does not affect having another.</p>
+<p>But there is also a sixth relation used in Inform for these meanings: the possession relation, which is the meaning of the verb "to have". At first sight this looks the same as the carrying relation, but in fact it is a convenient shorthand for "carrying or wearing", provided for conditions rather than assertions:</p>
+
+<div class="code"><p class="quoted">
+if Mr Darcy has a wet shirt ...
+</p></div>
+<p>will be true during play if he is either carrying or wearing the shirt.</p>
+<p>Still another relation exists which can be tested, but not declared to be true or false: the concealment relation, which is the meaning of the verb "to conceal". So we can ask:</p>
+
+<div class="code"><p class="quoted">
+if Mr Darcy conceals a fob watch ...
+</p></div>
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-224"><p class="example-p"><span class="example-short-start">224. <a href="rb_6.html#example-224" class="example-link" onClick="(function() { document.getElementById('example-224').setAttribute('open','open'); return true; })();">Celadon</a></span> <span class="example-difficulty">★</span>  <span class="example-description">Using the enclosure relation to let the player drop things which he only indirectly carries.</span> (c.f. <a href="rb_6.html#rb-6.8">RB §6.8. Taking, Dropping, Inserting and Putting</a>)</p></div>
+<div class="example-short" id="example-short-225"><p class="example-p"><span class="example-short-start">225. <a href="rb_10.html#example-225" class="example-link" onClick="(function() { document.getElementById('example-225').setAttribute('open','open'); return true; })();">Interrogation</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A wand which, when waved, reveals the concealed items carried by people the player can see.</span> (c.f. <a href="rb_10.html#rb-10.10">RB §10.10. Magic (Breaking the Laws of Physics)</a>)</p></div>
+</div></section>
+<section class="section" id="wi-13.5"><div>
+
+
+
+
+
+<h3>WI §13.5. Making new relations</h3>
+<p>We can create new relations like so:</p>
+
+<div class="code"><p class="quoted">
+Loving relates various people to one person.
+</p></div>
+<p>Every relation has a name which ends with the word "relation", and in this case the name is "loving relation". While the name is often just two words long, as here, it doesn't have to be:</p>
+
+<div class="code"><p class="quoted">
+Adept sensitivity relates one person to one vehicle.
+</p></div>
+<p>makes the "adept sensitivity relation". (The limit is 32 words.)</p>
+<p>In such a definition, we have to say what kind of thing appears on the left and right of any relation, and also whether "one" or "various" possibilities can exist. In the example</p>
+
+<div class="code"><p class="quoted">
+Loving relates various people to one person.
+</p></div>
+<p>what we are saying is that only people love; that they only love people; and that each person loves only one other person (at any given moment).</p>
+<p>The "various" part comes in because, for instance, we might have:</p>
+
+<div class="code"><p class="quoted">
+Verenka <em>loving relation</em> Stankevich
+<br>Liubov <em>loving relation</em> Stankevich
+</p></div>
+<p>so that various people (Verenka and Liubov, to name but two) love one person (Stankevich). But we are forbidding anyone to love two other people at the same time: Stankevich must decide which of them to love, or pick someone else, or no-one at all. Similarly, we would not allow</p>
+
+<div class="code"><p class="quoted">
+Liubov <em>loving relation</em> Belinsky
+</p></div>
+<p>It is sometimes convenient to give a name to the other side of a relationship, so to speak. We might imagine:</p>
+
+<div class="code"><p class="quoted">
+Pet-ownership relates various animals to one person (called the owner).
+</p></div>
+<p>It would then make sense to talk about "the owner of Loulou", and we could have phrases like "now Flaubert is the owner of Loulou" or "if the owner of Loulou is a woman..." and so forth. This, however, would not be allowed:</p>
+
+<div class="code"><p class="quoted">
+Pet-ownership relates various animals (called the pet) to one person.
+</p></div>
+<p>because "the pet of Flaubert" would be ambiguous: he might have owned dozens.</p>
+
+
+</div></section>
+<section class="section" id="wi-13.6"><div>
+
+
+
+
+
+<h3>WI §13.6. Making reciprocal relations</h3>
+<p>The relationships described in this chapter so far are by no means always reciprocated. For instance, if a stone is on a table, then it is never true that the table is also on the stone. And the question may not even be meaningful to ask. If Peter wears a jacket, the jacket does not even have the possibility of wearing Peter.</p>
+<p>But sometimes we do want a relation which works both ways equally well. These are simple to set up:</p>
+
+<div class="code"><p class="quoted">
+Meeting relates people to each other.
+</p></div>
+<p>The effect is that various people know various other people, and this is always reciprocated. If Daisy knows Sophie then, automatically, Sophie knows Daisy. This even-handedness is maintained throughout play, so that whatever changes are made it is always true that if A knows B then B knows A.</p>
+<p>And similarly for a reciprocal relation between one and another:</p>
+
+<div class="code"><p class="quoted">
+Marriage relates one person to another.
+</p></div>
+<p>In this case, we can again give a name to the partner under a relation:</p>
+
+<div class="code"><p class="quoted">
+Marriage relates one person to another (called the spouse).
+</p></div>
+<p>and now, for instance, we may have that the spouse of John is Yoko and the spouse of Yoko is John.</p>
+<p>Since many of these examples have involved people, it might be worth mentioning again that any kind can be involved, not just the "person" kind.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-226"><p class="example-p"><span class="example-short-start">226. <a href="rb_9.html#example-226" class="example-link" onClick="(function() { document.getElementById('example-226').setAttribute('open','open'); return true; })();">Four Cheeses</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">A system of telephones on which the player can call distant persons and have conversations.</span> (c.f. <a href="rb_9.html#rb-9.10">RB §9.10. Telephones</a>)</p></div>
+</div></section>
+<section class="section" id="wi-13.7"><div>
+
+
+
+
+
+<h3>WI §13.7. Relations in groups</h3>
+<p>Finally, there is a kind of relation which binds even more strongly.</p>
+
+<div class="code"><p class="quoted">
+Nationality relates people to each other in groups.
+</p></div>
+<p>This is a kind of relation which divides people up: we might wish to have all the Icelandic people related to each other, all the Peruvians to each other, and so on. If there were a Pacific island called Informia with one inhabitant, then that person would be related only to himself. As time goes by, we could imagine people emigrating, and so on, so that these groupings would switch: perhaps everyone would leave Belgium and, for a while, there would be no Belgian nationals at all.</p>
+<p>The testing command RELATIONS prints out the current state of all the relations created in the source code. For instance:</p>
+
+<div class="code"><p class="quoted">
+&gt;relations
+<br>Overlooking relates various rooms to various rooms:
+<br>    The Pub  &gt;=&gt;  the Garden
+<br>    The Garden  &gt;=&gt;  the Shrubbery
+<br>    The Shrubbery  &gt;=&gt;  the Sundial Plot
+<br>Friendship relates people to each other:
+<br>    Mr Wickham  &lt;=&gt;  Sophie
+<br>    Charlotte  &lt;=&gt;  Sophie
+<br>Marriage relates one person to another:
+<br>    Mr Wickham  ==  Sophie
+</p></div>
+<p>That can produce a lot of output. To see only a single relation, or to see it at some intermediate point in a calculation, there's also a testing phrase:</p>
+
+<div class="definition" id="defn156">
+<p class="defnprototype"><strong>show relation </strong>(relation of values to values)<strong></strong></p>
+
+
+
+<p>This phrase is for testing purposes only. It shows the current state of the named relation, that is, it shows which values relate to which other ones, where it's possible to do this in any sensible way.</p>
+
+
+</div>
+
+<p>But this is a phrase - not a typed command.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-227"><p class="example-p"><span class="example-short-start">227. <a href="rb_10.html#example-227" class="example-link" onClick="(function() { document.getElementById('example-227').setAttribute('open','open'); return true; })();">Transmutations</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A machine that turns objects into other, similar objects.</span> (c.f. <a href="rb_10.html#rb-10.10">RB §10.10. Magic (Breaking the Laws of Physics)</a>)</p></div>
+<div class="example-short" id="example-short-228"><p class="example-p"><span class="example-short-start">228. <a href="rb_10.html#example-228" class="example-link" onClick="(function() { document.getElementById('example-228').setAttribute('open','open'); return true; })();">Otranto</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">A kind of rope which can be tied to objects and used to anchor the player or drag items from room to room.</span> (c.f. <a href="rb_10.html#rb-10.6">RB §10.6. Ropes</a>)</p></div>
+</div></section>
+<section class="section" id="wi-13.8"><div>
+
+
+
+
+
+<h3>WI §13.8. The built-in verbs and their meanings</h3>
+<p>It is all very well to define new relations, but this does nothing if there is no way to assert that they are true, or to ask whether they are true or false. That requires a verb: in fact, a relation is nothing more than what Inform uses as the "meaning" of a verb. The assertion verbs built in to Inform have the following built-in relations as their meanings:</p>
+
+<div class="code"><p class="quoted">
+<strong>Verb - Relation</strong>
+<br>to be - equality relation
+<br>to have - possession relation
+<br>to contain - containment relation
+<br>to support - support relation
+<br>to carry - carrying relation
+<br>to wear - wearing relation
+<br>to incorporate - incorporation relation
+</p></div>
+<p>Two of Inform's built-in relations are expressed using prepositions instead:</p>
+
+<div class="code"><p class="quoted">
+<strong>Preposition - Relation</strong>
+<br>to be part of - (reversed) incorporation relation
+<br>to be adjacent to - adjacency relation
+</p></div>
+<p>It would be easy to make verbs for these if we wanted ("to adjoin", say) using the techniques of the next section.</p>
+<p>The verb <em>to be</em> is grammatically different from any other, and its meaning is too complicated to be fully expressed by any one relation. A great deal of the Inform program is given over to its "meaning", which we are not allowed to change or imitate. The "equality relation" is simple enough, and is the one implied by conditions like</p>
+
+<div class="code"><p class="quoted">
+if the score is 20, ...
+</p></div>
+<p>but <em>to be</em> can have more complicated implications - "if Mr Wickham is hungry" clearly doesn't test whether two quantities are equal. Fortunately the other verbs are much simpler.</p>
+<p>There are a few other built-in verbs, as can be seen in the Index, but these are mostly for experts only. For example:</p>
+
+<div class="code"><p class="quoted">
+<strong>Verb - Relation</strong>
+<br>to mean - meaning relation
+<br>to provide - provision relation
+</p></div>
+<p>"To mean" can be used to make new verbs, as we'll soon see. Provision is to do with whether something can have a given property: for example, "if R provides the property lighted" tests whether R is able to have this property, not whether it actually has it at the moment.</p>
+
+
+</div></section>
+<section class="section" id="wi-13.9"><div>
+
+
+
+
+
+<h3>WI §13.9. Defining new assertion verbs</h3>
+<p>Here is an example definition of a new verb:</p>
+
+<div class="code"><p class="quoted">
+The verb to sport means the wearing relation.
+</p></div>
+<p>Once this is done, we can write the assertion</p>
+
+<div class="code"><p class="quoted">
+Mr Wickham sports a Tory rosette.
+</p></div>
+<p>which will do the the same thing as</p>
+
+<div class="code"><p class="quoted">
+Mr Wickham wears a Tory rosette.
+</p></div>
+<p>because both verbs have the same relation as their meaning.</p>
+<p>Earlier versions of Inform needed to be told how to make other parts of the verb, but that's rarely true now. Just writing:</p>
+
+<div class="code"><p class="quoted">
+The verb to sport means the wearing relation.
+</p></div>
+<p>is enough for Inform to understand "he sports", "they sport", "he sported", "it is sported", "he is sporting", "he had sported" and so on. It works with irregular verbs, too; it has a very comprehensive dictionary. But it's legal to spell out the conjugation if need be:</p>
+
+<div class="code"><p class="quoted">
+The verb to sport (he sports, they sport, he sported, it is sported) implies the knowledge relation.
+</p></div>
+<p>Occasionally it's convenient to have the relation the other way around. For instance:</p>
+
+<div class="code"><p class="quoted">
+The verb to grace means the reversed wearing relation.
+</p></div>
+<p>With that defined, these two sentences have identical meanings:</p>
+
+<div class="code"><p class="quoted">
+Mr Wickham sports a Tory rosette.
+<br>A Tory rosette graces Mr Wickham.
+</p></div>
+<p>Reversed in this sense means that the things related - the subject and object of the verb - are the other way round.</p>
+<p>The Phrasebook index contains all the verbs associated with assertions, in the Verbs section. When we add new verbs to our source, those will appear in the Phrasebook as well.</p>
+<p>The verbs above ("to grace", "to sport") are short ones, but we're free to make them longer than that. For example:</p>
+
+<div class="code">
+<p class="quoted">
+The verb to cover oneself with means the wearing relation.
+</p>
+<p class="quoted">
+Peter is covering himself with a tent-like raincoat.
+</p>
+</div>
+<p>Here we have "to cover oneself with", four words long; the limit is 29.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-229"><p class="example-p"><span class="example-short-start">229. <a href="rb_7.html#example-229" class="example-link" onClick="(function() { document.getElementById('example-229').setAttribute('open','open'); return true; })();">Unthinkable Alliances</a></span> <span class="example-difficulty">★</span>  <span class="example-description">People are to be grouped into alliances. To kiss someone is to join his or her faction, which may make a grand alliance; to strike them is to give notice of quitting, and to become a lone wolf.</span> (c.f. <a href="rb_7.html#rb-7.16">RB §7.16. Social Groups</a>)</p></div>
+<div class="example-short" id="example-short-230"><p class="example-p"><span class="example-short-start">230. <a href="rb_11.html#example-230" class="example-link" onClick="(function() { document.getElementById('example-230').setAttribute('open','open'); return true; })();">The Unexamined Life</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">An adaptive hint system that tracks what the player needs to have seen or to possess in order to solve a given puzzle, and doles out suggestions accordingly. Handles changes in the game state with remarkable flexibility, and allows the player to decide how explicit a nudge he wants at any given moment.</span> (c.f. <a href="rb_11.html#rb-11.3">RB §11.3. Helping and Hinting</a>)</p></div>
+</div></section>
+<section class="section" id="wi-13.10"><div>
+
+
+
+
+
+<h3>WI §13.10. Defining new prepositions</h3>
+<p>The term preposition is used here, a little loosely, to mean anything which we add to the verb <em>to be</em> in order to talk about some relation or other. We have seen many examples already, such as:</p>
+
+<div class="code"><p class="quoted">
+To be in - The ball is in the box.
+<br>To be part of - The lever is part of the slot machine.
+</p></div>
+<p>These are defined just the way verbs are. Compare the following:</p>
+
+<div class="code">
+<p class="quoted">
+Suspicion relates various people to one person.
+</p>
+<p class="quoted">
+The verb to suspect means the suspicion relation.
+</p>
+<p class="quoted">
+The verb to be suspicious of means the suspicion relation.
+</p>
+</div>
+<p>The result of this is that</p>
+
+<div class="code"><p class="quoted">
+Hercule Poirot suspects Colonel Hotchkiss.
+<br>Hercule Poirot is suspicious of Colonel Hotchkiss.
+</p></div>
+<p>are exactly equivalent, and so are these two descriptions:</p>
+
+<div class="code"><p class="quoted">
+somebody who suspects Colonel Hotchkiss
+<br>somebody suspicious of Colonel Hotchkiss
+</p></div>
+<p>While most prepositions are short ("in", "part of", "suspicious of"), they're free to be longer if need be ("inordinately far away from"): the limit is 30 words, which should be ample.</p>
+<p>We can also define verbs as auxiliaries, like so:</p>
+
+<div class="code"><p class="quoted">
+The verb to be able to approach means the approachability relation.
+</p></div>
+<p>Now we can ask if Poirot "can approach" Hotchkiss, and so on.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-231"><p class="example-p"><span class="example-short-start">231. <a href="rb_6.html#example-231" class="example-link" onClick="(function() { document.getElementById('example-231').setAttribute('open','open'); return true; })();">Beneath the Surface</a></span> <span class="example-difficulty">★</span>  <span class="example-description">An "underlying" relation which adds to the world model the idea of objects hidden under other objects.</span> (c.f. <a href="rb_6.html#rb-6.6">RB §6.6. Looking Under and Hiding</a>)</p></div>
+<div class="example-short" id="example-short-232"><p class="example-p"><span class="example-short-start">232. <a href="rb_7.html#example-232" class="example-link" onClick="(function() { document.getElementById('example-232').setAttribute('open','open'); return true; })();">The Abolition of Love</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A thorough exploration of all the kinds of relations established so far, with the syntax to set and unset them.</span> (c.f. <a href="rb_7.html#rb-7.16">RB §7.16. Social Groups</a>)</p></div>
+<div class="example-short" id="example-short-233"><p class="example-p"><span class="example-short-start">233. <a href="rb_10.html#example-233" class="example-link" onClick="(function() { document.getElementById('example-233').setAttribute('open','open'); return true; })();">Swerve left? Swerve right? Or think about it and die?</a></span> <span class="example-difficulty">★</span>  <span class="example-description">Building a marble chute track in which a dropped marble will automatically roll downhill.</span> (c.f. <a href="rb_10.html#rb-10.5">RB §10.5. Volume, Height, Weight</a>)</p></div>
+<div class="example-short" id="example-short-234"><p class="example-p"><span class="example-short-start">234. <a href="rb_9.html#example-234" class="example-link" onClick="(function() { document.getElementById('example-234').setAttribute('open','open'); return true; })();">Bogart</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">Clothing for the player that layers, so that items cannot be taken off in the wrong order, and the player's inventory lists only the clothing that is currently visible.</span> (c.f. <a href="rb_9.html#rb-9.3">RB §9.3. Clothing</a>)</p></div>
+</div></section>
+<section class="section" id="wi-13.11"><div>
+
+
+
+
+
+<h3>WI §13.11. Indirect relations</h3>
+<p>We have already seen, in the <a href="wi_6.html#wi-chapter-6-descriptions">chapter on Descriptions</a> which is a forerunner of this one, that Inform provides not only "adjacent" as a way of seeing if one room is directly connected to another, but also "the best route from A to B", which allows us to see if any sequence of moves connects them.</p>
+<p>Something similar - in fact, simpler - is allowed for any relation between objects. Suppose we would like to go sledging: we can go downhill, but not up. Some quite distant places may be reachable, while others close by may not be, even if lower than us, because they would involve climbing again at some point. The following would implement this:</p>
+
+<div class="code">
+<p class="quoted">
+ Overlooking relates various rooms to various rooms.
+</p>
+<p class="quoted">
+The verb to overlook means the overlooking relation.
+</p>
+<p class="quoted">
+The Garden overlooks the Shrubbery. The Folly overlooks the Garden. The Shrubbery overlooks the Sundial Plot. The Old Ice House overlooks the Garden.
+</p>
+<p class="quoted">
+After looking:
+<br>    say "This wintry vantage point overlooks [the list of rooms overlooked by the location].";
+<br>    let the way be the next step via the overlooking relation from the location to the Sundial Plot;
+<br>    if the way is a room, say "To sledge downhill to the Sundial, aim for [the way].";
+<br>    otherwise say "It is not possible to sledge downhill to the Sundial."
+</p>
+</div>
+<p>Here we're making use of:</p>
+
+<div class="definition" id="defn157">
+<p class="defnprototype"><strong>next step via </strong>(relation of values to values)<strong> from </strong>(object)<strong> to </strong>(object)<strong> ... object</strong></p>
+
+
+
+<p>This phrase tries to find a shortest route between the two given endpoints, using the given relation of objects to determine single steps. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+next step via the overlooking relation from the Folly to the Chinese Lake
+</p></blockquote>
+
+<p>The result is the special object value "nothing" if the two endpoints are the same or if no route exists.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn158">
+<p class="defnprototype"><strong>number of steps via </strong>(relation of values to values)<strong> from </strong>(object)<strong> to </strong>(object)<strong> ... number</strong></p>
+
+
+
+<p>This phrase tries to find the length of a shortest route between the two given endpoints, using the given relation of objects to determine single steps. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+number of steps via the overlooking relation from the Folly to the Chinese Lake
+</p></blockquote>
+
+<p>The result is 0 if the two endpoints are the same, or -1 if no route exists.</p>
+
+
+</div>
+
+<p>Another example would be the "six degrees of separation" game, where it is claimed that any two people on Earth are connected by a sequence of up to six acquaintances. In an Inform implementation, we might talk about "the next step via the friendship relation from George Bush to Saddam Hussein", for instance, a phrase likely to evaluate to Donald Rumsfeld, and then</p>
+
+<div class="code"><p class="quoted">
+the number of steps via the friendship relation from George Bush to Saddam Hussein
+</p></div>
+<p>would be... but that would be telling.</p>
+<p>As with route-finding through the map, finding "the next step via" a relation can be slow. For instance, suppose we have dozens of articles of clothing all partially revealing each other, connected by two relations - overlying and underlying. Then "the next step via" these relations allows us to establish what can be worn on top of what else. If we need to calculate this often, and there are enormous wardrobes of clothes to choose from, speed starts to matter.</p>
+<p>Once again there is a choice of algorithms: "fast" and "slow", where "fast" needs much more memory. To make route-finding for a given relation "fast", we have to declare it that way:</p>
+
+<div class="code"><p class="quoted">
+Overlying relates various garments to various garments with fast route-finding.
+<br>Overlapping relates various garments to each other with fast route-finding.
+</p></div>
+<p>Otherwise, the "slow" method will be used.</p>
+<p>This "with fast route-finding" note can only be added to various-to-various relations. (Although route-finding through various-to-one and one-to-various relations is fully supported, it exploits the relative simplicity of these problems to use a more efficient algorithm than either "fast" or "slow".)</p>
+
+
+
+</div>
+<div class="crossreferences">
+<h4>See also</h4>
+<div class="crossreference">
+<a href="wi_6.html#wi-6.14" class="crossreference_link">Adjacent rooms and routes through the map</a> for route-finding through the map rather than a relation</div>
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-235"><p class="example-p"><span class="example-short-start">235. <a href="rb_7.html#example-235" class="example-link" onClick="(function() { document.getElementById('example-235').setAttribute('open','open'); return true; })();">The Problem of Edith</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">A conversation in which the main character tries to build logical connections between what the player is saying now and what went immediately before.</span> (c.f. <a href="rb_7.html#rb-7.11">RB §7.11. Character Knowledge and Reasoning</a>)</p></div>
+</div></section>
+<section class="section" id="wi-13.12"><div>
+
+
+
+
+
+<h3>WI §13.12. Relations which express conditions</h3>
+<p>One last way to create a new relation and, in many ways, the easiest of all. If we write:</p>
+
+<div class="code"><p class="quoted">
+Contact relates a thing (called X) to a thing (called Y) when X is part of Y or Y is part of X. The verb to be joined to means the contact relation.
+</p></div>
+<p>then we would be able to talk about a handle being joined to a door, and a door being joined to a handle, and so on. We are not allowed to declare:</p>
+
+<div class="code"><p class="quoted">
+The hook is joined to the line.
+</p></div>
+<p>because the question of whether they are joined is not for us to decide: that will be for the condition to determine, whenever we test it. Similarly, we cannot meaningfully write</p>
+
+<div class="code"><p class="quoted">
+now the hook is joined to the line;
+</p></div>
+<p>(and Inform will not let us) because this relation is not something we can force either way: we can make it come true by other means, maybe, but we cannot simply make it true by saying so. Lastly, this kind of relation is restricted in that we are not allowed to find paths or calculate numbers of steps through it.</p>
+<p>So this way to define relations is, on the face of it, just a sort of verbal trick to write conditions in a more attractive way. The more flexible, changeable relations in previous sections have much greater expressive power. All the same, it is nice to be able to write -</p>
+
+<div class="code"><p class="quoted">
+Nearness relates a room (called A) to a room (called B) when the number of moves from B to A is less than 3. The verb to be near means the nearness relation.
+</p></div>
+<p>and then to be able to write rules like:</p>
+
+<div class="code"><p class="quoted">
+Instead of listening when the location is near the Sundial: say "You hear a splashing of water."
+</p></div>
+<p>As with other relations, there's no reason why we have to use objects. For example:</p>
+
+<div class="code">
+<p class="quoted">
+Material is a kind of value. The materials are wood and metal. A thing has a material.
+</p>
+<p class="quoted">
+Materiality relates a thing (called X) to a material (called Y) when Y is the material of X. The verb to be made of means the materiality relation.
+</p>
+</div>
+<p>which enables us to write:</p>
+
+<div class="code"><p class="quoted">
+if the cube is made of wood, ...
+<br>say "The carpenter looks at [the list of things which are made of wood].";
+</p></div>
+<p>And here is a mathematical one:</p>
+
+<div class="code"><p class="quoted">
+Divisibility relates a number (called N) to a number (called M) when the remainder after dividing M by N is 0. The verb to divide means the divisibility relation. The verb to be a factor of means the divisibility relation.
+</p></div>
+<p>We now find that "2 divides 12", "5 is not a factor of 12" and "12 is divisible by 3" are all true. Again, we are only really gaining a nice form of words, but improving the clarity of the source text is never a bad thing.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-236"><p class="example-p"><span class="example-short-start">236. <a href="rb_3.html#example-236" class="example-link" onClick="(function() { document.getElementById('example-236').setAttribute('open','open'); return true; })();">Wainwright Acts</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A technical note about checking the location of door objects when characters other than the player are interacting with them.</span> (c.f. <a href="rb_3.html#rb-3.5">RB §3.5. Doors, Staircases, and Bridges</a>)</p></div>
+<div class="example-short" id="example-short-237"><p class="example-p"><span class="example-short-start">237. <a href="rb_7.html#example-237" class="example-link" onClick="(function() { document.getElementById('example-237').setAttribute('open','open'); return true; })();">A Humble Wayside Flower</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">Relations track the relationships between one character and another. Whenever the player meets a relative of someone he already knows, he receives a brief introduction.</span> (c.f. <a href="rb_7.html#rb-7.1">RB §7.1. Getting Acquainted</a>)</p></div>
+</div></section>
+<section class="section" id="wi-13.13"><div>
+
+
+
+
+
+<h3>WI §13.13. Relations involving values</h3>
+<p>Although most of the examples in this chapter have involved objects, relations can connect almost any values together. We can create relations in groups, one to various relations, various to one relations, one to one relations, and various to various relations for any combination of kinds. For example:</p>
+
+<div class="code">
+<p class="quoted">
+Partnership relates various texts to various texts.
+</p>
+<p class="quoted">
+The verb to belong with means the
+<br>partnership relation.
+</p>
+<p class="quoted">
+"cheese" belongs with "crackers".
+<br>"clam" belongs with "chowder".
+</p>
+</div>
+<p>How might we make use of this? Clearly it would be impractical to keep trying:</p>
+
+<div class="code"><p class="quoted">
+if "caviar" belongs with "aardvarks", ...
+<br>if "caviar" belongs with "abacuses", ...
+<br>...
+</p></div>
+<p>to find out what "caviar" belongs with. It's still harder to find out if it belongs with anything at all -- in theory we would have to try every possibility, which of course is impossible. Instead we have these phrases:</p>
+
+<div class="definition" id="defn159">
+<p class="defnprototype"><strong>if </strong>(value)<strong> relates to </strong>(name of kind)<strong> by </strong>(relation of values to values)<strong>:</strong></p>
+
+
+
+<p>This condition is true if the value V is such that V relates to something by the given relation. Example: suppose partnership relates various texts to various texts. Then we can test</p>
+
+<blockquote class="code"><p class="quoted">
+if "chalk" relates to a text by the partnership relation, ...
+</p></blockquote>
+
+
+
+</div>
+
+
+<div class="definition" id="defn160">
+<p class="defnprototype"><strong>if </strong>(name of kind)<strong> relates to </strong>(value)<strong> by </strong>(relation of values to values)<strong>:</strong></p>
+
+
+
+<p>This condition is true if the value V is such that something relates to V by the given relation. Example: suppose partnership relates various texts to various texts. Then we can test</p>
+
+<blockquote class="code"><p class="quoted">
+if a text relates to "cheese" by the partnership relation, ...
+</p></blockquote>
+
+
+
+</div>
+
+<p>If a partner does exist, then we can find it with:</p>
+
+<div class="definition" id="defn161">
+<p class="defnprototype"><strong></strong>(name of kind)<strong> to which</strong>/whom<strong> </strong>(value)<strong> relates by </strong>(relation of values to values)<strong> ... value</strong></p>
+<br><em>or:</em>   <p class="defnprototype"><strong></strong>(name of kind)<strong> that</strong>/which/whom<strong> </strong>(value)<strong> relates to by </strong>(relation of values to values)<strong> ... value</strong></p>
+
+
+
+<p>This phrase produces an Y such that the given value V relates to Y by the given relation. Example: suppose partnership relates various texts to various texts. Then we can obtain</p>
+
+<blockquote class="code"><p class="quoted">
+the text to which "chalk" relates by the partnership relation
+</p></blockquote>
+
+<p>which might be, say, "cheese". It's a run-time problem to use this if no such Y exists.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn162">
+<p class="defnprototype"><strong></strong>(name of kind)<strong> that</strong>/which/who<strong> relates to </strong>(value)<strong> by </strong>(relation of values to values)<strong> ... value</strong></p>
+
+
+
+<p>This phrase produces an X such that X relates to the given value V by the given relation. Example: suppose partnership relates various texts to various texts. Then we can obtain</p>
+
+<blockquote class="code"><p class="quoted">
+the text which relates to "cheese" by the partnership relation
+</p></blockquote>
+
+<p>which might be, say, "chalk". It's a run-time problem to use this if no such X exists.</p>
+
+
+</div>
+
+<p>Of course, there might be many answers to this question, so perhaps these are neater:</p>
+
+<div class="definition" id="defn163">
+<p class="defnprototype"><strong>list of </strong>(name of kind)<strong> that</strong>/which/who<strong> relate to </strong>(value)<strong> by </strong>(relation of values to values)<strong> ... value</strong></p>
+
+
+
+<p>This phrase produces a list of all the X such that X relates to the given value V by the given relation. Example: suppose partnership relates various texts to various texts. Then we can obtain</p>
+
+<blockquote class="code"><p class="quoted">
+list of texts which relate to "cheese" by the partnership relation
+</p></blockquote>
+
+<p>which might be, say, { "chalk", "grapes", "macaroni" }. The answer might be the empty set, but that's not a problem.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn164">
+<p class="defnprototype"><strong>list of </strong>(name of kind)<strong> to which</strong>/whom<strong> </strong>(value)<strong> relates by </strong>(relation of values to values)<strong> ... value</strong></p>
+<br><em>or:</em>   <p class="defnprototype"><strong>list of </strong>(name of kind)<strong> that</strong>/which/whom<strong> </strong>(value)<strong> relates to by </strong>(relation of values to values)<strong> ... value</strong></p>
+
+
+
+<p>This phrase produces a list of all Y such that the given value V relates to Y by the given relation. Example: suppose partnership relates various texts to various texts. Then we can obtain</p>
+
+<blockquote class="code"><p class="quoted">
+list of texts to which "chalk" relates by the partnership relation
+</p></blockquote>
+
+<p>which might be, say, { "cheese", "blackboard", "cliffs" }. The answer might be the empty set, but that's not a problem.</p>
+
+
+</div>
+
+<p>Finally, it's sometimes useful to get at the list of all values which can appear on the left or right hand side of a relation. We need tongue-twister like wording to do it, but:</p>
+
+<div class="definition" id="defn165">
+<p class="defnprototype"><strong>list of </strong>(name of kind)<strong> that</strong>/which/whom<strong> </strong>(relation of values to values)<strong> relates ... value</strong></p>
+
+
+
+<p>This phrase produces a list of all X which relate to anything under the given relation. Example: suppose partnership relates various texts to various texts. Then we can obtain</p>
+
+<blockquote class="code"><p class="quoted">
+list of texts which the partnership relation relates
+</p></blockquote>
+
+
+
+</div>
+
+
+<div class="definition" id="defn166">
+<p class="defnprototype"><strong>list of </strong>(name of kind)<strong> to which</strong>/whom<strong> </strong>(relation of values to values)<strong> relates ... value</strong></p>
+<br><em>or:</em>   <p class="defnprototype"><strong>list of </strong>(name of kind)<strong> that</strong>/which/whom<strong> </strong>(relation of values to values)<strong> relates to ... value</strong></p>
+
+
+
+<p>This phrase produces a list of all Y which anything relates to under the given relation. Example: suppose partnership relates various texts to various texts. Then we can obtain</p>
+
+<blockquote class="code"><p class="quoted">
+list of texts which the partnership relation relates to
+</p></blockquote>
+
+
+
+</div>
+
+<p>For efficiency reasons, there are no guarantees about what order these lists have - but they can of course always be sorted when found.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-238"><p class="example-p"><span class="example-short-start">238. <a href="rb_7.html#example-238" class="example-link" onClick="(function() { document.getElementById('example-238').setAttribute('open','open'); return true; })();">Meet Market</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A case in which relations give characters multiple values of the same kind.</span> (c.f. <a href="rb_7.html#rb-7.1">RB §7.1. Getting Acquainted</a>)</p></div>
+<div class="example-short" id="example-short-239"><p class="example-p"><span class="example-short-start">239. <a href="rb_7.html#example-239" class="example-link" onClick="(function() { document.getElementById('example-239').setAttribute('open','open'); return true; })();">For Demonstration Purposes</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">A character who learns new actions by watching the player performing them.</span> (c.f. <a href="rb_7.html#rb-7.14">RB §7.14. Obedient Characters</a>)</p></div>
+</div></section>
+<section class="section" id="wi-13.14"><div>
+
+
+
+
+
+<h3>WI §13.14. Relations as values in their own right</h3>
+<p>As we've seen, most relations have names - "containment relation", for instance. These are themselves values in Inform, though there are a few restrictions on how they are used. (Relations can contain a colossal amount of data, so we don't want to have to copy them casually.)</p>
+<p>Consider these two examples:</p>
+
+<div class="code">
+<p class="quoted">
+Parity relates a number (called N) to a number (called M) when N minus M is even.
+</p>
+<p class="quoted">
+Joint magnitude relates a number (called N) to a number (called M) when N plus M is greater than 7.
+</p>
+</div>
+<p>Here "parity relation" and "joint magnitude relation" are both values of the same kind: "relation of numbers to numbers". In general, every relation is a value of kind "relation of K to L", for the appropriate kinds K and L. So the parity relation doesn't have the same kind as the containment relation, for example. Because it often happens that K and L are the same, we can just say "relation of K" in this case, so we could equally say that the kind of the parity relation is "relation of numbers".</p>
+<p>This is useful to know when writing phrases like so:</p>
+
+<div class="code"><p class="quoted">
+To chart (R - a relation of numbers):
+<br>    repeat with N running from 1 to 5:
+<br>        repeat with M running from 1 to 5:
+<br>            if R relates N to M, say "[N] &lt;=&gt; [M]   ";
+<br>        say "[line break]";
+</p></div>
+<p>and now "chart parity relation" will work nicely, but "chart visibility relation" will be rejected (as it should be, because it relates things, not numbers). In general, if R is any relation, we can write</p>
+
+<div class="code"><p class="quoted">
+if R relates X to Y, ...
+<br>now R relates X to Y;
+<br>now R does not relate X to Y;
+</p></div>
+<p>to test, set and unset a relation R between two values. (Inform checks that the values X and Y have the right kind and produces a problem message if not.)</p>
+<p>Several useful adjectives can be applied to relations:</p>
+
+<div class="code"><p class="quoted">
+"empty" - nothing relates to anything else
+<br>"symmetric" - by definition X relates to Y if and only if Y relates to X
+<br>"equivalence" - this is a relation "in groups", or an "equivalence relation"
+<br>"one-to-one" - it relates one K to one L
+<br>"one-to-various" - similarly
+<br>"various-to-one" - similarly
+<br>"various-to-various" - similarly
+</p></div>
+<p>So for example it's possible to ask</p>
+
+<div class="code"><p class="quoted">
+if R is a symmetric one-to-one relation of texts, ...
+</p></div>
+<p>With some relations, it's possible to clear them out by writing:</p>
+
+<div class="code"><p class="quoted">
+now R is empty;
+</p></div>
+<p>and with temporary relations (see the next section), it's even possible to change their valencies (one-to-one vs. one-to-various, etc.) using "now", but only when they are empty. The exceptions where "empty" can't be used are those which can't be changed at all, like the parity relation above, and a few built-in cases such as the support, containment and incorporation relations, where emptying would dissolve the model world in a disastrous way.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-240"><p class="example-p"><span class="example-short-start">240. <a href="rb_10.html#example-240" class="example-link" onClick="(function() { document.getElementById('example-240').setAttribute('open','open'); return true; })();">Number Study</a></span> <span class="example-difficulty">★</span>  <span class="example-description">The parity and joint magnitude relations explored.</span> (c.f. <a href="rb_10.html#rb-10.11">RB §10.11. Mathematics</a>)</p></div>
+</div></section>
+<section class="section" id="wi-13.15"><div>
+
+
+
+
+
+<h3>WI §13.15. Temporary relations</h3>
+<p>So far in this chapter, we've only seen relations which exist permanently during play. The relationships might change - sometimes Red Riding Hood would be in the Woodcutter's Cottage, sometimes not - but the relations themselves were eternal.</p>
+<p>In fact, though, we can also create relations to be dynamic data structures, like lists:</p>
+
+<div class="definition" id="defn167">
+<p class="defnprototype"><strong>let </strong>(a name not so far used)<strong> be </strong>(description of relations of values to values)<strong></strong></p>
+
+
+
+<p>This phrase creates a new temporary variable, and sets its value to the identity of a newly created and equally temporary relation. These last only for the present block of phrases, which certainly means that they exist only in the current rule. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+let the password dictionary be a relation of texts;
+</p></blockquote>
+
+<p>This makes a purely temporary various-to-various relation between texts, which lasts as long as the temporary value "password dictionary" lasts. By default, relations are various-to-various, but we could instead write, say:</p>
+
+<blockquote class="code"><p class="quoted">
+let the nicknames catalogue be a various-to-one relation of texts;
+</p></blockquote>
+
+
+
+</div>
+
+<p>Such a relation exists only in the current phrase, and is destroyed when the phrase finishes, like any other "let". Of course there's no verb whose meaning is this relation, but that's no obstacle, because we can manipulate it using "relates":</p>
+
+<div class="code"><p class="quoted">
+now the nicknames catalogue relates "Trudy" to "Snake-eyes";
+</p></div>
+<p>(At present such a relation cannot be used outside its own phrase.)</p>
+
+
+</div></section>
+<section class="section" id="wi-13.16"><div>
+
+
+
+
+
+<h3>WI §13.16. What are relations for?</h3>
+<p>It is easy to say what verbs are for: they are to express relations. But what are relations for?</p>
+<p>Inform 7's focus on relations between objects is unusual as an approach to interactive fiction; the concept does not exist in most design systems, or rather, it does but is submerged. Traditional design systems do, after all, have the spatial relations of being inside, on top of, and so on. It could well be said that these are the only relationships that inanimate objects ever have. A stone can be on top of a table, and if so then that expresses their entire association.</p>
+<p>This is because the stone, and the table, have no opinions, emotions, knowledge or memory. If the stone is taken away and then put back, nothing has changed. People, on the other hand, tend to remember having met each other before; they like being in some places, but not others; their behaviour depends on who, or what, is nearby. Being conscious, they have internal states, unlike the stone. Relations are a simple but powerful way to express and talk about such connections, and although they have numerous uses in physical contexts too, they are at their most powerful when helping to make the characters of interactive fiction come alive.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-241"><p class="example-p"><span class="example-short-start">241. <a href="rb_9.html#example-241" class="example-link" onClick="(function() { document.getElementById('example-241').setAttribute('open','open'); return true; })();">What Not To Wear</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">A general-purpose clothing system that handles a variety of different clothing items layered in different combinations over different areas of the body.</span> (c.f. <a href="rb_9.html#rb-9.3">RB §9.3. Clothing</a>)</p></div>
+<div class="example-short" id="example-short-242"><p class="example-p"><span class="example-short-start">242. <a href="rb_7.html#example-242" class="example-link" onClick="(function() { document.getElementById('example-242').setAttribute('open','open'); return true; })();">Murder on the Orient Express</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">A number of sleuths (the player among them) find themselves aboard the Orient Express, where a murder has taken place, and one of them is apparently the culprit. Naturally they do not agree on whom, but there is physical evidence which may change their minds...</span> (c.f. <a href="rb_7.html#rb-7.11">RB §7.11. Character Knowledge and Reasoning</a>)</p></div>
+<div class="example-short" id="example-short-243"><p class="example-p"><span class="example-short-start">243. <a href="rb_1.html#example-243" class="example-link" onClick="(function() { document.getElementById('example-243').setAttribute('open','open'); return true; })();">Mathematical view of relations</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">Some notes on relations from a mathematical point of view, provided only to clarify some technicalities for those who are interested.</span> (c.f. <a href="rb_1.html#rb-1.4">RB §1.4. Information Only</a>)</p></div>
+<div class="example-short" id="example-short-244"><p class="example-p"><span class="example-short-start">244. <a href="rb_1.html#example-244" class="example-link" onClick="(function() { document.getElementById('example-244').setAttribute('open','open'); return true; })();">Graph-theory view of relations</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">Some notes on relations from the point of view of graph theory.</span> (c.f. <a href="rb_1.html#rb-1.4">RB §1.4. Information Only</a>)</p></div>
+</div></section>
+</section>
+
+<footer>
+<div class="linkback"><a href="http://inform7.com/book/WI_13_1.html">WI Chapter 13 on inform7.com</a></div>
+<div class="doc-navbar">
+<div>
+<div class="doc-navbar-left"><a class="nav-left" href="wi_12.html#wi-chapter-12-advanced-actions">12. Advanced Actions</a></div>
+<div class="doc-navbar-right"><a class="nav-right" href="wi_14.html#wi-chapter-14-adaptive-text-and-responses">14. Adaptive Text and Responses</a></div>
+</div>
+<div>
+<div class="doc-navbar-left"><a href="index.html">Table of Contents</a></div>
+<div class="doc-navbar-right"><a href="index.html#general-index">General Index</a></div>
+</div>
+</div>
+
+</footer>
+</main></body></html>
+

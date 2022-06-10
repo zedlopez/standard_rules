@@ -1,0 +1,1526 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../../../Index/doc/style.css">
+<script src="../../../Index/doc/chapter.js"></script>
+<title>Glulx Entry Points by Emily Short</title></head>
+<body>
+<div class="index-navbar hidden">
+<a id="project_index" href="../../../Index/Welcome.html"> Project Index</a><a id="source" href="../../../story.html"> Source</a><a id="problems" href="../../../Build/problems.html"> Problems</a><a id="debug_log" href="../../../Build/debug_log.html"> Debug Log</a><a id="definitions" href="../../../Index/doc/ExtIndex.html"> Definitions</a><a id="extensions" href="../../../Index/doc/Extensions.html"> Extensions</a><a id="docs" href="../../../Index/doc/index.html"> Docs</a><a id="general_index" href="../../../Index/doc/index.html#general-index"> General Index</a>
+
+</div>
+
+
+<div class="pseudo">
+<span class="tr"><span class="th"></span><span class="td"><a href="javascript:copyCode(`Include Glulx Entry Points by Emily Short.`)"><img border="0" src="/home/zed/.local/share/inf7/doc/doc_images/paste.png" alt="Copy Include Glulx Entry Points by Emily Short to clipboard"></a> Include Glulx Entry Points by Emily Short.</span></span></div><div class="ext-front-matter">
+<div>Documentation for Glulx Entry Points by Emily Short</div>
+<a href="#line1">Jump to code</a></div>
+<div class="pseudo">
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Please note that this extension is provided as a framework and as a basis for other extensions. Thanks to Eliuk Blau and Jon Ingold for pointing out some bugs in version 5, and to Erik Temple for the patch handling input cancellation that brings us to version 7.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"><span class="i7gh">Chapter: Events</span></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Glulx allows the author to set responses to certain events:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	Timer       - event repeated at fixed intervals</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	CharInput   - keystroke input in a window</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	LineInput   - full line of input in a window</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	MouseInput  - mouse input in a window</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	Arrange     - some windows sizes have changed</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	Redraw      - graphic windows need redrawing</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	SoundNotify - sound finished playing</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	Hyperlink   - selection of a hyperlink in a window</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">As of version 10, Glulx Entry Points provides a rulebook, the <span class="i7sx">&quot;glulx input handling rules&quot;</span> so that the author can add responses to the these events without himself having to include any Inform 6 code. The glulx input handling rules is a parameterized rulebook, meaning that the author can specify which event or events a given rule responds to by specifying a kind of value, the <span class="i7sx">&quot;g-event&quot;</span>. The g-events corresponding to the events types described above are:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	timer-event</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	char-event</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	line-event</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	mouse-event</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	arrange-event</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	redraw-event</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	sound-notify-event</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	hyperlink-event</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">It is also possible to refer to groups of g-events using adjectives. Two adjectives are provided, though the user could of course create more. These are:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	independent of the player - includes timer events, sound notification events, arrange events, and redraw events.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	dependent on the player - includes all other events, i.e. the events that can only happen due to player input.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">We can get basic information about the last event handled using these phrases:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	current glk event - the g-event type last handled.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	window of the current glk event - if the last event was associated with a window (char-event, line-event, mouse-event, or hyperlink-event), this contains the number of the window&#39;s glk reference.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">The glulx input handling rulebook replaces the set of eight rulebooks defined in versions of Glulx Entry Points previous to version 9. These rulebooks, listed below, should be considered deprecated and may be removed in a future version of the extension, but for now they will still work just as they did in past versions:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	The glulx timed activity rules is a rulebook.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	The glulx redrawing rules is a rulebook.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	The glulx arranging rules is a rulebook.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	The glulx mouse input rules is a rulebook.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	The glulx character input rules is a rulebook.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	The glulx line input rules is a rulebook.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	The glulx sound notification rules is a rulebook.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	The glulx hyperlink rules is a rulebook.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">If you are certain that you do not need these rulebooks in a project (i.e., you are not using extensions that employ them), you can stop Inform from calling them by declaring the use option:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	Use direct event handling.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"><span class="i7gh">Chapter: Replacement Commands </span></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">One of the things we may want to do -- especially with mouse input or hyperlinks -- is generate a command for the player. To do this, we set the value of Glulx replacement command to whatever string of text we want to turn into the player&#39;s command. If we do this, Inform will treat whatever command we issued in <span class="i7sx">&quot;Glulx replacement command&quot;</span> as though the player had typed it at the command prompt. The extension Basic Hyperlinks builds on this infrastructure and provides an example of how to make use of these features. </span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Because the Glulx replacement command is indexed text, it is possible to build on to the string automatically, if for some reason we need to auto-generate our recommended commands. </span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"><span class="i7gh">Chapter: IdentifyGlkObject</span></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">We also have a series of rulebooks for handling the stages of IdentifyGlkObject:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	The glulx zeroing-reference rules is a rulebook.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	The glulx resetting-windows rules is a rulebook.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	The glulx resetting-streams rules is a rulebook.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	The glulx resetting-filerefs rules is a rulebook.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	The glulx object-updating rules is a rulebook.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Examples of the use of these can be seen in the extension Simple Graphics Windows. </span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"><span class="i7gh">Chapter: Checking on Feature Support (Glulx Gestalts)</span></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">We can test whether the player&#39;s interpreter is prepared to support various multimedia features using the following phrases from Glulx Entry Points:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	if glulx character input is supported...</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	if glulx mouse input is supported...</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	if glulx graphic-window mouse input is supported...</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	if glulx text-grid mouse input is supported...</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	if glulx timekeeping is supported...</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	if glulx graphics is supported...</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	if glulx text-buffer graphics is supported...</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	if glulx graphic-window graphics is supported...</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	if glulx PNG transparency is supported...</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	if glulx sound is supported...</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	if glulx mod sound is supported...</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	if glulx sound volume is supported...</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	if glulx sound notification is supported...</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	if glulx hyperlinks are supported...</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Of these:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7sx">&quot;mouse input&quot;</span> refers to our ability to detect clicks at all</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7sx">&quot;timekeeping&quot;</span> to the ability to use a real-time timer</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7sx">&quot;graphics&quot;</span> to the ability to use any graphics</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7sx">&quot;text-buffer&quot;</span> and <span class="i7sx">&quot;graphic-window&quot;</span> graphics to the ability to use graphics specifically in the main window or in a window specially created for graphics</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7sx">&quot;PNG transparency&quot;</span> to whether it will be possible to layer PNG images with transparent alpha channels (this is very useful for manipulating sprites)</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7sx">&quot;sound&quot;</span> to playing any sound, and <span class="i7sx">&quot;mod sound&quot;</span> to sounds specifically in MOD format</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7sx">&quot;sound volume&quot;</span> to the ability to control the volume</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7sx">&quot;sound notification&quot;</span> to detecting when a sound finishes playing</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7sx">&quot;hyperlinks&quot;</span> to the ability to insert mouseclick-sensitive links in the main body of text</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">These can be used during play to avoid using Glulx features that aren&#39;t supported, or at the start of play to warn the player that the chosen interpreter is unable to present the full experience intended by the author.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"><span class="i7gh">Section: A Note on Sound Support</span></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Currently Inform is not designed to support sound output properly across all systems. The Mac OS X IDE will not play sounds in-game, so if we are developing a sound-rich game on the Mac, we will need to test the sounds by releasing the game file and playing it on a separate interpreter; at the time of writing, the best Mac sound support was provided by Gargoyle.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"><span class="i7gh">Chapter: Useful Phrases</span></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Two phrases that may be useful to those working with Glulx input/output are provided:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	update the status line - calls the Inform library&#39;s routine to refresh the status window</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	print prompt - calls the Inform library&#39;s routine to print the command prompt</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Example: * Input Handling - Very basic use of the glulx input handling rules. Shows how to detect events according to whether they are generated by player input, how to override the player&#39;s typed input with a replacement command, and how to use the <span class="i7sx">&quot;current glk event&quot;</span> phrase.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	Include version 10 of Glulx Entry Points by Emily Short.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	Use direct event handling.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	Glk Testing is a room.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	Glulx input handling rule for an independent of the player g-event:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[bracket]</span><span class="i7sx">Non-input event detected: </span><span class="i7si">[current glk event][close bracket][line break]</span><span class="i7sx">&quot;</span>.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	Glulx input handling rule for a dependent on the player g-event:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		say <span class="i7sx">&quot;</span><span class="i7si">[bracket]</span><span class="i7sx">Player input detected: </span><span class="i7si">[current glk event][close bracket][line break]</span><span class="i7sx">&quot;</span>.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	Glulx input handling rule for a line-event:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		now the Glulx replacement command is <span class="i7sx">&quot;jump&quot;</span>.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Example: * Working Without Sound - Printing a warning at the beginning of the game if the interpreter does not use sound.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"> "Working Without Sound"</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Include Glulx Entry Points by Emily Short.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Include Basic Screen Effects by Emily Short.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">First when play begins:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	unless glulx sound is supported:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">		say "This game uses sound effects extensively. The interpreter you're using is unable to play sounds, so you will be missing part of the intended experience.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">			&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;			unless the player consents:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">				&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;				stop game abruptly.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	Royal Albert Hall is a room.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">	&ensp;&ensp;	Test me with <span class="i7sx">&quot;listen&quot;</span>.</span><br></span>
+</div><div class="inform7-source"><div class="pseudo">
+<span class="tr line_no" id="line1">
+<!-- <span class="tr line_no" id="line1"> -->
+<span class="td">Version 10/140425 of Glulx Entry Points (for Glulx only) by Emily Short begins here.</span><br></span>
+<span class="tr line_no" id="line2">
+<!-- <span class="tr line_no" id="line2"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line3">
+<!-- <span class="tr line_no" id="line3"> -->
+<span class="td"><span class="i7sx">&quot;Provides hooks to allow the author to write specialized multimedia behavior that would normally go through HandleGlkEvent. This is a rather dull utility library that will be of most use to authors wanting to write Glulx extensions compatible with other Glulx extensions already in use.&quot;</span></span><br></span>
+<span class="tr line_no" id="line4">
+<!-- <span class="tr line_no" id="line4"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line5">
+<!-- <span class="tr line_no" id="line5"> -->
+<span class="td">Use authorial modesty.</span><br></span>
+<span class="tr line_no" id="line6">
+<!-- <span class="tr line_no" id="line6"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line7">
+<!-- <span class="tr line_no" id="line7"> -->
+<span class="td"><span class="i7gh">Section - Use option</span></span><br></span>
+<span class="tr line_no" id="line8">
+<!-- <span class="tr line_no" id="line8"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line9">
+<!-- <span class="tr line_no" id="line9"> -->
+<span class="td"><span class="i7cm">[As of version 10, Glulx Entry Points has a somewhat more flexible approach to event handling than did earlier versions: Whereas the latter consulted one of eight separate rulebooks depending on the event type, Glulx Input Loops passes the event type into a single parametrized rulebook. This means, for example, that we can have a general rule for event handling that fires no matter what the event, alongside the usual event-based rules. It allows us to group events by broader type (e.g. events generated by the player vs. events generated by the system).</span></span><br></span>
+<span class="tr line_no" id="line10">
+<!-- <span class="tr line_no" id="line10"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line11">
+<!-- <span class="tr line_no" id="line11"> -->
+<span class="td"><span class="i7cm">Many existing extensions are based on the older system, however, and we would break those extensions if we simply removed the older event-handling rulebooks. So, we retain them, and Glulx Entry Points will (by default) still pass event-handling to those rulebooks. This means that existing code will continue to work as before, and we can also use the new parameterized rulebook if we like.</span></span><br></span>
+<span class="tr line_no" id="line12">
+<!-- <span class="tr line_no" id="line12"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line13">
+<!-- <span class="tr line_no" id="line13"> -->
+<span class="td"><span class="i7cm">This use option disables the old rulebooks, and should be used only when we know that we are not using an extension that depends on the old rulebooks.]</span></span><br></span>
+<span class="tr line_no" id="line14">
+<!-- <span class="tr line_no" id="line14"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line15">
+<!-- <span class="tr line_no" id="line15"> -->
+<span class="td">Use direct event handling translates as <span class="i7x">(- Constant DIRECT_GLK_EVENT_HANDLING; -)</span>.</span><br></span>
+<span class="tr line_no" id="line16">
+<!-- <span class="tr line_no" id="line16"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line17">
+<!-- <span class="tr line_no" id="line17"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line18">
+<!-- <span class="tr line_no" id="line18"> -->
+<span class="td"><span class="i7gh">Section - New rulebooks</span></span><br></span>
+<span class="tr line_no" id="line19">
+<!-- <span class="tr line_no" id="line19"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line20">
+<!-- <span class="tr line_no" id="line20"> -->
+<span class="td"><span class="i7cm">[This first set of rulebooks--the event-handling rulebooks--are now deprecated in favor of the &quot;glulx input handling rulebook&quot;.]</span></span><br></span>
+<span class="tr line_no" id="line21">
+<!-- <span class="tr line_no" id="line21"> -->
+<span class="td">The glulx timed activity rules is a rulebook.</span><br></span>
+<span class="tr line_no" id="line22">
+<!-- <span class="tr line_no" id="line22"> -->
+<span class="td">The glulx redrawing rules is a rulebook.</span><br></span>
+<span class="tr line_no" id="line23">
+<!-- <span class="tr line_no" id="line23"> -->
+<span class="td">The glulx arranging rules is a rulebook.</span><br></span>
+<span class="tr line_no" id="line24">
+<!-- <span class="tr line_no" id="line24"> -->
+<span class="td">The glulx sound notification rules is a rulebook.</span><br></span>
+<span class="tr line_no" id="line25">
+<!-- <span class="tr line_no" id="line25"> -->
+<span class="td">The glulx mouse input rules is a rulebook.</span><br></span>
+<span class="tr line_no" id="line26">
+<!-- <span class="tr line_no" id="line26"> -->
+<span class="td">The glulx character input rules is a rulebook.</span><br></span>
+<span class="tr line_no" id="line27">
+<!-- <span class="tr line_no" id="line27"> -->
+<span class="td">The glulx line input rules is a rulebook.</span><br></span>
+<span class="tr line_no" id="line28">
+<!-- <span class="tr line_no" id="line28"> -->
+<span class="td">The glulx hyperlink rules is a rulebook.</span><br></span>
+<span class="tr line_no" id="line29">
+<!-- <span class="tr line_no" id="line29"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line30">
+<!-- <span class="tr line_no" id="line30"> -->
+<span class="td">The glulx zeroing-reference rules is a rulebook.</span><br></span>
+<span class="tr line_no" id="line31">
+<!-- <span class="tr line_no" id="line31"> -->
+<span class="td">The glulx resetting-windows rules is a rulebook.</span><br></span>
+<span class="tr line_no" id="line32">
+<!-- <span class="tr line_no" id="line32"> -->
+<span class="td">The glulx resetting-streams rules is a rulebook.</span><br></span>
+<span class="tr line_no" id="line33">
+<!-- <span class="tr line_no" id="line33"> -->
+<span class="td">The glulx resetting-filerefs rules is a rulebook.</span><br></span>
+<span class="tr line_no" id="line34">
+<!-- <span class="tr line_no" id="line34"> -->
+<span class="td">The glulx object-updating rules is a rulebook.</span><br></span>
+<span class="tr line_no" id="line35">
+<!-- <span class="tr line_no" id="line35"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line36">
+<!-- <span class="tr line_no" id="line36"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line37">
+<!-- <span class="tr line_no" id="line37"> -->
+<span class="td"><span class="i7gh">Section - Global variables</span></span><br></span>
+<span class="tr line_no" id="line38">
+<!-- <span class="tr line_no" id="line38"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line39">
+<!-- <span class="tr line_no" id="line39"> -->
+<span class="td">Current glulx rock is a number that varies.</span><br></span>
+<span class="tr line_no" id="line40">
+<!-- <span class="tr line_no" id="line40"> -->
+<span class="td">Current glulx rock-ref is a number that varies.</span><br></span>
+<span class="tr line_no" id="line41">
+<!-- <span class="tr line_no" id="line41"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line42">
+<!-- <span class="tr line_no" id="line42"> -->
+<span class="td">Glulx replacement command is some indexed text that varies.</span><br></span>
+<span class="tr line_no" id="line43">
+<!-- <span class="tr line_no" id="line43"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line44">
+<!-- <span class="tr line_no" id="line44"> -->
+<span class="td">Library input context is a number variable. <span class="i7cm">[This describes the event context in which input was received, e.g. whether the Inform library was awaiting line input or char input. If 0, the library was awaiting line input, if 1, char input. This is not as useful as an event-typed value would be; with such a value, we could detect any input context--e.g., we are waiting for hyperlink input. Perhaps a future version of Glulx Entry Points will discard the old convention in favor of a more expansive system.]</span></span><br></span>
+<span class="tr line_no" id="line45">
+<!-- <span class="tr line_no" id="line45"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line46">
+<!-- <span class="tr line_no" id="line46"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line47">
+<!-- <span class="tr line_no" id="line47"> -->
+<span class="td"><span class="i7gh">Section - Gestalts</span></span><br></span>
+<span class="tr line_no" id="line48">
+<!-- <span class="tr line_no" id="line48"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line49">
+<!-- <span class="tr line_no" id="line49"> -->
+<span class="td">To decide whether glulx character input is supported:</span><br></span>
+<span class="tr line_no" id="line50">
+<!-- <span class="tr line_no" id="line50"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- ( glk_gestalt(gestalt_CharInput, 0</span>)<span class="i7x"> </span>)<span class="i7x"> -)</span></span><br></span>
+<span class="tr line_no" id="line51">
+<!-- <span class="tr line_no" id="line51"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line52">
+<!-- <span class="tr line_no" id="line52"> -->
+<span class="td">To decide whether glulx mouse input is supported:</span><br></span>
+<span class="tr line_no" id="line53">
+<!-- <span class="tr line_no" id="line53"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- ( glk_gestalt(gestalt_MouseInput, winType_AllTypes</span>)<span class="i7x"> </span>)<span class="i7x"> -)</span></span><br></span>
+<span class="tr line_no" id="line54">
+<!-- <span class="tr line_no" id="line54"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line55">
+<!-- <span class="tr line_no" id="line55"> -->
+<span class="td">To decide whether glulx graphic-window mouse input is supported:</span><br></span>
+<span class="tr line_no" id="line56">
+<!-- <span class="tr line_no" id="line56"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- ( glk_gestalt(gestalt_MouseInput, winType_Graphics</span>)<span class="i7x"> </span>)<span class="i7x"> -)</span></span><br></span>
+<span class="tr line_no" id="line57">
+<!-- <span class="tr line_no" id="line57"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line58">
+<!-- <span class="tr line_no" id="line58"> -->
+<span class="td">To decide whether glulx text-grid mouse input is supported:</span><br></span>
+<span class="tr line_no" id="line59">
+<!-- <span class="tr line_no" id="line59"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- ( glk_gestalt(gestalt_MouseInput, winType_TextGrid</span>)<span class="i7x"> </span>)<span class="i7x"> -)</span></span><br></span>
+<span class="tr line_no" id="line60">
+<!-- <span class="tr line_no" id="line60"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line61">
+<!-- <span class="tr line_no" id="line61"> -->
+<span class="td">To decide whether glulx timekeeping is supported:</span><br></span>
+<span class="tr line_no" id="line62">
+<!-- <span class="tr line_no" id="line62"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- ( glk_gestalt(gestalt_Timer, 0</span>)<span class="i7x"> </span>)<span class="i7x"> -)</span></span><br></span>
+<span class="tr line_no" id="line63">
+<!-- <span class="tr line_no" id="line63"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line64">
+<!-- <span class="tr line_no" id="line64"> -->
+<span class="td">To decide whether glulx graphics is supported:</span><br></span>
+<span class="tr line_no" id="line65">
+<!-- <span class="tr line_no" id="line65"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- ( glk_gestalt(gestalt_Graphics, 0</span>)<span class="i7x"> </span>)<span class="i7x"> -)</span></span><br></span>
+<span class="tr line_no" id="line66">
+<!-- <span class="tr line_no" id="line66"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line67">
+<!-- <span class="tr line_no" id="line67"> -->
+<span class="td">To decide whether glulx text-buffer graphics is supported:</span><br></span>
+<span class="tr line_no" id="line68">
+<!-- <span class="tr line_no" id="line68"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- ( glk_gestalt(gestalt_DrawImage, winType_TextBuffer</span>)<span class="i7x"> </span>)<span class="i7x"> -)</span></span><br></span>
+<span class="tr line_no" id="line69">
+<!-- <span class="tr line_no" id="line69"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line70">
+<!-- <span class="tr line_no" id="line70"> -->
+<span class="td">To decide whether glulx graphic-window graphics is supported:</span><br></span>
+<span class="tr line_no" id="line71">
+<!-- <span class="tr line_no" id="line71"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- ( glk_gestalt(gestalt_DrawImage, winType_Graphics</span>)<span class="i7x"> </span>)<span class="i7x"> -)</span></span><br></span>
+<span class="tr line_no" id="line72">
+<!-- <span class="tr line_no" id="line72"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line73">
+<!-- <span class="tr line_no" id="line73"> -->
+<span class="td">To decide whether glulx PNG transparency is supported:</span><br></span>
+<span class="tr line_no" id="line74">
+<!-- <span class="tr line_no" id="line74"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- ( glk_gestalt(gestalt_GraphicsTransparency, 0</span>)<span class="i7x"> </span>)<span class="i7x"> -)</span></span><br></span>
+<span class="tr line_no" id="line75">
+<!-- <span class="tr line_no" id="line75"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line76">
+<!-- <span class="tr line_no" id="line76"> -->
+<span class="td">To decide whether glulx sound is supported:</span><br></span>
+<span class="tr line_no" id="line77">
+<!-- <span class="tr line_no" id="line77"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- ( glk_gestalt(gestalt_Sound, 0</span>)<span class="i7x"> </span>)<span class="i7x"> -)</span></span><br></span>
+<span class="tr line_no" id="line78">
+<!-- <span class="tr line_no" id="line78"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line79">
+<!-- <span class="tr line_no" id="line79"> -->
+<span class="td">To decide whether glulx mod sound is supported:</span><br></span>
+<span class="tr line_no" id="line80">
+<!-- <span class="tr line_no" id="line80"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- ( glk_gestalt(gestalt_SoundMusic, 0</span>)<span class="i7x"> </span>)<span class="i7x"> -)</span></span><br></span>
+<span class="tr line_no" id="line81">
+<!-- <span class="tr line_no" id="line81"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line82">
+<!-- <span class="tr line_no" id="line82"> -->
+<span class="td">To decide whether glulx sound volume is supported:</span><br></span>
+<span class="tr line_no" id="line83">
+<!-- <span class="tr line_no" id="line83"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- ( glk_gestalt(gestalt_SoundVolume, 0</span>)<span class="i7x"> </span>)<span class="i7x"> -)</span></span><br></span>
+<span class="tr line_no" id="line84">
+<!-- <span class="tr line_no" id="line84"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line85">
+<!-- <span class="tr line_no" id="line85"> -->
+<span class="td">To decide whether glulx sound notification is supported:</span><br></span>
+<span class="tr line_no" id="line86">
+<!-- <span class="tr line_no" id="line86"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- ( glk_gestalt(gestalt_SoundNotify, 0</span>)<span class="i7x"> </span>)<span class="i7x"> -)</span></span><br></span>
+<span class="tr line_no" id="line87">
+<!-- <span class="tr line_no" id="line87"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line88">
+<!-- <span class="tr line_no" id="line88"> -->
+<span class="td">To decide whether glulx hyperlinks are supported:</span><br></span>
+<span class="tr line_no" id="line89">
+<!-- <span class="tr line_no" id="line89"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- ( glk_gestalt(gestalt_Hyperlinks, 0</span>)<span class="i7x"> </span>)<span class="i7x"> -)</span></span><br></span>
+<span class="tr line_no" id="line90">
+<!-- <span class="tr line_no" id="line90"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line91">
+<!-- <span class="tr line_no" id="line91"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line92">
+<!-- <span class="tr line_no" id="line92"> -->
+<span class="td"><span class="i7gh">Section - IdentifyGlkObject routine</span></span><br></span>
+<span class="tr line_no" id="line93">
+<!-- <span class="tr line_no" id="line93"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line94">
+<!-- <span class="tr line_no" id="line94"> -->
+<span class="td">Include <span class="i7x">(-</span></span><br></span>
+<span class="tr line_no" id="line95">
+<!-- <span class="tr line_no" id="line95"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line96">
+<!-- <span class="tr line_no" id="line96"> -->
+<span class="td">&ensp;&ensp;&ensp;   <span class="i7x">[ IdentifyGlkObject phase type ref rock;</span></span><br></span>
+<span class="tr line_no" id="line97">
+<!-- <span class="tr line_no" id="line97"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;      <span class="i7x">if (phase == 0</span>)<span class="i7x"> { ! Zero out references to our objects.</span></span><br></span>
+<span class="tr line_no" id="line98">
+<!-- <span class="tr line_no" id="line98"> -->
+<span class="td">&ensp;&ensp;&ensp;	 <span class="i7x">if (FollowRulebook( (+glulx zeroing</span>-<span class="i7x">reference rules+</span>)<span class="i7x"> </span>)<span class="i7x"> &amp;&amp; RulebookSucceeded(</span>))<span class="i7x"> { rtrue; }</span></span><br></span>
+<span class="tr line_no" id="line99">
+<!-- <span class="tr line_no" id="line99"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;      <span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line100">
+<!-- <span class="tr line_no" id="line100"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line101">
+<!-- <span class="tr line_no" id="line101"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;      <span class="i7x">if (phase == 1</span>)<span class="i7x"> { ! Reset our windows, streams and filerefs.</span></span><br></span>
+<span class="tr line_no" id="line102">
+<!-- <span class="tr line_no" id="line102"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">(+ current glulx rock +</span>)<span class="i7x"> = rock;</span></span><br></span>
+<span class="tr line_no" id="line103">
+<!-- <span class="tr line_no" id="line103"> -->
+<span class="td">&ensp;&ensp;	<span class="i7x">(+ current glulx rock</span>-<span class="i7x">ref +</span>)<span class="i7x"> = ref;</span></span><br></span>
+<span class="tr line_no" id="line104">
+<!-- <span class="tr line_no" id="line104"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;         <span class="i7x">switch (type</span>)<span class="i7x"> {</span></span><br></span>
+<span class="tr line_no" id="line105">
+<!-- <span class="tr line_no" id="line105"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;            <span class="i7x">0: ! it&#39;s a window </span></span><br></span>
+<span class="tr line_no" id="line106">
+<!-- <span class="tr line_no" id="line106"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;               	<span class="i7x">FollowRulebook( (+ glulx resetting</span>-<span class="i7x">windows rules +</span>)<span class="i7x"> </span>)<span class="i7x">;</span></span><br></span>
+<span class="tr line_no" id="line107">
+<!-- <span class="tr line_no" id="line107"> -->
+<span class="td">&ensp;&ensp;&ensp;	 <span class="i7x">1 : ! it&#39;s a stream</span></span><br></span>
+<span class="tr line_no" id="line108">
+<!-- <span class="tr line_no" id="line108"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;               	<span class="i7x">FollowRulebook( (+ glulx resetting</span>-<span class="i7x">streams rules +</span>)<span class="i7x"> </span>)<span class="i7x">;</span></span><br></span>
+<span class="tr line_no" id="line109">
+<!-- <span class="tr line_no" id="line109"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;    	   <span class="i7x">2 : ! it&#39;s a file reference</span></span><br></span>
+<span class="tr line_no" id="line110">
+<!-- <span class="tr line_no" id="line110"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;               	<span class="i7x">FollowRulebook( (+ glulx resetting</span>-<span class="i7x">filerefs rules +</span>)<span class="i7x"> </span>)<span class="i7x">;</span></span><br></span>
+<span class="tr line_no" id="line111">
+<!-- <span class="tr line_no" id="line111"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;         <span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line112">
+<!-- <span class="tr line_no" id="line112"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;         <span class="i7x">return;</span></span><br></span>
+<span class="tr line_no" id="line113">
+<!-- <span class="tr line_no" id="line113"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;      <span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line114">
+<!-- <span class="tr line_no" id="line114"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line115">
+<!-- <span class="tr line_no" id="line115"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;      <span class="i7x">if (phase == 2</span>)<span class="i7x"> { ! Update our objects.</span></span><br></span>
+<span class="tr line_no" id="line116">
+<!-- <span class="tr line_no" id="line116"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;         <span class="i7x">if (FollowRulebook( (+glulx object</span>-<span class="i7x">updating rules+</span>)<span class="i7x"> </span>)<span class="i7x"> &amp;&amp; RulebookSucceeded(</span>))<span class="i7x"> { rtrue; }</span></span><br></span>
+<span class="tr line_no" id="line117">
+<!-- <span class="tr line_no" id="line117"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;      <span class="i7x">}</span></span><br></span>
+<span class="tr line_no" id="line118">
+<!-- <span class="tr line_no" id="line118"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line119">
+<!-- <span class="tr line_no" id="line119"> -->
+<span class="td">&ensp;&ensp;&ensp;   <span class="i7x">];</span></span><br></span>
+<span class="tr line_no" id="line120">
+<!-- <span class="tr line_no" id="line120"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line121">
+<!-- <span class="tr line_no" id="line121"> -->
+<span class="td"><span class="i7x">-)</span> before <span class="i7sx">&quot;Glulx.i6t&quot;</span>.</span><br></span>
+<span class="tr line_no" id="line122">
+<!-- <span class="tr line_no" id="line122"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line123">
+<!-- <span class="tr line_no" id="line123"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line124">
+<!-- <span class="tr line_no" id="line124"> -->
+<span class="td"><span class="i7gh">Section - Event types</span></span><br></span>
+<span class="tr line_no" id="line125">
+<!-- <span class="tr line_no" id="line125"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line126">
+<!-- <span class="tr line_no" id="line126"> -->
+<span class="td">A g-event is a kind of value. The g-events are timer-event, char-event, line-event, mouse-event, arrange-event, redraw-event, sound-notify-event, and hyperlink-event.</span><br></span>
+<span class="tr line_no" id="line127">
+<!-- <span class="tr line_no" id="line127"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line128">
+<!-- <span class="tr line_no" id="line128"> -->
+<span class="td">To decide which g-event is null-event: <span class="i7x">(- 0 -)</span></span><br></span>
+<span class="tr line_no" id="line129">
+<!-- <span class="tr line_no" id="line129"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line130">
+<!-- <span class="tr line_no" id="line130"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line131">
+<!-- <span class="tr line_no" id="line131"> -->
+<span class="td"><span class="i7gh">Section - Events dependent on the player</span></span><br></span>
+<span class="tr line_no" id="line132">
+<!-- <span class="tr line_no" id="line132"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line133">
+<!-- <span class="tr line_no" id="line133"> -->
+<span class="td">Definition: A g-event is independent of the player rather than dependent on the player if it is timer-event or it is sound-notify-event or it is arrange-event or it is redraw-event.</span><br></span>
+<span class="tr line_no" id="line134">
+<!-- <span class="tr line_no" id="line134"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line135">
+<!-- <span class="tr line_no" id="line135"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line136">
+<!-- <span class="tr line_no" id="line136"> -->
+<span class="td"><span class="i7gh">Section - Wrappers for event structure, return values, etc</span></span><br></span>
+<span class="tr line_no" id="line137">
+<!-- <span class="tr line_no" id="line137"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line138">
+<!-- <span class="tr line_no" id="line138"> -->
+<span class="td">To wait for glk input:</span><br></span>
+<span class="tr line_no" id="line139">
+<!-- <span class="tr line_no" id="line139"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- glk_select(gg_event</span>)<span class="i7x">; -)</span></span><br></span>
+<span class="tr line_no" id="line140">
+<!-- <span class="tr line_no" id="line140"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line141">
+<!-- <span class="tr line_no" id="line141"> -->
+<span class="td">To decide whether the current input context is line input:</span><br></span>
+<span class="tr line_no" id="line142">
+<!-- <span class="tr line_no" id="line142"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- ( (+ library input context +</span>)<span class="i7x"> == 0 </span>)<span class="i7x"> -)</span></span><br></span>
+<span class="tr line_no" id="line143">
+<!-- <span class="tr line_no" id="line143"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line144">
+<!-- <span class="tr line_no" id="line144"> -->
+<span class="td">To decide whether the current input context is char/character input:</span><br></span>
+<span class="tr line_no" id="line145">
+<!-- <span class="tr line_no" id="line145"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- ( (+ library input context +</span>)<span class="i7x"> == 1 </span>)<span class="i7x"> -)</span></span><br></span>
+<span class="tr line_no" id="line146">
+<!-- <span class="tr line_no" id="line146"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr line_no" id="line147">
+<!-- <span class="tr line_no" id="line147"> -->
+<span class="td">To decide which g-event is the current glk event:</span><br></span>
+<span class="tr line_no" id="line148">
+<!-- <span class="tr line_no" id="line148"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- evGlobal</span>--<span class="i7x">&gt;0 -)</span></span><br></span>
+<span class="tr line_no" id="line149">
+<!-- <span class="tr line_no" id="line149"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr line_no" id="line150">
+<!-- <span class="tr line_no" id="line150"> -->
+<span class="td">To decide what number is the window of the current glk event:</span><br></span>
+<span class="tr line_no" id="line151">
+<!-- <span class="tr line_no" id="line151"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- evGlobal</span>--<span class="i7x">&gt;1 -)</span></span><br></span>
+<span class="tr line_no" id="line152">
+<!-- <span class="tr line_no" id="line152"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr line_no" id="line153">
+<!-- <span class="tr line_no" id="line153"> -->
+<span class="td">To decide what number is the character code returned:</span><br></span>
+<span class="tr line_no" id="line154">
+<!-- <span class="tr line_no" id="line154"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- evGlobal</span>--<span class="i7x">&gt;2 -)</span></span><br></span>
+<span class="tr line_no" id="line155">
+<!-- <span class="tr line_no" id="line155"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line156">
+<!-- <span class="tr line_no" id="line156"> -->
+<span class="td">To decide what number is input replacement:</span><br></span>
+<span class="tr line_no" id="line157">
+<!-- <span class="tr line_no" id="line157"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- 2 -)</span></span><br></span>
+<span class="tr line_no" id="line158">
+<!-- <span class="tr line_no" id="line158"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line159">
+<!-- <span class="tr line_no" id="line159"> -->
+<span class="td">To decide what number is input continuation:</span><br></span>
+<span class="tr line_no" id="line160">
+<!-- <span class="tr line_no" id="line160"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- 1 -)</span></span><br></span>
+<span class="tr line_no" id="line161">
+<!-- <span class="tr line_no" id="line161"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line162">
+<!-- <span class="tr line_no" id="line162"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line163">
+<!-- <span class="tr line_no" id="line163"> -->
+<span class="td"><span class="i7gh">Section - Event Handling</span></span><br></span>
+<span class="tr line_no" id="line164">
+<!-- <span class="tr line_no" id="line164"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line165">
+<!-- <span class="tr line_no" id="line165"> -->
+<span class="td"><span class="i7cm">[This is an I7 version of the event handling that was included in the I6 HandleGlkEvent routine in previous versions of Glulx Entry Points, with minor changes to allow any event type to provide a replacement command. Converted to I7 code in version 10.]</span></span><br></span>
+<span class="tr line_no" id="line166">
+<!-- <span class="tr line_no" id="line166"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line167">
+<!-- <span class="tr line_no" id="line167"> -->
+<span class="td">To decide what number is the value returned by glk event handling (this is the handle glk event rule):</span><br></span>
+<span class="tr line_no" id="line168">
+<!-- <span class="tr line_no" id="line168"> -->
+<span class="td">	&ensp;&ensp;	now glulx replacement command is <span class="i7sx">&quot;&quot;</span>;</span><br></span>
+<span class="tr line_no" id="line169">
+<!-- <span class="tr line_no" id="line169"> -->
+<span class="td">	&ensp;&ensp;	follow the glulx input handling rules for the current glk event;</span><br></span>
+<span class="tr line_no" id="line170">
+<!-- <span class="tr line_no" id="line170"> -->
+<span class="td">	&ensp;&ensp;	if the outcome of the rulebook is the replace player input outcome:</span><br></span>
+<span class="tr line_no" id="line171">
+<!-- <span class="tr line_no" id="line171"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		decide on input replacement;</span><br></span>
+<span class="tr line_no" id="line172">
+<!-- <span class="tr line_no" id="line172"> -->
+<span class="td">	&ensp;&ensp;	if the outcome of the rulebook is the require input to continue outcome:</span><br></span>
+<span class="tr line_no" id="line173">
+<!-- <span class="tr line_no" id="line173"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		decide on input continuation;</span><br></span>
+<span class="tr line_no" id="line174">
+<!-- <span class="tr line_no" id="line174"> -->
+<span class="td">	&ensp;&ensp;	follow the command-counting rules;</span><br></span>
+<span class="tr line_no" id="line175">
+<!-- <span class="tr line_no" id="line175"> -->
+<span class="td">	&ensp;&ensp;	if the rule succeeded:</span><br></span>
+<span class="tr line_no" id="line176">
+<!-- <span class="tr line_no" id="line176"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		follow the input-cancelling rules;</span><br></span>
+<span class="tr line_no" id="line177">
+<!-- <span class="tr line_no" id="line177"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		follow the command-showing rules;</span><br></span>
+<span class="tr line_no" id="line178">
+<!-- <span class="tr line_no" id="line178"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		follow the command-pasting rules;</span><br></span>
+<span class="tr line_no" id="line179">
+<!-- <span class="tr line_no" id="line179"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		if the <span class="i7cm">[command-pasting]</span> rule succeeded:</span><br></span>
+<span class="tr line_no" id="line180">
+<!-- <span class="tr line_no" id="line180"> -->
+<span class="td">			&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;			decide on input replacement.</span><br></span>
+<span class="tr line_no" id="line181">
+<!-- <span class="tr line_no" id="line181"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line182">
+<!-- <span class="tr line_no" id="line182"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line183">
+<!-- <span class="tr line_no" id="line183"> -->
+<span class="td"><span class="i7gh">Section - HandleGlkEvent routine</span></span><br></span>
+<span class="tr line_no" id="line184">
+<!-- <span class="tr line_no" id="line184"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line185">
+<!-- <span class="tr line_no" id="line185"> -->
+<span class="td">Include <span class="i7x">(- Array evGlobal </span>--<span class="i7x">&gt; 4; -)</span> before <span class="i7sx">&quot;Glulx.i6t&quot;</span>.</span><br></span>
+<span class="tr line_no" id="line186">
+<!-- <span class="tr line_no" id="line186"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line187">
+<!-- <span class="tr line_no" id="line187"> -->
+<span class="td">Include <span class="i7x">(- </span></span><br></span>
+<span class="tr line_no" id="line188">
+<!-- <span class="tr line_no" id="line188"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line189">
+<!-- <span class="tr line_no" id="line189"> -->
+<span class="td">&ensp;&ensp;  <span class="i7x">[ HandleGlkEvent ev context abortres newcmd cmdlen i ;</span></span><br></span>
+<span class="tr line_no" id="line190">
+<!-- <span class="tr line_no" id="line190"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;      <span class="i7x">for (i=0:i&lt;3:i++</span>)<span class="i7x"> evGlobal</span>--<span class="i7x">&gt;i = ev</span>--<span class="i7x">&gt;i;</span></span><br></span>
+<span class="tr line_no" id="line191">
+<!-- <span class="tr line_no" id="line191"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;      <span class="i7x">(+ library input context +</span>)<span class="i7x"> = context;</span></span><br></span>
+<span class="tr line_no" id="line192">
+<!-- <span class="tr line_no" id="line192"> -->
+<span class="td">&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;      <span class="i7x">return (+ value returned by glk event handling +</span>)<span class="i7x"> ;</span></span><br></span>
+<span class="tr line_no" id="line193">
+<!-- <span class="tr line_no" id="line193"> -->
+<span class="td">&ensp;&ensp;  <span class="i7x">];</span></span><br></span>
+<span class="tr line_no" id="line194">
+<!-- <span class="tr line_no" id="line194"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line195">
+<!-- <span class="tr line_no" id="line195"> -->
+<span class="td"><span class="i7x">-)</span> before <span class="i7sx">&quot;Glulx.i6t&quot;</span>.</span><br></span>
+<span class="tr line_no" id="line196">
+<!-- <span class="tr line_no" id="line196"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line197">
+<!-- <span class="tr line_no" id="line197"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line198">
+<!-- <span class="tr line_no" id="line198"> -->
+<span class="td"><span class="i7gh">Section - Useful function wrappers</span></span><br></span>
+<span class="tr line_no" id="line199">
+<!-- <span class="tr line_no" id="line199"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line200">
+<!-- <span class="tr line_no" id="line200"> -->
+<span class="td">To update/redraw the/-- status line:</span><br></span>
+<span class="tr line_no" id="line201">
+<!-- <span class="tr line_no" id="line201"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- DrawStatusLine(</span>)<span class="i7x">; -)</span></span><br></span>
+<span class="tr line_no" id="line202">
+<!-- <span class="tr line_no" id="line202"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line203">
+<!-- <span class="tr line_no" id="line203"> -->
+<span class="td">To print prompt:</span><br></span>
+<span class="tr line_no" id="line204">
+<!-- <span class="tr line_no" id="line204"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- PrintPrompt(</span>)<span class="i7x">; -)</span></span><br></span>
+<span class="tr line_no" id="line205">
+<!-- <span class="tr line_no" id="line205"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line206">
+<!-- <span class="tr line_no" id="line206"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line207">
+<!-- <span class="tr line_no" id="line207"> -->
+<span class="td"><span class="i7gh">Section - The glulx input handling rulebook</span></span><br></span>
+<span class="tr line_no" id="line208">
+<!-- <span class="tr line_no" id="line208"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line209">
+<!-- <span class="tr line_no" id="line209"> -->
+<span class="td"><span class="i7cm">[These rules route input to the separate event-handling rulebooks originally used by older versions of Glulx Entry Points. They do nothing if we have activated the direct event handling use option.]</span></span><br></span>
+<span class="tr line_no" id="line210">
+<!-- <span class="tr line_no" id="line210"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line211">
+<!-- <span class="tr line_no" id="line211"> -->
+<span class="td">The glulx input handling rules are a g-event based rulebook. The glulx input handling rules have outcomes replace player input (success) and require input to continue (success).</span><br></span>
+<span class="tr line_no" id="line212">
+<!-- <span class="tr line_no" id="line212"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line213">
+<!-- <span class="tr line_no" id="line213"> -->
+<span class="td">Last glulx input handling rule for a timer-event when the direct event handling option is not active (this is the redirect to GEP timed activity rule):</span><br></span>
+<span class="tr line_no" id="line214">
+<!-- <span class="tr line_no" id="line214"> -->
+<span class="td">	&ensp;&ensp;	abide by the glulx timed activity rules.</span><br></span>
+<span class="tr line_no" id="line215">
+<!-- <span class="tr line_no" id="line215"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line216">
+<!-- <span class="tr line_no" id="line216"> -->
+<span class="td">Last glulx input handling rule for a char-event when the direct event handling option is not active (this is the redirect to GEP character input rule):</span><br></span>
+<span class="tr line_no" id="line217">
+<!-- <span class="tr line_no" id="line217"> -->
+<span class="td">	&ensp;&ensp;	abide by the glulx character input rules.</span><br></span>
+<span class="tr line_no" id="line218">
+<!-- <span class="tr line_no" id="line218"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line219">
+<!-- <span class="tr line_no" id="line219"> -->
+<span class="td">Last glulx input handling rule for a line-event when the direct event handling option is not active (this is the redirect to GEP line input rule):</span><br></span>
+<span class="tr line_no" id="line220">
+<!-- <span class="tr line_no" id="line220"> -->
+<span class="td">	&ensp;&ensp;	follow the glulx line input rules;</span><br></span>
+<span class="tr line_no" id="line221">
+<!-- <span class="tr line_no" id="line221"> -->
+<span class="td">	&ensp;&ensp;	if the rule succeeded:</span><br></span>
+<span class="tr line_no" id="line222">
+<!-- <span class="tr line_no" id="line222"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		replace player input.</span><br></span>
+<span class="tr line_no" id="line223">
+<!-- <span class="tr line_no" id="line223"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line224">
+<!-- <span class="tr line_no" id="line224"> -->
+<span class="td">Last glulx input handling rule for a mouse-event when the direct event handling option is not active (this is the redirect to GEP mouse input rule):</span><br></span>
+<span class="tr line_no" id="line225">
+<!-- <span class="tr line_no" id="line225"> -->
+<span class="td">	&ensp;&ensp;	abide by the glulx mouse input rules.</span><br></span>
+<span class="tr line_no" id="line226">
+<!-- <span class="tr line_no" id="line226"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line227">
+<!-- <span class="tr line_no" id="line227"> -->
+<span class="td">Last glulx input handling rule for an arrange-event when the direct event handling option is not active (this is the redirect to GEP arranging rule):</span><br></span>
+<span class="tr line_no" id="line228">
+<!-- <span class="tr line_no" id="line228"> -->
+<span class="td">	&ensp;&ensp;	abide by the glulx arranging rules.</span><br></span>
+<span class="tr line_no" id="line229">
+<!-- <span class="tr line_no" id="line229"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line230">
+<!-- <span class="tr line_no" id="line230"> -->
+<span class="td">Last glulx input handling rule for a redraw-event when the direct event handling option is not active (this is the redirect to GEP redrawing rule):</span><br></span>
+<span class="tr line_no" id="line231">
+<!-- <span class="tr line_no" id="line231"> -->
+<span class="td">	&ensp;&ensp;	abide by the glulx redrawing rules.</span><br></span>
+<span class="tr line_no" id="line232">
+<!-- <span class="tr line_no" id="line232"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line233">
+<!-- <span class="tr line_no" id="line233"> -->
+<span class="td">Last glulx input handling rule for a sound-notify-event when the direct event handling option is not active (this is the redirect to GEP sound notification rule):</span><br></span>
+<span class="tr line_no" id="line234">
+<!-- <span class="tr line_no" id="line234"> -->
+<span class="td">	&ensp;&ensp;	abide by the glulx sound notification rules.</span><br></span>
+<span class="tr line_no" id="line235">
+<!-- <span class="tr line_no" id="line235"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line236">
+<!-- <span class="tr line_no" id="line236"> -->
+<span class="td">Last glulx input handling rule for a hyperlink-event when the direct event handling option is not active (this is the redirect to GEP hyperlink rule):</span><br></span>
+<span class="tr line_no" id="line237">
+<!-- <span class="tr line_no" id="line237"> -->
+<span class="td">	&ensp;&ensp;	abide by the glulx hyperlink rules.</span><br></span>
+<span class="tr line_no" id="line238">
+<!-- <span class="tr line_no" id="line238"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line239">
+<!-- <span class="tr line_no" id="line239"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line240">
+<!-- <span class="tr line_no" id="line240"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line241">
+<!-- <span class="tr line_no" id="line241"> -->
+<span class="td"><span class="i7gh">Section - Debounce arrange events - unindexed</span></span><br></span>
+<span class="tr line_no" id="line242">
+<!-- <span class="tr line_no" id="line242"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line243">
+<!-- <span class="tr line_no" id="line243"> -->
+<span class="td"><span class="i7cm">[ Gargoyle sends an arrange event while the user is dragging the window borders, but we really only want one event at the end. Debounce the arrange event to ignore the earlier ones. ]</span></span><br></span>
+<span class="tr line_no" id="line244">
+<!-- <span class="tr line_no" id="line244"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line245">
+<!-- <span class="tr line_no" id="line245"> -->
+<span class="td">Arranging now in GEP is a truth state variable. Arranging now in GEP is false.</span><br></span>
+<span class="tr line_no" id="line246">
+<!-- <span class="tr line_no" id="line246"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line247">
+<!-- <span class="tr line_no" id="line247"> -->
+<span class="td">First glulx input handling rule for an arrange-event while arranging now in GEP is false (this is the debounce arrange event rule):</span><br></span>
+<span class="tr line_no" id="line248">
+<!-- <span class="tr line_no" id="line248"> -->
+<span class="td">	&ensp;&ensp;	let i be 0; <span class="i7cm">[ for the I6 polling code to use ]</span></span><br></span>
+<span class="tr line_no" id="line249">
+<!-- <span class="tr line_no" id="line249"> -->
+<span class="td">	&ensp;&ensp;	let final return value be a number;</span><br></span>
+<span class="tr line_no" id="line250">
+<!-- <span class="tr line_no" id="line250"> -->
+<span class="td">	&ensp;&ensp;	let arrange again be true;</span><br></span>
+<span class="tr line_no" id="line251">
+<!-- <span class="tr line_no" id="line251"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7cm">[ Poll for further arrange events ]</span></span><br></span>
+<span class="tr line_no" id="line252">
+<!-- <span class="tr line_no" id="line252"> -->
+<span class="td">	&ensp;&ensp;	while 1 is 1:</span><br></span>
+<span class="tr line_no" id="line253">
+<!-- <span class="tr line_no" id="line253"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		poll for events in GEP;</span><br></span>
+<span class="tr line_no" id="line254">
+<!-- <span class="tr line_no" id="line254"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		if the current event number in GEP is 0:</span><br></span>
+<span class="tr line_no" id="line255">
+<!-- <span class="tr line_no" id="line255"> -->
+<span class="td">			&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;			break;</span><br></span>
+<span class="tr line_no" id="line256">
+<!-- <span class="tr line_no" id="line256"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		otherwise if the current glk event is an arrange-event:</span><br></span>
+<span class="tr line_no" id="line257">
+<!-- <span class="tr line_no" id="line257"> -->
+<span class="td">			&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;			next;</span><br></span>
+<span class="tr line_no" id="line258">
+<!-- <span class="tr line_no" id="line258"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		<span class="i7cm">[ We have a different event ]</span></span><br></span>
+<span class="tr line_no" id="line259">
+<!-- <span class="tr line_no" id="line259"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		otherwise:</span><br></span>
+<span class="tr line_no" id="line260">
+<!-- <span class="tr line_no" id="line260"> -->
+<span class="td">			&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;			<span class="i7cm">[ Run the arrange rules ]</span></span><br></span>
+<span class="tr line_no" id="line261">
+<!-- <span class="tr line_no" id="line261"> -->
+<span class="td">			&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;			let temp event type be the current glk event;</span><br></span>
+<span class="tr line_no" id="line262">
+<!-- <span class="tr line_no" id="line262"> -->
+<span class="td">			&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;			set the current glk event in GEP to an arrange-event;</span><br></span>
+<span class="tr line_no" id="line263">
+<!-- <span class="tr line_no" id="line263"> -->
+<span class="td">			&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;			now final return value is the glulx input handling rules for an arrange event;</span><br></span>
+<span class="tr line_no" id="line264">
+<!-- <span class="tr line_no" id="line264"> -->
+<span class="td">			&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;			set the current glk event in GEP to temp event type;</span><br></span>
+<span class="tr line_no" id="line265">
+<!-- <span class="tr line_no" id="line265"> -->
+<span class="td">			&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;			now arrange again is false;</span><br></span>
+<span class="tr line_no" id="line266">
+<!-- <span class="tr line_no" id="line266"> -->
+<span class="td">			&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;			now final return value is the value returned by glk event handling;</span><br></span>
+<span class="tr line_no" id="line267">
+<!-- <span class="tr line_no" id="line267"> -->
+<span class="td">			&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;			break;</span><br></span>
+<span class="tr line_no" id="line268">
+<!-- <span class="tr line_no" id="line268"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7cm">[ Run the arrange rules if we didn&#39;t get another event type ]</span></span><br></span>
+<span class="tr line_no" id="line269">
+<!-- <span class="tr line_no" id="line269"> -->
+<span class="td">	&ensp;&ensp;	if arrange again is true:</span><br></span>
+<span class="tr line_no" id="line270">
+<!-- <span class="tr line_no" id="line270"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		now final return value is the glulx input handling rules for an arrange event;</span><br></span>
+<span class="tr line_no" id="line271">
+<!-- <span class="tr line_no" id="line271"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7cm">[ Return values ]</span></span><br></span>
+<span class="tr line_no" id="line272">
+<!-- <span class="tr line_no" id="line272"> -->
+<span class="td">	&ensp;&ensp;	if final return value is input replacement:</span><br></span>
+<span class="tr line_no" id="line273">
+<!-- <span class="tr line_no" id="line273"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		replace player input;</span><br></span>
+<span class="tr line_no" id="line274">
+<!-- <span class="tr line_no" id="line274"> -->
+<span class="td">	&ensp;&ensp;	if final return value is input continuation:</span><br></span>
+<span class="tr line_no" id="line275">
+<!-- <span class="tr line_no" id="line275"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		require input to continue;</span><br></span>
+<span class="tr line_no" id="line276">
+<!-- <span class="tr line_no" id="line276"> -->
+<span class="td">	&ensp;&ensp;	rule fails;</span><br></span>
+<span class="tr line_no" id="line277">
+<!-- <span class="tr line_no" id="line277"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line278">
+<!-- <span class="tr line_no" id="line278"> -->
+<span class="td">To decide what number is the glulx input handling rules for an arrange event:</span><br></span>
+<span class="tr line_no" id="line279">
+<!-- <span class="tr line_no" id="line279"> -->
+<span class="td">	&ensp;&ensp;	let final return value be a number;</span><br></span>
+<span class="tr line_no" id="line280">
+<!-- <span class="tr line_no" id="line280"> -->
+<span class="td">	&ensp;&ensp;	now arranging now in GEP is true;</span><br></span>
+<span class="tr line_no" id="line281">
+<!-- <span class="tr line_no" id="line281"> -->
+<span class="td">	&ensp;&ensp;	now final return value is the value returned by glk event handling;</span><br></span>
+<span class="tr line_no" id="line282">
+<!-- <span class="tr line_no" id="line282"> -->
+<span class="td">	&ensp;&ensp;	now arranging now in GEP is false;</span><br></span>
+<span class="tr line_no" id="line283">
+<!-- <span class="tr line_no" id="line283"> -->
+<span class="td">	&ensp;&ensp;	decide on final return value;</span><br></span>
+<span class="tr line_no" id="line284">
+<!-- <span class="tr line_no" id="line284"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line285">
+<!-- <span class="tr line_no" id="line285"> -->
+<span class="td">To poll for events in GEP:</span><br></span>
+<span class="tr line_no" id="line286">
+<!-- <span class="tr line_no" id="line286"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- glk_select_poll( gg_event </span>)<span class="i7x">; for ( tmp_0 = 0 : tmp_0 &lt; 3 : tmp_0++</span>)<span class="i7x"> { evGlobal</span>--<span class="i7x">&gt;tmp_0 = gg_event</span>--<span class="i7x">&gt;tmp_0; } -)</span>.</span><br></span>
+<span class="tr line_no" id="line287">
+<!-- <span class="tr line_no" id="line287"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line288">
+<!-- <span class="tr line_no" id="line288"> -->
+<span class="td">To decide what number is the current event number in GEP:</span><br></span>
+<span class="tr line_no" id="line289">
+<!-- <span class="tr line_no" id="line289"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- evGlobal</span>--<span class="i7x">&gt;0 -)</span>.</span><br></span>
+<span class="tr line_no" id="line290">
+<!-- <span class="tr line_no" id="line290"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line291">
+<!-- <span class="tr line_no" id="line291"> -->
+<span class="td">To set the current glk event in GEP to (ev - a g-event):</span><br></span>
+<span class="tr line_no" id="line292">
+<!-- <span class="tr line_no" id="line292"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- evGlobal</span>--<span class="i7x">&gt;0 = {ev}; -)</span>.</span><br></span>
+<span class="tr line_no" id="line293">
+<!-- <span class="tr line_no" id="line293"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line294">
+<!-- <span class="tr line_no" id="line294"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line295">
+<!-- <span class="tr line_no" id="line295"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line296">
+<!-- <span class="tr line_no" id="line296"> -->
+<span class="td"><span class="i7gh">Section - Command-counting rules</span></span><br></span>
+<span class="tr line_no" id="line297">
+<!-- <span class="tr line_no" id="line297"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line298">
+<!-- <span class="tr line_no" id="line298"> -->
+<span class="td">The command-counting rules are a rulebook.</span><br></span>
+<span class="tr line_no" id="line299">
+<!-- <span class="tr line_no" id="line299"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line300">
+<!-- <span class="tr line_no" id="line300"> -->
+<span class="td">A command-counting rule (this is the ordinary checking for content rule):</span><br></span>
+<span class="tr line_no" id="line301">
+<!-- <span class="tr line_no" id="line301"> -->
+<span class="td">	&ensp;&ensp;	if the number of characters in the glulx replacement command is 0, rule fails;</span><br></span>
+<span class="tr line_no" id="line302">
+<!-- <span class="tr line_no" id="line302"> -->
+<span class="td">	&ensp;&ensp;	rule succeeds.</span><br></span>
+<span class="tr line_no" id="line303">
+<!-- <span class="tr line_no" id="line303"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line304">
+<!-- <span class="tr line_no" id="line304"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line305">
+<!-- <span class="tr line_no" id="line305"> -->
+<span class="td"><span class="i7gh">Section - Input-cancelling rules</span></span><br></span>
+<span class="tr line_no" id="line306">
+<!-- <span class="tr line_no" id="line306"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr line_no" id="line307">
+<!-- <span class="tr line_no" id="line307"> -->
+<span class="td">The input-cancelling rules are a rulebook.</span><br></span>
+<span class="tr line_no" id="line308">
+<!-- <span class="tr line_no" id="line308"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line309">
+<!-- <span class="tr line_no" id="line309"> -->
+<span class="td">An input-cancelling rule (this is the cancelling input in the main window rule):</span><br></span>
+<span class="tr line_no" id="line310">
+<!-- <span class="tr line_no" id="line310"> -->
+<span class="td">	&ensp;&ensp;	cancel line input in the main window;</span><br></span>
+<span class="tr line_no" id="line311">
+<!-- <span class="tr line_no" id="line311"> -->
+<span class="td">	&ensp;&ensp;	cancel character input in the main window;</span><br></span>
+<span class="tr line_no" id="line312">
+<!-- <span class="tr line_no" id="line312"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr line_no" id="line313">
+<!-- <span class="tr line_no" id="line313"> -->
+<span class="td">To cancel line input in the/-- main window:</span><br></span>
+<span class="tr line_no" id="line314">
+<!-- <span class="tr line_no" id="line314"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- glk_cancel_line_event(gg_mainwin, GLK_NULL</span>)<span class="i7x">; -)</span></span><br></span>
+<span class="tr line_no" id="line315">
+<!-- <span class="tr line_no" id="line315"> -->
+<span class="td">	&ensp;&ensp;	</span><br></span>
+<span class="tr line_no" id="line316">
+<!-- <span class="tr line_no" id="line316"> -->
+<span class="td">To cancel character input in the/-- main window:</span><br></span>
+<span class="tr line_no" id="line317">
+<!-- <span class="tr line_no" id="line317"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- glk_cancel_char_event(gg_mainwin</span>)<span class="i7x">; -)</span></span><br></span>
+<span class="tr line_no" id="line318">
+<!-- <span class="tr line_no" id="line318"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line319">
+<!-- <span class="tr line_no" id="line319"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line320">
+<!-- <span class="tr line_no" id="line320"> -->
+<span class="td"><span class="i7gh">Section - Command showing rules</span></span><br></span>
+<span class="tr line_no" id="line321">
+<!-- <span class="tr line_no" id="line321"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line322">
+<!-- <span class="tr line_no" id="line322"> -->
+<span class="td">The command-showing rules are a rulebook.</span><br></span>
+<span class="tr line_no" id="line323">
+<!-- <span class="tr line_no" id="line323"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line324">
+<!-- <span class="tr line_no" id="line324"> -->
+<span class="td">A command-showing rule (this is the print text to the input prompt rule):</span><br></span>
+<span class="tr line_no" id="line325">
+<!-- <span class="tr line_no" id="line325"> -->
+<span class="td">	&ensp;&ensp;	say input-style-for-glulx;</span><br></span>
+<span class="tr line_no" id="line326">
+<!-- <span class="tr line_no" id="line326"> -->
+<span class="td">	&ensp;&ensp;	say Glulx replacement command;</span><br></span>
+<span class="tr line_no" id="line327">
+<!-- <span class="tr line_no" id="line327"> -->
+<span class="td">	&ensp;&ensp;	say roman type;</span><br></span>
+<span class="tr line_no" id="line328">
+<!-- <span class="tr line_no" id="line328"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line329">
+<!-- <span class="tr line_no" id="line329"> -->
+<span class="td">To say input-style-for-Glulx: </span><br></span>
+<span class="tr line_no" id="line330">
+<!-- <span class="tr line_no" id="line330"> -->
+<span class="td">	&ensp;&ensp;	<span class="i7x">(- glk_set_style(style_Input</span>)<span class="i7x">; -)</span></span><br></span>
+<span class="tr line_no" id="line331">
+<!-- <span class="tr line_no" id="line331"> -->
+<span class="td"> &ensp; </span><br></span>
+<span class="tr line_no" id="line332">
+<!-- <span class="tr line_no" id="line332"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line333">
+<!-- <span class="tr line_no" id="line333"> -->
+<span class="td"><span class="i7gh">Section - Command pasting rules</span></span><br></span>
+<span class="tr line_no" id="line334">
+<!-- <span class="tr line_no" id="line334"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line335">
+<!-- <span class="tr line_no" id="line335"> -->
+<span class="td">The command-pasting rules are a rulebook. </span><br></span>
+<span class="tr line_no" id="line336">
+<!-- <span class="tr line_no" id="line336"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line337">
+<!-- <span class="tr line_no" id="line337"> -->
+<span class="td">A command-pasting rule (this is the glue replacement command into parse buffer rule): </span><br></span>
+<span class="tr line_no" id="line338">
+<!-- <span class="tr line_no" id="line338"> -->
+<span class="td">	&ensp;&ensp;	change the text of the player&#39;s command to the Glulx replacement command;</span><br></span>
+<span class="tr line_no" id="line339">
+<!-- <span class="tr line_no" id="line339"> -->
+<span class="td">	&ensp;&ensp;	rule succeeds.</span><br></span>
+<span class="tr line_no" id="line340">
+<!-- <span class="tr line_no" id="line340"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line341">
+<!-- <span class="tr line_no" id="line341"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line342">
+<!-- <span class="tr line_no" id="line342"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line343">
+<!-- <span class="tr line_no" id="line343"> -->
+<span class="td">Glulx Entry Points ends here.</span><br></span>
+<span class="tr line_no" id="line344">
+<!-- <span class="tr line_no" id="line344"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line345">
+<!-- <span class="tr line_no" id="line345"> -->
+<span class="td">---- Documentation ----</span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

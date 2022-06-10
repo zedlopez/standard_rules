@@ -1,0 +1,221 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../style.css">
+<script>function toggle_details() {
+   var openness, toggle_link;
+   toggle_link = document.getElementById("toggle");
+   openness = toggle_link.classList.toggle("open");
+document.querySelectorAll("details.full-example").forEach(detail => { if (openness) { detail.setAttribute("open", true); } else { detail.removeAttribute("open");} });
+   toggle_link.innerText = (openness ? "Close" : "Open") + " all examples";
+   }
+
+
+function copyCode(text) { navigator.clipboard.writeText(text); }
+
+
+var links = document.getElementsByTagName('a');
+for (var i = 0; i < links.length; i++) {
+    if (links[i].href.match(/^#example-\d+/)) {
+	links[i].onClick = function() { links[i].href.match(/^#example-(\d+)$/); var example = document.getElementById($1).setAttribute('open'); return true; };
+    }
+}
+
+function add_bar(update) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let navbar = document.querySelector('div.index-navbar');
+
+    if (navbar && urlParams.has('project')) {
+        navbar.setAttribute('class', 'index-navbar'); // removes hidden
+        let project = decodeURIComponent(urlParams.get('project'));
+        let index_root = project + '/.index/';
+        let build = project + '/Build/';
+        let query_arg = "?project="+encodeURIComponent(project);
+
+        let links = [
+            { "General Index": document.getElementById('general_index').href },
+            { "Docs": document.getElementById('docs').href },
+            { "Extensions": index_root + 'doc/Extensions.html' },
+            { "Definitions": index_root + 'doc/ExtIndex.html' },
+            { "Debug Log": build + 'debug_log.html' },
+            { "Problems": build + 'problems.html' },
+            { "Source": index_root + 'story.html' },
+            { "Project Index": index_root + 'Index/Welcome.html' } ];
+        let sp = document.createTextNode(" ");
+        links.forEach(h => {
+            Object.entries(h).forEach(([text, url]) => {
+                let my_id = text.toLowerCase().replace(' ', '_');
+                let a = document.querySelector('#'+my_id);
+                let url_target = "file://"+url+query_arg;
+                if (a) {
+                    let parts = a.href.split('#');
+                    let qparts = parts[0].split('?');
+                    a.href = qparts[0] +  (qparts[1] ? ('?' + qparts[1]) : query_arg) + (parts[1] ? ('#' + parts[1]) : "");
+                }
+                else {
+                    a = document.createElement('a');
+                    let href = document.createAttribute("href");
+                    href.value = url_target;
+                    a.setAttributeNode(href);
+                    let elem_id = document.createAttribute("id");
+                    elem_id.value = my_id;
+                    a.setAttributeNode(elem_id);
+                    let linktext = document.createTextNode(text);
+                    a.appendChild(linktext);
+                    navbar.insertBefore(sp.cloneNode(), navbar.firstChild);
+                    navbar.insertBefore(a, navbar.firstChild);
+                }
+            })});
+        if (update) {
+            let main_links = document.querySelectorAll('main a');
+            main_links.forEach(a => {
+                if (!a.href.startsWith('javascript:') || (a.href.match(/[^:]+:\/\// && !a.href.startsWith('file:')))) {
+                    let parts = a.href.split('#')
+                    a.href = parts[0] + query_arg + (parts[1] ? ('#' + parts[1]) : "");
+                } });
+        }
+    }
+}
+
+
+
+document.addEventListener("DOMContentLoaded", add_bar);</script>
+<title>Example #400</title></head>
+<body class="inform7-source">
+
+<div class="inform7-source"><div class="pseudo">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;Solitude&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7gh">Part 1 - General Rules</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">When play begins:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;Have you played interactive fiction before? &gt;&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now novice mode is whether or not the player consents.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[The rationale for asking the question this way, and not another, is that novices asked whether they would like instructions very often say no, even if they need them.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Novice mode is a truth state that varies. Novice mode is true.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Stopping novice mode is an action out of world.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Starting novice mode is an action out of world.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;novice mode off&quot;</span> or <span class="i7sx">&quot;novice off&quot;</span> as stopping novice mode.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;novice mode on&quot;</span> or <span class="i7sx">&quot;novice on&quot;</span> as starting novice mode.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Carry out stopping novice mode: now novice mode is false.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Carry out starting novice mode: now novice mode is true.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Report stopping novice mode: say <span class="i7sx">&quot;Novice mode is now off.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Report starting novice mode: say <span class="i7sx">&quot;Novice mode is now on.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Before reading a command when novice mode is true:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[line break]</span><span class="i7sx">Some options to try:</span><span class="i7si">[line break]</span><span class="i7sx">&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	follow the novice suggestion rules.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The novice suggestion rules is a rulebook.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A novice suggestion rule (this is the suggestion that he look rule):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if not looking and not going, say <span class="i7sx">&quot;  </span><span class="i7si">[bold type]</span><span class="i7sx">look</span><span class="i7si">[roman type]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A novice suggestion rule (this is the suggestion that he check inventory rule):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the player carries something and we are not taking inventory, say <span class="i7sx">&quot;  </span><span class="i7si">[bold type]</span><span class="i7sx">inventory</span><span class="i7si">[roman type]</span><span class="i7sx"> (I)&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A novice suggestion rule (this is the suggestion that he put things on rule):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the player carries something and a free-standing supporter is relevant, say <span class="i7sx">&quot;  </span><span class="i7si">[bold type]</span><span class="i7sx">put</span><span class="i7si">[roman type]</span><span class="i7sx"> something </span><span class="i7si">[bold type]</span><span class="i7sx">on</span><span class="i7si">[roman type]</span><span class="i7sx"> </span><span class="i7si">[the list of relevant supporters]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A novice suggestion rule (this is the suggestion that he take things rule):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if a gettable thing is relevant, say <span class="i7sx">&quot;  </span><span class="i7si">[bold type]</span><span class="i7sx">take</span><span class="i7si">[roman type]</span><span class="i7sx"> </span><span class="i7si">[the list of gettable relevant things]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A novice suggestion rule (this is the suggestion that he examine things rule):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if an unexamined thing is relevant, say <span class="i7sx">&quot;  </span><span class="i7si">[bold type]</span><span class="i7sx">examine</span><span class="i7si">[roman type]</span><span class="i7sx"> (X) </span><span class="i7si">[the list of unexamined relevant things]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A novice suggestion rule (this is the suggestion that he enter things rule):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if a relevant thing is worth entering, say <span class="i7sx">&quot;  </span><span class="i7si">[bold type]</span><span class="i7sx">enter</span><span class="i7si">[roman type]</span><span class="i7sx"> </span><span class="i7si">[the list of worth entering relevant things]</span><span class="i7sx">, or </span><span class="i7si">[bold type]</span><span class="i7sx">get out</span><span class="i7si">[roman type]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A novice suggestion rule (this is the suggestion that he open things rule):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if an unlocked openable thing is relevant, say <span class="i7sx">&quot;  </span><span class="i7si">[bold type]</span><span class="i7sx">open</span><span class="i7si">[roman type]</span><span class="i7sx"> or </span><span class="i7si">[bold type]</span><span class="i7sx">close</span><span class="i7si">[roman type]</span><span class="i7sx"> </span><span class="i7si">[the list of unlocked openable relevant things]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A novice suggestion rule (this is the suggestion that he lock things rule):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if a closed lockable thing is relevant, say <span class="i7sx">&quot;  </span><span class="i7si">[bold type]</span><span class="i7sx">lock</span><span class="i7si">[roman type]</span><span class="i7sx"> or </span><span class="i7si">[bold type]</span><span class="i7sx">unlock</span><span class="i7si">[roman type]</span><span class="i7sx"> </span><span class="i7si">[the list of closed lockable relevant things]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A novice suggestion rule (this is the suggestion that he eat things rule):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the player carries an edible relevant thing, say <span class="i7sx">&quot;  </span><span class="i7si">[bold type]</span><span class="i7sx">eat</span><span class="i7si">[roman type]</span><span class="i7sx"> </span><span class="i7si">[the list of edible relevant things carried by the player]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A novice suggestion rule (this is the suggestion that he wear things rule):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the player carries a wearable relevant thing, say <span class="i7sx">&quot;  </span><span class="i7si">[bold type]</span><span class="i7sx">wear</span><span class="i7si">[roman type]</span><span class="i7sx"> </span><span class="i7si">[the list of wearable relevant things carried by the player]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A novice suggestion rule (this is the suggestion that he turn things on rule):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if a device is relevant, say <span class="i7sx">&quot;  </span><span class="i7si">[bold type]</span><span class="i7sx">turn on</span><span class="i7si">[roman type]</span><span class="i7sx"> or </span><span class="i7si">[bold type]</span><span class="i7sx">turn off</span><span class="i7si">[roman type]</span><span class="i7sx"> </span><span class="i7si">[the list of relevant devices]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A novice suggestion rule (this is the suggestion that he go places rule):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if a room is adjacent, say <span class="i7sx">&quot;  </span><span class="i7si">[bold type]</span><span class="i7sx">go</span><span class="i7si">[roman type][exit list][if in darkness]</span><span class="i7sx"> or try other directions in the dark</span><span class="i7si">[otherwise]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A novice suggestion rule (this is the suggestion that he enter doors rule):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if an open door is relevant, say <span class="i7sx">&quot;  </span><span class="i7si">[bold type]</span><span class="i7sx">go through</span><span class="i7si">[roman type]</span><span class="i7sx"> </span><span class="i7si">[the list of relevant open doors]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A novice suggestion rule (this is the suggestion that he interact with people rule):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if another person is relevant, say <span class="i7sx">&quot;  </span><span class="i7si">[bold type]</span><span class="i7sx">kiss</span><span class="i7si">[roman type]</span><span class="i7sx"> or </span><span class="i7si">[bold type]</span><span class="i7sx">wake</span><span class="i7si">[roman type]</span><span class="i7sx"> </span><span class="i7si">[the list of relevant other people][if the player carries something]</span><span class="i7sx">, or </span><span class="i7si">[bold type]</span><span class="i7sx">give</span><span class="i7si">[roman type]</span><span class="i7sx"> things </span><span class="i7si">[bold type]</span><span class="i7sx">to</span><span class="i7si">[roman type]</span><span class="i7sx"> someone</span><span class="i7si">[end if]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A novice suggestion rule (this is the suggestion that he ask for help rule):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;  </span><span class="i7si">[bold type]</span><span class="i7sx">help</span><span class="i7si">[roman type]</span><span class="i7sx"> to see a more complete set of instructions&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A novice suggestion rule (this is the suggestion that he turn off help rule):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;  </span><span class="i7si">[bold type]</span><span class="i7sx">novice mode off</span><span class="i7si">[roman type]</span><span class="i7sx"> to turn off this guidance&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Last novice suggestion rule:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[line break]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[The suggestion about asking for help is no good unless we provide some. This might take any of a number of forms, but for the sake of example we&#39;ll use an easy way out:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Include Basic Screen Effects by Emily Short. Include Menus by Emily Short. Include Basic Help Menu by Emily Short.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">After taking inventory when novice mode is true: say <span class="i7sx">&quot;To get rid of any of these objects, </span><span class="i7si">[bold type]</span><span class="i7sx">drop</span><span class="i7si">[roman type]</span><span class="i7sx"> it.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A thing can be examined or unexamined. Carry out examining something: now the noun is examined.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A thing can be seen or unseen. A thing is usually unseen.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Definition: a thing is relevant if it is seen and it is visible. Before printing the name of something (called the target): now the target is seen; if novice mode is true, say <span class="i7sx">&quot;</span><span class="i7si">[bold type]</span><span class="i7sx">&quot;</span>. After printing the name of something: say <span class="i7sx">&quot;</span><span class="i7si">[roman type]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Definition: a supporter is worth entering:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the player carries it, no;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if it is enterable, yes.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Definition: a container is worth entering:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the player carries it, no;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if it is enterable and it is open, yes.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Definition: a person is other if it is not the player. Definition: a person is another if it is other.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Definition: a thing is free-standing if it is in a room.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To say exit list:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	let place be location;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	let count be 0;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	repeat with way running through directions:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	let place be the room way from the location;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	if place is a room:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	increment count;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[if count is greater than 1]</span><span class="i7sx"> or</span><span class="i7si">[end if]</span><span class="i7sx"> </span><span class="i7si">[bold type][way][roman type]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Definition: a thing is gettable:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if it is scenery, no;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if it is fixed in place, no;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if it is a person, no;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the player is carrying it, no;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the player is wearing it, no;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	yes.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7gh">Part 2 - On the Ground</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Antarctic Research Station is a room. <span class="i7sx">&quot;Though not always the most stimulating of environments, the station is far from your ex-wife and most of the things in the world that annoy you, namely the other 6  billion people. There is a second room to the south.&quot;</span> The station contains a radio. The radio is a device. It is fixed in place.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">South of the Station is Sitting Room. The description of the Sitting Room is <span class="i7sx">&quot;Just big enough for a very </span><span class="i7si">[comfortable chair]</span><span class="i7sx">.&quot;</span> The Sitting Room contains an enterable supporter called a comfortable chair. The chair is scenery. A monograph about penguins is in the Sitting Room.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Blistering Cold is a room. <span class="i7sx">&quot;It is white out here and very very very cold.&quot;</span> The white door is a door. <span class="i7sx">&quot;</span><span class="i7si">[The white door]</span><span class="i7sx"> leads to </span><span class="i7si">[the other side of the white door]</span><span class="i7sx">.&quot;</span>  It is west of the Blistering Cold and east of the Antarctic Research Station.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Test me with <span class="i7sx">&quot;i / x radio / x door / s / i / x chair / x monograph / sit in chair / get up / n / open door / enter door&quot;</span>.</span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

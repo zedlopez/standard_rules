@@ -1,0 +1,236 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../style.css">
+<script>function toggle_details() {
+   var openness, toggle_link;
+   toggle_link = document.getElementById("toggle");
+   openness = toggle_link.classList.toggle("open");
+document.querySelectorAll("details.full-example").forEach(detail => { if (openness) { detail.setAttribute("open", true); } else { detail.removeAttribute("open");} });
+   toggle_link.innerText = (openness ? "Close" : "Open") + " all examples";
+   }
+
+
+function copyCode(text) { navigator.clipboard.writeText(text); }
+
+
+var links = document.getElementsByTagName('a');
+for (var i = 0; i < links.length; i++) {
+    if (links[i].href.match(/^#example-\d+/)) {
+	links[i].onClick = function() { links[i].href.match(/^#example-(\d+)$/); var example = document.getElementById($1).setAttribute('open'); return true; };
+    }
+}
+
+function add_bar(update) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let navbar = document.querySelector('div.index-navbar');
+
+    if (navbar && urlParams.has('project')) {
+        navbar.setAttribute('class', 'index-navbar'); // removes hidden
+        let project = decodeURIComponent(urlParams.get('project'));
+        let index_root = project + '/.index/';
+        let build = project + '/Build/';
+        let query_arg = "?project="+encodeURIComponent(project);
+
+        let links = [
+            { "General Index": document.getElementById('general_index').href },
+            { "Docs": document.getElementById('docs').href },
+            { "Extensions": index_root + 'doc/Extensions.html' },
+            { "Definitions": index_root + 'doc/ExtIndex.html' },
+            { "Debug Log": build + 'debug_log.html' },
+            { "Problems": build + 'problems.html' },
+            { "Source": index_root + 'story.html' },
+            { "Project Index": index_root + 'Index/Welcome.html' } ];
+        let sp = document.createTextNode(" ");
+        links.forEach(h => {
+            Object.entries(h).forEach(([text, url]) => {
+                let my_id = text.toLowerCase().replace(' ', '_');
+                let a = document.querySelector('#'+my_id);
+                let url_target = "file://"+url+query_arg;
+                if (a) {
+                    let parts = a.href.split('#');
+                    let qparts = parts[0].split('?');
+                    a.href = qparts[0] +  (qparts[1] ? ('?' + qparts[1]) : query_arg) + (parts[1] ? ('#' + parts[1]) : "");
+                }
+                else {
+                    a = document.createElement('a');
+                    let href = document.createAttribute("href");
+                    href.value = url_target;
+                    a.setAttributeNode(href);
+                    let elem_id = document.createAttribute("id");
+                    elem_id.value = my_id;
+                    a.setAttributeNode(elem_id);
+                    let linktext = document.createTextNode(text);
+                    a.appendChild(linktext);
+                    navbar.insertBefore(sp.cloneNode(), navbar.firstChild);
+                    navbar.insertBefore(a, navbar.firstChild);
+                }
+            })});
+        if (update) {
+            let main_links = document.querySelectorAll('main a');
+            main_links.forEach(a => {
+                if (!a.href.startsWith('javascript:') || (a.href.match(/[^:]+:\/\// && !a.href.startsWith('file:')))) {
+                    let parts = a.href.split('#')
+                    a.href = parts[0] + query_arg + (parts[1] ? ('#' + parts[1]) : "");
+                } });
+        }
+    }
+}
+
+
+
+document.addEventListener("DOMContentLoaded", add_bar);</script>
+<title>Example #168</title></head>
+<body class="inform7-source">
+
+<div class="inform7-source"><div class="pseudo">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;The Cheese-makers&quot;</span> by Phrynichus.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7gh">Chapter 1 - Replacing old talk commands and making a new one</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Here, using some techniques that will be discussed in the chapter on Understanding, we get rid of Inform&#39;s default handling of ASK and TELL, and create our own TALK TO action instead:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand the commands <span class="i7sx">&quot;ask&quot;</span> and <span class="i7sx">&quot;tell&quot;</span> and <span class="i7sx">&quot;say&quot;</span> and <span class="i7sx">&quot;answer&quot;</span> as something new.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;ask </span><span class="i7si">[text]</span><span class="i7sx">&quot;</span> or <span class="i7sx">&quot;tell </span><span class="i7si">[text]</span><span class="i7sx">&quot;</span> or <span class="i7sx">&quot;answer </span><span class="i7si">[text]</span><span class="i7sx">&quot;</span> or <span class="i7sx">&quot;say </span><span class="i7si">[text]</span><span class="i7sx">&quot;</span> as a mistake (&quot;<span class="i7cm">[talk to instead]</span><span class="i7sx">&quot;).</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Instead of asking someone to try doing something:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;say &quot;</span><span class="i7cm">[talk to instead][paragraph break]</span><span class="i7sx">&quot;.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Instead of answering someone that something:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;say &quot;</span><span class="i7cm">[talk to instead][paragraph break]</span><span class="i7sx">&quot;.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">To say talk to instead:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;say &quot;</span>(To communicate in <span class="i7cm">[story title]</span>, TALK TO a character.) <span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Understand &quot;</span>talk to <span class="i7cm">[someone]</span><span class="i7sx">&quot; as talking to. Understand &quot;</span>talk to <span class="i7cm">[something]</span><span class="i7sx">&quot; as talking to. Talking to is an action applying to one visible thing.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Chapter 2 - Specific scenes and talking</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7si">[Now, suppose we have a situation -- say, a stage play -- in which it is appropriate to talk to different characters at different times. During the prologue of the play, no one else is on-stage, and the player is to address the audience directly:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Section 1 - Prologue</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">When play begins:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;now right hand status line is &quot;</span>416 BC<span class="i7sx">&quot;;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;now left hand status line is &quot;</span><span class="i7cm">[location]</span><span class="i7sx">&quot;.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Prologue is a scene. Prologue begins when play begins.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">The Theater of Dionysus is a room.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">The audience is a person in the Theater. &quot;</span>The usual audience looks on: the priests and judges in the front row, and then Athenians, metics, and foreigners.<span class="i7sx">&quot; The audience can be prepared or unprepared. The description is &quot;</span>Have you ever seen such a company of perjurers, pathics, and thieves?<span class="i7sx">&quot; Understand &quot;</span>priest<span class="i7sx">&quot; or &quot;</span>priests<span class="i7sx">&quot; or &quot;</span>priest of dionysus<span class="i7sx">&quot; or &quot;</span>judge<span class="i7sx">&quot; or &quot;</span>judges<span class="i7sx">&quot; or &quot;</span>athenians<span class="i7sx">&quot; or &quot;</span>metics<span class="i7sx">&quot; or &quot;</span>foreigners<span class="i7sx">&quot; as the audience.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Instead of talking to the player when the Prologue is happening:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;say &quot;</span>There will be plenty of occasion for muttered asides later in the play, but for now you must prepare the audience for things to come.<span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Instead of talking to the audience when the Prologue is happening:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;say &quot;</span>Drawing breath, you turn to the audience, and offer them a genial, witty, colorful, and of course crude synopsis of what they are about to see; describing all the characters in unmistakable terms and not omitting the most important of them all, your august self.<span class="i7sx">&quot;;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;now the audience is prepared.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Instead of talking to the audience when the Prologue has happened:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;say &quot;</span>You may only direct monologues to the audience when the other actors are off-stage. Otherwise, their characters might have to notice.<span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Prologue ends when the audience is prepared.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7si">[But there might follow a scene in which the player shouldn&#39;t talk at all:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Section 2 - Parodos</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Parodos is a scene. Parodos begins when Prologue ends.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">When Parodos begins:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;move the chorus to the theater.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Instead of talking to someone during Parodos:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;say &quot;</span>Sssh: this moment belongs to the chorus. They&#39;ve worked so hard on it, after all.<span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Parodos ends when the time since Parodos began is 4 minutes.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">The chorus is a person. The description is &quot;</span>They are dressed in exaggerated rural costume and feminine masks, as they are meant to represent a company of female cheese-makers from the Spartan-occupied deme of Dekeleia.<span class="i7sx">&quot; Understand &quot;</span>cheesewives<span class="i7sx">&quot; or &quot;</span>cheese-makers<span class="i7sx">&quot; or &quot;</span>chorus-leader<span class="i7sx">&quot; as the chorus.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Every turn during Parodos:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;repeat through Table of Choral Events:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;&emsp;&emsp;&emsp;say &quot;</span><span class="i7cm">[output entry][paragraph break]</span><span class="i7sx">&quot;;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;&emsp;&emsp;&emsp;blank out the whole row;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;&emsp;&emsp;&emsp;make no decision.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line"><span class="i7sx">Table of Choral Events</span></span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">output</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;</span>The chorus now begins its entry, accompanying with anapestic song its march up the eisodos.<span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;</span>The chorus draws nearer, stomping and clomping and swinging their baskets of cheese.<span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;</span>You stand aside as the chorus fills the orchestra and dances to and fro.<span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;</span>The tune of the aulos-player grows more and more frenzied and then breaks off.<span class="i7sx">&quot;</span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7si">[This last rule is a refinement borrowing from the Activities chapter, which gives characters different appearances in room descriptions depending on when we happen to look; because of the action of the play, we want to show the chorus and audience doing different things during different scenes.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Rule for writing a paragraph about the chorus during Parodos:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;say &quot;</span>The chorus are dancing and singing their way<span class="i7cm">[if the time since Parodos began is less than 3 minutes]</span> up the long walkways onto the stage<span class="i7cm">[otherwise]</span> into position in the orchestra<span class="i7cm">[end if]</span>. <span class="i7cm">[The audience]</span> appear to be pricing their costumes to the nearest obol: woe to the producer who cheats them of their due share of spectacle.<span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7si">[And now a scene in which the player can talk several times to a character (Heracles) but has no useful dialogue with the chorus, the audience, or himself. The prohibition from talking to the audience after the Prologue is already written, but we&#39;ll supply some appropriate responses for talking to the player or the chorus during this scene:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Section 3 - Episode</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Episode is a scene. Episode begins when Parodos ends.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">When Episode begins:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;move Heracles to the theater;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;say &quot;</span>The chorus falls silent, which is the cue: Heracles bursts out of the scene building.<span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Heracles is a man. The description is &quot;</span>Hard to mistake in his lion skin and boots, and carrying a formidable club.<span class="i7sx">&quot; Heracles wears a lion skin and boots. He carries a formidable club. Heracles can be placid or annoyed. Heracles is placid. Heracles can be satisfied, intrigued, or unsatisfied. Heracles is unsatisfied.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Instead of talking to the chorus during Episode:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;say &quot;</span>Your improvised flirtation with the chorus raises no response but a crude gesture from the chorus-leader, who seems to be modeling the role on Iambe.<span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Instead of talking to the player during Episode:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;if Heracles is annoyed:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;&emsp;&emsp;&emsp;say &quot;</span>You mutter to yourself about men with more appetite than brain. The actor playing Heracles ignores you, but it&#39;s good odds he&#39;s scowling under his mask. He hates it when anyone but himself ad-libs for attention.<span class="i7sx">&quot;;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;otherwise:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;&emsp;&emsp;&emsp;now Heracles is annoyed;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;&emsp;&emsp;&emsp;say &quot;</span>&#39;By the dog, he&#39;ll eat me if he gets a chance,&#39; you mutter aside. <span class="i7cm">[paragraph break]</span>&#39;What&#39;s that you say, my ignoble friend?&#39; demands Heracles, hefting his club. He&#39;s not entirely joking: you&#39;ve left the script just now.<span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Instead of talking to Heracles when Heracles is unsatisfied during Episode:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;say &quot;</span>&#39;Dear Heracles, friendly Heracles,&#39; you begin, cringing out of the way as he responds with one of his affectionate ox-killing punches to the shoulder. <span class="i7cm">[paragraph break]</span>But Heracles falls still, and looks almost thoughtful, as tell him you know how he may rout the Spartans, woo all twenty-four lactic ladies, and tame his savage gut with a bathtubful of porridge. <span class="i7cm">[paragraph break]</span>&#39;Speak on, little man,&#39; he says.<span class="i7sx">&quot;;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;now Heracles is intrigued.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Instead of talking to Heracles when Heracles is intrigued during Episode:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;say &quot;</span>It takes several exchanges for him to wrap his one-inch brain around your ten-inch plan; but in the end he embraces the scheme, the women, and your humble self.<span class="i7sx">&quot;;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;now Heracles is satisfied.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Every turn when not talking to someone during Episode:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;repeat through Table of Episodic Events:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;&emsp;&emsp;&emsp;say &quot;</span><span class="i7cm">[output entry][paragraph break]</span><span class="i7sx">&quot;;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;&emsp;&emsp;&emsp;blank out the whole row;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;&emsp;&emsp;&emsp;make no decision.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line"><span class="i7sx">Table of Episodic Events</span></span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">output</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;</span>With a fart and a roar, Heracles asks the world at large, and you in particular, where his dinner might be.<span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;</span>In epic diction, Heracles invites the dairy-mistresses, whey-matrons, and concubines of curd to supply him a supper from their ample baskets.<span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;</span>Heracles and the chorus banter about the proclivities of cheese-wives. The chorus suggest that Heracles, as a son of Zeus, must know something about the appetites of which they speak.<span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;</span>Heracles boasts that a man like himself can perform any feat, but only when his belly is full. Coyly, the matrons prance and dance, skip and gambol out of his grasp, singing mockingly about heads of garlic and loaves of sesame-crusted bread.<span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;</span>The song of the feta fanciers now turns to pots of honey and new-made wine, borrowing verses from last year&#39;s Lenaia winner, &#39;The Bees&#39;. With a jolt, you realize that you&#39;ve missed your cue and the chorus are filling in for you.<span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;</span>Playing for time, the chorus-leader elaborates a whole banquet: rabbit stew, shanks of lamb, spitted quails, eels from lake Copais. Heracles looks as near swooning as any girl fresh from Brauron.<span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;</span>The chorus-leader extends the list of delicacies to include ox-brains, ham-hocks, barley, mullet, carrots, pigeons, lentils, radishes, peas, and apples both wine-dark and golden. The audience shifts on the benches. An expression of gloom settles over the Priest of Dionysus in the front row.<span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;</span>Inspired by Euripides<span class="i7cm">[&#39;]</span> own Muse, the chorus-leader invents a mock-Alcaean hymn on the merits of chervil. This is clearly his swan-song: if you don&#39;t speak at last, the play will come to a halt.<span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;</span>Silence descends.<span class="i7sx">&quot;</span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Rule for writing a paragraph about Heracles during Episode:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;say &quot;</span><span class="i7cm">[Heracles]</span> stands at the center of the orchestra, with members of <span class="i7cm">[the chorus]</span> ranged on either side. <span class="i7cm">[paragraph break][The audience]</span> appear to be reserving their judgement, though they show signs of restiveness at the usual jokes: must there be a Heracles in <span class="i7cm">[italic type]</span>every<span class="i7cm">[roman type]</span> play?<span class="i7sx">&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Episode ends successfully when Heracles is satisfied.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">When Episode ends successfully:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;say &quot;</span>That, of course, is your cue: you&#39;re to come back on as Pan thirty verses from now, and it takes time to put on the hooves and the woolly-legged trousers.<span class="i7sx">&quot;;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;end the story saying &quot;</span>You exit<span class="i7sx">&quot;.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Episode ends disastrously when the number of filled rows in the Table of Episodic Events is 0.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">When Episode ends disastrously:</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx"> &emsp;&emsp;end the story saying &quot;</span>The production has crashed to a halt<span class="i7sx">&quot;.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Test me with &quot;</span>ask audience about me / tell audience about me / audience, hello / audience, jump / talk to me / talk to audience / g / talk to chorus / look / x heracles / talk to me / talk to audience / z / look / talk to heracles / g<span class="i7sx">&quot;.</span></span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

@@ -1,0 +1,401 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../../../Index/doc/style.css">
+<script src="../../../Index/doc/chapter.js"></script>
+<title>Epistemology by Eric Eve</title></head>
+<body>
+<div class="index-navbar hidden">
+<a id="project_index" href="../../../Index/Welcome.html"> Project Index</a><a id="source" href="../../../story.html"> Source</a><a id="problems" href="../../../Build/problems.html"> Problems</a><a id="debug_log" href="../../../Build/debug_log.html"> Debug Log</a><a id="definitions" href="../../../Index/doc/ExtIndex.html"> Definitions</a><a id="extensions" href="../../../Index/doc/Extensions.html"> Extensions</a><a id="docs" href="../../../Index/doc/index.html"> Docs</a><a id="general_index" href="../../../Index/doc/index.html#general-index"> General Index</a>
+
+</div>
+
+
+<div class="pseudo">
+<span class="tr"><span class="th"></span><span class="td"><a href="javascript:copyCode(`Include Epistemology by Eric Eve.`)"><img border="0" src="/home/zed/.local/share/inf7/doc/doc_images/paste.png" alt="Copy Include Epistemology by Eric Eve to clipboard"></a> Include Epistemology by Eric Eve.</span></span></div><div class="ext-front-matter">
+<div>Documentation for Epistemology by Eric Eve</div>
+<a href="#line1">Jump to code</a></div>
+<div class="pseudo">
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">The purpose of this extension is to keep track of what objects the player character knows about, either because s/he has seen them, or because they are already familiar for some other reason. It is not intended as a way to track NPC knowledge, which might be better implemented using a system of relations.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">When the Epistemology extension is used all game objects are either seen or unseen, either familiar or unfamiliar, and either known or unknown. By default, all objects start unseen and unfamiliar, and hence unknown (although we can of course change this for indivdual objects, groups of objects or kinds). The seen/unseen and familiar/unfamiliar pairs can be tested or set as requires. The known/unknown status may be tested but not directly changed in code, since it derives from the other two: a thing is considered to be known if it is either seen or familiar; otherwise it is unknown.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">These distinctions are maintained since the player character may well know about things he or she is yet to see (such as the Magical Golden Golf Ball of Destiny that she has been sent to recover) or are which are in any case unseeable (such as love, freedom, democracy and inflation) which may nevertheless be the subject of conversation or thoughts. Things that are known about but as yet unseen or entities that are abstract can be marked as familiar, either from the outset, or when the player learns about them during the course of the game. Also, there may be cases where it&#39;s important to distinguish whether the player character has actually seen the Golden Golf Ball (say) or merely knows about it.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">The new kind called subject is provided for more abstract objects such as love and atomic physics. Unlike other things, subjects are considered familiar by default.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">As far as possible, the extension tries to keep track of what the player character has seen, first by marking as seen (and familiar) everything that&#39;s in plain view in the location when a LOOK command is executed, and second eveything in plain view within a container when that container is opened. The algorithm for doing this may be less than perfect (in the interests of acceptable speed), and there will be cases that it does not cover (for example when an object is moved into the location to simulate its being found under the rug); in such cases it will be necessary explicitly to change the newly-arrived object to seen in our code (if we need to keep track of it).</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">This extension also marks an object as both seen and familiar when it is examined (which should catch most, if not all, the cases not already covered).</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Finally, the testing command EPISTAT X (not for release) is provided to aid testing and debugging games using this extension. For example the command EPISTAT GOLD BALL will show whether the gold ball is seen, familiar or known. This may be useful to help track whether the epistemic status of various objects in our game is actually what we think it should be. EPISTAT (derived from EPIstemic STAtus) is indeed a nasty non-word, but it has the merits of being (a) reasonably brief, (b) acceptably memorable and (c) unlikely to clash with any verbs defined in-game.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">(With thanks to Aaron Reed for suggesting some optimization, which also led me to spot a bug.)</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Example: * Contemplation - Thinking about things that are known </span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"></span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td"> "Contemplation"</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Include Epistemology by Eric Eve.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Part  1 - Thought Mechanics</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Thinking about is an action applying to one visible thing.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Understand "think about [any thing]" as thinking about.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Understand "think about [any known thing]" as thinking about.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Report thinking about something unknown:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">  say "[no thoughts]"</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Report thinking about something known:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">  say "[the thought of the noun][paragraph break]"</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">A thing has a text called thought.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Pondering is an action applying to one topic.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Understand "think about [text]" as pondering. [otherwise we get an ugly response to THINK ABOUT FOO etc.]</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Report pondering:</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">  say "[no thoughts]"</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">To say no thoughts:  </span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">   say "You have no thoughts on that subject right now." </span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Part  2 - Scenario</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">The Study is a Room. "You deliberately keep this room as bare as possible, to prevent material objects distracting you from your thoughts. The two essential objects that remain are a comfortable armchair and the door out into the hall to the west."</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">The comfortable armchair is an enterable scenery supporter in the Study. The description is "It's nothing special, but it looks comfortable enough." The thought is "You think it's a good place to sit and think." </span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Understand "arm" or "chair" as the comfortable armchair.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">The hall door is an open openable scenery door. The hall door is west of the Study and east of the Main Hall. The thought is "Useful things, doors, you muse: without them it would be so much harder to get from room to room."</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">The Main Hall is a Room. "This place is almost as sparsely furnished as the Study which lies to the east."</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">The large oak table is a supporter in the Main Hall. "A large oak table abuts one wall." The thought is "You've never given this table much thought, to be honest -- it's just a table, after all."</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">A note is on the large oak table. The description of the note is "The note reads: 'To find fame, love, and everlasting happiness, you need to go on the quest of the Great Golden Golf Ball of Destiny.'"</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">The thought of the note is "You [if we have examined the note]think it contains an interesting proposition[otherwise]wonder what it says[end if]. "</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Carry out examining the note: now the Great Golden Golf Ball of Destiny is familiar.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Life is a subject. The thought is "You think [if the golden golf ball is familiar]it has just become a whole lot more interesting[otherwise]it's preferable to the alternative[end if]. "</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Liberty is a subject. The thought is "It's a fine word -- but a slippery concept."</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Understand "freedom" as liberty.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Love is a subject. The thought is "You [if we have examined the note]think it might be worth questing to find it[otherwise]wonder where it is to be found[end if]. "</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Understand "fame" or "everlasting" or "happiness" as love.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">The Great Golden Golf Ball of Destiny is a thing. The thought is "You wonder what kind of object it can be to offer so much."</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">There is an open container called the red box on the large oak table.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">The red ball is in the red box.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">There is a closed openable container called the green box on the large oak table.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">The green ball is in the green box.</span><br></span>
+<span class="tr">
+<!-- <span class="tr"> -->
+<span class="td">Test me with "think about love/think about door/think about golden ball/think about note/think about table/think about life/epistat red ball/epistat green ball/w/think about table/think about note/read note/think about note/think about love/think about golden ball/think about life/epistat golden ball/epistat red ball/epistat green ball/open green box/epistat green ball".</span><br></span>
+</div><div class="inform7-source"><div class="pseudo">
+<span class="tr line_no" id="line1">
+<!-- <span class="tr line_no" id="line1"> -->
+<span class="td">Version 9 of Epistemology by Eric Eve begins here.</span><br></span>
+<span class="tr line_no" id="line2">
+<!-- <span class="tr line_no" id="line2"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line3">
+<!-- <span class="tr line_no" id="line3"> -->
+<span class="td"><span class="i7sx">&quot;Keeping track of what the player character knows and sees.&quot;</span></span><br></span>
+<span class="tr line_no" id="line4">
+<!-- <span class="tr line_no" id="line4"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line5">
+<!-- <span class="tr line_no" id="line5"> -->
+<span class="td"><span class="i7gh">Book 1 - Sight</span></span><br></span>
+<span class="tr line_no" id="line6">
+<!-- <span class="tr line_no" id="line6"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line7">
+<!-- <span class="tr line_no" id="line7"> -->
+<span class="td">A thing can be either seen or unseen. A thing is usually unseen.</span><br></span>
+<span class="tr line_no" id="line8">
+<!-- <span class="tr line_no" id="line8"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line9">
+<!-- <span class="tr line_no" id="line9"> -->
+<span class="td"><span class="i7cm">[It might seem more straightforward simply to write &quot;Now everything visible in</span></span><br></span>
+<span class="tr line_no" id="line10">
+<!-- <span class="tr line_no" id="line10"> -->
+<span class="td"><span class="i7cm">the location is seen.&quot; but this turns out to be unacceptably slow in practice.</span></span><br></span>
+<span class="tr line_no" id="line11">
+<!-- <span class="tr line_no" id="line11"> -->
+<span class="td"><span class="i7cm">The following code does approximately the same thing but much faster.]</span></span><br></span>
+<span class="tr line_no" id="line12">
+<!-- <span class="tr line_no" id="line12"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line13">
+<!-- <span class="tr line_no" id="line13"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line14">
+<!-- <span class="tr line_no" id="line14"> -->
+<span class="td">Carry out looking (this is the mark items as seen when looking rule): </span><br></span>
+<span class="tr line_no" id="line15">
+<!-- <span class="tr line_no" id="line15"> -->
+<span class="td">	&ensp;&ensp;	unless in darkness:</span><br></span>
+<span class="tr line_no" id="line16">
+<!-- <span class="tr line_no" id="line16"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		now every backdrop in the location is seen;</span><br></span>
+<span class="tr line_no" id="line17">
+<!-- <span class="tr line_no" id="line17"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		repeat with item running through things that are enclosed by the location:  </span><br></span>
+<span class="tr line_no" id="line18">
+<!-- <span class="tr line_no" id="line18"> -->
+<span class="td">			&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;			if the item is not enclosed by an opaque closed container:	</span><br></span>
+<span class="tr line_no" id="line19">
+<!-- <span class="tr line_no" id="line19"> -->
+<span class="td">				&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;				now the item is familiar;</span><br></span>
+<span class="tr line_no" id="line20">
+<!-- <span class="tr line_no" id="line20"> -->
+<span class="td">				&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;				now the item is seen.</span><br></span>
+<span class="tr line_no" id="line21">
+<!-- <span class="tr line_no" id="line21"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line22">
+<!-- <span class="tr line_no" id="line22"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line23">
+<!-- <span class="tr line_no" id="line23"> -->
+<span class="td">Carry out opening a container (this is the mark items as seen on opening a container rule):</span><br></span>
+<span class="tr line_no" id="line24">
+<!-- <span class="tr line_no" id="line24"> -->
+<span class="td">	&ensp;&ensp;	repeat with item running through things that are enclosed by the noun:</span><br></span>
+<span class="tr line_no" id="line25">
+<!-- <span class="tr line_no" id="line25"> -->
+<span class="td">		&ensp;&ensp;&ensp;&ensp;		if the item is unseen and the item is visible:			</span><br></span>
+<span class="tr line_no" id="line26">
+<!-- <span class="tr line_no" id="line26"> -->
+<span class="td">			&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;			now the item is familiar;</span><br></span>
+<span class="tr line_no" id="line27">
+<!-- <span class="tr line_no" id="line27"> -->
+<span class="td">			&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;			now the item is seen.</span><br></span>
+<span class="tr line_no" id="line28">
+<!-- <span class="tr line_no" id="line28"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line29">
+<!-- <span class="tr line_no" id="line29"> -->
+<span class="td">The mark items as seen on opening a container rule is listed after the</span><br></span>
+<span class="tr line_no" id="line30">
+<!-- <span class="tr line_no" id="line30"> -->
+<span class="td">standard opening rule in the carry out opening rules.</span><br></span>
+<span class="tr line_no" id="line31">
+<!-- <span class="tr line_no" id="line31"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line32">
+<!-- <span class="tr line_no" id="line32"> -->
+<span class="td"><span class="i7gh">Book 2 - Familiarity</span></span><br></span>
+<span class="tr line_no" id="line33">
+<!-- <span class="tr line_no" id="line33"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line34">
+<!-- <span class="tr line_no" id="line34"> -->
+<span class="td"><span class="i7gh">Chapter 1 - Basic Familiarity</span></span><br></span>
+<span class="tr line_no" id="line35">
+<!-- <span class="tr line_no" id="line35"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line36">
+<!-- <span class="tr line_no" id="line36"> -->
+<span class="td">A thing can be familiar or unfamiliar. A thing is usually unfamiliar.</span><br></span>
+<span class="tr line_no" id="line37">
+<!-- <span class="tr line_no" id="line37"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line38">
+<!-- <span class="tr line_no" id="line38"> -->
+<span class="td">Carry out examining something visible (this is the mark items as seen on examining rule):</span><br></span>
+<span class="tr line_no" id="line39">
+<!-- <span class="tr line_no" id="line39"> -->
+<span class="td">	&ensp;&ensp;	now the noun is familiar;</span><br></span>
+<span class="tr line_no" id="line40">
+<!-- <span class="tr line_no" id="line40"> -->
+<span class="td">	&ensp;&ensp;	now the noun is seen.</span><br></span>
+<span class="tr line_no" id="line41">
+<!-- <span class="tr line_no" id="line41"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line42">
+<!-- <span class="tr line_no" id="line42"> -->
+<span class="td">Definition: a thing is known if it is familiar or it is seen.</span><br></span>
+<span class="tr line_no" id="line43">
+<!-- <span class="tr line_no" id="line43"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line44">
+<!-- <span class="tr line_no" id="line44"> -->
+<span class="td">Definition: a thing is unknown if it is not known.</span><br></span>
+<span class="tr line_no" id="line45">
+<!-- <span class="tr line_no" id="line45"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line46">
+<!-- <span class="tr line_no" id="line46"> -->
+<span class="td"><span class="i7gh">Chapter 2 - Subject (for use without Threaded Conversation by Emily Short) </span></span><br></span>
+<span class="tr line_no" id="line47">
+<!-- <span class="tr line_no" id="line47"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line48">
+<!-- <span class="tr line_no" id="line48"> -->
+<span class="td">A subject is a kind of thing. The specification of a subject is <span class="i7sx">&quot;Something</span></span><br></span>
+<span class="tr line_no" id="line49">
+<!-- <span class="tr line_no" id="line49"> -->
+<span class="td"><span class="i7sx">that conversations can refer to, but which has no real-world presence or</span></span><br></span>
+<span class="tr line_no" id="line50">
+<!-- <span class="tr line_no" id="line50"> -->
+<span class="td"><span class="i7sx">functionality.&quot;</span></span><br></span>
+<span class="tr line_no" id="line51">
+<!-- <span class="tr line_no" id="line51"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line52">
+<!-- <span class="tr line_no" id="line52"> -->
+<span class="td"><span class="i7gh">Chapter 3 - Familiarity of Subjects</span></span><br></span>
+<span class="tr line_no" id="line53">
+<!-- <span class="tr line_no" id="line53"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line54">
+<!-- <span class="tr line_no" id="line54"> -->
+<span class="td">A subject is usually familiar.</span><br></span>
+<span class="tr line_no" id="line55">
+<!-- <span class="tr line_no" id="line55"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line56">
+<!-- <span class="tr line_no" id="line56"> -->
+<span class="td"><span class="i7gh">Book 3 - Testing commands - not for release</span></span><br></span>
+<span class="tr line_no" id="line57">
+<!-- <span class="tr line_no" id="line57"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line58">
+<!-- <span class="tr line_no" id="line58"> -->
+<span class="td">Requesting epistemic status of is an action out of world applying to one visible thing.</span><br></span>
+<span class="tr line_no" id="line59">
+<!-- <span class="tr line_no" id="line59"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line60">
+<!-- <span class="tr line_no" id="line60"> -->
+<span class="td">Understand <span class="i7sx">&quot;epistat </span><span class="i7si">[any thing]</span><span class="i7sx">&quot;</span> as requesting epistemic status of.</span><br></span>
+<span class="tr line_no" id="line61">
+<!-- <span class="tr line_no" id="line61"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line62">
+<!-- <span class="tr line_no" id="line62"> -->
+<span class="td">Report requesting epistemic status of (this is the report epistemic status rule):</span><br></span>
+<span class="tr line_no" id="line63">
+<!-- <span class="tr line_no" id="line63"> -->
+<span class="td">	&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[noun]</span><span class="i7sx"> - </span><span class="i7si">[if the noun is seen]</span><span class="i7sx">seen</span><span class="i7si">[otherwise]</span><span class="i7sx">unseen</span><span class="i7si">[end if]</span><span class="i7sx"> /</span></span><br></span>
+<span class="tr line_no" id="line64">
+<!-- <span class="tr line_no" id="line64"> -->
+<span class="td"><span class="i7sx">		</span><span class="i7si">[if the noun is familiar]</span><span class="i7sx">familiar</span><span class="i7si">[otherwise]</span><span class="i7sx">unfamiliar</span><span class="i7si">[end if]</span><span class="i7sx"> /</span></span><br></span>
+<span class="tr line_no" id="line65">
+<!-- <span class="tr line_no" id="line65"> -->
+<span class="td"><span class="i7sx">		</span><span class="i7si">[if the noun is known]</span><span class="i7sx">known</span><span class="i7si">[otherwise]</span><span class="i7sx">unknown</span><span class="i7si">[end if]</span><span class="i7sx">.&quot;</span> (A).</span><br></span>
+<span class="tr line_no" id="line66">
+<!-- <span class="tr line_no" id="line66"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line67">
+<!-- <span class="tr line_no" id="line67"> -->
+<span class="td">Epistemology ends here.</span><br></span>
+<span class="tr line_no" id="line68">
+<!-- <span class="tr line_no" id="line68"> -->
+<span class="td"></span><br></span>
+<span class="tr line_no" id="line69">
+<!-- <span class="tr line_no" id="line69"> -->
+<span class="td">---- DOCUMENTATION ----</span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

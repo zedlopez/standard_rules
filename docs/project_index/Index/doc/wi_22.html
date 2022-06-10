@@ -1,0 +1,744 @@
+<!doctype html>
+<meta charset="utf-8"><html lang="en"><head><title>Writing in Inform 22. Advanced Phrases</title><link rel="stylesheet" href="style.css"><script src="chapter.js"></script></head><body>
+<nav><div class="index-navbar hidden">
+<a id="project_index" href="../Welcome.html"> Project Index</a><a id="source" href="../../story.html"> Source</a><a id="problems" href="../../Build/problems.html"> Problems</a><a id="debug_log" href="../../Build/debug_log.html"> Debug Log</a><a id="definitions" href="./ExtIndex.html"> Definitions</a><a id="extensions" href="./Extensions.html"> Extensions</a><a id="docs" href="./index.html"> Docs</a><a id="general_index" href="./index.html#general-index"> General Index</a>
+
+</div>
+</nav>
+<main>
+<header>
+
+<div class="toc">
+<h1>Writing in Inform</h1>
+<div class="doc-navbar">
+<div>
+<div class="doc-navbar-left"><a class="nav-left" href="wi_21.html#wi-chapter-21-lists">21. Lists</a></div>
+<div class="doc-navbar-right"><a class="nav-right" href="wi_23.html#wi-chapter-23-figures-sounds-and-files">23. Figures, Sounds and Files</a></div>
+</div>
+<div>
+<div class="doc-navbar-left"><a href="index.html">Table of Contents</a></div>
+<div class="doc-navbar-right"><a href="index.html#general-index">General Index</a></div>
+</div>
+</div>
+
+<div><a id="toggle" href="javascript:toggle_details('examples')">Open all examples</a></div>
+<h2>22. Advanced Phrases</h2>
+<div class="toc-section">22.1 <a href="wi_22.html#wi-22.1">A review of kinds</a></div>
+<div class="toc-section">22.2 <a href="wi_22.html#wi-22.2">Descriptions as values</a></div>
+<div class="toc-section">22.3 <a href="wi_22.html#wi-22.3">Phrases as values</a></div>
+<div class="toc-section">22.4 <a href="wi_22.html#wi-22.4">Default values for phrase kinds</a></div>
+<div class="toc-section">22.5 <a href="wi_22.html#wi-22.5">Map, filter and reduce</a></div>
+<div class="toc-section">22.6 <a href="wi_22.html#wi-22.6">Generic phrases</a></div>
+<div class="toc-section">22.7 <a href="wi_22.html#wi-22.7">Kind variables</a></div>
+<div class="toc-section">22.8 <a href="wi_22.html#wi-22.8">Matching the names of kinds</a></div>
+<div class="toc-section">22.9 <a href="wi_22.html#wi-22.9">In what order?</a></div>
+<div class="toc-section">22.10 <a href="wi_22.html#wi-22.10">Ambiguities</a></div>
+</header>
+<main>
+<section class="chapter" id="wi-chapter-22-advanced-phrases">
+<section class="section" id="wi-22.1"><div>
+
+
+
+<h3>WI §22.1. A review of kinds</h3>
+<p>Most of the time, what's created in an Inform source text will have a name which can be used as a value - sometimes openly so, sometimes not. In this book, we haven't gone out of our way to make that point, because there was no real need to do so. It's possible to make heavy use of rulebooks and write large-scale Inform projects without ever needing to use a rulebook's name as a value in its own right, for example. But if we want to create sophisticated extensions to Inform, or to use modern techniques such as functional and generic programming, we need to be fluent in the language of kinds.</p>
+<p>Inform's language of kinds has four ingredients: base kinds, constructions, kind variables and kinds of kinds.</p>
+<p><strong>1. Base kinds.</strong> Inform provides the following base kinds for values:</p>
+
+<div class="code"><p class="quoted">
+object, number, real number, time, truth state, text, snippet, Unicode character, action, scene, table name, equation name, use option, action name, figure name, sound name, external file, rulebook outcome, parser error
+</p></div>
+<p>together with a few others, such as "response" and "verb", to do with linguistic features.</p>
+<p>And Inform allows us to create new base kinds either by making more specialised kinds of object:</p>
+
+<div class="code"><p class="quoted">
+A geographical layout is a kind of object.
+<br>A marmoset is a kind of animal.
+</p></div>
+<p>Or by making new enumerations or arithmetical kinds:</p>
+
+<div class="code"><p class="quoted">
+Distance is a kind of value. 10km specifies a distance.
+<br>Colour is a kind of value. Red, green and blue are colours.
+</p></div>
+<p><strong>2. Constructions.</strong> These are ways to make new kinds from existing ones.  The construction most often used is "list of...". For any kind K, there is a kind called list of K. So the range of possible kinds in Inform is actually infinite, because:</p>
+
+<div class="code"><p class="quoted">
+number
+<br>list of numbers
+<br>list of lists of numbers
+<br>list of lists of lists of numbers
+<br>...
+</p></div>
+<p>are all different from each other. Inform has nine constructions, as follows:</p>
+
+<div class="code"><p class="quoted">
+list of K
+<br>description of K
+<br>relation of K to L
+<br>K based rule producing L
+<br>K based rulebook producing L
+<br>activity on K
+<br>phrase K -&gt; L
+<br>K valued property
+<br>K valued table column
+</p></div>
+<p>Some of these have appeared in previous chapters, but in abbreviated form. For example, "rulebook" abbreviates "action based rulebook producing nothing", and "either/or property" is a synonym for "truth state valued property". The kinds of descriptions and phrases haven't been covered yet, but are coming up in the sections following.</p>
+<p>These constructions can of course be combined:</p>
+
+<div class="code"><p class="quoted">
+phrase (relation of numbers to colours, number) -&gt; list of colours
+</p></div>
+<p>Brackets can be used to clarify matters:</p>
+
+<div class="code"><p class="quoted">
+phrase (phrase number -&gt; (phrase number -&gt; number)) -&gt; nothing
+</p></div>
+<p>Nothing will make that a simple idea, but it's unambiguous and can be puzzled out with practice.</p>
+<p><strong>3. Variables.</strong> In a way, that's everything: there are just base kinds and constructions on them, and those construct every possible kind in Inform. But the language we use to describe kinds is larger than that, because it allows us to describe many kinds at once, in the same way that Inform reads the word "something" as applying to many objects at once, not as a single object.</p>
+<p>Kind variables will be covered later in the chapter, but the idea is that:</p>
+
+<div class="code"><p class="quoted">
+To hunt for (needle - value of kind K) in (haystack - list of Ks): ...
+</p></div>
+<p>allows us to describe the kinds acceptable in a phrase so that a wide range of possibilities are allowed. The above matches both:</p>
+
+<div class="code"><p class="quoted">
+hunt for 4 in { 2, 3, 4, 5 };
+<br>hunt for "fish" in { "lemon sauce", "fish", "garden peas" };
+</p></div>
+<p>The letter K in the definition stood for any kind; in the first use of "hunt" here, K turned out to be "number", and in the second it was "text". On the other hand Inform would reject:</p>
+
+<div class="code"><p class="quoted">
+hunt for 4 in { containment relation, support relation };
+</p></div>
+<p>because there is no kind K which can make this match the definition.</p>
+<p>There are potentially 26 kind variables, A to Z, though it's customary to use them in the order K, L, M, ..., and it's very rare to need more than two at a time.</p>
+<p><strong>4. Kinds of kind.</strong> Inform understands several names which look as if they are kinds, but actually aren't:</p>
+
+<div class="code"><p class="quoted">
+value, arithmetic value, enumerated value, sayable value
+</p></div>
+<p>(Again, these are built in to Inform.) They are not kinds because they're just too loose and vague. Instead, they can be used in phrase definitions to match against multiple possibilities:</p>
+
+<div class="code"><p class="quoted">
+To announce (X - sayable value): say "I declare that [X] has arrived."
+</p></div>
+<p>This makes "announce X" work for any value X which can be said. All the same, "sayable value" is not a kind. It could never be safe for this to be the kind of a variable, because Inform would never know what could be done with the contents (except that it could be printed out).</p>
+<p><strong>5. Secret inner workings.</strong> There isn't a fifth ingredient, but if there were, it would be a handful of names used in matching some of the core built-in phrases of Inform which have so-called inline I6 definitions. These are not intended for anyone else to use, and are just an internal convenience; they aren't publicly documented and might change without notice. They don't describe kinds at all, because they tell the matcher to look for something else instead. For instance, there's one called "condition", which means "match a condition rather than a value". They appear in red ink in the Phrasebook index.</p>
+
+
+</div></section>
+<section class="section" id="wi-22.2"><div>
+
+
+
+
+
+<h3>WI §22.2. Descriptions as values</h3>
+<p>In the <a href="wi_6.html#wi-chapter-6-descriptions">chapter on Descriptions</a>, we saw that a description can be any source text which describes one or more objects: it might be as simple as "the Corn Market", or as complicated as "open containers which are in dark rooms". More or less the only restriction is that it must be unambiguous as to what counts and what does not: "three containers" is ambiguous as a description because it does not say which three.</p>
+<p>We've now seen several interesting tricks with descriptions. In fact, if D is a description, then</p>
+
+<div class="code"><p class="quoted">
+say "You gaze mournfully at [the list of D].";
+<br>let the tally be the number of D;
+<br>let the surprise prize be a random D;
+<br>repeat with item running through D:
+<br>    ...
+</p></div>
+<p>are all standard things to do. These examples make it look as if it must be possible to define phrases which act on descriptions, and in fact it is, because a description can be a value in itself. For example,</p>
+
+<div class="code"><p class="quoted">
+even numbers
+<br>open containers which are in dark rooms
+</p></div>
+<p>are values of kind "description of numbers" and "description of objects" respectively. In general, if K is any kind then "description of K" is also a kind. Here is how we might make use of that:</p>
+
+<div class="code"><p class="quoted">
+To enumerate (collection - a description of objects):
+<br>    repeat with the item running through the collection:
+<br>        say "-- [The item]."
+</p></div>
+<p>This makes "enumerate lighted rooms" run off a list of lighted rooms in a textual format different from the standard one produced by "say the list of lighted rooms". Inside the definition, "collection" can be used wherever a description might be used: here, for instance, we use it as the range for the repeat loop. (That's only possible because the range is limited in size: Inform wouldn't have allowed us to range through, say, all texts.)</p>
+<p>Purely as a convenience, we can also write "member of" or "members of" in this context. For instance, in the enumerate definition, it would have been just as good to write "...running through the members of the collection..." in the repeat. (Similarly, we could write "number of members of the collection" or "a random member of the collection", which looks grammatically tidier than writing "number of the collection" or "random of the collection" - though in fact both of these do work.)</p>
+<p>Finally, it's sometimes useful in an abstract situation to test</p>
+
+<div class="definition" id="defn353">
+<p class="defnprototype"><strong>if </strong>(value)<strong> matches </strong>(description of values)<strong>:</strong></p>
+
+
+
+<p>This condition is true if the value matches the description; the kinds must be compatible, or Inform will issue a problem message. There is no point using this for cases where the description is given explicitly:</p>
+
+<blockquote class="code"><p class="quoted">
+if 4 matches even numbers, ...
+</p></blockquote>
+
+<p>because it is easier to write just:</p>
+
+<blockquote class="code"><p class="quoted">
+if 4 is an even number, ...
+</p></blockquote>
+
+<p>So this condition is only useful when the description is stored in some variable, and its identity is not known.</p>
+
+
+</div>
+
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-439"><p class="example-p"><span class="example-short-start">439. <a href="rb_2.html#example-439" class="example-link" onClick="(function() { document.getElementById('example-439').setAttribute('open','open'); return true; })();">Curare</a></span> <span class="example-difficulty">★</span>  <span class="example-description">A phrase that chooses and names the least-recently selected item from the collection given, allowing the text to cycle semi-randomly through a group of objects.</span> (c.f. <a href="rb_2.html#rb-2.1">RB §2.1. Varying What Is Written</a>)</p></div>
+</div></section>
+<section class="section" id="wi-22.3"><div>
+
+
+
+
+
+<h3>WI §22.3. Phrases as values</h3>
+<p>Given any two kinds K and L, the kind "phrase K -&gt; L" is now a kind. (This is meant to look like a mathematical function arrow.) For example, the phrase defined by</p>
+
+<div class="code"><p class="quoted">
+To decide which number is the square of (N - a number): ...
+</p></div>
+<p>has the kind "phrase number -&gt; number". Brackets and commas are used if the phrase combines several values, so</p>
+
+<div class="code"><p class="quoted">
+To decide which text is (T - text) repeated (N - a number) times: ...
+</p></div>
+<p>has the kind "phrase (text, number) -&gt; text". The word "nothing" is used if there are no values in, or no value out - thus</p>
+
+<div class="code"><p class="quoted">
+To decide which number is the magic target: ...
+</p></div>
+<p>has kind "phrase nothing -&gt; number", and</p>
+
+<div class="code"><p class="quoted">
+To dig (eastward - length) by (northward - length): ...
+</p></div>
+<p>has the kind "phrase (length, length) -&gt; nothing".</p>
+<p>But how are we to get at these values? The answer is that we need to give a phrase a name in order to do so. For example:</p>
+
+<div class="code"><p class="quoted">
+To decide what number is double (N - a number) (this is doubling):
+<br>    decide on N plus N.
+</p></div>
+<p>This is the same syntax used to name rules, and the idea is the same. If we</p>
+<p>try "showme doubling", the result is</p>
+
+<div class="code"><p class="quoted">
+phrase number -&gt; number: doubling
+</p></div>
+<p>The main thing we want to do with a phrase is to apply it. So:</p>
+
+<div class="code"><p class="quoted">
+showme doubling applied to 2;
+</p></div>
+<p>produces</p>
+
+<div class="code"><p class="quoted">
+"doubling applied to 2" = number: 4
+</p></div>
+<p>There are versions of "applied to" for phrases applied to 0 to 3 values:</p>
+
+<div class="definition" id="defn354">
+<p class="defnprototype"><strong></strong>(phrase nothing -&gt; value)<strong> applied ... value</strong></p>
+
+
+
+<p>This phrase produces the result of applying the given phrase, which must be one which takes no values itself.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn355">
+<p class="defnprototype"><strong></strong>(phrase value -&gt; value)<strong> applied to </strong>(value)<strong> ... value</strong></p>
+
+
+
+<p>This phrase produces the result of applying the given phrase, which must be one which takes one value itself.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn356">
+<p class="defnprototype"><strong></strong>(phrase (value, value) -&gt; value)<strong> applied to </strong>(value)<strong> and </strong>(value)<strong> ... value</strong></p>
+
+
+
+<p>This phrase produces the result of applying the given phrase, which must be one which takes two values itself.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn357">
+<p class="defnprototype"><strong></strong>(phrase (value, value, value) -&gt; value)<strong> applied to </strong>(value)<strong> and </strong>(value)<strong> and </strong>(value)<strong> ... value</strong></p>
+
+
+
+<p>This phrase produces the result of applying the given phrase, which must be one which takes three values itself.</p>
+
+
+</div>
+
+<p>So for example:</p>
+
+<div class="code"><p class="quoted">
+F applied
+<br>F applied to V
+<br>F applied to V and W
+<br>F applied to V and W and X
+</p></div>
+<p>For phrases which do not produce a value, we use "apply":</p>
+
+<div class="definition" id="defn358">
+<p class="defnprototype"><strong>apply </strong>(phrase nothing -&gt; nothing)<strong></strong></p>
+
+
+
+<p>This phrase causes the given phrase to be applied. It must be one which takes no values itself.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn359">
+<p class="defnprototype"><strong>apply </strong>(phrase value -&gt; nothing)<strong> to </strong>(value)<strong></strong></p>
+
+
+
+<p>This phrase causes the given phrase to be applied. It must be one which takes one value itself.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn360">
+<p class="defnprototype"><strong>apply </strong>(phrase (value, value) -&gt; nothing)<strong> to </strong>(value)<strong> and </strong>(value)<strong></strong></p>
+
+
+
+<p>This phrase causes the given phrase to be applied. It must be one which takes two values itself.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn361">
+<p class="defnprototype"><strong>apply </strong>(phrase (value, value, value) -&gt; nothing)<strong> to </strong>(value)<strong> and </strong>(value)<strong> and </strong>(value)<strong></strong></p>
+
+
+
+<p>This phrase causes the given phrase to be applied. It must be one which takes three values itself.</p>
+
+
+</div>
+
+<p>Thus:</p>
+
+<div class="code"><p class="quoted">
+apply F;
+<br>apply F to V;
+<br>apply F to V and W;
+<br>apply F to V and W and X;
+</p></div>
+</div></section>
+<section class="section" id="wi-22.4"><div>
+
+
+
+
+
+<h3>WI §22.4. Default values for phrase kinds</h3>
+<p>The default value for "phrase K -&gt; nothing" is a phrase which does nothing. For example, if we write:</p>
+
+<div class="code"><p class="quoted">
+let S be a phrase numbers -&gt; nothing;
+</p></div>
+<p>then S is created holding the default phrase numbers -&gt; nothing, and if we then try it out with:</p>
+
+<div class="code"><p class="quoted">
+apply S to 17;
+</p></div>
+<p>we will indeed find that nothing happens.</p>
+<p>The default value for "phrase K -&gt; L" is a phrase which, no matter what value of K it applies to, always produces the default value of L. (It's a sort of equivalent of the zero function in mathematics - indeed that's exactly what it is, if L is "number".) So:</p>
+
+<div class="code"><p class="quoted">
+let Q be a phrase numbers -&gt; times;
+<br>showme Q;
+<br>showme Q applied to 4;
+<br>showme Q applied to -7;
+</p></div>
+<p>produces:</p>
+
+<div class="code"><p class="quoted">
+"q" = phrase number -&gt; time: default value of phrase number -&gt; time
+<br>"q applied to 4" = time: 9:00 am
+<br>"q applied to -7" = time: 9:00 am
+</p></div>
+<p>Here Q is set to the default phrase because we didn't give it any other value; it has the name we might expect ("default value of phrase number -&gt; time") and it works as advertised, producing 9:00 am no matter what number is fed in.</p>
+<p>More ambitiously, and supposing that we have a kind called "colour" whose first possible value is "red":</p>
+
+<div class="code"><p class="quoted">
+let R be a phrase numbers -&gt; (phrase numbers -&gt; colours);
+<br>showme R;
+<br>showme R applied to 3;
+<br>showme (R applied to 3) applied to 2;
+</p></div>
+<p>produces:</p>
+
+<div class="code"><p class="quoted">
+"r" = phrase number -&gt; (phrase number -&gt; colour): default value of phrase
+<br>number -&gt; (phrase number -&gt; colour)
+<br>"r applied to 3" = phrase number -&gt; colour: default value of phrase number
+<br>-&gt; colour
+<br>"( r applied to 3 ) applied to 2" = colour: red
+</p></div>
+</div></section>
+<section class="section" id="wi-22.5"><div>
+
+
+
+
+
+<h3>WI §22.5. Map, filter and reduce</h3>
+<p>When a mass of computations has to be done, the traditional approach is to work through them in a "repeat" loop. One modern alternative, growing in popularity, is to form a list of inputs; then apply the same computation to each input in turn to form a list of results (this is called "mapping"); throw out any bad or unwanted results ("filtering"); and then combine the surviving results into a single composite answer ("reducing", though some programming languages call this "folding" or "accumulation"; it's a much-reinvented idea).</p>
+<p>Inform provides all three of these fundamental list-processing operations. There is no special term for a "map", because Inform treats it as another case of "applied to".</p>
+
+<div class="definition" id="defn362">
+<p class="defnprototype"><strong></strong>(phrase value -&gt; value)<strong> applied to </strong>(list of values)<strong> ... value</strong></p>
+
+
+
+<p>This phrase takes the list, applies the phrase to each entry in the list, and forms a new list of the result. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+To decide what number is double (N - a number) (this is doubling):
+<br>    decide on N plus N.
+</p></blockquote>
+
+<p>Then "doubling applied to 2" produces 4, by the simpler definition of "applied to", but also:</p>
+
+<blockquote class="code"><p class="quoted">
+doubling applied to {2, 3, 4}
+</p></blockquote>
+
+<p>produces the list {4, 6, 8}.</p>
+
+
+</div>
+
+<p>More divertingly, suppose we define:</p>
+
+<div class="code">
+<p class="quoted">
+To decide what text is the longhand form of (N - a number)
+<br>    (this is spelling out):
+<br>    decide on "[N in words]".
+</p>
+<p class="quoted">
+To decide what text is the consonant form of (T - text)
+<br>    (this is txtng):
+<br>    replace the regular expression "&lt;aeiou&gt;" in T with "";
+<br>    decide on T.
+</p>
+</div>
+<p>Then we can write a chain of three maps in succession:</p>
+
+<div class="code"><p class="quoted">
+txtng applied to spelling out applied to doubling applied to {3, 8, 4, 19, 7}
+</p></div>
+<p>to produce the value {"sx", "sxtn", "ght", "thrty-ght", "frtn"}.</p>
+<p>Next, filtering. Here we make use of descriptions, in order to say what values will be allowed through the filter. So:</p>
+
+<div class="definition" id="defn363">
+<p class="defnprototype"><strong>filter to </strong>(description of values)<strong> of </strong>(list of values)<strong> ... value</strong></p>
+
+
+
+<p>This phrase produces a new list which is a thinner version of the one given, so that it contains only those values which match the description given. Example:</p>
+
+<blockquote class="code"><p class="quoted">
+filter to even numbers of {3, 8, 4, 19, 7}
+</p></blockquote>
+
+<p>produces {8, 4}, with the values 3, 19, and 7 failing to make it through. A sufficiently fine filter may well thin out a list to a single entry, or even no entries at all, but the result is always a list.</p>
+
+
+</div>
+
+<p>To get the full effect of filtering, we probably need to define an adjective or two. For example:</p>
+
+<div class="code"><p class="quoted">
+Definition: a text (called T) is lengthy if the number of characters in it is greater than 6.
+</p></div>
+<p>We can then write:</p>
+
+<div class="code"><p class="quoted">
+filter to lengthy texts of spelling out applied to {15, 2, 20, 29, -4}
+</p></div>
+<p>which produces {"fifteen", "twenty-nine", "minus four"}.</p>
+<p>Lastly, reduction. In order to combine a whole list of values, we need a phrase to combine any two. Here are some samples:</p>
+
+<div class="code">
+<p class="quoted">
+To decide what number is the larger of (N - number) and (M - number)
+<br>    (this is maximizing):
+<br>    if N &gt; M, decide on N;
+<br>    decide on M.
+</p>
+<p class="quoted">
+To decide what text is the concatenation of (X - text) and (Y - text)
+<br>    (this is concatenation):
+<br>    decide on "[X][Y]".
+</p>
+</div>
+<p>And here are some sample reductions:</p>
+
+<div class="code"><p class="quoted">
+let X be the maximization reduction of {3, 8, 4, 19, 7};
+<br>let Y be the concatenation reduction of txtng applied to spelling out
+<br>    applied to doubling applied to {3, 8, 4, 19, 7};
+</p></div>
+<p>sets X to 19, the highest of the values, and Y to the text "sxsxtnghtthrty-ghtfrtn". In each case a list has been reduced to a single value which somehow combines the contents.</p>
+
+<div class="definition" id="defn364">
+<p class="defnprototype"><strong></strong>(phrase (value, value) -&gt; value)<strong> reduction of </strong>(list of values)<strong> ... value</strong></p>
+
+
+
+<p>This phrase works through the list and accumulates the values in it, using the phrase supplied. Example: if we have</p>
+
+<blockquote class="code"><p class="quoted">
+To decide what number is the sum of (N - number) and (M - number)
+<br>    (this is summing):
+<br>    decide on N + M.
+</p></blockquote>
+
+<p>then the summing reduction of {3, 8, 4, 19, 7} is the number 41, obtained by</p>
+
+<blockquote class="code"><p class="quoted">
+(((3 + 8) + 4) + 19) + 7
+</p></blockquote>
+
+<p>so that the summing phrase has been used four times.</p>
+
+
+</div>
+
+<p>Is map/filter/reduce always a good idea? Devotees point out that almost any computation can be thought of in this way, and in systems where the work has to be distributed around multiple processors it can be a very powerful tool. (There are programming languages without loops where it's essentially the only tool.) At its best, it reads very elegantly: one assembles all of the tools needed - definitions of doubling, lengthy, spelling out, concatenation and so on - and then each actual task is expressed in a single line at the end.</p>
+<p>On the other hand, there are also times when this is a needlessly complicated disguise for what could more easily be done with a "repeat" loop, and also more efficiently since assembling and dismantling lists in memory does take some overhead time. So these list operations are not a panacea, but it's good to have them available.</p>
+
+
+</div></section>
+<section class="section" id="wi-22.6"><div>
+
+
+
+
+
+<h3>WI §22.6. Generic phrases</h3>
+<p>The following looks quite innocent:</p>
+
+<div class="code"><p class="quoted">
+To say (V - value) twice: say "[V]. [V], I say!"
+</p></div>
+<p>It's clear at a glance what this is intended to do, but at a second glance things aren't so straightforward. "Value" is not itself a kind - it's too big and unspecific. For instance, if we were to allow a variable to be just "a value", we could freely set it to 12 one minute and to "dahlias" the next, and such a variable would be dangerous since we would never know what could safely be done with its contents. A phrase like this one is called "generic", because it's not so much a single, actual phrase as a recipe to make phrases. (Inform automatically works out which kinds we need the phrase for, and creates a version of the phrase for those kinds.)</p>
+<p>So "value" is not a kind, but a kind of kind. Inform has several of these:</p>
+
+<div class="code"><p class="quoted">
+value, arithmetic value, enumerated value, sayable value
+</p></div>
+<p>These act as ways to say "a value of any kind matching this can go here". For example, "value" is a way to say "any kind at all"; "arithmetic value" is any kind which arithmetic can be performed on (any kind with the little calculator icon in the Arithmetic part of the Kinds index); and so on. If we write:</p>
+
+<div class="code"><p class="quoted">
+To double (V - arithmetic value): say "[V times 2]."
+</p></div>
+<p>the restriction to "arithmetic value" means that although "double 3", "double 6 kg", etc., would be matched, "double the Entire Game" would not - you can't perform arithmetic on scenes. Similarly, it would have been tidier to write:</p>
+
+<div class="code"><p class="quoted">
+To say (V - sayable value) twice: say "[V]. [V], I say!"
+</p></div>
+<p>because then Inform will make it clearer why "say X twice" won't work if X is one of those rare values which it can't say (an activity, for instance).</p>
+<p>The Kinds index shows which kinds match against which of these "kinds of kind". For instance, it shows that "time"</p>
+
+<div class="code"><p class="quoted">
+Matches: value, arithmetic value, sayable value
+</p></div>
+<p>which means that time is something we can do arithmetic on, and can say.</p>
+
+
+</div></section>
+<section class="section" id="wi-22.7"><div>
+
+
+
+
+
+<h3>WI §22.7. Kind variables</h3>
+<p>The examples of generic phrases in the previous section were really only toy examples. Suppose we want a phrase which will take any arithmetic value and triple it. We could do something like this:</p>
+
+<div class="code"><p class="quoted">
+To triple (V - arithmetic value): say "[V times 3]."
+</p></div>
+<p>But this only prints the answer. Suppose we want to be given the value back, instead: how can we write the phrase? The trouble is that, not knowing the kind of V, we can't say what kind will be produced. We need a way of saying "the same kind comes out as went in". Inform expresses that using kind variables:</p>
+
+<div class="code"><p class="quoted">
+To decide which K is triple (original - arithmetic value of kind K):
+<br>    decide on 3 times the original.
+</p></div>
+<p>Here, K stands for any kind which matches "arithmetic value". Inform supports exactly 26 of these symbols, which are written A to Z, but it's customary to use K and L. (They can be written in the plural if we like: e.g., "list of Ks". But they must always use a capital letter: "list of k" is not allowed.)</p>
+<p>Each symbol we use has to be declared in exactly one of the bracketed ingredients for the phrase - here, the declaration is "arithmetic value of kind K". That creates K and says that it has to be arithmetic; if we'd just said "value of kind K", it could have been anything. (Alternatively, we could use any of the kinds of kind in the previous section.)</p>
+<p>For a more ambitious example, here is one way to define the mapping operation described earlier in the chapter:</p>
+
+<div class="code"><p class="quoted">
+To decide what list of L is (function - phrase K -&gt; value of kind L)
+<br>    applied to (original list - list of values of kind K):
+<br>    let the result be a list of Ls;
+<br>    repeat with item running through the original list:
+<br>        let the mapped item be the function applied to the item;
+<br>        add the mapped item to the result;
+<br>    decide on the result.
+</p></div>
+<p>Here we need two symbols to explain the complicated way that the values going in and out have to match up to each other. Note also the way that the temporary variable "result" is created:</p>
+
+<div class="code"><p class="quoted">
+let the result be a list of Ls;
+</p></div>
+<p>Ordinarily, of course, "L" is not a kind. But within the body of a phrase definition, it means whatever kind L matched against.</p>
+<p>When a symbol occurs several times in the same definition, subtle differences can arise according to which appearance is the declaration. These are not quite the same:</p>
+
+<div class="code"><p class="quoted">
+To hunt for (V - value of kind K) in (L - list of Ks): ...
+<br>To hunt for (V - K) in (L - list of values of kind K): ...
+</p></div>
+<p>The difference arises - though very rarely - if V has some different kind compared to the list entries, but which can be used as if it were of that kind. For example,</p>
+
+<div class="code"><p class="quoted">
+hunt for the player's command in {"take all", "wait"};
+</p></div>
+<p>Here V is a snippet, but L is a list of texts; and a snippet can be used in place of a text, but not vice versa. So this will match the second definition, because K is set to "text", but it won't match the first, where K is set to "snippet".</p>
+
+
+</div></section>
+<section class="section" id="wi-22.8"><div>
+
+
+
+
+
+<h3>WI §22.8. Matching the names of kinds</h3>
+<p>Sometimes a phrase needs to know what kind it's to work on, but isn't going to be given any particular value of it. For example:</p>
+
+<div class="code"><p class="quoted">
+To assay (name of kind of value K):
+<br>    repeat with item running through Ks:
+<br>        say "There's [item].";
+<br>    say "But the default is [default value of K].";
+</p></div>
+<p>Note that there's no hyphen, and no name for the bracketed token - it only sets K. We can then have, say:</p>
+
+<div class="code"><p class="quoted">
+assay colours;
+<br>assay vehicles;
+</p></div>
+<p>But "assay texts" would throw a problem message, because we can't repeat through all possible texts. For a different reason,</p>
+
+<div class="code"><p class="quoted">
+assay open doors;
+</p></div>
+<p>would not be allowed - "open doors" is a description which applies to some doors and not others; it isn't a kind. It would make no sense to talk about "default value of open door", for example.</p>
+
+
+</div></section>
+<section class="section" id="wi-22.9"><div>
+
+
+
+
+
+<h3>WI §22.9. In what order?</h3>
+<p>Recall the definition:</p>
+
+<div class="code"><p class="quoted">
+To slam shut (box - an open container): say "With great panache, you slam shut [the box].".
+</p></div>
+<p>Suppose we then try to "slam shut the wall safe" at a time during play when the wall safe is already closed. An error message will then be printed during play, since there must be a mistake in the design. The combination of checking both when Inform builds the story file and then continuously when the story file is played guarantees that, in all cases, a varying item such as "box" in the definition of "To slam shut (box - open container)" always satisfies the condition laid down.</p>
+<p>Instead suppose we also have the following definition:</p>
+
+<div class="code"><p class="quoted">
+To slam shut (box - a container): say "You are unable to slam shut [the box], which is already closed.".
+</p></div>
+<p>We now have two definitions of "slam shut". Sometimes the box it's applied to will be closed, in which case only the second definition fits, and will be the one used. But if the box is open, both definitions fit. Which will happen? The rule is:</p>
+
+<div class="code">
+<p class="quoted">
+1. A narrower condition takes precedence over a broader one;
+</p>
+<p class="quoted">
+2. If neither condition is narrower than the other, then whichever phrase was defined later in the source code is the one taking precedence;
+</p>
+<p class="quoted">
+3. Except that if the phrase is being used in the definition of phrase P, then P is always last in precedence order, so that recursion is always the very last possibility considered. This allows more specific or later definitions to make use of less specific or earlier ones in a natural way.
+</p>
+</div>
+<p>Rule 1 ensures that a definition involving "open container" takes priority over one which merely involves "container", for instance.</p>
+<p>And therefore when the box is open, it's the more specific phrase to do with open containers which is invoked: so, with great panache, the box is slammed shut.</p>
+<p>On the other hand, neither of these patterns is narrower than the other:</p>
+
+<div class="code"><p class="quoted">
+To describe (something - transparent): ...
+<br>To describe (something - container): ...
+</p></div>
+<p>Some containers are transparent, some not; some transparent things are containers, some not. Rule 1 therefore does not apply, so it is the later of the two phrases which takes effect.</p>
+
+
+</div></section>
+<section class="section" id="wi-22.10"><div>
+
+
+
+
+
+<h3>WI §22.10. Ambiguities</h3>
+<p>Another possible ambiguity occurs when a phrase might match two lexically different possibilities using the same words.</p>
+
+<div class="code"><p class="quoted">
+say the dishcloth;
+</p></div>
+<p>could be construed as a usage of either of these cases:</p>
+
+<div class="code"><p class="quoted">
+say the (something - a thing)
+<br>say (something - a thing)
+</p></div>
+<p>These of course have different effects - one produces the name with a definite article, the other just the name, so the difference is important.</p>
+<p>The rule here is that whichever possibility contains the most words, in this case "say the (...)", takes precedence, because it's assumed to be a more specific form of the less wordy version.</p>
+
+
+</div></section>
+</section>
+
+<footer>
+<div class="linkback"><a href="http://inform7.com/book/WI_22_1.html">WI Chapter 22 on inform7.com</a></div>
+<div class="doc-navbar">
+<div>
+<div class="doc-navbar-left"><a class="nav-left" href="wi_21.html#wi-chapter-21-lists">21. Lists</a></div>
+<div class="doc-navbar-right"><a class="nav-right" href="wi_23.html#wi-chapter-23-figures-sounds-and-files">23. Figures, Sounds and Files</a></div>
+</div>
+<div>
+<div class="doc-navbar-left"><a href="index.html">Table of Contents</a></div>
+<div class="doc-navbar-right"><a href="index.html#general-index">General Index</a></div>
+</div>
+</div>
+
+</footer>
+</main></body></html>
+

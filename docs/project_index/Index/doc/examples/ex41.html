@@ -1,0 +1,150 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../style.css">
+<script>function toggle_details() {
+   var openness, toggle_link;
+   toggle_link = document.getElementById("toggle");
+   openness = toggle_link.classList.toggle("open");
+document.querySelectorAll("details.full-example").forEach(detail => { if (openness) { detail.setAttribute("open", true); } else { detail.removeAttribute("open");} });
+   toggle_link.innerText = (openness ? "Close" : "Open") + " all examples";
+   }
+
+
+function copyCode(text) { navigator.clipboard.writeText(text); }
+
+
+var links = document.getElementsByTagName('a');
+for (var i = 0; i < links.length; i++) {
+    if (links[i].href.match(/^#example-\d+/)) {
+	links[i].onClick = function() { links[i].href.match(/^#example-(\d+)$/); var example = document.getElementById($1).setAttribute('open'); return true; };
+    }
+}
+
+function add_bar(update) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let navbar = document.querySelector('div.index-navbar');
+
+    if (navbar && urlParams.has('project')) {
+        navbar.setAttribute('class', 'index-navbar'); // removes hidden
+        let project = decodeURIComponent(urlParams.get('project'));
+        let index_root = project + '/.index/';
+        let build = project + '/Build/';
+        let query_arg = "?project="+encodeURIComponent(project);
+
+        let links = [
+            { "General Index": document.getElementById('general_index').href },
+            { "Docs": document.getElementById('docs').href },
+            { "Extensions": index_root + 'doc/Extensions.html' },
+            { "Definitions": index_root + 'doc/ExtIndex.html' },
+            { "Debug Log": build + 'debug_log.html' },
+            { "Problems": build + 'problems.html' },
+            { "Source": index_root + 'story.html' },
+            { "Project Index": index_root + 'Index/Welcome.html' } ];
+        let sp = document.createTextNode(" ");
+        links.forEach(h => {
+            Object.entries(h).forEach(([text, url]) => {
+                let my_id = text.toLowerCase().replace(' ', '_');
+                let a = document.querySelector('#'+my_id);
+                let url_target = "file://"+url+query_arg;
+                if (a) {
+                    let parts = a.href.split('#');
+                    let qparts = parts[0].split('?');
+                    a.href = qparts[0] +  (qparts[1] ? ('?' + qparts[1]) : query_arg) + (parts[1] ? ('#' + parts[1]) : "");
+                }
+                else {
+                    a = document.createElement('a');
+                    let href = document.createAttribute("href");
+                    href.value = url_target;
+                    a.setAttributeNode(href);
+                    let elem_id = document.createAttribute("id");
+                    elem_id.value = my_id;
+                    a.setAttributeNode(elem_id);
+                    let linktext = document.createTextNode(text);
+                    a.appendChild(linktext);
+                    navbar.insertBefore(sp.cloneNode(), navbar.firstChild);
+                    navbar.insertBefore(a, navbar.firstChild);
+                }
+            })});
+        if (update) {
+            let main_links = document.querySelectorAll('main a');
+            main_links.forEach(a => {
+                if (!a.href.startsWith('javascript:') || (a.href.match(/[^:]+:\/\// && !a.href.startsWith('file:')))) {
+                    let parts = a.href.split('#')
+                    a.href = parts[0] + query_arg + (parts[1] ? ('#' + parts[1]) : "");
+                } });
+        }
+    }
+}
+
+
+
+document.addEventListener("DOMContentLoaded", add_bar);</script>
+<title>Example #41</title></head>
+<body class="inform7-source">
+
+<div class="inform7-source"><div class="pseudo">
+      <span class="tr"><span class="th"></span><span class="td line"> <span class="i7sx">&quot;The World of Charles S. Roberts&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Forward is a direction. Forward has opposite backward. Understand <span class="i7sx">&quot;f&quot;</span> as forward.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Backward is a direction. Backward has opposite forward. Understand <span class="i7sx">&quot;b&quot;</span> and <span class="i7sx">&quot;back&quot;</span> as backward.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Forward left is a direction. Forward left has opposite backward right. Understand <span class="i7sx">&quot;fl&quot;</span> as forward left.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Forward right is a direction. Forward right has opposite backward left. Understand <span class="i7sx">&quot;fr&quot;</span> as forward right.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Backward left is a direction. Backward left has opposite forward right. Understand <span class="i7sx">&quot;bl&quot;</span> as backward left.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Backward right is a direction. Backward right has opposite forward left. Understand <span class="i7sx">&quot;br&quot;</span> as backward right.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Now to forbid the use of the compass directions:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">A direction can be hexagonal or squared-off. A direction is usually squared-off. Forward, backward, forward left, forward right, backward left and backward right are hexagonal.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Before going a squared-off direction, say <span class="i7sx">&quot;In this hexagonally-divided landscape, squared-off directions are not allowed.&quot;</span> instead.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[A slight nuisance is that, with things as they are above, typing BACKWARD produces the response &quot;Which do you mean, backward, backward left or backward right?&quot; To avoid that silly question, we write:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Does the player mean going backward: it is very likely. Does the player mean going forward: it is very likely.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[And now a clump of 37 hexes, in six columns of six or seven rooms each. There are many ingenious ways we could put this map together automatically, but instead we will take a deep breath and write:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">E1 is forward of E2. <span class="i7sx">&quot;Open farmland.&quot;</span> E2 is forward of E3. <span class="i7sx">&quot;The edge of woods.&quot;</span> E3 is forward of E4. <span class="i7sx">&quot;Deep woodland.&quot;</span> E4 is forward of E5. <span class="i7sx">&quot;Deep woodland.&quot;</span> E5 is forward of E6. <span class="i7sx">&quot;The rear edge of woods.&quot;</span> E6 is forward of E7. <span class="i7sx">&quot;The start of a road leading forward right.&quot;</span> E7 is a room. <span class="i7sx">&quot;Grassland.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">F1 is forward of F2. <span class="i7sx">&quot;The edge of farmland.&quot;</span> F2 is forward of F3. <span class="i7sx">&quot;The edge of woods.&quot;</span> F3 is forward of F4. <span class="i7sx">&quot;Clearing in woods.&quot;</span> F4 is forward of F5. <span class="i7sx">&quot;Deep woodland.&quot;</span> F5 is forward of F6. <span class="i7sx">&quot;A road runs backward left to forward right.&quot;</span> F6 is a room. <span class="i7sx">&quot;The edge of grassland.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">G1 is forward of G2. <span class="i7sx">&quot;Grassland.&quot;</span> G2 is forward of G3. <span class="i7sx">&quot;The edge of farmland.&quot;</span> G3 is forward of G4. <span class="i7sx">&quot;A copse of trees.&quot;</span> G4 is forward of G5. <span class="i7sx">&quot;The backward edge of woodland.&quot;</span> G5 is forward of G6. <span class="i7sx">&quot;A bend in the road, from backward left to backward right.&quot;</span> G6 is forward of G7. <span class="i7sx">&quot;Open farmland.&quot;</span> G7 is a room. <span class="i7sx">&quot;Open farmland.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">H1 is forward of H2. <span class="i7sx">&quot;Grassland, bordered by a hedge to the right.&quot;</span> H2 is forward of H3. <span class="i7sx">&quot;The edge of farmland, with a hedge to forward right.&quot;</span> H3 is forward of H4. <span class="i7sx">&quot;A copse of trees.&quot;</span> H4 is forward of H5. <span class="i7sx">&quot;Open farmland.&quot;</span> H5 is forward of H6. <span class="i7sx">&quot;A passing place on the road, which bends forward left to forward right.&quot;</span> H6 is a room. <span class="i7sx">&quot;Open farmland.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">I1 is forward of I2. <span class="i7sx">&quot;The end of a forward road, blocked by hedges on all sides except backward.&quot;</span> I2 is forward of I3.  <span class="i7sx">&quot;A straight road runs forward to backward, with long hedges to left and right.&quot;</span> I3 is forward of I4.  <span class="i7sx">&quot;A straight road runs forward to backward, alongside a long hedge to right.&quot;</span> I4 is forward of I5.  <span class="i7sx">&quot;A straight road runs forward to backward, alongside a long hedge to right.&quot;</span> I5 is forward of I6. <span class="i7sx">&quot;Where three roads, forward, backward left and backward right, meet. Forward right is a thick hedge.&quot;</span> I6 is forward of I7. <span class="i7sx">&quot;Open farmland.&quot;</span> I7 is a room. <span class="i7sx">&quot;Open farmland.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">J1 is forward of J2. <span class="i7sx">&quot;Dense woodland, with a hedge to left.&quot;</span> J2 is forward of J3. <span class="i7sx">&quot;Grassland, with a hedge to left.&quot;</span> J3 is forward of J4. <span class="i7sx">&quot;The edge of farmland, with a hedge to left.&quot;</span> J4 is a room. <span class="i7sx">&quot;Open farmland, with a long hedge blocking movement forward left, backward left or backward.&quot;</span> J5 is forward of J6. <span class="i7sx">&quot;A road running forward left to backward right, alongside a hedge.&quot;</span> J6 is a room. <span class="i7sx">&quot;Open farmland.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">F1 is forward right of E2 and backward right of E1. F2 is forward right of E3 and backward right of E2. F3 is forward right of E4 and backward right of E3. F4 is forward right of E5 and backward right of E4. F5 is forward right of E6 and backward right of E5. F6 is forward right of E7 and backward right of E6.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">G1 is forward right of F1. G2 is forward right of F2 and backward right of F1. G3 is forward right of F3 and backward right of F2. G4 is forward right of F4 and backward right of F3. G5 is forward right of F5 and backward right of F4. G6 is forward right of F6 and backward right of F5.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">H1 is forward right of G2 and backward right of G1. H2 is forward right of G3 and backward right of G2. H3 is forward right of G4 and backward right of G3. H4 is forward right of G5 and backward right of G4. H5 is forward right of G6 and backward right of G5. H6 is forward right of G7 and backward right of G6.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">I3 is forward right of H3 and backward right of H2. I4 is forward right of H4 and backward right of H3. I5 is forward right of H5 and backward right of H4. I6 is forward right of H6 and backward right of H5.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">J5 is forward right of I6 and backward right of I5. J6 is forward right of I7 and backward right of I6.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[And now we have a hexagonally-gridded world. Route-finding will work; prepositional forms like &quot;to be mapped backward left of&quot; exist, just as they should; and in general these directions are just as good as the square ones. (The only thing which doesn&#39;t look good is the Index map, where Inform is just unable to draw a picture because it assumes a square grid. But that has no effect on play.)]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[The landscape is much easier to navigate with a little diagram:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To say legend (D - direction):</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	let destination hex be the room D from the location;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the destination hex is nothing, say <span class="i7sx">&quot;  &quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	otherwise say the destination hex.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Carry out looking:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[fixed letter spacing]</span><span class="i7sx">   \ </span><span class="i7si">[legend forward]</span><span class="i7sx"> /</span><span class="i7si">[line break][legend forward left]</span><span class="i7sx">  ----  </span><span class="i7si">[legend forward right][line break]</span><span class="i7sx">   /    \</span><span class="i7si">[line break]</span><span class="i7sx">--&lt;  </span><span class="i7si">[location]</span><span class="i7sx">  &gt;--</span><span class="i7si">[line break]</span><span class="i7sx">   \    /</span><span class="i7si">[line break][legend backward left]</span><span class="i7sx">  ----  </span><span class="i7si">[legend backward right][line break]</span><span class="i7sx">   / </span><span class="i7si">[legend backward]</span><span class="i7sx"> \</span><span class="i7si">[variable letter spacing][line break]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[And finally:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The player is in I5.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Test me with <span class="i7sx">&quot;f / forward / backward left / bl / br / br / f&quot;</span>.</span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

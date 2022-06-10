@@ -1,0 +1,208 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../style.css">
+<script>function toggle_details() {
+   var openness, toggle_link;
+   toggle_link = document.getElementById("toggle");
+   openness = toggle_link.classList.toggle("open");
+document.querySelectorAll("details.full-example").forEach(detail => { if (openness) { detail.setAttribute("open", true); } else { detail.removeAttribute("open");} });
+   toggle_link.innerText = (openness ? "Close" : "Open") + " all examples";
+   }
+
+
+function copyCode(text) { navigator.clipboard.writeText(text); }
+
+
+var links = document.getElementsByTagName('a');
+for (var i = 0; i < links.length; i++) {
+    if (links[i].href.match(/^#example-\d+/)) {
+	links[i].onClick = function() { links[i].href.match(/^#example-(\d+)$/); var example = document.getElementById($1).setAttribute('open'); return true; };
+    }
+}
+
+function add_bar(update) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let navbar = document.querySelector('div.index-navbar');
+
+    if (navbar && urlParams.has('project')) {
+        navbar.setAttribute('class', 'index-navbar'); // removes hidden
+        let project = decodeURIComponent(urlParams.get('project'));
+        let index_root = project + '/.index/';
+        let build = project + '/Build/';
+        let query_arg = "?project="+encodeURIComponent(project);
+
+        let links = [
+            { "General Index": document.getElementById('general_index').href },
+            { "Docs": document.getElementById('docs').href },
+            { "Extensions": index_root + 'doc/Extensions.html' },
+            { "Definitions": index_root + 'doc/ExtIndex.html' },
+            { "Debug Log": build + 'debug_log.html' },
+            { "Problems": build + 'problems.html' },
+            { "Source": index_root + 'story.html' },
+            { "Project Index": index_root + 'Index/Welcome.html' } ];
+        let sp = document.createTextNode(" ");
+        links.forEach(h => {
+            Object.entries(h).forEach(([text, url]) => {
+                let my_id = text.toLowerCase().replace(' ', '_');
+                let a = document.querySelector('#'+my_id);
+                let url_target = "file://"+url+query_arg;
+                if (a) {
+                    let parts = a.href.split('#');
+                    let qparts = parts[0].split('?');
+                    a.href = qparts[0] +  (qparts[1] ? ('?' + qparts[1]) : query_arg) + (parts[1] ? ('#' + parts[1]) : "");
+                }
+                else {
+                    a = document.createElement('a');
+                    let href = document.createAttribute("href");
+                    href.value = url_target;
+                    a.setAttributeNode(href);
+                    let elem_id = document.createAttribute("id");
+                    elem_id.value = my_id;
+                    a.setAttributeNode(elem_id);
+                    let linktext = document.createTextNode(text);
+                    a.appendChild(linktext);
+                    navbar.insertBefore(sp.cloneNode(), navbar.firstChild);
+                    navbar.insertBefore(a, navbar.firstChild);
+                }
+            })});
+        if (update) {
+            let main_links = document.querySelectorAll('main a');
+            main_links.forEach(a => {
+                if (!a.href.startsWith('javascript:') || (a.href.match(/[^:]+:\/\// && !a.href.startsWith('file:')))) {
+                    let parts = a.href.split('#')
+                    a.href = parts[0] + query_arg + (parts[1] ? ('#' + parts[1]) : "");
+                } });
+        }
+    }
+}
+
+
+
+document.addEventListener("DOMContentLoaded", add_bar);</script>
+<title>Example #275</title></head>
+<body class="inform7-source">
+
+<div class="inform7-source"><div class="pseudo">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;Jokers Wild&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Suit is a kind of value. The suits are hearts, clubs, diamonds, and spades.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line">Table of Cards</span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">suit</span><span class="td">value</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">diamonds</span><span class="td">1</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">diamonds</span><span class="td">2</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">diamonds</span><span class="td">3</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">diamonds</span><span class="td">4</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">diamonds</span><span class="td">5</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">diamonds</span><span class="td">6</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">diamonds</span><span class="td">7</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">diamonds</span><span class="td">8</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">diamonds</span><span class="td">9</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">diamonds</span><span class="td">10</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">diamonds</span><span class="td">11</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">diamonds</span><span class="td">12</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">diamonds</span><span class="td">13</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">spades</span><span class="td">1</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">spades</span><span class="td">2</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">spades</span><span class="td">3</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">spades</span><span class="td">4</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">spades</span><span class="td">5</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">spades</span><span class="td">6</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">spades</span><span class="td">7</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">spades</span><span class="td">8</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">spades</span><span class="td">9</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">spades</span><span class="td">10</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">spades</span><span class="td">11</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">spades</span><span class="td">12</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">spades</span><span class="td">13</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">hearts</span><span class="td">1</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">hearts</span><span class="td">2</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">hearts</span><span class="td">3</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">hearts</span><span class="td">4</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">hearts</span><span class="td">5</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">hearts</span><span class="td">6</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">hearts</span><span class="td">7</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">hearts</span><span class="td">8</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">hearts</span><span class="td">9</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">hearts</span><span class="td">10</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">hearts</span><span class="td">11</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">hearts</span><span class="td">12</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">hearts</span><span class="td">13</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">clubs</span><span class="td">1</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">clubs</span><span class="td">2</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">clubs</span><span class="td">3</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">clubs</span><span class="td">4</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">clubs</span><span class="td">5</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">clubs</span><span class="td">6</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">clubs</span><span class="td">7</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">clubs</span><span class="td">8</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">clubs</span><span class="td">9</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">clubs</span><span class="td">10</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">clubs</span><span class="td">11</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">clubs</span><span class="td">12</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">clubs</span><span class="td">13</span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[We&#39;re going to describe the higher numbers as face cards, so it helps to write a new &quot;to say&quot; phrase.]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">To say (count - a number) as a card value:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	choose row with a value of count in the Table of Value Names;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;</span><span class="i7si">[term entry]</span><span class="i7sx">&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line">Table of Value Names</span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">value</span><span class="td">term</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">1</span><span class="td"><span class="i7sx">&quot;ace&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">2</span><span class="td"><span class="i7sx">&quot;deuce&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">3</span><span class="td"><span class="i7sx">&quot;three&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">4</span><span class="td"><span class="i7sx">&quot;four&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">5</span><span class="td"><span class="i7sx">&quot;five&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">6</span><span class="td"><span class="i7sx">&quot;six&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">7</span><span class="td"><span class="i7sx">&quot;seven&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">8</span><span class="td"><span class="i7sx">&quot;eight&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">9</span><span class="td"><span class="i7sx">&quot;nine&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">10</span><span class="td"><span class="i7sx">&quot;ten&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">11</span><span class="td"><span class="i7sx">&quot;jack&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">12</span><span class="td"><span class="i7sx">&quot;queen&quot;</span></span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">13</span><span class="td"><span class="i7sx">&quot;king&quot;</span></span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[Now we get the shuffling of the deck from &quot;sort in random order&quot;, so:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;shuffle&quot;</span> as shuffling. Shuffling is an action applying to nothing.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Carry out shuffling:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	sort the Table of Cards in random order;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;You expertly rearrange the cards.&quot;</span>.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">When play begins:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	sort the Table of Cards in random order.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[This will continue to work properly even as the deck is partially depleted. Speaking of which, suppose we want the player to be able to toss the cards one-by-one into a hat. They are going to need to be removed from the deck, so:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;toss&quot;</span> or <span class="i7sx">&quot;toss a card&quot;</span> or <span class="i7sx">&quot;toss card&quot;</span> as tossing.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Tossing is an action applying to nothing.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Check tossing:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the number of filled rows in the Table of Cards is 0, say <span class="i7sx">&quot;The deck is empty.&quot;</span> instead.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Carry out tossing:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	repeat through the Table of Cards:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	let new value be value entry;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	let new suit be suit entry;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	say <span class="i7sx">&quot;You throw the </span><span class="i7si">[value entry as a card value]</span><span class="i7sx"> of </span><span class="i7si">[suit entry]</span><span class="i7sx"> at the top hat, and </span><span class="i7si">[if a random chance of 1 in 3 succeeds]</span><span class="i7sx">hit</span><span class="i7si">[otherwise]</span><span class="i7sx">miss</span><span class="i7si">[end if]</span><span class="i7sx">.&quot;</span>;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	blank out the whole row;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	rule succeeds.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[If we wanted to simulate a slightly more stimulating game, we could instead have a second table to represent the player&#39;s hand of cards and record each card drawn. That would get long for the purposes of example, however, so instead we will just admit that the player&#39;s life is an empty husk of existence:]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Empty Room is a room. <span class="i7sx">&quot;It has come to this: sitting on the bare floor of Lulu&#39;s apartment with nothing to amuse you but a deck of cards and the top hat from last year&#39;s act. You reckon </span><span class="i7si">[the number of filled rows in the Table of Cards in words]</span><span class="i7sx"> cardtosses are all that stand between you and the utter pointlessness of existence.</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">Once again you curse Lulu for running off with that joker.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The player is carrying the deck of cards. The top hat is an open container in the Empty Room. It is scenery.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Test me with <span class="i7sx">&quot;toss / again / again / again / again / again / again / again&quot;</span>.</span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>

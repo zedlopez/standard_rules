@@ -1,0 +1,871 @@
+<!doctype html>
+<meta charset="utf-8"><html lang="en"><head><title>Writing in Inform 14. Adaptive Text and Responses</title><link rel="stylesheet" href="style.css"><script src="chapter.js"></script></head><body>
+<nav><div class="index-navbar hidden">
+<a id="project_index" href="../Welcome.html"> Project Index</a><a id="source" href="../../story.html"> Source</a><a id="problems" href="../../Build/problems.html"> Problems</a><a id="debug_log" href="../../Build/debug_log.html"> Debug Log</a><a id="definitions" href="./ExtIndex.html"> Definitions</a><a id="extensions" href="./Extensions.html"> Extensions</a><a id="docs" href="./index.html"> Docs</a><a id="general_index" href="./index.html#general-index"> General Index</a>
+
+</div>
+</nav>
+<main>
+<header>
+
+<div class="toc">
+<h1>Writing in Inform</h1>
+<div class="doc-navbar">
+<div>
+<div class="doc-navbar-left"><a class="nav-left" href="wi_13.html#wi-chapter-13-relations">13. Relations</a></div>
+<div class="doc-navbar-right"><a class="nav-right" href="wi_15.html#wi-chapter-15-numbers-and-equations">15. Numbers and Equations</a></div>
+</div>
+<div>
+<div class="doc-navbar-left"><a href="index.html">Table of Contents</a></div>
+<div class="doc-navbar-right"><a href="index.html#general-index">General Index</a></div>
+</div>
+</div>
+
+<div><a id="toggle" href="javascript:toggle_details('examples')">Open all examples</a></div>
+<h2>14. Adaptive Text and Responses</h2>
+<div class="toc-section">14.1 <a href="wi_14.html#wi-14.1">Tense and narrative viewpoint</a></div>
+<div class="toc-section">14.2 <a href="wi_14.html#wi-14.2">Adaptive text</a></div>
+<div class="toc-section">14.3 <a href="wi_14.html#wi-14.3">More on adapting verbs</a></div>
+<div class="toc-section">14.4 <a href="wi_14.html#wi-14.4">Adapting text about the player</a></div>
+<div class="toc-section">14.5 <a href="wi_14.html#wi-14.5">Adapting text referring to other things</a></div>
+<div class="toc-section">14.6 <a href="wi_14.html#wi-14.6">Adapting demonstratives and possessives</a></div>
+<div class="toc-section">14.7 <a href="wi_14.html#wi-14.7">Can, could, may, might, must, should, would</a></div>
+<div class="toc-section">14.8 <a href="wi_14.html#wi-14.8">Adapting contractions</a></div>
+<div class="toc-section">14.9 <a href="wi_14.html#wi-14.9">Verbs as values</a></div>
+<div class="toc-section">14.10 <a href="wi_14.html#wi-14.10">Responses</a></div>
+<div class="toc-section">14.11 <a href="wi_14.html#wi-14.11">Changing the text of responses</a></div>
+<div class="toc-section">14.12 <a href="wi_14.html#wi-14.12">The RESPONSES testing command</a></div>
+</header>
+<main>
+<section class="chapter" id="wi-chapter-14-adaptive-text-and-responses">
+<section class="section" id="wi-14.1"><div>
+
+
+
+<h3>WI §14.1. Tense and narrative viewpoint</h3>
+<p>A conspicuous difference between interactive fiction and a traditional novel is the point of view from which it's told. Inform usually produces text like:</p>
+
+<div class="code"><p class="quoted">
+You can see a grey cat in the basket.
+</p></div>
+<p>where a novel would usually write:</p>
+
+<div class="code"><p class="quoted">
+He saw a grey cat in the basket.
+</p></div>
+<p>Standard interactive fiction (IF) is second person singular, and present tense; most novels are told in the third person singular, and past tense.</p>
+<p>But these are just conventions - a few novels, for example, use the so-called present historic ("Napoleon looks up at the sky and sighs. Must Ney always be so doubting?"), and plenty are told in the first person singular ("I always get the shakes before a drop."). Inform allows some of this flexibility, too. The two values:</p>
+
+<div class="code"><p class="quoted">
+story viewpoint
+<br>story tense
+</p></div>
+<p>control the style of the text produced. The story viewpoint has to be one of the values:</p>
+
+<div class="code"><p class="quoted">
+first person singular
+<br>second person singular
+<br>third person singular
+<br>first person plural
+<br>second person plural
+<br>third person plural
+</p></div>
+<p>(which are actually the six possible values of a kind called "narrative viewpoint"), while the story tense must be one of:</p>
+
+<div class="code"><p class="quoted">
+past tense
+<br>present tense
+<br>future tense
+<br>perfect tense
+<br>past perfect tense
+</p></div>
+<p>(from a kind called "grammatical tense"). Combining these gives 30 possibilities in all, though only a few are at all commonly used.</p>
+<p>It's important to make a very large caveat here: Inform uses these settings in producing the replies ("responses") by the built-in actions, but the only way for all of our own text to have a particular tense or narrative viewpoint is to write it that way. If we write:</p>
+
+<div class="code">
+<p class="quoted">
+The Taj Mahal is a room. "You stand and admire the Taj Mahal."
+</p>
+<p class="quoted">
+When play begins:
+<br>    now the story viewpoint is first person plural;
+<br>    now the story tense is past tense.
+</p>
+</div>
+<p>then we're likely to see the following peculiar transcript:</p>
+
+<div class="code">
+<p class="quoted">
+Taj Mahal
+<br>You stand and admire the Taj Mahal.
+</p>
+<p class="quoted">
+&gt;e
+<br>We couldn't go that way.
+</p>
+</div>
+<p>That's because the response ("We couldn't go that way") was constructed to follow the settings for viewpoint and tense, but the fixed text of the room description wasn't. In fact there are ways to write the room description so that it would adapt itself automatically, as we'll see, but it takes a fair amount of work. More simply:</p>
+
+<div class="code">
+<p class="quoted">
+The Taj Mahal is a room. "I stood and admired the Taj Mahal."
+</p>
+<p class="quoted">
+When play begins:
+<br>    now the story viewpoint is first person plural;
+<br>    now the story tense is past tense.
+</p>
+</div>
+<p>In short, tense and viewpoint switching is neat, but it isn't magic.</p>
+<p>If we want to write text which will work in whatever the current tense is, the following turn out to be useful little conveniences:</p>
+
+<div class="definition" id="defn168">
+<p class="defnprototype"><strong>say "[here]"</strong></p>
+
+
+
+<p>Produces "here" if the story tense is the present tense, and "there" otherwise.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn169">
+<p class="defnprototype"><strong>say "[now]"</strong></p>
+
+
+
+<p>Produces "now" if the story tense is the present tense, and "then" otherwise.</p>
+
+
+</div>
+
+
+
+</div></section>
+<section class="section" id="wi-14.2"><div>
+
+
+
+
+
+<h3>WI §14.2. Adaptive text</h3>
+<p>Paying attention to the tense and viewpoint is one reason why text might need to adapt. Another is that it might need to adapt according to whether nouns are singular or plural, or whether it talks about the player or some third party. For example, the following rule isn't ideal:</p>
+
+<div class="code"><p class="quoted">
+Instead of taking: say "[The noun] is pinned down by Dr Zarkov's force field."
+</p></div>
+<p>Most of the time it's fine ("The V-ray is pinned down by Dr Zarkov's force field"), but then:</p>
+
+<div class="code"><p class="quoted">
+&gt; GET ME
+<br>You is pinned down by Dr Zarkov's force field.
+<br>&gt; GET CONDENSERS
+<br>The condensers is pinned down by Dr Zarkov's force field.
+</p></div>
+<p>Which is a little unfortunate. But the correction is very easy:</p>
+
+<div class="code"><p class="quoted">
+Instead of taking: say "[The noun] [are] pinned down by Dr Zarkov's force field."
+</p></div>
+<p>The result is much better: "The V-ray is pinned down..."; "You are..."; "The condensers are...". In fact, it's also convenient because it adapts to the story viewpoint and story tense: "The condensers will be pinned down..."; "He was pinned down...".</p>
+<p>How does Inform do this? The answer is not that "[are]" is a specially-written text substitution. In fact Inform can do this with any verb that it has a definition of. For example,</p>
+
+<div class="code"><p class="quoted">
+"[The noun] [carry] too much static charge."
+</p></div>
+<p>would also adapt itself - "The V-ray carries too much static charge", and so on. There aren't many verbs built in to Inform, but "[have]" and "[carry]" and "[wear]" and "[can]" may be useful, and "[can see]" and "[can touch]". Negative forms like "[are not]" are also available:</p>
+
+<div class="code"><p class="quoted">
+"[The noun] [cannot touch] the ionizer terminal."
+</p></div>
+<p>might produce "The V-ray will not be able to touch the ionizer terminal.", for example.</p>
+<p>As these examples hint, the verb adapts itself to the most recently printed object name. All of this only works if the previous object's name is printed from a substitution. So:</p>
+
+<div class="code"><p class="quoted">
+"[The condensers] [are] working."
+</p></div>
+<p>will work -- correctly forming "The condensers are working.", "The condensers will be working." or "The condensers were working.", according to the story tense -- but</p>
+
+<div class="code"><p class="quoted">
+"The condensers [are] working."
+</p></div>
+<p>probably won't work. Inform doesn't have any way to understand the raw text outside of the text substitution marks "[" and "]", and it doesn't recognise "The condensers" as being something's name.</p>
+<p>Something else to be careful with is the use of lists. If we write this:</p>
+
+<div class="code"><p class="quoted">
+"[The condensers] and [the V-ray] [are] smashed by Voltan's birdmen."
+</p></div>
+<p>then Inform is likely to print:</p>
+
+<div class="code"><p class="quoted">
+The condensers and the V-ray is smashed by Voltan's birdmen.
+</p></div>
+<p>because it looks at the most recently named object - the V-ray, singular - to decide whether to use "is" or "are". On the other hand, Inform gets this right:</p>
+
+<div class="code"><p class="quoted">
+"[The list of things on the bench] [are] smashed by Voltan's birdmen."
+</p></div>
+<p>Because Inform constructs the list itself, it's able to appreciate that the things listed are jointly the subject of the verb, and it uses that information to decide on "is" or "are". So:</p>
+
+<div class="code"><p class="quoted">
+The condensers and the V-ray are smashed by Voltan's birdmen.
+<br>The Atomic Furnace shovel is smashed by Voltan's birdmen.
+</p></div>
+</div></section>
+<section class="section" id="wi-14.3"><div>
+
+
+
+
+
+<h3>WI §14.3. More on adapting verbs</h3>
+<p>If we need an adaptive message with a verb which doesn't belong to Inform's built-in set, all we need do is define it. In the <a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations"></a><a href="wi_13.html#wi-chapter-13-relations">previous chapter</a> we defined verbs by giving them meanings, but in fact that's optional. For example:</p>
+
+<div class="code"><p class="quoted">
+To retrofit is a verb.
+</p></div>
+<p>defines a verb without telling Inform what it means. Inform will throw a Problem message if we try to write text like:</p>
+
+<div class="code"><p class="quoted">
+Flash retrofits the meteor beam.
+</p></div>
+<p>because, after all, it doesn't know what "retrofit" means. But it does still know how to print it, so this works:</p>
+
+<div class="code"><p class="quoted">
+"[The actor] [retrofit] the Mecha-Mole."
+</p></div>
+<p>which might come out as "Dale retrofits the Mecha-Mole", or "Barin's archers retrofitted the Mecha-Mole", and so on.</p>
+<p>This is especially neat for writing a single response to an action which works regardless of who the actor was. For example, the Standard Rules include:</p>
+
+<div class="code"><p class="quoted">
+say "[The actor] [put] [the noun] on [the second noun]."
+</p></div>
+<p>And this can make either:</p>
+
+<div class="code"><p class="quoted">
+You put the revolver on the table.
+<br>General Lee puts the revolver on the table.
+</p></div>
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-245"><p class="example-p"><span class="example-short-start">245. <a href="rb_2.html#example-245" class="example-link" onClick="(function() { document.getElementById('example-245').setAttribute('open','open'); return true; })();">Fun with Participles</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">Creating dynamic room descriptions that contain sentences such as "Clark is here, wasting time" or "Clark is here, looking around" depending on Clark's idle activity.</span> (c.f. <a href="rb_2.html#rb-2.1">RB §2.1. Varying What Is Written</a>)</p></div>
+<div class="example-short" id="example-short-246"><p class="example-p"><span class="example-short-start">246. <a href="rb_2.html#example-246" class="example-link" onClick="(function() { document.getElementById('example-246').setAttribute('open','open'); return true; })();">Variety</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">Suppose we want all of our action responses to display some randomized variety. We could do this by laboriously rewriting all of the response texts, but this example demonstrates an alternative.</span> (c.f. <a href="rb_2.html#rb-2.1">RB §2.1. Varying What Is Written</a>)</p></div>
+<div class="example-short" id="example-short-247"><p class="example-p"><span class="example-short-start">247. <a href="rb_2.html#example-247" class="example-link" onClick="(function() { document.getElementById('example-247').setAttribute('open','open'); return true; })();">Variety 2</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">This builds on the Variety example to add responses such as "You are now carrying the fedora" that describe relations that result from a given verb, as alternate responses.</span> (c.f. <a href="rb_2.html#rb-2.1">RB §2.1. Varying What Is Written</a>)</p></div>
+<div class="example-short" id="example-short-248"><p class="example-p"><span class="example-short-start">248. <a href="rb_2.html#example-248" class="example-link" onClick="(function() { document.getElementById('example-248').setAttribute('open','open'); return true; })();">Narrative Register</a></span> <span class="example-difficulty">★★★</span>  <span class="example-description">Suppose we want all of our action responses to vary depending on some alterable quality of the narrator, so that sometimes they're slangy, sometimes pompous or archaic.</span> (c.f. <a href="rb_2.html#rb-2.1">RB §2.1. Varying What Is Written</a>)</p></div>
+</div></section>
+<section class="section" id="wi-14.4"><div>
+
+
+
+
+
+<h3>WI §14.4. Adapting text about the player</h3>
+<p>In second-person-singular IF, the player is always "you". Many messages look like so:</p>
+
+<div class="code"><p class="quoted">
+"You have twenty minutes remaining."
+</p></div>
+<p>where the subject, or the object, of the sentence is "you". But what if we want to have this text adapt itself to different narrative viewpoints?</p>
+<p>The solution is to use the following:</p>
+
+<div class="code"><p class="quoted">
+"[We]" or "[we]"
+<br>"[Us]" or "[us]"
+<br>"[Our]" or "[our]"
+<br>"[Ours]" or "[ours]"
+<br>"[Ourselves]" or "[ourselves]"
+</p></div>
+<p>The capitalised and uncapitalised versions are identical except, of course, that the initial letter of the resulting text is upper case in one but not the other. As examples of these:</p>
+
+<div class="code"><p class="quoted">
+"[We] [carry] the Queen's warrant."
+<br>"The birds drop pebbles on [us]. Right on [our] heads!"
+<br>"[Ours] [are] the burdens of office, which [we] take on [ourselves]."
+</p></div>
+<p>Notice that all five of these forms are differently worded, in English. That's the reason why we use the plural to write them - the traditional second person plural forms would be "you", "you", "your", "yours" and "yourself", so we wouldn't know if "[you]" was supposed to be the subject or the object of the verb. So the convention with all of these adaptive forms is that we use "we" and its variations. (That's also why the verbs are written in the plural - "[are]", not "[is]"; "[carry]", not "[carries]".)</p>
+
+
+</div></section>
+<section class="section" id="wi-14.5"><div>
+
+
+
+
+
+<h3>WI §14.5. Adapting text referring to other things</h3>
+<p>The family in the previous section - "[we]", "[us]", "[our]", "[ours]", "[ourselves]" - always referred to the player. But we also sometimes want to refer to other things without naming them. For example, how should we adapt this?</p>
+
+<div class="code"><p class="quoted">
+&gt; EXAMINE TREE
+<br>It has no clear outline in this misty netherworld.
+</p></div>
+<p>We can easily make the verb adapt - change the "has" to "[have]" - but the trick here is to make the "It" adapt to cases where what's examined is plural, or animate. What we want is:</p>
+
+<div class="code"><p class="quoted">
+Instead of examining in the Netherworld:
+<br>    say "[regarding the noun][They] [have] no clear outline in this misty netherworld."
+</p></div>
+<p>For example, this produces:</p>
+
+<div class="code"><p class="quoted">
+&gt; EXAMINE ME
+<br>You have no clear outline in this misty netherworld.
+<br>&gt; EXAMINE MARK
+<br>He has no clear outline in this misty netherworld.
+<br>&gt; EXAMINE DRUMS
+<br>They have no clear outline in this misty netherworld.
+</p></div>
+<p>Note that we have to say "[regarding the noun]", not just start in with "[They]", because nothing has been named so far in the sentence - so Inform doesn't know what object it refers to. "[regarding the noun]" prints nothing, and simply tells the printing part of Inform that the subject has changed.</p>
+<p>This isn't always needed:</p>
+
+<div class="code"><p class="quoted">
+"[We] [have] a look at [the noun], but [they] [are] just too big."
+</p></div>
+<p>works fine, because printing "[the noun]" changes the subject to that, and then "[they]" agrees with it automatically. The text might come out, for example, as:</p>
+
+<div class="code"><p class="quoted">
+I had a look at Peter Rabbit, but he was just too big.
+<br>You have a look at the chessmen, but they are just too big.
+<br>We have a look at ourselves, but we are just too big.
+</p></div>
+<p>We have a family of five text substitutions here, matching those in the previous section:</p>
+
+<div class="code"><p class="quoted">
+"[They]" or "[they]"
+<br>"[Them]" or "[them]"
+<br>"[Their]" or "[their]"
+<br>"[Theirs]" or "[theirs]"
+<br>"[Themselves]" or "[themselves]"
+</p></div>
+<p>There's also the peculiar impersonal non-object for English sentences like "It is raining" or "There are books":</p>
+
+<div class="code"><p class="quoted">
+"[It]" or "[it]"
+<br>"[There]" or "[there]"
+</p></div>
+<p>These look pointless - but consider the two texts</p>
+
+<div class="code"><p class="quoted">
+"[We] [take] [the noun]. It [rain] harder."
+<br>"[We] [take] [the noun]. [It] [rain] harder."
+</p></div>
+<p>The first one risks printing "We took the scissors. It rain harder.", because it makes "[rain]" agree with "scissors", which are plural. But the second text makes "[rain]" agree with "[it]". And, as a convenience:</p>
+
+<div class="code"><p class="quoted">
+"[It's]" or "[it's]"
+<br>"[There's]" or "[there's]"
+</p></div>
+<p>do the obvious thing using the current story tense.</p>
+<p>Finally, we occasionally want to agree with a number:</p>
+
+<div class="code"><p class="quoted">
+"Honestly, [dud count][regarding the dud count] of these [are] broken."
+</p></div>
+</div></section>
+<section class="section" id="wi-14.6"><div>
+
+
+
+
+
+<h3>WI §14.6. Adapting demonstratives and possessives</h3>
+<p>Consider the following message: how might we make this adaptive?</p>
+
+<div class="code"><p class="quoted">
+&gt; MEASURE TOP SHELF
+<br>You really are not tall enough to reach that.
+</p></div>
+<p>The verbal part is easy enough, but "that" needs a new feature.</p>
+
+<div class="code"><p class="quoted">
+"[We] really [are not] tall enough to reach [regarding the noun][those]."
+</p></div>
+<p>This could then adapt to, say,</p>
+
+<div class="code"><p class="quoted">
+&gt; MEASURE JAM TARTS
+<br>He really was not tall enough to reach those.
+</p></div>
+<p>Notice that it's "[regarding the noun][those]", not just "[those]". If we wrote "[those]", Inform would make it agree with the player, who was printed earlier in the sentence by the "[We]".</p>
+<p>Lastly, how about:</p>
+
+<div class="code"><p class="quoted">
+&gt; PUT TEAPOT IN MOUSEHOLE
+<br>The teapot's height is just too great.
+</p></div>
+<p>This time we want:</p>
+
+<div class="code"><p class="quoted">
+"[regarding the noun][Possessive] height is just too great."
+</p></div>
+<p>which might adapt to, say,</p>
+
+<div class="code"><p class="quoted">
+Our height is just too great.
+<br>Alice's height will be just too great.
+</p></div>
+<p>Actually, "[regarding ...]" can be used for a description of possibly many items, too. For example:</p>
+<p>Every turn when the player carries something:</p>
+
+<div class="code"><p class="quoted">
+say "Every possession is a worry. I wonder if [regarding things carried by the player][they] still [look] okay in your pocket?"
+</p></div>
+<p>So if the player carries just a single coin, say, this automatically becomes:</p>
+
+<div class="code"><p class="quoted">
+Every possession is a worry. I wonder if it still looks okay in your pocket?
+</p></div>
+<p>but if the player carries a pair of scissors (a single plural-named item) or a coin and an iPhone, it becomes:</p>
+
+<div class="code"><p class="quoted">
+Every possession is a worry. I wonder if they still look okay in your pocket?
+</p></div>
+<p>Once again these text substitutions are available in capitalised and uncapitalised forms:</p>
+
+<div class="code"><p class="quoted">
+"[Those]" or "[those]"
+<br>"[Possessive]" or "[possessive]"
+</p></div>
+<p>In fact "[Those]" and "[those]" do subtly different things, besides the capital letter, because "[Those]" expects to be the subject of the sentence and "[those]" the object, and this makes a difference if the noun in question is a person. If the noun is an odious person called Tilly then</p>
+
+<div class="code"><p class="quoted">
+"[regarding the noun][Those] is unacceptable."
+<br>"You've never liked [regarding the noun][those]."
+</p></div>
+<p>would come out as "She is unacceptable" - so "[Those]" becomes "She" - but "You've never liked her" - so "[those]" becomes "her". If we need these in different cases, we can explicitly ask for that:</p>
+
+<div class="code"><p class="quoted">
+"[those in the nominative]"
+<br>"[Those in the accusative]"
+</p></div>
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-249"><p class="example-p"><span class="example-short-start">249. <a href="rb_2.html#example-249" class="example-link" onClick="(function() { document.getElementById('example-249').setAttribute('open','open'); return true; })();">Olfactory Settings</a></span> <span class="example-difficulty">★</span>  <span class="example-description">Some adaptive text for smelling the flowers, or indeed, anything else.</span> (c.f. <a href="rb_2.html#rb-2.1">RB §2.1. Varying What Is Written</a>)</p></div>
+</div></section>
+<section class="section" id="wi-14.7"><div>
+
+
+
+
+
+<h3>WI §14.7. Can, could, may, might, must, should, would</h3>
+<p>English uses so-called "modal verbs" to change a sentence so that it talks about something only possibly happening. For example, the sentence "Fred goes to school" can be modified to "Fred must go to school", "Fred should go to school" or even "Fred might go to school".</p>
+<p>Inform supports the use of modal verbs in text substitutions. For example,</p>
+
+<div class="code"><p class="quoted">
+"[Fred] [might go] to school."
+</p></div>
+<p>would in the present tense come out as "Fred might go to school.", but could alternatively be "Fred might have gone to school." As this example shows, all that's needed is to take a verb we'll call V - this case, "go" - and we can write any of these:</p>
+
+<div class="code"><p class="quoted">
+"[can V]" or "[cannot V]" or "[can't V]"
+<br>"[could V]" or "[could not V]" or "[couldn't V]"
+<br>"[may V]" or "[may not V]" or "[mayn't V]"
+<br>"[might V]" or "[might not V]" or "[mightn't V]"
+<br>"[must V]" or "[must not V]" or "[mustn't V]"
+<br>"[should V]" or "[should not V]" or "[shouldn't V]"
+<br>"[would V]" or "[would not V]" or "[wouldn't V]"
+</p></div>
+<p>That helps us to handle informal usages like this one:</p>
+
+<div class="code"><p class="quoted">
+"You can't go that way."
+</p></div>
+<p>To make this message adaptive, we write:</p>
+
+<div class="code"><p class="quoted">
+"[We] [can't go] that way."
+</p></div>
+<p>which can adapt in surprising ways -- "They won't be able to go that way.", for example.</p>
+<p>Note that the verb V has to be one that Inform knows. But that's easy:</p>
+
+<div class="code"><p class="quoted">
+To discombobulate is a verb.
+</p></div>
+<p>and then</p>
+
+<div class="code"><p class="quoted">
+"[Fred] [might not discombobulate] so easily."
+</p></div>
+<p>could produce "Fred might not have discombobulated so easily", for example.</p>
+
+
+</div></section>
+<section class="section" id="wi-14.8"><div>
+
+
+
+
+
+<h3>WI §14.8. Adapting contractions</h3>
+<p>Contractions usually take the form of part of a word being missed out and replaced by an apostrophe. We've already seen "[can't]", "[couldn't]", "[mayn't]", "[mightn't]", "[mustn't]", "[shouldn't]" and "[wouldn't]", for example. But Inform supports other contractions, too, as follows.</p>
+<p>The English verbs "to be" and "to have" are unique in having contracted forms, which we can write "['re]" and "['ve]", like this:</p>
+
+<div class="code"><p class="quoted">
+"[We]['ve] got rhythm. [We]['re] cool."
+</p></div>
+<p>which might produce, say, "I've got rhythm. I'm cool.", or "He'll have rhythm. He'll be cool.", or "You had got rhythm. You were cool." (The contractions don't appear in the past tense; but the spacing fixes itself automatically.)</p>
+<p>The Standard Rules often use a special text substitution for responses like this one:</p>
+
+<div class="code"><p class="quoted">
+"[They're] hardly portable."
+</p></div>
+<p>This is exactly like "[Those]['re] hardly portable" except that if the plural is needed, Inform prints "They're hardly portable" rather than the correct, but not quite idiomatic, "Those're hardly portable". (If we wrote "[They]['re] ...", that would get the plural form right, but then the singular would be "It's hardly portable" not "That's hardly portable".)</p>
+<p>Only a few English verbs have contracted negative forms, beyond those already mentioned. Inform knows these informal forms:</p>
+
+<div class="code"><p class="quoted">
+"[aren't]"
+<br>"[don't]"
+<br>"[haven't]"
+<br>"[won't]"
+</p></div>
+<p>For example,</p>
+
+<div class="code"><p class="quoted">
+Instead of taking something:
+<br>    say "[The noun] [are] pinned down by Dr Zarkov's force field. [They] [aren't] free to move. [They] [can't] move. [They] [won't] move. [They] [haven't] a chance to move. Anyhow, [they] [don't] move."
+</p></div>
+<p>can produce variations like these:</p>
+
+<div class="code">
+<p class="quoted">
+The condensers are pinned down by Dr Zarkov's force field. They aren't free to move. They can't move. They won't move. They haven't a chance to move. Anyhow, they don't move.
+</p>
+<p class="quoted">
+You were pinned down by Dr Zarkov's force field. You weren't free to move. You couldn't move. You wouldn't move. You hadn't a chance to move. Anyhow, you didn't move.
+</p>
+</div>
+</div></section>
+<section class="section" id="wi-14.9"><div>
+
+
+
+
+
+<h3>WI §14.9. Verbs as values</h3>
+<p>Each verb known to Inform is actually a value of the kind "verb". To refer to a verb as a value, we have to put the word "verb" in front, as in these examples:</p>
+
+<div class="code"><p class="quoted">
+the verb contain, the verb might, the verb provoke
+</p></div>
+<p>all of which appear in the Standard Rules.</p>
+<p>Two adjectives are provided for use with verbs: "modal" (or "non-modal") to pick out verbs like might, could, should, and so on; and "meaningful" (or "meaningless") to pick out verbs which have a defined meaning as an Inform relation. For example, in the Standard Rules, the verb contain is meaningful, the verb might is modal, and the verb provoke is meaningless.</p>
+<p>If V has a meaning as a relation of objects, then "meaning of V" produces that relation. For example,</p>
+
+<div class="code"><p class="quoted">
+showme the meaning of the verb contain;
+<br>showme the meaning of the verb provoke;
+</p></div>
+<p>produces:</p>
+
+<div class="code"><p class="quoted">
+"meaning of the verb contain" = relation of objects: containment relation
+<br>"meaning of the verb provoke" = relation of objects: equality relation
+</p></div>
+<p>As this demonstrates, if a verb has no meaning, or its meaning doesn't relate to objects, we get just the equality relation.</p>
+<p>In fact, Inform even defines a verb "to mean": it's meaningful, and its meaning is the meaning relation. Thus:</p>
+
+<div class="code"><p class="quoted">
+if the verb mean means the meaning relation...
+</p></div>
+<p>is true. More usefully, we can search our vocabulary like this:</p>
+
+<div class="code"><p class="quoted">
+the list of verbs meaning the containment relation
+</p></div>
+<p>which, unless any non-Standard Rules definitions have been added, produces:</p>
+
+<div class="code"><p class="quoted">
+list of verbs: {verb contain}
+</p></div>
+<p>Note that the meaning relation can't be changed at run-time: it is not clear what it would even mean to do something like -</p>
+
+<div class="code"><p class="quoted">
+now the verb contain means the wearing relation;
+</p></div>
+<p>with the story already started, so this will produce a problem message.</p>
+
+<div class="definition" id="defn170">
+<p class="defnprototype"><strong>say "[adapt </strong>(verb)<strong>]"</strong></p>
+
+
+
+<p>Adapts the given verb to the current story tense and story viewpoint. For example, "you [adapt the verb provoke]" might produce "you provoke".</p>
+
+
+</div>
+
+
+<div class="definition" id="defn171">
+<p class="defnprototype"><strong>say "[adapt </strong>(verb)<strong> from </strong>(narrative viewpoint)<strong>]"</strong></p>
+
+
+
+<p>Adapts the given verb to the current story tense but the given viewpoint. For example, "he [adapt the verb provoke from the third person singular]" might produce "he provokes".</p>
+
+
+</div>
+
+
+<div class="definition" id="defn172">
+<p class="defnprototype"><strong>say "[adapt </strong>(verb)<strong> in </strong>(grammatical tense)<strong>]"</strong></p>
+
+
+
+<p>Adapts the given verb to the given tense but the current story viewpoint. For example, "you [adapt the verb provoke in the past tense]" might produce "you provoked".</p>
+
+
+</div>
+
+
+<div class="definition" id="defn173">
+<p class="defnprototype"><strong>say "[adapt </strong>(verb)<strong> in </strong>(grammatical tense)<strong> from </strong>(narrative viewpoint)<strong>]"</strong></p>
+
+
+
+<p>Adapts the given verb to the given tense and viewpoint. For example, "we [adapt the verb provoke in the future tense from the first person plural]" might produce "we will provoke".</p>
+
+
+</div>
+
+
+<div class="definition" id="defn174">
+<p class="defnprototype"><strong>say "[negate </strong>(verb)<strong>]"</strong></p>
+
+
+
+<p>Adapts the given verb to the current story tense and story viewpoint, giving it a negative sense. For example, "you [negate the verb provoke]" might produce "you do not provoke".</p>
+
+
+</div>
+
+
+<div class="definition" id="defn175">
+<p class="defnprototype"><strong>say "[negate </strong>(verb)<strong> from </strong>(narrative viewpoint)<strong>]"</strong></p>
+
+
+
+<p>Adapts the given verb to the current story tense but the given viewpoint, giving it a negative sense. For example, "he [negate the verb provoke from the third person singular]" might produce "he does not provoke".</p>
+
+
+</div>
+
+
+<div class="definition" id="defn176">
+<p class="defnprototype"><strong>say "[negate </strong>(verb)<strong> in </strong>(grammatical tense)<strong>]"</strong></p>
+
+
+
+<p>Adapts the given verb to the given tense but the current story viewpoint, giving it a negative sense. For example, "you [negate the verb provoke in the past tense]" might produce "you did not provoke".</p>
+
+
+</div>
+
+
+<div class="definition" id="defn177">
+<p class="defnprototype"><strong>say "[negate </strong>(verb)<strong> in </strong>(grammatical tense)<strong> from </strong>(narrative viewpoint)<strong>]"</strong></p>
+
+
+
+<p>Adapts the given verb to the given tense and viewpoint, giving it a negative sense. For example, "we [negate the verb provoke in the future tense from the first person plural]" might produce "we will not provoke".</p>
+
+
+</div>
+
+<p>Note that the verb doesn't have to be named explicitly for use by the adapt or negate phrases, so for example:</p>
+
+<div class="code">
+<p class="quoted">
+To decide which text is the rendering of (V - verb) (this is my rendering):
+<br>    decide on "[negate V in the past perfect tense]".
+</p>
+<p class="quoted">
+When play begins:
+<br>    showme my rendering applied to the list of meaningful verbs.
+</p>
+</div>
+<p>produces:</p>
+
+<div class="code"><p class="quoted">
+"my rendering applied to the list of meaningful verbs" = list of texts: {"had not had", "had not related", "had not meant", "had not provided", "had not contained", "had not supported", "had not incorporated", "had not enclosed", "had not carried", "had not held", "had not worn", "had not been able to see", "had not been able to touch", "had not concealed", "had not unlocked"}
+</p></div>
+<p>Lastly, we can get at three other useful parts of a verb, too. These aren't adaptive, of course: a verb only has one infinitive form.</p>
+
+<div class="definition" id="defn178">
+<p class="defnprototype"><strong>say "[infinitive of </strong>(verb)<strong>]"</strong></p>
+
+
+
+<p>Produces the infinitive of the given verb. Note that this is without a "to": for example, "[infinitive of the verb carry]" is "carry", not "to carry".</p>
+
+
+</div>
+
+
+<div class="definition" id="defn179">
+<p class="defnprototype"><strong>say "[past participle of </strong>(verb)<strong>]"</strong></p>
+
+
+
+<p>Produces the past participle of the given verb. For example, "[past participle of the verb carry]" is "carried". Warning: because modal verbs like "should" or "might" are defective in English, this will produce odd results on them - "shoulded" and "mighted", for example.</p>
+
+
+</div>
+
+
+<div class="definition" id="defn180">
+<p class="defnprototype"><strong>say "[present participle of </strong>(verb)<strong>]"</strong></p>
+
+
+
+<p>Produces the present participle of the given verb. For example, "[present participle of the verb carry]" is "carrying". Warning: because modal verbs like "should" or "might" are defective in English, this will produce odd results on them - "shoulding" and "mighting", for example.</p>
+
+
+</div>
+
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-250"><p class="example-p"><span class="example-short-start">250. <a href="rb_2.html#example-250" class="example-link" onClick="(function() { document.getElementById('example-250').setAttribute('open','open'); return true; })();">Relevant Relations</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">An example of how to create room descriptions that acknowledge particular relations using their assigned verbs, rather than by the heavily special-cased code used by the standard library.</span> (c.f. <a href="rb_2.html#rb-2.1">RB §2.1. Varying What Is Written</a>)</p></div>
+<div class="example-short" id="example-short-251"><p class="example-p"><span class="example-short-start">251. <a href="rb_2.html#example-251" class="example-link" onClick="(function() { document.getElementById('example-251').setAttribute('open','open'); return true; })();">History Lab</a></span> <span class="example-difficulty">★★</span>  <span class="example-description">We create phrases such as "the box we took" and "the newspaper Clark looked at" based on what has already happened in the story.</span> (c.f. <a href="rb_2.html#rb-2.1">RB §2.1. Varying What Is Written</a>)</p></div>
+</div></section>
+<section class="section" id="wi-14.10"><div>
+
+
+
+
+
+<h3>WI §14.10. Responses</h3>
+<p>Most of the text which the player sees is drawn from the source, but mixed in with this are messages apparently added by Inform itself - usually in the form of short sentences saying that something has been done, or that something can't be done. Such pieces of text are called "responses", because they are almost always replies to commands. For example:</p>
+
+<div class="code">
+<p class="quoted">
+&gt; EAST
+<br>You can't go that way.
+</p>
+<p class="quoted">
+&gt; JUMP
+<br>You jump on the spot.
+</p>
+</div>
+<p>Responses like this, which don't appear anywhere in the source text, come from one of the extensions being used; most often from the Standard Rules, the "extension" which is automatically included in every project. The SR contain many small rules, and almost all of these are capable of producing one or two standard responses. These are labelled with the rule's name and then a bracketed letter - (A), (B), (C), ... as needed so that every response has its own unique name. There's nothing very mysterious about how this is done. For example, here is a rule with one response:</p>
+
+<div class="code"><p class="quoted">
+Carry out taking inventory (this is the print empty inventory rule):
+<br>    if the first thing held by the player is nothing,
+<br>        say "[We] [are] carrying nothing." (A) instead.
+</p></div>
+<p>which makes the familiar text "You are carrying nothing." a response named:</p>
+
+<div class="code"><p class="quoted">
+print empty inventory rule response (A)
+</p></div>
+<p>These names are actually values, belonging to the kind "response". Because of that, if we try this:</p>
+
+<div class="code"><p class="quoted">
+say "Hmm: [print empty inventory rule response (A)]"
+</p></div>
+<p>Inform will produce</p>
+
+<div class="code"><p class="quoted">
+Hmm: print empty inventory rule response (A)
+</p></div>
+<p>since we gave Inform a value to print, and that's just what it then did. As an alternative:</p>
+
+<div class="definition" id="defn181">
+<p class="defnprototype"><strong>say "[text of </strong>(response)<strong>]"</strong></p>
+
+
+
+<p>This text substitution writes out the current text of the given response.</p>
+
+
+</div>
+
+<p>Thus,</p>
+
+<div class="code"><p class="quoted">
+say "Hmm: [text of print empty inventory rule response (A)]"
+</p></div>
+<p>produces</p>
+
+<div class="code"><p class="quoted">
+Hmm: You are carrying nothing.
+</p></div>
+</div></section>
+<section class="section" id="wi-14.11"><div>
+
+
+
+
+
+<h3>WI §14.11. Changing the text of responses</h3>
+<p>These responses are named so that they can be changed. Most IF authors dislike one or two of the existing responses, and some would like to change almost all of them to give the text a different style; and extensions for IF in languages other than English change literally every response, of course.</p>
+<p>It's very easy to change responses:</p>
+
+<div class="code"><p class="quoted">
+The print empty inventory rule response (A) is "Your hands are, like, totally empty. Lame."
+</p></div>
+<p>and we can even do this dynamically during play:</p>
+
+<div class="code"><p class="quoted">
+now the print empty inventory rule response (A) is "Your hands ...";
+</p></div>
+<p>just as if we were setting a variable.</p>
+
+
+
+</div>
+<div class="section-example-block">
+<h4>Examples</h4>
+<div class="example-short" id="example-short-252"><p class="example-p"><span class="example-short-start">252. <a href="rb_2.html#example-252" class="example-link" onClick="(function() { document.getElementById('example-252').setAttribute('open','open'); return true; })();">Responsive</a></span> <span class="example-difficulty">★</span>  <span class="example-description">Altering the standard inventory text for when the player is carrying nothing.</span> (c.f. <a href="rb_2.html#rb-2.1">RB §2.1. Varying What Is Written</a>)</p></div>
+</div></section>
+<section class="section" id="wi-14.12"><div>
+
+
+
+
+
+<h3>WI §14.12. The RESPONSES testing command</h3>
+<p>In practice we can't change these responses unless we know what they're called. One way to find out is just to read through the extensions we're using, but that's a laborious process. A more practical answer is to type:</p>
+
+<div class="code"><p class="quoted">
+&gt; RESPONSES
+</p></div>
+<p>which replies by listing the sets of responses currently available; for example, it says that RESPONSES 1 is the set of responses for the Standard Rules. We can then type exactly that:</p>
+
+<div class="code"><p class="quoted">
+&gt; RESPONSES 1
+<br>Standard Rules:
+<br>    block vaguely going rule response (A): "You'll have to say which compass direction to go in."
+<br>    print the final prompt rule response (A): "&gt; [run paragraph on]"
+<br>    ...
+</p></div>
+<p>and so on. This lists all of the responses, rule by rule, along with their current texts.</p>
+
+
+</div></section>
+</section>
+
+<footer>
+<div class="linkback"><a href="http://inform7.com/book/WI_14_1.html">WI Chapter 14 on inform7.com</a></div>
+<div class="doc-navbar">
+<div>
+<div class="doc-navbar-left"><a class="nav-left" href="wi_13.html#wi-chapter-13-relations">13. Relations</a></div>
+<div class="doc-navbar-right"><a class="nav-right" href="wi_15.html#wi-chapter-15-numbers-and-equations">15. Numbers and Equations</a></div>
+</div>
+<div>
+<div class="doc-navbar-left"><a href="index.html">Table of Contents</a></div>
+<div class="doc-navbar-right"><a href="index.html#general-index">General Index</a></div>
+</div>
+</div>
+
+</footer>
+</main></body></html>
+

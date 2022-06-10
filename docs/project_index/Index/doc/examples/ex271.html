@@ -1,0 +1,170 @@
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../style.css">
+<script>function toggle_details() {
+   var openness, toggle_link;
+   toggle_link = document.getElementById("toggle");
+   openness = toggle_link.classList.toggle("open");
+document.querySelectorAll("details.full-example").forEach(detail => { if (openness) { detail.setAttribute("open", true); } else { detail.removeAttribute("open");} });
+   toggle_link.innerText = (openness ? "Close" : "Open") + " all examples";
+   }
+
+
+function copyCode(text) { navigator.clipboard.writeText(text); }
+
+
+var links = document.getElementsByTagName('a');
+for (var i = 0; i < links.length; i++) {
+    if (links[i].href.match(/^#example-\d+/)) {
+	links[i].onClick = function() { links[i].href.match(/^#example-(\d+)$/); var example = document.getElementById($1).setAttribute('open'); return true; };
+    }
+}
+
+function add_bar(update) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let navbar = document.querySelector('div.index-navbar');
+
+    if (navbar && urlParams.has('project')) {
+        navbar.setAttribute('class', 'index-navbar'); // removes hidden
+        let project = decodeURIComponent(urlParams.get('project'));
+        let index_root = project + '/.index/';
+        let build = project + '/Build/';
+        let query_arg = "?project="+encodeURIComponent(project);
+
+        let links = [
+            { "General Index": document.getElementById('general_index').href },
+            { "Docs": document.getElementById('docs').href },
+            { "Extensions": index_root + 'doc/Extensions.html' },
+            { "Definitions": index_root + 'doc/ExtIndex.html' },
+            { "Debug Log": build + 'debug_log.html' },
+            { "Problems": build + 'problems.html' },
+            { "Source": index_root + 'story.html' },
+            { "Project Index": index_root + 'Index/Welcome.html' } ];
+        let sp = document.createTextNode(" ");
+        links.forEach(h => {
+            Object.entries(h).forEach(([text, url]) => {
+                let my_id = text.toLowerCase().replace(' ', '_');
+                let a = document.querySelector('#'+my_id);
+                let url_target = "file://"+url+query_arg;
+                if (a) {
+                    let parts = a.href.split('#');
+                    let qparts = parts[0].split('?');
+                    a.href = qparts[0] +  (qparts[1] ? ('?' + qparts[1]) : query_arg) + (parts[1] ? ('#' + parts[1]) : "");
+                }
+                else {
+                    a = document.createElement('a');
+                    let href = document.createAttribute("href");
+                    href.value = url_target;
+                    a.setAttributeNode(href);
+                    let elem_id = document.createAttribute("id");
+                    elem_id.value = my_id;
+                    a.setAttributeNode(elem_id);
+                    let linktext = document.createTextNode(text);
+                    a.appendChild(linktext);
+                    navbar.insertBefore(sp.cloneNode(), navbar.firstChild);
+                    navbar.insertBefore(a, navbar.firstChild);
+                }
+            })});
+        if (update) {
+            let main_links = document.querySelectorAll('main a');
+            main_links.forEach(a => {
+                if (!a.href.startsWith('javascript:') || (a.href.match(/[^:]+:\/\// && !a.href.startsWith('file:')))) {
+                    let parts = a.href.split('#')
+                    a.href = parts[0] + query_arg + (parts[1] ? ('#' + parts[1]) : "");
+                } });
+        }
+    }
+}
+
+
+
+document.addEventListener("DOMContentLoaded", add_bar);</script>
+<title>Example #271</title></head>
+<body class="inform7-source">
+
+<div class="inform7-source"><div class="pseudo">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7sx">&quot;Dubai&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Burj al-Arab Lobby is a room. <span class="i7sx">&quot;The 202-suite Burj al-Arab - or Tower of the Arabs - stands 321 metres (1,060 feet) high, and floats on its own man-made island. It is shaped like the sail of a boat; just crossing the private bridge to reach this place set you back $55.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="i7cm">[(Since our budget did not run to visiting Burj al-Arab, the descriptions place implicit faith in the hotel&#39;s website.)]</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Assawan Spa is a room. <span class="i7sx">&quot;Treatment rooms, hydrotherapy baths, oriental massage, stand-up solarium, sauna, steam rooms and jacuzzi, two swimming pools, squash court, two fully equipped fitness studios and an aerobics floor. To the south is a shopping area, for those who do not find exercise adequately therapeutic.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Shopping Area is south of Assawan Spa. <span class="i7sx">&quot;In a setting that would make a poet sigh, you may enjoy the services of (among others) Bulgari, Black Pearl Caviar, Albarajeel Carpet Shop, Abdul Samed Al Qurashi (amber and Arabic perfumes), Dianoor (jewellery), and the Commercial Bank of Dubai.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Al Falak Ballroom is a room. <span class="i7sx">&quot;A palatial, two-tiered, domed ballroom crowned with a unique crystal chandelier.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Sahn Eddar is a room. <span class="i7sx">&quot;At the base of the world&#39;s tallest atrium, the Sahn Eddar restaurant offers light fine fare and Afternoon Tea. At the center, a 32-meter water column leaps toward the roof of the atrium.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Al Mahara is a room. <span class="i7sx">&quot;After the elevator, you must take a three-minute virtual submarine voyage to reach this seafood restaurant. A magnificent oval aquarium, full of sharks, is visible from every table.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Al Iwan is a room. <span class="i7sx">&quot;Middle-eastern food in an environment of dramatic black, red, and gold.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Al Muntaha is a room. <span class="i7sx">&quot;A top-floor restaurant with a magnificent view: the name means the ultimate or the highest, suitable for a place that stands at 200 metres above the Arabian Gulf. It offers modern European cuisine; and just off to the south is the Skyview Bar.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Skyview Bar is south of Al Muntaha. <span class="i7sx">&quot;&#39;A wonderful location for pre- and post dinner drinks,&#39; claims the hotel&#39;s brochure, and certainly you can&#39;t fault the view.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Juna Lounge is a room. <span class="i7sx">&quot;Two humidors that offer one of the largest selections of the finest Havana cigars in Dubai.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Lift is a room. <span class="i7sx">&quot;This is not a mere elevator: it is an express panoramic lift, traveling six meters a second, and capable of taking you from lobby to the rooftop restaurant in an astonishingly short time. The illuminated number above the door says </span><span class="i7si">[current level of the Lift]</span><span class="i7sx"> - though you can make it move by pressing a numbered button.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Presidential Suite is a room. <span class="i7sx">&quot;Astonishingly, this is not the most elaborate or expensive of suites; there is another, the Royal, upstairs of here.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Royal Suite is a room. <span class="i7sx">&quot;The brochure described this as &#39;the last word in luxury,&#39; and you have to admit that it is certainly the last word in </span><span class="i7si">[italic type]</span><span class="i7sx">something</span><span class="i7si">[roman type]</span><span class="i7sx">. A vast carpet of patterned red and gold stretches from you to the sofa; beyond which, in the distance, you make out several bedrooms and bathrooms outfitted in Carrera marble. There is also, of course, a private cinema.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr tablehead"><span class="th"></span><span class="td line">Table of Floors</span><br></span></div><div class="pseudo tabletable">
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">level</span><span class="td">floor</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">0</span><span class="td">Al Mahara</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">1</span><span class="td">Burj al-Arab Lobby</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">2</span><span class="td">Al Iwan</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">3</span><span class="td">Juna Lounge</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">4</span><span class="td">Sahn Eddar</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">15</span><span class="td">Al Falak Ballroom</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">18</span><span class="td">Assawan Spa</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">24</span><span class="td">Presidential Suite</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">25 </span><span class="td">Royal Suite</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"><span class="td">27</span><span class="td">Al Muntaha</span></span><br></span>
+      </div><div class="pseudo"><span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The elevator exterior is a backdrop. It is not scenery. The initial appearance of the elevator exterior is <span class="i7sx">&quot;You can enter the elevator here.&quot;</span> It is in Generic Floor, Al Mahara, the Lobby, Al Iwan, Juna Lounge, Sahn Eddar, Al Falak, Assawan Spa, Presidential Suite, Royal Suite, and Al Muntaha.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Before entering the elevator exterior, try going inside instead.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Instead of going inside in the presence of the elevator exterior:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if there is a level corresponding to a floor of the location in the Table of Floors:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	let the present level be the level corresponding to a floor of the location in the Table of Floors;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	now the current level of the Lift is the present level;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	otherwise:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	now the current level of the Lift is the current level of Generic Floor;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	move the player to the Lift.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Lift has a number called current level. The current level of the Lift is 1. Instead of going up in the Lift: say <span class="i7sx">&quot;You&#39;ll have to select a specific floor; your options range from 0 to 27.&quot;</span> Instead of going down in the Lift: try going up instead. The Lobby is outside from the Lift.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Before going outside in the Lift:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if there is a floor corresponding to a level of the current level of the Lift in the Table of Floors:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	let the other place be the floor corresponding to a level of the current level of the Lift in the Table of Floors;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	move the player to the other place instead;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	otherwise:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	now the current level of the Generic Floor is the current level of the Lift;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&ensp;&ensp;&ensp;	move the player to the Generic Floor instead.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">The Generic Floor is a room. The Generic Floor has a number called current level. The printed name of the Generic Floor is <span class="i7sx">&quot;Floor </span><span class="i7si">[current level of the Generic Floor]</span><span class="i7sx">&quot;</span>. <span class="i7sx">&quot;A long hallway between suites, some of which run up to $15,000 a night.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Understand <span class="i7sx">&quot;push </span><span class="i7si">[number]</span><span class="i7sx">&quot;</span> as pressing button. Understand <span class="i7sx">&quot;push </span><span class="i7si">[number]</span><span class="i7sx"> button&quot;</span> as pressing button. Understand <span class="i7sx">&quot;push button </span><span class="i7si">[number]</span><span class="i7sx">&quot;</span> as pressing button. Pressing button is an action applying to one number.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Check pressing button:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the player is not in the Lift, say <span class="i7sx">&quot;You cannot control the express panoramic lift unless you are yourself inside.&quot;</span> instead;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the number understood is the current level of the Lift, say <span class="i7sx">&quot;The lift pings politely and reopens its doors, since you are already on floor </span><span class="i7si">[number understood]</span><span class="i7sx">.&quot;</span> instead;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the number understood is greater than 27, say <span class="i7sx">&quot;There are only 27 floors.&quot;</span> instead;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	if the number understood is less than 0, say <span class="i7sx">&quot;You cannot go below the ground floor in this elevator.&quot;</span> instead.</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Carry out pressing button:</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	now the current level of the Lift is the number understood;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line"> &emsp;&emsp;&ensp;&ensp;	say <span class="i7sx">&quot;You press button </span><span class="i7si">[the number understood]</span><span class="i7sx">. The lift whirs into action and moves to the correct level.&quot;</span></span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">&emsp;</span><br></span>
+      <span class="tr"><span class="th"></span><span class="td line">Test me with <span class="i7sx">&quot;press 3 / in / press button 3 / look / out / in / press 27 / out / s / in / n / in / press 15 / out / in / press 18 / out / s / in / n / in / press 4 button / out&quot;</span>.</span><br></span>
+
+</div>
+</div>
+<footer></footer>
+</body></html>
